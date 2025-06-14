@@ -1,0 +1,37 @@
+
+
+<div class="container" *ngIf="!isOtpVerified">
+    <div class="header">
+        <img src="user-placeholder.png" alt="User" />
+        <div>
+            <small>Album by</small>
+            <strong>Ayush Studios</strong>
+        </div>
+        <a href="javascript:void(0);">&#9654;</a>
+    </div>
+    <div class="banner">
+        School
+        <small>Register Your Selfie &#128247;</small>
+    </div>
+    <video #videoElement autoplay width="320" height="240" class="profile-pic" *ngIf="!capturedImage"></video>
+    <canvas #canvasElement style="display: none;"></canvas>
+    <img *ngIf="capturedImage" class="profile-pic" [src]="capturedImage" alt="Captured Image">
+
+    <button class="btn"  (click)="captureImage()">&#128247; Capture Photo</button>
+    <div class="input-group w-100">
+        <input type="text"  [(ngModel)]="ai_upload_user.name"  placeholder="Enter full name" />
+    </div>
+    <div class="input-group w-100">
+        <input type="text" [(ngModel)]="ai_upload_user.phone" placeholder="Enter mobile" />
+        <button (click)="sendOtp()">Send OTP</button>
+    </div>
+    <div class="input-group w-100" *ngIf="isOTPSent">
+        <input type="number" [(ngModel)]="ai_upload_user.otp" placeholder="Enter OTP" />
+        <button (click)="verifyOTP()">Verify</button>
+    </div>
+    <button class="submit-btn">Submit</button>
+</div>
+
+<div class="container" *ngIf="isOtpVerified">
+    <div class="display-6">Your Details Has Been Submitted , please close the tab</div>
+</div>

@@ -1,0 +1,59 @@
+<!-- <div class="container">
+    <h2>Image Sorter</h2>
+
+    <button (click)="selectFolder()">Select Folder</button>
+    <button (click)="sortImages()" [disabled]="!imageArray.length">Sort Images</button>
+
+    <p *ngIf="selectedFolderHandle"><strong>Selected Folder:</strong> {{ selectedFolderHandle.name }}</p> -->
+
+    <!-- <div *ngIf="deafaultImageArray.length">
+      <h3>Images:</h3>
+      <ul>
+        <li *ngFor="let image of deafaultImageArray">
+          <input type="checkbox" [(ngModel)]="image.isSelected" /> {{ image.fileName }}
+        </li>
+      </ul>
+    </div> -->
+<!-- </div> -->
+
+<!-- <div class="container-fluid">
+    <input type="file" accept="image/*" multiple (change)="handleFileInput($event)">
+</div>
+
+<div *ngIf="isUploading" class="upload-progress-container">
+    <div class="progress-header">
+        <img src="assets/image-icon.png" class="icon" alt="Image Icon">
+        <div class="progress-text">
+            <p>Uploading {{ batchStart }}-{{ batchEnd }} of {{ totalFiles }} Photos</p>
+            <p class="file-name">{{ currentFileName }}</p>
+        </div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+    </div>
+    <p class="progress-percentage">{{ progressPercentage }}%</p>
+</div> -->
+
+<!-- <input type="file" multiple (change)="handleFileInput($event)"> -->
+
+
+<!-- <div class="container-fluid">
+    <div class="row" >
+        <div class="col-sm-3" *ngFor="let item of uploadedUrls">
+            <img [src]="item.url" alt="Uploaded Image" width="200" height="180" class="shadow border p-1 m-2">
+            <div class="d-flex justify-content-around">
+                <label for="select" class="label mx-2">Select</label>
+                <input type="checkbox" [(ngModel)]="item.isSelected">
+                <br>
+                <label for="favourite" class="label mx-2">Favourite</label>
+                <input type="checkbox" [(ngModel)]="item.isFavourite">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <button type="button" (click)="submitImages()" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div> -->

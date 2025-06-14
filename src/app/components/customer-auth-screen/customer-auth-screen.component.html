@@ -1,0 +1,30 @@
+<div class="relative min-h-screen bg-white flex flex-col items-center justify-center overflow-hidden">
+    <!-- <div class="absolute top-0 right-0 -mt-20 -mr-20 w-72 h-72 bg-pink-200 rounded-full opacity-50 blur-3xl"></div> -->
+    <!-- <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-blue-200 rounded-full opacity-50 blur-3xl"></div> -->
+  
+    <div class="relative z-10 flex flex-col items-center p-8 space-y-6 shadow-xl bg-indigo-100 rounded-xl">
+      <img src="assets/logo.png" alt="Pix Studio Pro Logo" class="w-24 h-24 object-contain mb-2">
+  
+      <p class="text-xl font-semibold text-gray-700">Pix Studio Pro</p>
+  
+      <h1 class="text-4xl font-bold text-gray-800">
+        Hello <span role="img" aria-label="waving hand">👋</span>
+      </h1>
+  
+      <p class="text-gray-500">Please enter your code</p>
+  
+      <input
+        type="text"
+        placeholder="X-X-X-X-X-X"
+        maxlength="6"
+        [(ngModel)]="uniqueCode"
+        class="w-full max-w-xs px-6 py-4 text-center text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent placeholder-gray-400"
+      />
+  
+      <button (click)="verifyCode()"
+        class="cursor-pointer w-full max-w-xs px-6 py-4 font-semibold text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+      >
+        Verify
+      </button>
+    </div>
+  </div>

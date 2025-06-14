@@ -1,0 +1,16 @@
+<div class="login-container">
+    <div class="logo">
+        <div class="logo-icon">
+            <img src="../../../assets/logo.png" alt="" width="80" height="80">
+        </div>
+        Welcome to MY STUDIO
+    </div>
+    <div class="form-group">
+        <label for="pin" class="form-label mb-2">Please enter your pin</label>
+        <input type="text" maxlength="6" inputmode="numeric"  (input)="checkMaxLength($event)" (keydown.enter)="handlePin()" [(ngModel)]="loginPin" class="form-control" id="pin" placeholder="xxx-xxx">
+    </div>
+    <div class="form-group" *ngIf="showOTPBox">
+        <label for="otp" class="form-label">OTP from SMS / WhatsApp</label>
+        <input type="text" class="form-control" id="otp" (input)="checkOtpMaxLength($event)" [(ngModel)]="otp" (keydown.enter)="handleOTP()" placeholder="xxx-xxx">
+    </div>
+</div>

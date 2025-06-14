@@ -1,0 +1,158 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { interval } from 'rxjs';
+import { CustomerService } from '../../services/customer.service';
+import { PhotoSelectionService } from '../../services/photo-selection.service';
+
+@Component({
+  selector: 'app-photo-selection',
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule],
+  templateUrl: './photo-selection.component.html',
+  styleUrl: './photo-selection.component.scss'
+})
+export class PhotoSelectionComponent {
+
+  todayDate = new Date();
+  customers: any = [];
+
+  photoSharingEnabled = false;
+  photoQualities = ['Basic', 'Standard', 'High'];
+  selectedQuality = 'Basic';
+  isModalOpen: boolean = false;
+  event_config: any = {};
+  eventList: any = [];
+  isEdit:boolean=false;
+  deleteModal:boolean=false;
+  currentEventId:number= -1
+
+  constructor(private service: CustomerService, private eventService: PhotoSelectionService,private router:Router) {
+
+  }
+
+  ngOnInit() {
+    interval(1000).subscribe(() => {
+      this.todayDate = new Date();
+    });
+    this.getAllEvents();
+    this.getAllCustomers();
+  }
+
+  getAllEvents() {
+    this.eventService.getAllEvents((res: any) => {
+      if (res.status == 200) {
+        this.eventList = res.data;
+      }
+    })
+  }
+
+  getAllCustomers() {
+    this.service.getAllCustomers((res: any) => {
+      if (res.status == 200) {
+        this.customers = res.data;
+      }
+    })
+  }
+
+
+  onCancel() {
+    this.isModalOpen = false;
+    this.isEdit = false;
+    this.deleteModal = false;
+  }
+
+  onSave() {
+    if(!this.isEdit){
+
+      const params: any = {
+        customer_id: this.event_config.customer_id,
+        event_name: this.event_config.event_name,
+        is_event_submitted: false,
+        is_ai_upload: !!this.event_config.is_ai_upload,
+        quality: this.event_config.quality
+      };
+      
+      this.eventService.createEvent(params, (res: any) => {
+      if (res.status == 200) {
+        this.isModalOpen = false;
+        this.getAllEvents();
+      }
+    })
+  }else{
+    const params= {
+      event_name: this.event_config.event_name,
+    }
+
+    this.eventService.updateEvent(params, this.event_config.event_id, (res: any) => {
+      if (res.status == 200) {
+        this.isModalOpen = false;
+        this.getAllEvents();
+      }
+    })
+  }
+  }
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  selectQuality(quality: string) {
+    this.selectedQuality = quality;
+    this.event_config.quality = this.selectedQuality;
+  }
+
+  editModal(event:any){
+    this.isEdit = true;
+    this.isModalOpen  = true;
+    this.event_config = event;
+  }
+
+  goToPhotoSelection(id:any){
+    this.router.navigate(['/photo-selection-folder',id]);
+  }
+
+  toggleDeleteModal(id:any){
+    this.deleteModal = true;
+    this.event_config.event_id = id;
+  }
+
+  deleteEvent(){
+    this.eventService.deleteEvent(this.event_config.event_id,(res: any) => {
+      if (res.status == 200) {
+        this.onCancel();
+        this.getAllEvents();
+      }
+    })
+  }
+
+  get message(): string {
+    return ``;
+  }
+
+
+  copyMessage(event:any){
+    const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : http://localhost:4200/selection/\n\nRegards Suraj Studios`
+    navigator.clipboard.writeText(message).then(() => {
+      // this.copied = true;
+      // setTimeout(() => this.copied = false, 2000); // reset after 2 sec
+      alert("Text Copied")
+    }).catch(err => {
+      console.error('Failed to copy message: ', err);
+    });
+  }
+
+  toggleEventStatus(event:any){
+    const params= {
+      is_event_submitted: !event.is_event_submitted,
+    }
+    this.eventService.updateEvent(params, event.event_id, (res: any) => {
+      if (res.status == 200) {
+        this.getAllEvents();
+      }
+    })
+  }
+}
+
+

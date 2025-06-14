@@ -1,0 +1,99 @@
+.login-container {
+    // background-color: #5959b3;
+    background-color: #5758b2;
+    /* Approximate background color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px;
+    font-family: sans-serif;
+    /* A common sans-serif font */
+    color: #fff;
+    text-align: center;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .login-container {
+        width: auto;
+    }
+}
+
+.logo {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    // border: 2px solid #fff;
+    // border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+// .logo-icon::before {
+//     content: '';
+//     position: absolute;
+//     width: 40px;
+//     height: 40px;
+//     background-color: #fff;
+//     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+// }
+
+.form-group {
+    margin-bottom: 20px;
+    width: 90%;
+    max-width: 350px;
+    /* Adjust as needed */
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+    color: #797fc4;
+    box-sizing: border-box;
+    background-color: #b9b9df;
+    /* Ensure padding doesn't affect width */
+}
+
+.form-control::placeholder {
+    color: #ccc;
+}
+
+.form-text {
+    display: block;
+    /* Ensure it takes full width */
+    margin-top: 5px;
+    font-size: 10px;
+    color: #eee !important;
+    padding-bottom: 10px;
+}
+
+.otp-text {
+    color: #eee;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

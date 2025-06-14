@@ -1,0 +1,117 @@
+<div class="relative min-h-screen bg-gray-50 flex flex-col">
+    <!-- <div class="absolute top-0 right-0 -mt-40 -mr-40 w-96 h-96 bg-pink-100 rounded-full opacity-30 blur-3xl"></div> -->
+    <!-- <div class="absolute bottom-0 left-0 -mb-40 -ml-40 w-80 h-80 bg-blue-100 rounded-full opacity-30 blur-3xl"></div> -->
+
+    <nav class="relative z-20 bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <img src="assets/logo.png" alt="Pix Studio Pro Logo" class="h-10 w-10 object-contain">
+                    <span class="text-2xl font-semibold text-gray-800">Pix Studio Pro</span>
+                </div>
+
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-7 h-7 text-blue-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <span class="font-medium">{{ customerName }}</span>
+                </div>
+
+                <div>
+                    <button
+                        class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition duration-150 ease-in-out">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative z-10 flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-xl shadow-xl p-6 md:p-8">
+            <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 pb-4 border-b border-gray-200">
+                <div class="flex gap-2">
+                    <button _ngcontent-ng-c1037667738="" (click)="backToFolderListing()"
+                    class="cursor-pointer text-indigo-600 p-2 rounded-full hover:bg-gray-100"><svg
+                    _ngcontent-ng-c1037667738="" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" class="h-6 w-6">
+                    <path _ngcontent-ng-c1037667738="" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg></button>
+                <h1 class="text-3xl font-bold text-gray-800 mb-4 md:mb-0">{{ folderName }}</h1>
+            </div>
+                <div class="flex flex-wrap items-center space-x-4 sm:space-x-6 text-sm text-gray-600">
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-red-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.158 0a.225.225 0 1 1-.45 0 .225.225 0 0 1 .45 0Z" />
+                        </svg>
+                        <span><span class="font-semibold text-gray-700">{{ photos.length }}</span> Photos</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-green-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <span><span class="font-semibold text-gray-700">{{ selectedPhotosCount }}</span> Selected
+                            Photos</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                <div *ngFor="let image of photos; let idx = index;trackBy:trackPhotos"
+                    class="relative group bg-gray-100 rounded-lg overflow-hidden shadow-lg aspect-w-1 aspect-h-1">
+                    <img [ngSrc]="image.photo_url" [alt]="image.photo_name" priority width="200" height="150"
+                        class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
+                    <div
+                        class="absolute top-2 right-2 bg-zinc-900 opacity-100 text-white text-sm font-semibold w-6 h-6 flex items-center justify-center rounded-full z-10">
+                        {{ idx+1 }}
+                    </div>
+
+                    <div
+                        class="absolute inset-0  bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-300 ease-in-out flex flex-col justify-end p-3 z-20">
+                        <div class="flex justify-between items-center">
+                            <button (click)="toggleSelect(image)" [ngClass]="{
+              'bg-blue-500 hover:bg-blue-600': image.is_selected,
+              'bg-gray-700 bg-opacity-70 hover:bg-opacity-90 hover:bg-gray-600': !image.is_selected
+            }" class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white transition-all duration-200 ease-in-out transform active:scale-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-white"
+                                aria-label="Select image">
+                                <svg *ngIf="image.is_selected"
+                                    xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+                                    class="w-5 h-5 md:w-6 md:h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg *ngIf="!image.is_selected"
+                                    xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                    class="w-5 h-5 md:w-6 md:h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+
+                            <button (click)="toggleFavorite(image)" [ngClass]="{
+              'text-red-500': image.is_favourite,
+              'text-white hover:text-red-400': !image.is_favourite
+            }" class="bg-gray-700 bg-opacity-70 hover:bg-opacity-90 hover:bg-gray-600 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out transform active:scale-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-white"
+                                aria-label="Favorite image">
+                                <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"
+                                    viewBox="0 0 24 24" [attr.fill]="image.is_favourite ? 'currentColor' : 'none'"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 md:w-6 md:h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
