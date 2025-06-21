@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: `http://localhost:${(window as any).SERVER_PORT || 3000}`,
+  apiUrl: `https://api.mystudioitsolutions.com`,
   firebaseConfig : {
     apiKey: "AIzaSyBH-L41Eu4UImmKAnBu-L3db30p_fwNfEs",
     authDomain: "surajproductions-3f28b.firebaseapp.com",
