@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
 import { AlertService } from '../../../services/alert.service';
+import { CommonService } from '../../../services/common.service';
 @Component({
   selector: 'app-new-bill',
   standalone: true,
@@ -25,53 +26,54 @@ export class NewBillComponent {
   itemType: string = 'product';
   tabs = [
     { id: 'pricing', name: 'Pricing' },
-    { id: 'stock', name: 'Stock' },
+    // { id: 'stock', name: 'Stock' },
   ];
 
   itemModal: boolean = false;
   invoiceConfig: any = { invoice_items: [] };
-  partyList: any = [];
   rows = Array(10).fill(0); // simulate 10 rows
   dropdownVisible = false;
   dropdownPosition = { top: 0, left: 0 };
   @ViewChild('inputRef') inputRef: any;
-  invoiceItemsList:any=[];
-  newItemConfig:any={};
-  isEdit:boolean=false;
-  isEditInvoice:boolean=false;
-  currentItemIdx:any= 0;
-  discount_type:any='percentage';
-  invoice_number:any=0;
-  
-  constructor(private fb: FormBuilder, private billingService: BillingService,private loader:LoaderService,private alert:AlertService,private activatedRoute:ActivatedRoute,private router:Router) {
-    // this.saleOrderForm = this.fb.group({
-    //   party: ['Aanchal Shrivastava (Cr. Limit: 100)', Validators.required],
-    //   billingAddress: [''],
-    //   phone: [{ value: '999xxxxxx87', disabled: true }],
-    //   orderNo: ['8'],
-    //   orderDate: ['01/09/2024'],
-    //   time: ['03:15 PM'],
-    //   dueDate: ['01/09/2024'],
-    //   items: this.fb.array([]),
-    //   paymentType: ['Cash'],
-    //   paymentDescription: [''],
-    //   discountValue: [0],
-    //   discountType: ['percentage'],
-    //   roundOff: [false],
-    //   advanceAmount: [0]
-    // });
-    this.activatedRoute.queryParams.subscribe(params => 
-      {
-        if(params['invoice_number']){
-          this.invoice_number = params['invoice_number'];
-          this.getInvoiceDetailByInvoiceNumber();
-        }
-      });
+  invoiceItemsList: any = [];
+  newItemConfig: any = {};
+  isEdit: boolean = false;
+  isEditInvoice: boolean = false;
+  currentItemIdx: any = 0;
+  discount_type: any = 'percentage';
+  invoice_number: any = 0;
+
+  partyList: any = [];
+  filteredParties: any = [];
+  selectedParty: string = '';
+  searchQuery: string = '';
+  dropdownOpen: boolean = false;
+  partyModal: boolean = false;
+  partyConfig:any={};
+
+  constructor(private fb: FormBuilder,
+    private billingService: BillingService,
+    private loader: LoaderService,
+    private alert: AlertService,
+    private activatedRoute: ActivatedRoute,
+    private eRef: ElementRef,
+    private commonService:CommonService,
+    private router: Router) {
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['invoice_number']) {
+        this.invoice_number = params['invoice_number'];
+        this.getInvoiceDetailByInvoiceNumber();
+      }
+    });
+    this.invoiceConfig.invoice_date = this.commonService.formatDate(this.todayDate);
+    this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
+    this.invoiceConfig.time = this.commonService.setCurrentTime();
+    
   }
 
   ngOnInit(): void {
-    this.addItem();
     this.fetchPartyList();
+    this.addItem();
     this.getAllInvoiceItems();
   }
 
@@ -95,6 +97,15 @@ export class NewBillComponent {
     this.billingService.getAllParty((res: any) => {
       if (res.status == 200) {
         this.partyList = res.data;
+        this.filteredParties = this.partyList;
+        console.log(323);
+        
+        this.partyList.forEach((e:any)=>{
+          if(e.id == this.invoiceConfig.party_id){
+             this.searchQuery = e.party_name;
+            this.selectedParty = e.party_name;
+          }
+        })
       }
     })
   }
@@ -103,6 +114,7 @@ export class NewBillComponent {
     this.billingService.getAllInvoiceItems((res: any) => {
       if (res.status == 200) {
         this.invoiceItemsList = res.data;
+        this
       }
     })
   }
@@ -112,7 +124,7 @@ export class NewBillComponent {
     this.calculateTotals();
   }
 
-  showDropdown(event: FocusEvent,idx:any) {
+  showDropdown(event: FocusEvent, idx: any) {
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
     this.dropdownPosition = {
@@ -120,158 +132,252 @@ export class NewBillComponent {
       left: rect.left + window.scrollX,
     };
     this.dropdownVisible = true;
-    this.currentItemIdx = idx;  
+    this.currentItemIdx = idx;
     event.stopPropagation();
   }
 
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: MouseEvent) {
-    const el:any = document.getElementById(`inputRef_${this.currentItemIdx}`)
+    const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
     const clickedInside = el?.contains(event.target);
     if (!clickedInside) {
       this.dropdownVisible = false;
     }
   }
 
-  toggleItemModal(){
+  toggleItemModal() {
     this.itemModal = true;
   }
 
-  closeModal(){
-    this.itemModal=false;
+  closeModal() {
+    this.itemModal = false;
     this.isEdit = false;
+    this.partyModal=false;
+    this.dropdownVisible = false;
   }
 
-  addInvoiceItem(){
+  addInvoiceItem() {
     this.loader.show();
-    this.billingService.addInvoiceItem(this.newItemConfig,(res:any)=>{
-      if(res.status == 200){
-        this.alert.success(res.message)
+    this.billingService.addInvoiceItem(this.newItemConfig, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
         this.getAllInvoiceItems();
         this.loader.hide();
         this.closeModal();
-      }else{
+        this.invoiceConfig.invoice_items[this.currentItemIdx] = this.newItemConfig;
+        this.invoiceConfig.invoice_items[this.currentItemIdx].quantity = 1;
+        this.invoiceConfig.invoice_items[this.currentItemIdx].id = res.id;
+        // this.newItemConfig = {};
+        this.calculateAmount(this.invoiceConfig.invoice_items[this.currentItemIdx]);
+      } else {
         this.alert.error(res.message)
       }
     })
-    
   }
 
-  getInvoiceItemById(id:any){
-    this.isEdit =true;
+  getInvoiceItemById(id: any) {
+    this.isEdit = true;
     this.loader.show();
-    this.billingService.getInvoiceItemById(id,(res:any)=>{
-      if(res.status == 200){
+    this.billingService.getInvoiceItemById(id, (res: any) => {
+      if (res.status == 200) {
         this.loader.hide();
         this.newItemConfig = res.data;
         this.toggleItemModal();
-      }else{
+      } else {
         this.loader.hide();
       }
     })
   }
 
-  updateInvoiceItem(){
+  updateInvoiceItem() {
+    console.log(312312);
+    
     this.loader.show();
-    this.billingService.updateInvoiceItem(this.newItemConfig.id,this.newItemConfig,(res:any)=>{
-      if(res.status == 200){
+    this.billingService.updateInvoiceItem(this.newItemConfig.id, this.newItemConfig, (res: any) => {
+      if (res.status == 200) {
         this.loader.hide();
         this.closeModal();
         this.getAllInvoiceItems();
-      }else{
+      } else {
         this.loader.hide();
       }
     })
   }
 
-  selectItem(invoiceItem:any){
+  selectItem(invoiceItem: any) {
     this.invoiceConfig.invoice_items[this.currentItemIdx] = invoiceItem;
     this.calculateAmount(invoiceItem);
+    this.dropdownVisible=false;
+    // this.closeModal();
     // this.addItem();
   }
 
-  calculateAmount(item:any){
-    if(item.quantity && item.purchase_price){
-      item.amount = item.quantity * item.purchase_price;
-    }else{
-      item.amount= 0;
+  calculateAmount(item: any) {
+    if (item.quantity && item.sale_price) {
+      item.amount = item.quantity * item.sale_price;
+    } else {
+      item.amount = 0;
     }
     this.calculateTotals();
   }
 
-  calculateTotals(){
+  calculateTotals() {
     this.totalAmount = 0;
     this.subTotal = 0;
-    this.invoiceConfig.invoice_items.forEach((item:any) => {
+    this.invoiceConfig.invoice_items.forEach((item: any) => {
       this.totalAmount = this.totalAmount + item.amount;
       this.subTotal = this.subTotal + item.amount;
     });
-    if(this.discount_type == 'percentage' && this.discountAmountVal){
+    if (this.discount_type == 'percentage' && this.discountAmountVal) {
       this.totalAmount = this.totalAmount - ((this.totalAmount * this.discountAmountVal) / 100);
     }
-    this.totalAmount = this.totalAmount - ( this.discountAmountVal || 0);  
-    if(this.advanceAmount){
+    this.totalAmount = this.totalAmount - (this.discountAmountVal || 0);
+    if (this.advanceAmount) {
       this.totalAmount = this.totalAmount - this.advanceAmount;
     }
   }
 
-  updateInvoice(){
-
-  }
-
-  generateInvoice(){
-    this.loader.show();
-    const params:any={
+  updateInvoice() {
+    const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
-      party_id : +this.invoiceConfig.party_id,
       balance_left: +this.totalAmount,
-      invoice_type:'sale',
-      invoice_items:JSON.stringify(this.invoiceConfig.invoice_items.map((item:any)=>item.id))
+      invoice_type: 'sale',
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({id:item.id,booking_date:item.booking_date,location:item.location})))
     }
 
-    this.billingService.generateInvoice(params,(res:any)=>{
-      if(res.status == 200){
+    console.log(this.invoiceConfig);
+    
+
+    this.billingService.updateInvoice(+this.invoiceConfig.party_id,params, (res: any) => {
+      if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
         this.router.navigate(['/billing']);
-      }else{
+      } else {
         this.loader.hide();
         this.alert.error(res.message);
       }
     })
-    
+
   }
 
-  setPhoneNumber(event:any){
-      const parsedValue = JSON.parse(event.target.value);
-      this.invoiceConfig.party_id = parsedValue.id;
-      this.invoiceConfig.phone_number = parsedValue.phone_number;
-      
-  }
-
-  getInvoiceDetailByInvoiceNumber(){
+  generateInvoice() {
     this.loader.show();
-    this.billingService.getInvoiceDetailByInvoiceNumber(this.invoice_number,(res:any)=>{
-      if(res.status == 200){
+    const params: any = {
+      ...this.invoiceConfig,
+      total: +this.subTotal,
+      party_id: +this.invoiceConfig.party_id,
+      balance_left: +this.totalAmount,
+      invoice_type: 'sale',
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({id:item.id,booking_date:item.booking_date,location:item.location})))
+    }
+
+    this.billingService.generateInvoice(params, (res: any) => {
+      if (res.status == 200) {
+        this.loader.hide();
+        this.alert.success(res.message);
+        this.router.navigate(['/billing']);
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
+
+  }
+
+  setPhoneNumber(event: any) {
+    const parsedValue = JSON.parse(event.target.value);
+    this.invoiceConfig.party_id = parsedValue.id;
+    this.invoiceConfig.phone_number = parsedValue.phone_number;
+
+  }
+
+  getInvoiceDetailByInvoiceNumber() {
+    this.loader.show();
+    this.billingService.getInvoiceDetailByInvoiceNumber(this.invoice_number, (res: any) => {
+      if (res.status == 200) {
         this.isEditInvoice = true;
         this.invoiceConfig = res.data;
         this.loader.hide();
-        this.invoiceConfig.invoice_items.forEach((item:any)=>{
+        this.invoiceConfig.invoice_items.forEach((item: any) => {
           this.calculateAmount(item);
         })
       }
     })
   }
 
-  printInvoice(){
+  printInvoice() {
 
   }
 
-  generateEinvoice(){
-    this.router.navigate(['billing/e-invoice'])
+  generateEinvoice() {
+    this.router.navigate(['billing/e-invoice',this.invoiceConfig.invoice_id],{ queryParams: { } });
   }
 
- 
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+    if (this.dropdownOpen) {
+      this.filterParty();
+    }
+  }
+
+  selectParty(item: any): void {
+    this.selectedParty = item.party_name;
+    this.searchQuery = item.party_name;
+    this.dropdownOpen = false;
+    this.invoiceConfig.party_id = item.id;
+    this.invoiceConfig.phone_number = item.phone_number;
+    
+    // this.getInvoiceDetailByInvoiceNumber();
+  }
+
+  filterParty(): void {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredParties = this.partyList.filter((item: any) =>
+      item.party_name
+        .toLowerCase().includes(query)
+    );
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  onClickOutside(target: any) {
+    if (!this.eRef.nativeElement.contains(target)) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  addNewPartyModal(){
+    this.partyModal=true;
+  }
+
+  saveParty() {
+    this.loader.show();
+    console.log(323);
+    
+    if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
+      this.loader.hide();
+      this.alert.error('Please fill all the fields');
+      return;
+    }
+    this.billingService.createParty(this.partyConfig, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.selectParty(this.partyConfig)
+        this.loader.hide();
+        this.closeModal();
+        this.fetchPartyList();
+      } else {
+        this.alert.error(res.message);
+        this.loader.hide();
+      }
+    })
+
+  }
+
+  assignCode(){
+    this.newItemConfig.item_code = this.commonService.generateNewUniqueCode();
+  }
+
 
 }

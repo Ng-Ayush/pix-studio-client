@@ -77,7 +77,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                         </svg>
                     </a>
-                    <span class="text-gray-700">{{invoiceConfig.party_id}}</span>
+                    <span class="text-gray-700">{{selectedParty}}</span>
                 </a>
                 <h1 class="text-xl font-semibold text-gray-800">Sale Order</h1>
                 <div class="flex items-center space-x-3">
@@ -105,13 +105,39 @@
                         <div>
                             <label for="party" class="block text-xs font-medium text-gray-700 mb-1">Party <span
                                     class="text-red-500">*</span></label>
-                            <select id="party" name="party" (change)="setPhoneNumber($event)"
+                            <div class="relative w-72">
+                                <input type="text"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Select Party" [(ngModel)]="searchQuery" (focus)="toggleDropdown()"
+                                    (input)="filterParty()" />
+
+                                <ul *ngIf="dropdownOpen"
+                                    class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                    <li (click)="addNewPartyModal()"
+                                        class="text-indigo-600 flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-blue-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                        Add party</li>
+                                    <li *ngFor="let item of filteredParties" (click)="selectParty(item)"
+                                        class="px-4 py-2 cursor-pointer hover:bg-blue-100">
+                                        {{ item.party_name }}
+                                    </li>
+                                    <li *ngIf="filteredParties.length === 0" class="px-4 py-2 text-gray-500">No results
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- <select id="party" name="party" (change)="setPhoneNumber($event)"
                                 class="w-64 p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="-1" selected>Select</option>
+                                <option>Add Party</option>
                                 <option *ngFor="let cus of partyList" [value]="cus|json"
                                     [selected]="cus.id == invoiceConfig.party_id">{{cus.party_name}}</option>
-                            </select>
-                            <textarea placeholder="Billing Address" rows="2" [(ngModel)]="invoiceConfig.description"
+                            </select> -->
+                            <textarea rows="2" [(ngModel)]="invoiceConfig.description"
                                 class="mt-2 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                         </div>
                         <div class="text-center">
@@ -123,14 +149,14 @@
                         <div class="space-y-2">
                             <div class="flex items-center">
                                 <label for="orderNo" class="w-1/3 text-xs font-medium text-gray-700">Order No.</label>
-                                <input type="text" id="orderNo" name="orderNo" value="8"
+                                <input [readOnly]="isEditInvoice" type="text" id="orderNo" name="orderNo" value="8"
                                     [(ngModel)]="invoiceConfig.invoice_number"
                                     class="flex-1 p-2 border border-gray-300 rounded-md">
                             </div>
                             <div class="flex items-center">
                                 <label for="orderDate" class="w-1/3 text-xs font-medium text-gray-700">Order
                                     Date</label>
-                                <input type="date" id="orderDate" name="orderDate" value="01/09/2024"
+                                <input type="date" [readOnly]="isEditInvoice" id="orderDate" name="orderDate"
                                     [(ngModel)]="invoiceConfig.invoice_date"
                                     class="flex-1 p-2 border border-gray-300 rounded-md">
                                 <button class="p-2 text-gray-500 hover:text-gray-700 ml-1">
@@ -154,7 +180,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="flex items-center">
+                            <!-- <div class="flex items-center">
                                 <label for="dueDate" class="w-1/3 text-xs font-medium text-gray-700">Due Date</label>
                                 <input type="date" id="dueDate" name="dueDate" value="01/09/2024"
                                     [(ngModel)]="invoiceConfig.due_date"
@@ -166,7 +192,7 @@
                                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                                     </svg>
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </section>
@@ -233,8 +259,8 @@
                                                                 Add Item
                                                             </th>
                                                             <th class="px-4 py-2 text-start">Sale Price</th>
-                                                            <th class="px-4 py-2 text-start">Purchase Price</th>
-                                                            <th class="px-4 py-2 text-start">Stock</th>
+                                                            <!-- <th class="px-4 py-2 text-start">Purchase Price</th> -->
+                                                            <!-- <th class="px-4 py-2 text-start">Stock</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody class="divide-y divide-slate-200 bg-white text-slate-800">
@@ -243,8 +269,8 @@
                                                             class="hover:bg-slate-100 cursor-pointer odd:bg-white even:bg-slate-50">
                                                             <td class="px-4 py-2">{{opt.item_name}}</td>
                                                             <td class="px-4 py-2">{{opt.sale_price}}</td>
-                                                            <td class="px-4 py-2">{{opt.purchase_price}}</td>
-                                                            <td class="px-4 py-2">{{opt.item_stock}}</td>
+                                                            <!-- <td class="px-4 py-2">{{opt.purchase_price}}</td> -->
+                                                            <!-- <td class="px-4 py-2">{{opt.item_stock}}</td> -->
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -269,7 +295,7 @@
                                             class="w-full p-1 border border-gray-300 rounded-md text-right">
                                     </td>
                                     <td class="px-3 py-2">
-                                        <input type="number" [(ngModel)]="item.purchase_price"
+                                        <input type="number" [(ngModel)]="item.sale_price"
                                             (change)="calculateAmount(item)"
                                             class="w-full p-1 border border-gray-300 rounded-md text-right">
                                     </td>
@@ -332,11 +358,11 @@
                                         class="px-3 py-1 text-sm font-medium rounded-full focus:outline-none transition-colors duration-150 ease-in-out">
                                         Product
                                     </button>
-                                    <button (click)="itemType = 'service'"
+                                    <!-- <button (click)="itemType = 'service'"
                                         [ngClass]="{'bg-white text-indigo-600 shadow': itemType === 'service', 'text-gray-600 hover:text-gray-800': itemType !== 'service'}"
                                         class="px-3 py-1 text-sm font-medium rounded-full focus:outline-none transition-colors duration-150 ease-in-out">
                                         Service
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                             <div class="flex items-center space-x-3 self-start sm:self-center">
@@ -364,7 +390,7 @@
                                 <input type="text" id="itemName" name="itemName" [(ngModel)]="newItemConfig.item_name"
                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
-                            <div>
+                            <!-- <div>
                                 <label for="category"
                                     class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                 <select id="category" name="category" [(ngModel)]="newItemConfig.item_category"
@@ -373,7 +399,7 @@
                                     <option>Electronics</option>
                                     <option>Clothing</option>
                                 </select>
-                            </div>
+                            </div> -->
                             <!-- <div>
                                 <button type="button"
                                     class="w-full p-2 border border-indigo-600 text-indigo-600 bg-indigo-50 rounded-md shadow-sm hover:bg-indigo-100 font-medium">
@@ -394,7 +420,7 @@
                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <div>
-                                <button type="button"
+                                <button type="button" (click)="assignCode()"
                                     class="cursor-pointer w-full p-2 border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-50 font-medium">
                                     Assign Code
                                 </button>
@@ -457,8 +483,8 @@
                                         </button> -->
                                     </section>
 
-                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                        <section class="lg:col-span-2 p-6 border border-gray-200 rounded-lg">
+                                    <!-- <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> -->
+                                        <!-- <section class="lg:col-span-2 p-6 border border-gray-200 rounded-lg">
                                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Purchase Price</h3>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 items-end">
                                                 <div>
@@ -477,9 +503,9 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </section>
+                                        </section> -->
 
-                                        <section class="p-6 border border-gray-200 rounded-lg">
+                                        <!-- <section class="p-6 border border-gray-200 rounded-lg">
                                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Taxes</h3>
                                             <div>
                                                 <label for="taxRate"
@@ -493,12 +519,12 @@
                                                     <option>GST 18%</option>
                                                 </select>
                                             </div>
-                                        </section>
-                                    </div>
+                                        </section> -->
+                                    <!-- </div> -->
                                 </div>
                             </div>
 
-                            <div *ngSwitchCase="'stock'">
+                            <!-- <div *ngSwitchCase="'stock'">
                                 <div class="space-y-8">
                                     <section class="p-6 border border-gray-200 rounded-lg">
                                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Stock</h3>
@@ -514,11 +540,11 @@
                                         </div>
                                     </section>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <footer class="flex justify-end space-x-3 pt-6 mt-8 border-t border-gray-200">
-                            <button type="submit" (click)="isEdit ? updateInvoiceItem() : addInvoiceItem()"
+                            <button type="button" (click)="isEdit ? updateInvoiceItem() : addInvoiceItem()"
                                 class="cursor-pointer px-8 py-2.5 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 {{isEdit ? 'Update' : 'Save'}}
                             </button>
@@ -541,11 +567,11 @@
                         </div>
                         <button type="button"
                             class="text-indigo-600 hover:text-indigo-800 text-xs font-medium flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="w-3 h-3 mr-1">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
-                            Add Payment type
+                            Add Payment type -->
                         </button>
                         <div>
                             <label for="description" class="block text-xs font-medium text-gray-700 mb-1">Add
@@ -556,12 +582,12 @@
                         </div>
                         <button type="button"
                             class="text-indigo-600 hover:text-indigo-800 text-xs font-medium flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-3 h-3 mr-1">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.693 7.693a2.25 2.25 0 0 0 3.182 3.182l7.693-7.693a2.25 2.25 0 0 0-3.182-3.182Z" />
                             </svg>
-                            ADD IMAGE
+                            ADD IMAGE -->
                         </button>
                     </div>
 
@@ -607,7 +633,7 @@
                 <div class="flex justify-end space-x-3 pt-6 mt-8 bg-transparent">
                     <button type="submit" (click)="generateEinvoice()"
                         class="cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-indigo-700 hover:text-white transition duration-200">
-                        Generate e-invoice
+                        Generate Estimate
                     </button>
                     <button type="submit" (click)="isEditInvoice ? updateInvoice() : generateInvoice()"
                         class="cursor-pointer px-8 py-2.5 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700">
@@ -617,4 +643,113 @@
             </main>
         </div>
     </main>
+</div>
+
+<div #modalContent
+    class=" fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-outbg-gray-100 p-4 sm:p-8 flex justify-center items-start min-h-screen"
+    *ngIf="partyModal">
+    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-5xl" [ngClass]="{'modal-fade-in': partyModal}">
+        <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
+            <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Party</h1>
+            <div class="flex items-center space-x-3">
+                <button aria-label="Settings" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9.594 3.94c.09-.542.56-1.007 1.057-1.228a48.249 48.249 0 0 1 3.413 0c.497.221.967.686 1.057 1.228m0 0c0 .878-.587 1.683-1.408 2.008M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm0 0a8.949 8.949 0 0 0 5.472-1.936C15.879 17.043 13.966 16.5 12 16.5c-1.966 0-3.879.543-5.472 1.564A8.949 8.949 0 0 0 12 21Zm0 0a9.003 9.003 0 0 0 4.372-1.126C15.001 18.79 13.27 18 12 18c-1.27 0-3.001.79-4.372 1.874A9.003 9.003 0 0 0 12 21Z" />
+                    </svg>
+                </button>
+                <button (click)="closeModal()" aria-label="Close"
+                    class="cursor-pointer text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 mb-6">
+            <div>
+                <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Party
+                    Name <span class="text-red-500">*</span></label>
+                <input type="text" [(ngModel)]="partyConfig.party_name" id="partyName" name="partyName"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone
+                    Number</label>
+                <input type="tel" [(ngModel)]="partyConfig.phone_number" id="phoneNumber" name="phoneNumber"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <label for="emailId" class="block text-sm font-medium text-gray-700 mb-1">Email
+                    ID</label>
+                <input type="email" [(ngModel)]="partyConfig.email" id="emailId" name="emailId"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <!-- <div>
+                                    <label for="partyGroup" class="block text-sm font-medium text-gray-700 mb-1">Party
+                                        Group</label>
+                                    <select id="partyGroup" [(ngModel)]="partyConfig.party_group" name="partyGroup"
+                                        class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
+                                        <option>General</option>
+                                        <option>Wholesale</option>
+                                        <option>Retail</option>
+                                    </select>
+                                    <button type="button" 
+                                        class="mt-1.5 text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="w-4 h-4 mr-1">
+                                            <path
+                                                d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                        </svg>
+                                        New Group
+                                    </button>
+                                </div> -->
+        </div>
+
+        <nav class="flex space-x-4 sm:space-x-8 border-b border-gray-200 mb-6">
+            <button class="border-indigo-600 text-indigo-600 py-2 px-1 text-sm font-medium whitespace-nowrap border-b-2 focus:outline-none">
+                Address
+            </button>
+        </nav>
+
+            <div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div class="md:row-span-2"> <label for="billingAddress"
+                            class="block text-sm font-medium text-gray-700 mb-1">Billing
+                            Address</label>
+                        <textarea id="billingAddress" [(ngModel)]="partyConfig.billing_address" name="billingAddress"
+                            rows="4"
+                            class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                    <!-- <div class="md:col-start-1"> <button type="button"
+                                                class="mt-2 text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                    fill="currentColor" class="w-4 h-4 mr-1">
+                                                    <path
+                                                        d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                                                </svg>
+                                                Enable Shipping Address
+                                            </button>
+                                        </div> -->
+                </div>
+            </div>
+
+            <!-- <div *ngSwitchCase="'creditBalance'">
+                                    <p class="text-gray-600">Credit & Balance content goes here.</p>
+                                </div>
+
+                                <div *ngSwitchCase="'additionalFields'">
+                                    <p class="text-gray-600">Additional Fields content goes here.</p>
+                                </div> -->
+
+        <footer class="flex justify-end space-x-3 pt-6 mt-8 border-t border-gray-200">
+            <button type="submit" (click)="saveParty()"
+                class="cursor-pointer px-6 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Save
+            </button>
+        </footer>
+    </div>
 </div>

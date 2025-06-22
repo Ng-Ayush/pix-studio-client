@@ -20,7 +20,7 @@ export class AlertService {
    
 
    warning(message:any){
-    this.toastr.success(message,"Warning",{
+    this.toastr.warning(message,"Warning",{
       timeOut: 3000,
       progressAnimation:'decreasing',
       progressBar:true
@@ -28,7 +28,7 @@ export class AlertService {
    }
 
    error(message:any){
-    this.toastr.success(message,"Error",{
+    this.toastr.error(message,"Error",{
       timeOut: 3000,
       progressAnimation:'decreasing',
       progressBar:true
@@ -36,7 +36,7 @@ export class AlertService {
    }
 
    info(message:any){
-    this.toastr.success(message,"Info",{
+    this.toastr.info(message,"Info",{
       timeOut: 3000,
       progressAnimation:'decreasing',
       progressBar:true

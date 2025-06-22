@@ -61,7 +61,6 @@ export class CustomerService extends BaseService {
 
   searchCustomer(params: any) {
     const headers: any = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    console.log(this.token);
     return this.http.get(environment.apiUrl + this.httpUrls['searchCustomer'] + "/" + params, { headers: headers });
   }
 

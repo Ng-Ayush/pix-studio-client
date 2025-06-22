@@ -19,8 +19,8 @@ export class BillingComponent {
   activeTab: string = 'address';
   tabs = [
     { id: 'address', name: 'Address', isNew: false },
-    { id: 'creditBalance', name: 'Credit & Balance', isNew: true },
-    { id: 'additionalFields', name: 'Additional Fields', isNew: false },
+    // { id: 'creditBalance', name: 'Credit & Balance', isNew: true },
+    // { id: 'additionalFields', name: 'Additional Fields', isNew: false },
   ];
 
   partyConfig: any = { shipping_address: '' };
@@ -67,7 +67,12 @@ export class BillingComponent {
   }
 
   saveParty() {
-    this.loader.show()
+    this.loader.show();
+    if(!this.partyConfig.name || !this.partyConfig.phone || !this.partyConfig.billing_address || !this.partyConfig.email){
+      this.loader.hide();
+      this.alert.error('Please fill all the fields');
+      return;
+    }
     this.billingService.createParty(this.partyConfig, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
@@ -83,13 +88,25 @@ export class BillingComponent {
   }
 
   saveAndNewParty() {
+    this.loader.show();
+     if(!this.partyConfig.name || !this.partyConfig.phone || !this.partyConfig.billing_address || !this.partyConfig.email){
+      this.loader.hide();
+      this.alert.error('Please fill all the fields');
+      return;
+    }
     this.billingService.createParty(this.partyConfig, (res: any) => {
       if (res.status == 200) {
         console.log(res);
+        this.alert.success(res.message);
+        this.loader.hide();
         this.partyConfig = {};
+      }else{
+        this.alert.error(res.message);
+        this.loader.hide();
       }
     })
   }
+
 
   editParty(party:any){
     this.partyModal = true;
@@ -153,7 +170,7 @@ export class BillingComponent {
     this.totalSales = 0;
     this.totalRemaining =0;
     this.partyList.forEach((item:any)=>{
-        this.totalSales = this.totalSales + +item.total;
+        this.totalSales = this.totalSales + +item.total;  
         this.totalRemaining = this.totalRemaining + +item.balance_left;
     })
   }

@@ -67,5 +67,449 @@
                 <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
             </div>
         </div>
+
+        <div class="flex h-screen bg-gray-100 font-sans">
+            <!-- Left Sidebar for Template Selection -->
+            <aside class="w-64 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Select Theme</h2>
+
+                <div class="space-y-4">
+                    <button *ngFor="let template of templates" (click)="selectTemplate(template.id)" [ngClass]="{
+              'bg-blue-600 text-white shadow-lg': selectedTemplateId === template.id,
+              'bg-gray-100 text-gray-700 hover:bg-gray-200': selectedTemplateId !== template.id}"
+                        class="cursor-pointer w-full text-left py-3 px-4 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        {{ template.name }}
+                    </button>
+                </div>
+
+                <h3 class="text-lg font-medium mt-8 mb-4 text-gray-800">Select Color</h3>
+                <div class="grid grid-cols-5 gap-2">
+                    <div *ngFor="let color of colors" (click)="selectColor(color)"
+                        [ngClass]="{ 'ring-2 ring-offset-2 ring-blue-500': selectedColor === color }"
+                        [style.backgroundColor]="color"
+                        class="w-8 h-8 rounded-full cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-110">
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 flex flex-col p-6 overflow-hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Preview</h1>
+                    <div class="flex items-center space-x-3">
+                        <!-- <input type="checkbox" id="show-invoice-preview"
+                            class="form-checkbox h-5 w-5 text-blue-600 rounded" />
+                        <label for="show-invoice-preview" class="text-gray-700">Do not show invoice preview</label> -->
+                        <button class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer">Convert to Sales</button>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex overflow-hidden space-x-6">
+                    <!-- Template Display Area (ngSwitch) -->
+                    <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
+                        <div [ngSwitch]="selectedTemplateId" class="w-vw h-vh" id="print-section">
+                            <!-- Template 1: Invoice Template -->
+                            <div *ngSwitchCase="'template1'">
+                                <div class="overflow-y-auto border-2">
+                                    <section class="container-fluid container-lg invoice-template-root">
+                                        <div class="row justify-content-center overflow-hidden my-5">
+                                            <div class="col-lg-8 col-md-10 col-sm-12 col-12">
+                                                <div class="bg-body-tertiary py-4 py-md-5 px-lg-5 px-4">
+                                                    <!-- Invoice header  -->
+                                                    <div
+                                                        class="d-block d-md-flex justify-content-between align-items-center">
+                                                        <div class="d-block d-md-flex align-items-center gap-md-4">
+                                                            <img src="https://placehold.co/80x80/000000/FFFFFF?text=Logo"
+                                                                alt=""
+                                                                class="img-fluid col-lg-2 col-md-2 col-sm-2 col-2 rounded-circle">
+                                                            <div>
+                                                                <p
+                                                                    class="lead fw-bold text-uppercase mb-0 pb-0 fs-4 my-2 my-md-0 lh-base">
+                                                                    {{mockBill.staffDetails}}</p>
+                                                                <p class="mb-0 fw-medium text-muted"># 7th cross . 24 th
+                                                                    man , koramangala<br>Phone no : 9876543210<br>Email
+                                                                    : Gstorell gmail.com<br>State : 29 Karnataka</p>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <h1
+                                                                class="display-6 fw-bolder text-dark-emphasis text-uppercase mb-0 my-4 my-md-0">
+                                                                Estimate
+                                                            </h1>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Invoice header  -->
+
+                                                    <!-- invoice body -->
+                                                    <div
+                                                        class="invoice-details d-flex justify-content-between align-items-start my-5 py-md-4 mb-4">
+                                                        <div>
+                                                            <p class="fw-bold text-uppercase mb-1"
+                                                                style="letter-spacing: 1px;">Estimate For :</p>
+                                                            <p class="client-name fw-normal mb-0">
+                                                                {{mockBill.customer.name}}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p class="fw-normal mb-0">Estimate No. :
+                                                                <span
+                                                                    class="invoice-number ">{{mockBill.invoiceNumber}}</span>
+                                                            </p>
+                                                            <p class="fw-normal mb-0">Date :
+                                                                <span
+                                                                    class="invoice-date ">{{mockBill.invoiceDate}}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="item-desc">
+                                                        <div class="details-table">
+                                                            <table
+                                                                class="table table-responsive bg-transparent table-borderless">
+                                                                <thead>
+                                                                    <tr class="text-uppercase fs-6 table-head">
+                                                                        <th class="rounded-start-pill">Item name</th>
+                                                                        <th>HSN / SAC</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Price / Unit</th>
+                                                                        <th>Discount</th>
+                                                                        <th>GST Amount</th>
+                                                                        <th class="rounded-end-pill">Total</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="first-row"
+                                                                        *ngFor="let item of mockBill.billItems">
+                                                                        <td>{{item.item}}</td>
+                                                                        <td>1234</td> <!-- HSN/SAC mock -->
+                                                                        <td>{{item.qty}}</td>
+                                                                        <td>{{item.price}}</td>
+                                                                        <td>3.06 (5%)</td> <!-- Discount mock -->
+                                                                        <td>7.50</td> <!-- GST Amount mock -->
+                                                                        <td>{{item.totalPrice}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row justify-content-center align-items-start g-5 mt-5">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                            <h6 class="fw-bold">ESTIMATE AMOUNT IN WORDS</h6>
+                                                            <p class="small">{{mockBill.priceInWords}}</p>
+                                                            <h6 class="fw-bold">TERMS AND CONDITIONS:</h6>
+                                                            <!-- <textarea class="small">Make payment within 45 days from the date
+                                                                of final invoice. Thanks for doing business with us!</textarea> -->
+                                                        </div>
+                                                        <div class="sub-total col-lg-6 col-md-6 col-sm-12 col-12">
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">Sub Total</h6>
+                                                                <p class="price fw-light">201.00</p>
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">Discount</h6>
+                                                                <p class="price fw-light">3.06</p>
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">SGST 2.5%</h6>
+                                                                <p class="price fw-light">3.75</p>
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">CGST 2.5%</h6>
+                                                                <p class="price fw-light">3.75</p>
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">Round off</h6>
+                                                                <p class="price fw-light">0.44</p>
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center text-uppercase">
+                                                                <h6 class="text-black fw-bold mb-1">Total</h6>
+                                                                <p class="price fw-light">{{mockBill.totalPrice}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- invoice body -->
+                                                </div>
+
+                                                <!-- Invoice footer  -->
+                                                <div class="invoice-footer p-4 p-lg-5">
+                                                    <div
+                                                        class="row justify-content-center align-items-center rounded-pill bg-dark p-2 text-white">
+                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
+                                                            <i class="bi bi-globe-americas pe-2"></i>
+                                                            <a href="#"
+                                                                class="link-light text-decoration-none">www.xyz.com</a>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
+                                                            <i class="bi bi-telephone-fill pe-2"></i>
+                                                            <span>123-456-7890</span>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
+                                                            <i class="bi bi-envelope-fill pe-2"></i>
+                                                            <span>kS6Hj example.com</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Invoice footer  -->
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                            <!-- Template 2 Placeholder -->
+                            <div *ngSwitchCase="'template2'"
+                                class="flex items-center justify-center border-2 text-xl font-medium">
+                                <div class="w-[800px] mx-auto p-4 font-sans text-sm">
+                                    <!-- Header -->
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="text-base font-bold text-black"></div>
+                                        <div class="text-right">
+                                            <h1 class="text-2xl font-semibold">Suraj Color Lab</h1>
+                                            <p>Main Road, Indira Nagar, Raebareli</p>
+                                            <p>Phone no: xxxxxxxxxxxx</p>
+                                            <!-- <p>Invoice No: {{ mockBill.invoiceNumber }}</p> -->
+                                            <!-- <p>Invoice Date: {{ mockBill.invoiceDate }}</p> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="w-full border-y-[2px] mb-2"
+                                        [ngStyle]="{'border-color':getTemplateClass('')}">
+                                        <h3 class="py-3 text-lg font-bold text-center"
+                                            [ngStyle]="{'color':getTemplateClass('')}">Sale Order</h3>
+                                    </div>
+
+                                    <!-- Customer Details -->
+                                    <!-- <div class="mb-4 space-y-1">
+                                        <p class="font-semibold">Order From</p>
+                                        <p class="font-bold text-sm">{{ mockBill.customer.name }}</p>
+                                        <p class="pt-2">Phone: {{ mockBill.customer.phone }}</p>
+                                        <p>Email: {{ mockBill.customer.email }}</p>
+                                        <p>Address: {{ mockBill.customer.address }}</p>
+                                    </div> -->
+
+                                    <div class="detail flex justify-between my-3">
+                                        <div class="order-from">
+                                            <p class="font-bold">Order From</p>
+                                            <p class="font-bold text-sm">{{ mockBill.customer.name }}</p>
+                                            <p class="pt-2">Contact No: {{ mockBill.customer.phone }}</p>
+                                        </div>
+                                        <div class="order-detail flex flex-col items-end">
+                                            <p class="font-bold">Order From</p>
+                                            <p>Order No: {{ mockBill.invoiceNumber ||'12134'}}</p>
+                                            <p>Date: {{ mockBill.invoice_date ||'12134'}}</p>
+                                            <p>Time: {{ mockBill.time ||'12134'}}</p>
+                                            <p>Due Date: {{ mockBill.due_date ||'12134'}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Table -->
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse mb-4 text-sm">
+                                            <thead>
+                                                <tr class="text-white text-center"
+                                                    [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
+                                                    <th>#</th>
+                                                    <th colspan="5" class="py-2 px-2">Item Name</th>
+                                                    <!-- <th></th> -->
+                                                    <!-- <th class="py-2 px-2">Booking Date</th> -->
+                                                    <!-- <th class="py-2 px-2">Location</th> -->
+                                                    <th class="py-2 px-2">Qty</th>
+                                                    <th class="py-2 px-2">Price</th>
+                                                    <th class="py-2 px-2">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of mockBill.billItems;let idx=index;"
+                                                    class="text-center border-b">
+                                                    <td>{{idx+1}}</td>
+                                                    <td colspan="5" class="py-2 px-2 font-medium">{{ item.item }}
+                                                    </td>
+                                                    <!-- <td class="py-2 px-2">{{ item.bookingDate }}</td> -->
+                                                    <!-- <td class="py-2 px-2">{{ item.location }}</td> -->
+                                                    <td class="py-2 px-2">{{ item.qty }}</td>
+                                                    <td class="py-2 px-2">{{ item.price }}</td>
+                                                    <td class="py-2 px-2">{{ item.totalPrice }}</td>
+                                                </tr>
+
+                                                <tr class="">
+                                                    <td></td>
+                                                    <td colspan="5" class="text-center py-2 px-2 text-lg">Total Paid
+                                                    </td>
+                                                    <td class="text-center py-2 px-2 text-lg">{{ 12 }}</td>
+                                                    <td></td>
+                                                    <td class="text-center py-2 px-2 font-extrabold text-lg">{{ 2000 }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Terms and Payment Info -->
+                                    <div class="flex justify-between mt-4 text-xs gap-3">
+                                        <div class="flex flex-col">
+                                            <div class="space-y-1">
+                                                <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                                                    <div class="text-white p-2 text-medium font-semibold"
+                                                        [ngStyle]="{'background-color':getTemplateClass('')}">
+                                                        Order Amount in Words
+                                                    </div>
+                                                    <div class="p-4 space-y-2">
+                                                        <p>{{mockBill.priceInWords}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                                                    <div class="text-white p-2 text-medium font-semibold"
+                                                        [ngStyle]="{'background-color':getTemplateClass('')}">
+                                                        TERMS AND CONDITIONS
+                                                    </div>
+                                                    <div class="p-2 space-y-2">
+                                                      <textarea #autoTextarea class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="2" cols="50" [(ngModel)]="mockBill.tnc" [innerHTML]="mockBill.tnc"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="w-1/2 space-y-1">
+                                            <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                                                <div class="text-white p-2 text-medium font-semibold"
+                                                    [ngStyle]="{'background-color':getTemplateClass('')}">
+                                                    Amount
+                                                </div>
+                                                <div class="p-4 space-y-2">
+                                                    <div class="flex justify-between">
+                                                        <span>Sub Total</span>
+                                                        <span>$15000000.00</span>
+                                                    </div>
+                                                    <div class="flex justify-between font-bold">
+                                                        <span>Total</span>
+                                                        <span>$180.00</span>
+                                                    </div>
+                                                    <div class="flex justify-between">
+                                                        <span>Advance</span>
+                                                        <span>$50.00</span>
+                                                    </div>
+                                                    <hr class="my-2 border-gray-300">
+                                                    <div class="flex justify-between font-bold text-lg">
+                                                        <span>Balance</span>
+                                                        <span>$130.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer Image -->
+                                    <!-- <div class="mt-4">
+                                        <img src="assets/images/header.png" class="w-full" alt="Footer Image" />
+                                    </div> -->
+                                </div>
+
+
+                            </div>
+
+                            <!-- Template 3 Placeholder -->
+                            <div *ngSwitchCase="'template3'"
+                                class="flex items-center justify-center h-full bg-green-50 rounded-lg border-2 border-dashed border-green-200 text-green-500 text-xl font-medium">
+                                Template 3 Content (Coming Soon!)
+                            </div>
+
+                            <!-- Default Case -->
+                            <div *ngSwitchDefault
+                                class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 text-gray-500 text-xl font-medium">
+                                Please select a template from the left sidebar.
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Right Sidebar for Actions -->
+                    <aside
+                        class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center space-y-6">
+                        <div class="flex flex-col items-center space-y-3">
+                            <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-full shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <button
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                                Collect Payment
+                            </button> -->
+                        </div>
+
+                        <div class="w-full border-t border-gray-200 pt-6">
+                            <h3 class="text-lg font-medium mb-4 text-gray-800">Share Invoice</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button
+                                    class="cursor-pointer flex flex-col items-center justify-center p-4 bg-green-100 rounded-lg hover:bg-green-200 transition duration-200">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3128/3128322.png" alt="WhatsApp"
+                                        class="mb-2" />
+                                    <span class="text-sm font-medium text-gray-700">WHATSAPP</span>
+                                </button>
+                                <button
+                                    class="cursor-pointer flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/733/733533.png" alt="SMS"
+                                        class="mb-2" />
+                                    <span class="text-sm font-medium text-gray-700">SMS</span>
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <div class="w-full border-t border-gray-200 pt-6 space-y-4 flex justify-between mb-5">
+                            <div class="flex flex-col items-center">
+                                <button (click)="downloadPDF()"
+                                    class="bg-red-600 hover:bg-red-700 text-white p-3 cursor-pointer rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-printer">
+                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                        <path
+                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                        </path>
+                                        <rect width="12" height="8" x="6" y="14"></rect>
+                                    </svg>
+                                </button>
+                                <span
+                                    class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Download
+                                    PDF</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <button (click)="printSection()"
+                                    class=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-printer">
+                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                        <path
+                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                        </path>
+                                        <rect width="12" height="8" x="6" y="14"></rect>
+                                    </svg>
+                                </button>
+                                <span
+                                    class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Print
+                                    Invoice</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="flex flex-col items-center" (click)="saveAndClose()">
+                                <span class="cursor-pointer text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Save & Close</span>
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            </main>
+        </div>
     </main>
 </div>

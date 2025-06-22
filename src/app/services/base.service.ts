@@ -51,6 +51,7 @@ export class BaseService {
     'updateParty':'/api/mystudio/billing-customer/updateParty',
     'deleteParty':'/api/mystudio/billing-customer/deleteParty',
     'getInvoiceByPartyId':'/api/mystudio/billing-customer/getInvoiceByPartyId',
+    'getInvoiceById':'/api/mystudio/invoices/getInvoiceById',
 
     'addInvoiceItem':'/api/mystudio/invoice-items/addInvoiceItem',
     'getAllInvoiceItems':'/api/mystudio/invoice-items/getAllInvoiceItems',
@@ -58,8 +59,13 @@ export class BaseService {
     'updateInvoiceItem':'/api/mystudio/invoice-items/updateInvoiceItem',
 
     'generateInvoice':'/api/mystudio/invoices/generateInvoice',
+    'updateInvoice':'/api/mystudio/invoices/updateInvoice',
     'getInvoiceDetailByInvoiceNumber':'/api/mystudio/invoices/getInvoiceDetailByInvoiceNumber',
-
+    
+    //estimate
+    'createEstimate':'/api/mystudio/estimates/createEstimate',
+    'getEstimateList':'/api/mystudio/estimates/getEstimateList',
+    'convertToSales':'/api/mystudio/estimates/convertToSales',
   }
 
   token:any='';
@@ -71,8 +77,6 @@ export class BaseService {
 
   getData(d: any, url: any, callback: any) {
     const headers:any = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    console.log(this.token);
-    
     return this.http.get(environment.apiUrl + url, {headers:headers}).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
   }
 
