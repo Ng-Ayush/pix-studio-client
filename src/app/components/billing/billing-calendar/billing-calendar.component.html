@@ -67,5 +67,67 @@
                 <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
             </div>
         </div>
+        <div class="flex flex-col md:flex-row gap-8 p-8 bg-gray-100 min-h-screen">
+            <div class="md:w-1/2">
+                <div class="calendar-container bg-white p-4 rounded-lg shadow-md max-w-lg mx-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <button (click)="prevMonth()"
+                            class="cursor-pointer px-3 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200">Prev</button>
+                        <h2 class="text-xl font-semibold text-gray-800 capitalize"
+                            style="font-family: 'Dancing Script', cursive;">
+                            {{ currentMonth | date:'MMMM' }}
+                            <span class="text-sm font-normal">{{ currentMonth | date:'yyyy' }}</span>
+                        </h2>
+                        <button (click)="nextMonth()"
+                            class="cursor-pointer px-3 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200">Next</button>
+                    </div>
+
+                    <div class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-600">
+                        <div *ngFor="let weekday of weekdays" class="py-2">{{ weekday }}</div>
+                    </div>
+
+                    <div class="grid grid-cols-7 gap-1 text-center">
+                        <ng-container *ngFor="let day of days; let i = index">
+                            <div *ngIf="day"
+                                class="relative p-2 rounded-full cursor-pointer transition-colors duration-200"
+                                [class.bg-blue-500]="isSelected(day)" [class.text-white]="isSelected(day)"
+                                [class.bg-blue-100]="isToday(day) && !isSelected(day)"
+                                [class.text-gray-900]="!isSelected(day)" [class.hover:bg-gray-200]="!isSelected(day)"
+                                (click)="onDayClick(day)">
+                                {{ day.getDate() }}
+                                <div *ngIf="hasBooking(day)"
+                                    class="absolute bottom-1 right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                            </div>
+                            <div *ngIf="!day" class="p-2"></div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="booking-list-container bg-white p-4 rounded-lg shadow-md max-w-lg mx-auto">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">{{ selectedDate|date}}</h3>
+
+                    <div *ngIf="allBookings.length === 0" class="text-gray-600 text-center py-4">
+                        No bookings for this date.
+                    </div>
+
+                    <div *ngFor="let booking of allBookings"
+                        class="flex items-center p-3 mb-3 bg-gray-50 rounded-lg shadow-sm">
+                        <div class="flex-shrink-0 mr-4">
+                            <img src="assets/user-icon.png" alt="User Icon"
+                                class="w-10 h-10 rounded-full bg-gray-200 p-2">
+                        </div>
+                        <div class="flex-grow">
+                            <p class="font-medium text-gray-900">{{ booking.name }}</p>
+                            <p class="text-sm text-gray-600">{{ booking.address }}</p>
+                        </div>
+                        <div class="text-right text-sm">
+                            <p class="text-gray-700">Rs. XXXXXX</p>
+                            <p class="text-gray-500">{{ booking.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </div>

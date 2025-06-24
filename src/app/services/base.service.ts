@@ -64,6 +64,7 @@ export class BaseService {
     
     //estimate
     'createEstimate':'/api/mystudio/estimates/createEstimate',
+    'updateEstimate':'/api/mystudio/estimates/updateEstimate',
     'getEstimateList':'/api/mystudio/estimates/getEstimateList',
     'convertToSales':'/api/mystudio/estimates/convertToSales',
   }

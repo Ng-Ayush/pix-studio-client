@@ -379,5 +379,4 @@ export class NewBillComponent {
     this.newItemConfig.item_code = this.commonService.generateNewUniqueCode();
   }
 
-
 }

@@ -44,6 +44,6 @@ export class BillEstimateComponent {
   }
 
   viewEstimate(estimateId: number) {
-
+    this.router.navigate(['/billing/e-invoice',estimateId]);
   }
 } 

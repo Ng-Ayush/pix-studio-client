@@ -105,7 +105,7 @@
                                     View Estimate
                                 </button>
                             </td>   <td class="px-4 py-2">
-                                <button class="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                                <button class=" disabled:bg-gray-400 cursor-pointer bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
                                     (click)="convertToSales(estimate.invoice_id)"
                                     [disabled]="estimate.status === 'converted'">
                                     Convert to Sales

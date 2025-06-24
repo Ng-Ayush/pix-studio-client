@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../services/alert.service';
 import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
+import { AppConstants } from '../../../constants/app.constants';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
-  imports: [CommonModule, RouterModule,FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './pdf-bill-selection.component.html',
   styleUrl: './pdf-bill-selection.component.scss'
 })
@@ -34,44 +35,29 @@ export class PdfBillSelectionComponent {
     { id: 'template9', name: 'GST Theme 9' },
     { id: 'template10', name: 'GST Theme 10' },
   ];
-  mockBill: any = {
-    staffDetails: 'Grocery store',
-    customer: { name: 'Manish' },
-    invoiceNumber: '23213',
-    invoice_date: '28-02-2022',
-    due_date: '30-02-2022',
-    billItems: [
-      { item: 'Cornflakes', description: '', qty: '1', price: '153.00', totalPrice: '157.44' },
-      { item: 'banana', description: '', qty: '1', price: '30.00', totalPrice: '30.00' },
-      { item: 'kurkure', description: '', qty: '1', price: '200.00', totalPrice: '120.00' }
-    ],
-    payments: [
-      { paidAmount: '100.00', paymentDate: '28-02-2022' }
-    ],
-    totalPrice: '207000.00',
-    remainingAmount: '0.00',
-    time: '12:40'
-  };
+  invoiceBillConfig: any = {};
 
-   @ViewChild('autoTextarea') textareaRef!: ElementRef;
+  @ViewChild('autoTextarea') textareaRef!: ElementRef;
 
-    currentInvoiceId:any=-1;
+  currentInvoiceId: any = -1;
 
-  constructor( private loader:LoaderService, private _service:BillingService, private route:ActivatedRoute, private commonService: CommonService,private alert:AlertService ,private router:Router) {
-    this.mockBill['priceInWords'] = this.commonService.convertToRupeesInWords(+this.mockBill.totalPrice);
-      this.route.params.subscribe(params => {
-        if(params['invoice-id']){
-            this.currentInvoiceId  = params['invoice-id'];
-            this.getInvoiceDetailsById();
-        }
-      })
+  constructor(public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router) {
+    this.route.params.subscribe(params => {
+      if (params['invoice-id']) {
+        this.currentInvoiceId = params['invoice-id'];
+        this.getInvoiceDetailsById();
+      }
+    })
   }
 
-  getInvoiceDetailsById(){
-    this._service.getInvoiceById(this.currentInvoiceId,(res:any)=>{
-      if(res.status == 200){
+  getInvoiceDetailsById() {
+    this._service.getInvoiceById(this.currentInvoiceId, (res: any) => {
+      if (res.status == 200) {
         console.log(res);
-        
+        this.invoiceBillConfig = res.data;
+        this.invoiceBillConfig['priceInWords'] = this.commonService.convertToRupeesInWords(+this.invoiceBillConfig.total);
+        this.invoiceBillConfig.tnc = res.data.terms_and_conditions || null;
+        this.countTotalAndTotalQty();
       }
     })
   }
@@ -121,36 +107,79 @@ export class PdfBillSelectionComponent {
 
   }
 
-   ngAfterViewInit() {
+  ngAfterViewInit() {
     // Initial resize after view is ready
     this.resizeTextarea();
   }
 
   resizeTextarea() {
-     const textarea = this.textareaRef?.nativeElement;
-     if(!textarea){
+    const textarea = this.textareaRef?.nativeElement;
+    if (!textarea) {
       return;
-     }
+    }
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
-  saveAndClose(){
+  saveAndClose() {
     this.loader.show();
-    this.alert.success("Draft Saved Successfully");
-    const params:any= {
+    const params: any = {
       invoice_id: this.currentInvoiceId,
-      terms_and_conditions: this.mockBill.tnc
+      terms_and_conditions: this.invoiceBillConfig.tnc
     };
-    
-    this._service.createEstimate(params,(res:any)=>{
-      if(res.status == 200){
+    this._service.createEstimate(params, (res: any) => {
+      if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
         this.router.navigate(['billing']);
-      }else{
-         this.loader.hide();
-         this.alert.error(res.message);
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
       }
+    });
+  }
+
+
+  countTotalAndTotalQty() {
+    let total = 0;
+    let totalQty = 0;
+    this.invoiceBillConfig.invoice_items.forEach((item: any) => {
+      total += item.sale_price * item.quantity;
+      totalQty += item.quantity;
+    });
+    this.invoiceBillConfig.total = total;
+    this.invoiceBillConfig.total_quantity = totalQty;
+  }
+
+  updateAndClose() {
+    this.loader.show();
+    const params: any = {
+      terms_and_conditions: this.invoiceBillConfig.tnc
+    };
+    this._service.updateEstimate(this.invoiceBillConfig?.estimate_id, params,(res: any) => {
+      if (res.status == 200) {
+        this.loader.hide();
+        this.alert.success(res.message);
+        this.router.navigate(['billing']);
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    });
+  }
+
+  convertToSales(){
+    this.loader.show();
+    this._service.convertToSales(this.currentInvoiceId, (res: any) => {
+      if(res.status == 200){
+        this.alert.success(res.message);
+        this.loader.hide();
+        this.getInvoiceDetailsById();
+      }else{
+          this.loader.hide();
+          this.alert.error(res.message);
+        }
     })
   }
+
+
 }
