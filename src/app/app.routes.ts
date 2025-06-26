@@ -67,8 +67,24 @@ export const routes: Routes = [
       },
       {
         path: 'image-listing-screen',
-        loadComponent: () => import("./components/image-listing-screen/image-listing-screen.component").then(m => m.ImageListingScreenComponent)
+        loadComponent: () => import("./components/image-listing-screen/image-listing-screen.component").then(m => m.ImageListingScreenComponent),
       },
     ]
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import("./components/super-admin/admin/admin.component").then(m => m.AdminComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full'
+      },
+      {
+        path: 'login',
+        loadComponent: () => import("./components/super-admin/admin-login/admin-login.component").then(m => m.AdminLoginComponent),
+      }
+    ]
+
   },
 ];

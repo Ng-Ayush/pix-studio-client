@@ -67,6 +67,9 @@ export class BaseService {
     'updateEstimate':'/api/mystudio/estimates/updateEstimate',
     'getEstimateList':'/api/mystudio/estimates/getEstimateList',
     'convertToSales':'/api/mystudio/estimates/convertToSales',
+
+    // super admin
+    'adminLogin':'/api/mystudio/super-admin/login'
   }
 
   token:any='';

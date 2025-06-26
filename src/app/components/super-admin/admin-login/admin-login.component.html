@@ -1,0 +1,18 @@
+<div class="login-container">
+    <div class="logo">
+        <div class="logo-icon">
+            <img src="../../../assets/logo.png" alt="" width="80" height="80">
+        </div>
+        Welcome to MY STUDIO Admin
+    </div>
+    <div [formGroup]="loginForm">
+        <div class="form-group">
+            <label for="pin" class="form-label mb-2">Please enter your Email</label>
+            <input type="text"  formControlName="email" (keydown.enter)="adminLogin()" class="form-control"  placeholder="xxx-xxx">
+        </div>
+        <div class="form-group" >
+            <label for="otp" class="form-label">Please enter your Password</label>
+            <input type="password" class="form-control"  formControlName="password" (keydown.enter)="adminLogin()" placeholder="xxx-xxx">
+        </div>
+    </div>
+</div>
