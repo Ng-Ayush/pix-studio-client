@@ -1,0 +1,250 @@
+.dashboard-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    /* Sidebar takes auto width, main content takes the rest */
+    min-height: 100vh;
+    /* Ensure full viewport height */
+}
+
+.sidebar {
+    background-color: #5758b2;
+    /* Dark purple sidebar background */
+    color: #ede7f6;
+    /* Light purple text in sidebar */
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center icons in the sidebar */
+}
+
+.sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 32px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-nav-item:hover {
+    background-color: #ffffff;
+    color: #5758b2;
+    /* Slightly lighter purple on hover */
+}
+
+.sidebar-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.main-content {
+    background-color: #ffffff;
+    /* Very light purple for main content background */
+    // padding: 24px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* More width for items */
+    gap: 16px;
+    margin-top: 20px;
+    /* Add some space below the header */
+}
+
+.dashboard-item {
+    background-color: #5758b2;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+
+.dashboard-item:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.dashboard-item-icon {
+    background-color: #d1c4e9;
+    /* Slightly darker purple for icon background */
+    color: #fff;
+    /* Dark purple icon color */
+    padding: 12px;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.dashboard-item-title {
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.sales-chart {
+    background-color: #f3e5f5;
+    padding: 15px;
+    border-radius: 6px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7e57c2;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.pending-items {
+    padding: 10px;
+}
+
+.pending-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    color: #5e35b1;
+    font-size: 0.95rem;
+}
+
+.pending-item-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.my-accounts-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.my-accounts-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d1c4e9;
+    color: #4a148c;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.dynamic-image {
+    height: 100px;
+    background-color: #f3e5f5;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7e57c2;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+        /* Stack sidebar and content on smaller screens */
+    }
+
+    .sidebar {
+        flex-direction: row;
+        /* Make sidebar horizontal */
+        justify-content: space-around;
+        /* Distribute items */
+        align-items: center;
+        padding: 16px;
+        position: fixed;
+        /* Stick to the bottom */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        /* Ensure it's above other content */
+    }
+
+    .sidebar-logo {
+        display: none;
+        /* Hide logo on smaller screens */
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        width: auto;
+        /* Adjust width */
+    }
+
+    .sidebar-nav-item {
+        flex-direction: column;
+        /* Stack icon and text */
+        align-items: center;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    .sidebar-icon {
+        width: 20px;
+        height: 20px;
+        margin-bottom: 4px;
+    }
+
+    .main-content {
+        padding-bottom: 60px;
+        /* Add padding to avoid overlap with fixed sidebar */
+    }
+}
+
+.modal-fade-in {
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}

@@ -1,0 +1,96 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AdminService } from '../../../../services/admin.service';
+import { AlertService } from '../../../../services/alert.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { interval } from 'rxjs';
+
+
+@Component({
+  selector: 'app-add-user',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule,RouterLink,FormsModule],
+  templateUrl: './add-user.component.html',
+  styleUrl: './add-user.component.scss'
+})
+export class AddUserComponent {
+
+  userForm: FormGroup;
+  showPassword = false;
+  isSubmitting = false;
+  itemId: any;
+  todayDate: any = new Date();
+  searchTerm:any=''
+
+
+
+  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router:Router) {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phone_number: ['', [Validators.required]],
+      role: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+    this.itemId = this.route.snapshot.paramMap.get('id');
+    if (this.itemId) {
+      this.fetchUsersById();
+    }
+    this.getRealTime();
+  }
+
+  fetchUsersById() {
+    this.service.getUsersById(this.itemId, (res: any) => {
+      this.userForm.patchValue(res);
+    })
+
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      this.isSubmitting = true;
+      if (!this.itemId) {
+        this.service.createUsers({ ...this.userForm.value }, (res: any) => {
+          console.log(res);
+          
+          if (res.status == 200) {
+            this.alert.success(res.message);
+            this.router.navigate(['admin/users'])
+          } else {
+            
+            this.alert.error(res.message);
+          }
+        })
+      } else {
+        this.service.updateUsers({ ...this.userForm.value, id: this.itemId }, (res: any) => {
+          if (res.status == 200) {
+            this.alert.success(res.message)
+            this.router.navigate(['admin/users'])
+
+          } else {
+            this.alert.error(res.message);
+          }
+
+        })
+      }
+      this.isSubmitting = false;
+      this.userForm.reset();
+    } else {
+      Object.keys(this.userForm.controls).forEach(key => {
+        this.userForm.get(key)?.markAsTouched();
+      });
+    }
+  }
+  getRealTime() {
+    interval(1000).subscribe(() => {
+      this.todayDate = new Date();
+    })
+  }
+
+}

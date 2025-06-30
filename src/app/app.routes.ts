@@ -83,7 +83,23 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import("./components/super-admin/admin-login/admin-login.component").then(m => m.AdminLoginComponent),
-      }
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import("./components/super-admin/admin-dashboard/admin-dashboard.component").then(m => m.AdminDashboardComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () => import("./components/super-admin/users/users.component").then(m => m.UsersComponent),
+      },
+      {
+        path: 'add-user',
+        loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
+      },
+      {
+        path: 'edit-user/:id',
+        loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
+      },
     ]
 
   },

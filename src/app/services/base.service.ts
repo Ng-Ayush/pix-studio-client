@@ -69,7 +69,12 @@ export class BaseService {
     'convertToSales':'/api/mystudio/estimates/convertToSales',
 
     // super admin
-    'adminLogin':'/api/mystudio/super-admin/login'
+    'adminLogin':'/api/mystudio/super-admin/login',
+    'getAllUsers':'/api/mystudio/super-admin/getAllUsers',
+    'createUsers':'/api/mystudio/super-admin/createUsers',
+    'getUsersById':'/api/mystudio/super-admin/getUsersById',
+    'updateUsers':'/api/mystudio/super-admin/updateUsers',
+    'deleteUsers':'/api/mystudio/super-admin/deleteUsers',
   }
 
   token:any='';
