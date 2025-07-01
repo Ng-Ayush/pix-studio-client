@@ -14,8 +14,8 @@ export class AdminService extends BaseService {
   adminLogin(params: any, callback: any) {
     return this.postData(params, this.httpUrls['adminLogin'], callback);
   }
-    getAllUsers(callback: any) {
-      return this.getData({}, this.httpUrls['getAllUsers'], callback)
+  getAllUsers(callback: any) {
+    return this.getData({}, this.httpUrls['getAllUsers'], callback)
   }
 
   createUsers(params: any, callback: any) {
@@ -34,4 +34,22 @@ export class AdminService extends BaseService {
     return this.deleteData({}, this.httpUrls['deleteUsers'] + "/" + id, callback)
   }
 
+  getAllFeatures(callback: any) {
+    return this.getData({}, this.httpUrls['getAllFeatures'], callback)
   }
+
+  createFeatures(params: any, callback: any) {
+    return this.postData(params, this.httpUrls['createFeatures'], callback)
+  }
+
+  getFeatureById(userId: string, callback: any) {
+    return this.getData({}, this.httpUrls['getFeatureById'] + "/" + userId, callback)
+  }
+  
+  updateFeature(params: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateFeature'], callback)
+  }
+  deleteFeatures(id: any, callback: any) {
+    return this.deleteData({}, this.httpUrls['deleteFeatures'] + "/" + id, callback)
+  }
+}

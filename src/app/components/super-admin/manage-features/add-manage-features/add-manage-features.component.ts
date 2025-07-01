@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../../services/admin.service';
@@ -6,16 +5,16 @@ import { AlertService } from '../../../../services/alert.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
-
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-add-user',
+  selector: 'app-add-manage-features',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule,RouterLink,FormsModule],
-  templateUrl: './add-user.component.html',
-  styleUrl: './add-user.component.scss'
+  templateUrl: './add-manage-features.component.html',
+  styleUrl: './add-manage-features.component.scss'
 })
-export class AddUserComponent {
+export class AddManageFeaturesComponent {
 
   userForm: FormGroup;
   showPassword = false;
@@ -28,21 +27,23 @@ export class AddUserComponent {
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router:Router) {
     this.userForm = this.fb.group({
+      title: ['', [Validators.required]],
       name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phone_number: ['', [Validators.required]],
-      role: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      category: ['', [Validators.required]],
+      category_icon: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+      youtube_url: ['', [Validators.required]],
+      drive_url: ['', [Validators.required]]
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
-      this.fetchUsersById();
+      this.getFeatureById();
     }
     this.getRealTime();
   }
 
-  fetchUsersById() {
-    this.service.getUsersById(this.itemId, (res: any) => {
+  getFeatureById() {
+    this.service.getFeatureById(this.itemId, (res: any) => {
       this.userForm.patchValue(res);
     })
 
@@ -56,21 +57,20 @@ export class AddUserComponent {
     if (this.userForm.valid) {
       this.isSubmitting = true;
       if (!this.itemId) {
-        this.service.createUsers({ ...this.userForm.value }, (res: any) => {
+        this.service.createFeatures({ ...this.userForm.value }, (res: any) => {
           if (res.status == 200) {
             this.alert.success(res.message);
-            this.router.navigate(['admin/users'])
+            this.router.navigate(['admin/manage-features'])
           } else {
             
             this.alert.error(res.message);
           }
         })
       } else {
-        this.service.updateUsers({ ...this.userForm.value, id: this.itemId }, (res: any) => {
+        this.service.updateFeature({ ...this.userForm.value, id: this.itemId }, (res: any) => {
           if (res.status == 200) {
             this.alert.success(res.message)
-            this.router.navigate(['admin/users'])
-
+            this.router.navigate(['admin/manage-features'])
           } else {
             this.alert.error(res.message);
           }

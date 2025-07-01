@@ -100,6 +100,18 @@ export const routes: Routes = [
         path: 'edit-user/:id',
         loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
       },
+      {
+        path: 'manage-features',
+        loadComponent: () => import("./components/super-admin/manage-features/manage-features.component").then(m => m.ManageFeaturesComponent),
+      },
+      {
+        path: 'add-features',
+        loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
+      },
+      {
+        path: 'edit-feature/:id',
+        loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
+      },
     ]
 
   },

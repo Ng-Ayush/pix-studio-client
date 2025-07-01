@@ -75,6 +75,11 @@ export class BaseService {
     'getUsersById':'/api/mystudio/super-admin/getUsersById',
     'updateUsers':'/api/mystudio/super-admin/updateUsers',
     'deleteUsers':'/api/mystudio/super-admin/deleteUsers',
+    'getAllFeatures':'/api/mystudio/manage-features/getAllFeatures',
+    'createFeatures':'/api/mystudio/manage-features/createFeatures',
+    'getFeatureById':'/api/mystudio/manage-features/getFeatureById',
+    'updateFeature':'/api/mystudio/manage-features/updateFeature',
+    'deleteFeatures':'/api/mystudio/manage-features/deleteFeatures',
   }
 
   token:any='';

@@ -40,6 +40,8 @@ adminLogin(){
     if(res.token){
       this.alert.success("login success")
       this.router.navigate(['/admin/dashboard'])
+
+      
     }else{
       this.alert.error("Invalid credential")
     }
