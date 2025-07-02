@@ -52,4 +52,8 @@ export class AdminService extends BaseService {
   deleteFeatures(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteFeatures'] + "/" + id, callback)
   }
+
+  onImgUpload(params: any, callback: any) {
+    return this.postData(params, this.httpUrls['onImgUpload'], callback)
+  }
 }

@@ -63,7 +63,7 @@ export class ManageFeaturesComponent {
         return;
       }
       this.filteredItems = this.users.filter((item:any) =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        item.category.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
 
   }

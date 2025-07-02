@@ -72,7 +72,8 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800">Manage Features</h1>
-                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Features</p>
+                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Features
+                        </p>
                     </div>
                     <button (click)="addUsers()"
                         class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
@@ -98,7 +99,100 @@
                         class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div class="container mx-auto px-4 sm:px-8">
+                    <div class="py-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold leading-tight">Invoices</h2>
+                        </div>
+                        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                            <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                                <table class="min-w-full leading-normal">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                             Feature List
+                                                </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Categories
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Price
+                                            </th>
+                                            <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Action
+                                            </th>
+                                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr  *ngFor="let feature of filteredItems; let i = index">
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <div class="flex">
+                                                    <div class="flex-shrink-0 w-10 h-10">
+                                                        <img class="w-full h-full rounded-full"
+                                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
+                                                            alt="" />
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <p class="text-gray-900 whitespace-no-wrap">
+                                                        {{feature.title}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-gray-900 whitespace-no-wrap">{{feature.category}}</p>
+                                            </td>
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-gray-900 whitespace-no-wrap">{{feature.price}}</p>
+                                            </td>
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <div class="flex space-x-2">
+                                                    <button (click)="onEdit(feature)"
+                                                        class="bg-indigo-100 hover:bg-indigo-200 cursor-pointer text-indigo-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round">
+                                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                        </svg>
+                                                        Edit
+                                                    </button>
+                                                    <button (click)="onDeleteModal(feature)"
+                                                        class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path
+                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                            </path>
+                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                        </svg>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                           
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div *ngIf="filteredItems.length === 0">
+                            <p class="p-4 text-gray-600">No Feature found.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+
+                <!-- <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <div>
                         <div *ngFor="let customer of filteredItems; let i = index"
                             class="flex items-center justify-between p-4"
@@ -145,7 +239,7 @@
                     <div *ngIf="filteredItems.length === 0">
                         <p class="p-4 text-gray-600">No Feature found.</p>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div *ngIf="isModalOpen"

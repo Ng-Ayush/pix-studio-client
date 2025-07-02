@@ -80,6 +80,7 @@ export class BaseService {
     'getFeatureById':'/api/mystudio/manage-features/getFeatureById',
     'updateFeature':'/api/mystudio/manage-features/updateFeature',
     'deleteFeatures':'/api/mystudio/manage-features/deleteFeatures',
+    'onImgUpload':'/api/mystudio/manage-features/onImgUpload',
   }
 
   token:any='';
