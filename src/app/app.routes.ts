@@ -112,6 +112,14 @@ export const routes: Routes = [
         path: 'edit-feature/:id',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
       },
+      {
+        path: 'customer-request',
+        loadComponent: () => import("./components/super-admin/customer-request/customer-request.component").then(m => m.CustomerRequestComponent),
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import("./components/super-admin/notification/notification.component").then(m => m.NotificationComponent),
+      },
     ]
 
   },
