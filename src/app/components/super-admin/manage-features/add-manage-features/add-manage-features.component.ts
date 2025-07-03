@@ -92,17 +92,11 @@ export class AddManageFeaturesComponent {
   }
 
   onImgUpload(event:any){
-
     console.log(event.target.files[0]);
-
-    
     this.service.onImgUpload({files:event.target.files[0]},(res:any)=>{
-      console.log(res);
-      
+      console.log(res); 
+      this.userForm.patchValue({category_icon:"https://google.com"})
     })
-
-
-    
   }
 
 }

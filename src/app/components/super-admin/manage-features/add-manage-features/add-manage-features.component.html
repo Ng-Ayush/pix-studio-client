@@ -69,54 +69,15 @@
         </div>
 
         <main class="min-h-screen bg-gray-50">
-            <div >
-                <div class="flex justify-between items-center">
-                    <div>
-                        <!-- <h1 class="text-3xl font-bold text-gray-800">Users</h1> -->
-                        <!-- <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} users</p> -->
-                    </div>
-                    <!-- <button 
-                        class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Add Users
-                    </button> -->
-                </div>
-
-                <!-- <div class="relative mb-6">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </div>
-                    <input type="text" placeholder="Search users" [(ngModel)]="searchTerm" 
-                        class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
-                </div> -->
-
-
-
+            <div>
                 <div class="min-h-min   flex items-center justify-center">
-                    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-6xl mt-15">
+                    <div class="bg-white rounded-lg p-8 w-full">
                         <div class="text-center mb-8">
-                            <div
-                                class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                <!-- <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg> -->
-                            </div>
                             <h2 class="text-2xl font-bold text-gray-800">{{itemId ? 'Update Feature' : "Create Feature"}}</h2>
-                            <p class="text-gray-600 mt-2">Join Suraj Production</p>
                         </div>
 
-                        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6 ">
-                            <div class="flex justify-evenly">
+                        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="">
+                            <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Title</label>
@@ -156,7 +117,7 @@
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Category Icon</label>
-                                    <input type="file" id="name"(change)="onImgUpload($event)"
+                                    <input type="file" id="name" (change)="onImgUpload($event)"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your category icon"
                                         [class.border-red-500]="userForm.get('category_icon')?.invalid && userForm.get('category_icon')?.touched">
@@ -164,19 +125,20 @@
                                         class="text-red-500 text-sm mt-1">
                                         Category icon is required
                                     </div>
-                                </div>
-                                </div>
-                            <div class="flex justify-evenly">
+                                </div> 
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 my-2">
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                                         Price</label>
                                     <input type="tel" id="phone" formControlName="price"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your phone number"
-                                        [class.border-red-500]="userForm.get('price')?.invalid && userForm.get('price')?.touched" maxlength="3">
+                                        [class.border-red-500]="userForm.get('price')?.invalid && userForm.get('price')?.touched"
+                                        maxlength="3">
                                     <div *ngIf="userForm.get('price')?.invalid && userForm.get('price')?.touched"
                                         class="text-red-500 text-sm mt-1">
-                                         Price is required
+                                        Price is required
                                     </div>
                                 </div>
                                 <div>
@@ -191,7 +153,7 @@
                                         Youtube url is required
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Drive Url</label>
@@ -204,28 +166,24 @@
                                         Drive url is required
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                             <!-- Password Field -->
 
-                            <div class="flex justify-center">
-
-                                <button type="submit" [disabled]="userForm.invalid || isSubmitting"
-                                    class="w-2xl bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
-                                    <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    {{ itemId ? "Update Features" : 'Create Features' }}
-                                </button>
-                            </div>
                         </form>
-
+                            <button type="button" (click)="onSubmit()" [disabled]="userForm.invalid || isSubmitting"
+                                class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+                                <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                {{ itemId ? "Update Features" : 'Create Features' }}
+                            </button>
                     </div>
                 </div>
             </div>
