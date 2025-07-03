@@ -37,11 +37,11 @@ export class AdminService extends BaseService {
   getAllFeatures(callback: any) {
     return this.getData({}, this.httpUrls['getAllFeatures'], callback)
   }
-
+  
   createFeatures(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createFeatures'], callback)
   }
-
+  
   getFeatureById(userId: string, callback: any) {
     return this.getData({}, this.httpUrls['getFeatureById'] + "/" + userId, callback)
   }
@@ -52,8 +52,15 @@ export class AdminService extends BaseService {
   deleteFeatures(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteFeatures'] + "/" + id, callback)
   }
-
+  
   onImgUpload(params: any, callback: any) {
     return this.postData(params, this.httpUrls['onImgUpload'], callback)
+  }
+  getAllRequests(callback: any) {
+    return this.getData({}, this.httpUrls['getAllRequests'], callback)
+  }
+
+  markAsResolvedByStatus(id: any, callback: any) {
+    return this.deleteData({}, this.httpUrls['resolved'] + "/" + id, callback)
   }
 }
