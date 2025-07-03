@@ -23,6 +23,7 @@ export class BaseService {
     'deleteCustomer': '/api/mystudio/customers/deleteCustomer',
     'fetchCustomerFilesById': '/api/mystudio/customers/fetchCustomerFilesById',
     'searchCustomer': '/api/mystudio/customers/searchCustomer',
+    'fetchSalesAndPendingGraphData':'/api/mystudio/dashboard/fetchSalesAndPendingGraphData',
 
     //Event
     'createEvent': '/api/mystudio/photo-selection/createEvent',

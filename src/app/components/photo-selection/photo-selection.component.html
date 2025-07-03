@@ -82,12 +82,12 @@
             </div>
             <div class="container mx-auto px-20 pb-8  bg-[#eee]"> <!--overflow-y-scroll h-150 relative-->
                 <div class="mb-6 sticky top-0">
-                    <input type="text" placeholder="Search photo selection"
-                        class="bg-[#fff] w-full px-4 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="text" placeholder="Search photo selection" (input)="search($event)"
+                        class="bg-[#fff] w-full h-full px-4 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card border-l-10 transition-border-color duration-200" [ngClass]="{'border-red-700':!event.is_event_submitted, 'border-green-700':event.is_event_submitted}" *ngFor="let event of eventList">
+                    <div class="card border-l-10 transition-border-color duration-200" [ngClass]="{'border-red-700':!event.is_event_submitted, 'border-green-700':event.is_event_submitted}" *ngFor="let event of filteredEvents">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex flex-col items-start">
                                 <h2 class="text-sm font-semibold text-gray-800">{{event.customer_name|titlecase}}</h2>
@@ -216,6 +216,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="h-[1px] w-full bg-gray-200" *ngIf="filteredEvents.length == 0">
+                    <h1>No Events Found</h1>
+                </div>
             </div>
         </div>
 
@@ -238,10 +241,8 @@
                     [(ngModel)]="event_config.event_name"
                     class="placeholder:text-gray-500 placeholder:opacity-50 w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
 
-                <!-- Photo Sharing Toggle -->
-                <span class="mb-4 font-bold block text-sm">Options</span>
-                <span class="flex items-center gap-2 mb-4" [ngClass]="{'opacity-50':isEdit}" >
-                    <!-- From Uiverse.io by Galahhad -->
+                <!-- <span class="mb-4 font-bold block text-sm">Options</span> -->
+                <!-- <span class="flex items-center gap-2 mb-4" [ngClass]="{'opacity-50':isEdit}" >
                     <label class="switch">
                         <input [checked]="false" type="checkbox" [disabled]="isEdit" [(ngModel)]="event_config.is_ai_upload">
                         <div class="slider">
@@ -269,10 +270,9 @@
                             </div>
                         </div>
                     </label> <span class="text-sm block">Photo Sharing (Face Recognition)</span>
-                </span>
+                </span> -->
 
-                <!-- Photo Quality Options -->
-                <div class="mb-6 flex items-center gap-2" [ngClass]="{'opacity-50':isEdit}" >
+                <!-- <div class="mb-6 flex items-center gap-2" [ngClass]="{'opacity-50':isEdit}" >
                     <p class="text-sm font-medium text-gray-700">Select Photo Quality :</p>
                     <div class="flex gap-3">
                         <button *ngFor="let quality of photoQualities" [disabled]="isEdit" (click)="selectQuality(quality)" [ngClass]="{
@@ -282,7 +282,7 @@
                             {{ quality }}
                         </button>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end gap-4">

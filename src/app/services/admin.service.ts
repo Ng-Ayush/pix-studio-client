@@ -63,4 +63,8 @@ export class AdminService extends BaseService {
   markAsResolvedByStatus(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['resolved'] + "/" + id, callback)
   }
+
+  fetchSalesAndPendingGraphData(params: any, callback: any) {
+    return this.getData({}, `${this.httpUrls['fetchSalesAndPendingGraphData']}?range=${params.range}`, callback)
+  }
 }

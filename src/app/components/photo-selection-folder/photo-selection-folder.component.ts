@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-photo-selection-folder',
@@ -25,7 +26,7 @@ export class PhotoSelectionFolderComponent {
   eventName:any='';
   aiGuests:any=[];
 
-  constructor(private service: CustomerService,private _pservice: PhotoSelectionService,private route:ActivatedRoute,private router:Router){
+  constructor(private service: CustomerService,private _pservice: PhotoSelectionService,private route:ActivatedRoute,private router:Router,private alert:AlertService){
     this.route.params.subscribe(params => {
       if(params['event-id']){
         this.currentEventId = params['event-id'];
@@ -77,7 +78,10 @@ export class PhotoSelectionFolderComponent {
 
     this._pservice.createNewFolder(params,(res:any)=>{
       if(res.status == 200){
+        this.alert.success("Folder Created");
         this.fetchFolderByEventId();
+      }else{
+        this.alert.error(res.message);
       }
     })
     
@@ -97,8 +101,11 @@ export class PhotoSelectionFolderComponent {
 
     this._pservice.updateFolder(params,this.currentFolderId,(res:any)=>{
       if(res.status == 200){
+        this.alert.success("Folder Updated");
         this.closeModal();
         this.fetchFolderByEventId();
+      }else{
+        this.alert.error(res.message);
       }
     })
   }
@@ -111,8 +118,11 @@ export class PhotoSelectionFolderComponent {
   deleteFolder(){
     this._pservice.deleteFolder(this.currentFolderId,(res:any)=>{
       if(res.status == 200){
+        this.alert.success("Folder Deleted");
         this.closeModal();
         this.fetchFolderByEventId();
+      }else{
+        this.alert.error(res.message);
       }
     })
   }

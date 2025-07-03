@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { interval } from 'rxjs';
 import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-photo-selection',
@@ -26,9 +27,10 @@ export class PhotoSelectionComponent {
   eventList: any = [];
   isEdit:boolean=false;
   deleteModal:boolean=false;
-  currentEventId:number= -1
+  currentEventId:number= -1;
+  filteredEvents:any=[];
 
-  constructor(private service: CustomerService, private eventService: PhotoSelectionService,private router:Router) {
+  constructor(private service: CustomerService, private eventService: PhotoSelectionService,private router:Router,private alert:AlertService) {
 
   }
 
@@ -44,6 +46,7 @@ export class PhotoSelectionComponent {
     this.eventService.getAllEvents((res: any) => {
       if (res.status == 200) {
         this.eventList = res.data;
+        this.filteredEvents = [...this.eventList];
       }
     })
   }
@@ -77,18 +80,25 @@ export class PhotoSelectionComponent {
       this.eventService.createEvent(params, (res: any) => {
       if (res.status == 200) {
         this.isModalOpen = false;
+        this.alert.success(res.message);
         this.getAllEvents();
+      }else{
+        this.alert.error(res.message);
       }
     })
   }else{
     const params= {
       event_name: this.event_config.event_name,
+      is_event_submitted: this.event_config.is_event_submitted,
     }
 
     this.eventService.updateEvent(params, this.event_config.event_id, (res: any) => {
       if (res.status == 200) {
         this.isModalOpen = false;
+        this.alert.success(res.message);
         this.getAllEvents();
+      }else{
+        this.alert.error(res.message);
       }
     })
   }
@@ -121,8 +131,11 @@ export class PhotoSelectionComponent {
   deleteEvent(){
     this.eventService.deleteEvent(this.event_config.event_id,(res: any) => {
       if (res.status == 200) {
+        this.alert.success(res.message);
         this.onCancel();
         this.getAllEvents();
+      }else{
+        this.alert.error(res.message);
       }
     })
   }
@@ -137,7 +150,7 @@ export class PhotoSelectionComponent {
     navigator.clipboard.writeText(message).then(() => {
       // this.copied = true;
       // setTimeout(() => this.copied = false, 2000); // reset after 2 sec
-      alert("Text Copied")
+      this.alert.success('Message copied to clipboard');
     }).catch(err => {
       console.error('Failed to copy message: ', err);
     });
@@ -149,9 +162,20 @@ export class PhotoSelectionComponent {
     }
     this.eventService.updateEvent(params, event.event_id, (res: any) => {
       if (res.status == 200) {
+        this.alert.success(res.message);
         this.getAllEvents();
+      }else{
+        this.alert.error(res.message);
       }
     })
+  }
+
+  search(event:any){
+    if(event.target.value == ''){
+      this.filteredEvents = [...this.eventList];
+    }else{
+      this.filteredEvents = this.eventList.filter((item:any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()));
+    }
   }
 }
 

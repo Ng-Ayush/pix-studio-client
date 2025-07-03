@@ -122,8 +122,8 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-5">
-                <a class="dashboard-item " [routerLink]="['/photo-selection']">
+            <div class="grid grid-cols-3 gap-5 relative">
+                <a class="dashboard-item " [routerLink]="['/photo-selection']" style="align-content: center;">
                     <div class="dashboard-item-icon block m-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
@@ -134,17 +134,22 @@
                     <h3 class="dashboard-item-title text-2xl">Photos Selection</h3>
                 </a>
 
-                <div class="dashboard-item">
-                    <h3 class="dashboard-item-title mb-2">Sales</h3>
-                    <img src="../../../../assets/graph.png" alt="" class="w-32 h-32 block m-auto">
-                </div>
+                    <div class="dashboard-item invoice">
+                        <h3 class="dashboard-item-title mb-2">Sales</h3>
+                        <apx-chart [series]="salesSeries" *ngIf="salesSeries" [chart]="chartOptions" [xaxis]="xAxis"></apx-chart>
+                    </div>
 
-                <div class="dashboard-item">
-                    <a class="dashboard-item " [routerLink]="['/bill-estimate']">
-                        <img src="../../../../assets/graph.png" alt="" class="w-32 h-32 block m-auto">
-                    </a>
-                    <h3 class="dashboard-item-title mb-2">Pendings</h3>
-                </div>
+                    <div class="dashboard-item invoice">
+                        <h3 class="dashboard-item-title mb-2">Pending</h3>
+                        <apx-chart *ngIf="estimateSeries" [series]="estimateSeries" [chart]="chartOptions" [xaxis]="xAxis"></apx-chart>
+                        <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
+                    </div>
+                    <select id="granularity" [(ngModel)]="granularity" (change)="loadDashboardStats()"
+                        class="border border-[#5758b2] px-2 py-1 rounded absolute right-0">
+                        <option value="daily">Daily</option>
+                        <!-- <option value="weekly">Weekly</option> -->
+                        <option value="monthly">Monthly</option>
+                    </select>
 
 
                 <div class="dashboard-item">
@@ -187,7 +192,6 @@
                     <span>Image Placeholder</span>
                 </a> -->
                 </div>
-
             </div>
         </div>
 

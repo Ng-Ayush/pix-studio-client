@@ -75,6 +75,18 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transform: scale(1);
     transition: all 0.3s ease;
+
+    &.invoice{
+        background-color: #ffffff;
+        border: 2px solid #5758b2;
+
+        & .dashboard-item-title{
+            color: #000 !important;
+        }
+    }
+    &.invoice:hover{
+        transform: scale(1);
+    }
 }
 
 .dashboard-item:hover {
