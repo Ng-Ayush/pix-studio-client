@@ -49,7 +49,10 @@ export class NewBillComponent {
   searchQuery: string = '';
   dropdownOpen: boolean = false;
   partyModal: boolean = false;
-  partyConfig:any={};
+  partyConfig: any = {};
+  showAdvancePaymentModal: boolean = false;
+  advancePaymentConfig: any = {};
+  pastPayments: any = [];
 
   constructor(private fb: FormBuilder,
     private billingService: BillingService,
@@ -57,7 +60,7 @@ export class NewBillComponent {
     private alert: AlertService,
     private activatedRoute: ActivatedRoute,
     private eRef: ElementRef,
-    private commonService:CommonService,
+    private commonService: CommonService,
     private router: Router) {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params['invoice_number']) {
@@ -68,7 +71,9 @@ export class NewBillComponent {
     this.invoiceConfig.invoice_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
-    
+    this.invoiceConfig.invoice_type = 'estimate';
+
+
   }
 
   ngOnInit(): void {
@@ -99,10 +104,10 @@ export class NewBillComponent {
         this.partyList = res.data;
         this.filteredParties = this.partyList;
         console.log(323);
-        
-        this.partyList.forEach((e:any)=>{
-          if(e.id == this.invoiceConfig.party_id){
-             this.searchQuery = e.party_name;
+
+        this.partyList.forEach((e: any) => {
+          if (e.id == this.invoiceConfig.party_id) {
+            this.searchQuery = e.party_name;
             this.selectedParty = e.party_name;
           }
         })
@@ -114,7 +119,14 @@ export class NewBillComponent {
     this.billingService.getAllInvoiceItems((res: any) => {
       if (res.status == 200) {
         this.invoiceItemsList = res.data;
-        this
+      }
+    })
+  }
+
+  getPastPayments() {
+    this.billingService.getPastPayments(this.invoiceConfig.invoice_id, (res: any) => {
+      if (res.status == 200) {
+        this.pastPayments = res.data;
       }
     })
   }
@@ -152,8 +164,9 @@ export class NewBillComponent {
   closeModal() {
     this.itemModal = false;
     this.isEdit = false;
-    this.partyModal=false;
+    this.partyModal = false;
     this.dropdownVisible = false;
+    this.showAdvancePaymentModal = false;
   }
 
   addInvoiceItem() {
@@ -191,7 +204,7 @@ export class NewBillComponent {
 
   updateInvoiceItem() {
     console.log(312312);
-    
+
     this.loader.show();
     this.billingService.updateInvoiceItem(this.newItemConfig.id, this.newItemConfig, (res: any) => {
       if (res.status == 200) {
@@ -207,7 +220,7 @@ export class NewBillComponent {
   selectItem(invoiceItem: any) {
     this.invoiceConfig.invoice_items[this.currentItemIdx] = invoiceItem;
     this.calculateAmount(invoiceItem);
-    this.dropdownVisible=false;
+    this.dropdownVisible = false;
     // this.closeModal();
     // this.addItem();
   }
@@ -237,23 +250,31 @@ export class NewBillComponent {
     }
   }
 
-  updateInvoice() {
+  updateEInvoice() {
+    this.updateInvoice(true);
+  }
+
+  updateInvoice(isEInvoice?: boolean) {
     const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
       balance_left: +this.totalAmount,
-      invoice_type: 'sale',
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({id:item.id,booking_date:item.booking_date,location:item.location})))
+      invoice_type: this.invoiceConfig.invoice_type,
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location })))
     }
 
     console.log(this.invoiceConfig);
-    
 
-    this.billingService.updateInvoice(+this.invoiceConfig.party_id,params, (res: any) => {
+
+    this.billingService.updateInvoice(+this.invoiceConfig.party_id, params, (res: any) => {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        this.router.navigate(['/billing']);
+        if (isEInvoice) {
+          this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
+        } else {
+          this.router.navigate(['/billing']);
+        }
       } else {
         this.loader.hide();
         this.alert.error(res.message);
@@ -262,22 +283,26 @@ export class NewBillComponent {
 
   }
 
-  generateInvoice() {
+  generateInvoice(isEinvoice?: boolean) {
     this.loader.show();
     const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
       party_id: +this.invoiceConfig.party_id,
       balance_left: +this.totalAmount,
-      invoice_type: 'sale',
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({id:item.id,booking_date:item.booking_date,location:item.location})))
+      invoice_type: this.invoiceConfig.invoice_type,
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location })))
     }
 
     this.billingService.generateInvoice(params, (res: any) => {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        this.router.navigate(['/billing']);
+        if (isEinvoice) {
+          this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
+        } else {
+          this.router.navigate(['/billing']);
+        }
       } else {
         this.loader.hide();
         this.alert.error(res.message);
@@ -299,6 +324,7 @@ export class NewBillComponent {
       if (res.status == 200) {
         this.isEditInvoice = true;
         this.invoiceConfig = res.data;
+        this.getPastPayments();
         this.loader.hide();
         this.invoiceConfig.invoice_items.forEach((item: any) => {
           this.calculateAmount(item);
@@ -312,7 +338,7 @@ export class NewBillComponent {
   }
 
   generateEinvoice() {
-    this.router.navigate(['billing/e-invoice',this.invoiceConfig.invoice_id],{ queryParams: { } });
+    this.generateInvoice(true);
   }
 
   toggleDropdown(): void {
@@ -328,7 +354,7 @@ export class NewBillComponent {
     this.dropdownOpen = false;
     this.invoiceConfig.party_id = item.id;
     this.invoiceConfig.phone_number = item.phone_number;
-    
+
     // this.getInvoiceDetailByInvoiceNumber();
   }
 
@@ -347,15 +373,15 @@ export class NewBillComponent {
     }
   }
 
-  addNewPartyModal(){
-    this.partyModal=true;
+  addNewPartyModal() {
+    this.partyModal = true;
   }
 
   saveParty() {
     this.loader.show();
     console.log(323);
-    
-    if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
+
+    if (!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email) {
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;
@@ -375,8 +401,37 @@ export class NewBillComponent {
 
   }
 
-  assignCode(){
+  assignCode() {
     this.newItemConfig.item_code = this.commonService.generateNewUniqueCode();
   }
+
+  shareInvoice() {
+
+  }
+
+  togglePaymentModal() {
+    this.showAdvancePaymentModal = true;
+  }
+
+  saveAdvancePayment() {
+    console.log(this.invoiceConfig);
+
+    const params: any = {
+      invoice_id: this.invoiceConfig.invoice_id,
+      party_id: this.invoiceConfig.party_id,
+      amount_paid: this.advancePaymentConfig.amount,
+      note: this.advancePaymentConfig.note,
+      method: this.advancePaymentConfig.method
+    };
+
+    this.billingService.saveAdvancePayment(params, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.showAdvancePaymentModal = false;
+        this.getInvoiceDetailByInvoiceNumber();
+      }
+    })
+  }
+
 
 }

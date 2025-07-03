@@ -365,7 +365,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr class="hover:bg-gray-50 cursor-pointer" *ngFor="let item of partyInvoiceList" (click)="openInvoice(item)">
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700">Sale Order</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{item.invoice_type|titlecase}}</td>
                                     <td
                                         class="px-4 py-3 whitespace-nowrap text-blue-600 hover:underline cursor-pointer">
                                         {{item?.invoice_number}}</td>
@@ -375,8 +375,8 @@
                                     <td class="px-4 py-3 whitespace-nowrap text-gray-500"></td>
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                            Unpaid
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-black" [ngClass]="{'bg-red-100': +item?.balance_left == +item?.total,'bg-yellow-100':(+item?.balance_left > 0 && +item?.balance_left < +item?.total),'bg-green-100':(+item?.balance_left == 0 && item.invoice_type == 'sale'),'bg-gray-100':item.invoice_type == 'estimate'}" >
+                                            {{item.invoice_type == 'sale' ? (+item?.balance_left == +item?.total ? 'Unpaid' : (+item?.balance_left > 0 && +item?.balance_left < +item?.total) ? 'Partial Paid' : 'Paid') : 'N/A'}}
                                         </span>
                                     </td>
                                     <td

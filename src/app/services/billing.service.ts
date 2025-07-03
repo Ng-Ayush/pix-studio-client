@@ -105,4 +105,12 @@ export class BillingService extends BaseService {
   getAllBookings() {
     return of(this.mockBookings);
   }
+
+  saveAdvancePayment(params:any,callback:any){
+    return this.postData(params, this.httpUrls['saveAdvancePayment'], callback)
+  }
+
+  getPastPayments(invoice_id:any,callback:any){
+    return this.getData({}, this.httpUrls['getPastPayments']+"/"+invoice_id, callback)
+  }
 }

@@ -170,8 +170,11 @@ export class BillingComponent {
     this.totalSales = 0;
     this.totalRemaining =0;
     this.partyList.forEach((item:any)=>{
+      console.log(3232);
+      if(item.invoice_type == 'sale'){
         this.totalSales = this.totalSales + +item.total;  
         this.totalRemaining = this.totalRemaining + +item.balance_left;
+      }
     })
   }
 }
