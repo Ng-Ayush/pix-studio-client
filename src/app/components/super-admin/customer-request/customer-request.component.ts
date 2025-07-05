@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { AlertService } from '../../../services/alert.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { interval } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,9 +30,9 @@ export class CustomerRequestComponent {
 
 
   constructor(
-    private router: Router,
     private service: AdminService,
-    private alert: AlertService
+    private alert: AlertService,
+    private router:Router
   ) { }
 
   
@@ -80,7 +81,6 @@ export class CustomerRequestComponent {
 
   markAsResolved() {
 
-    console.log(this.id);
     
     this.service.markAsResolvedByStatus(this.id, (res: any) => {
       if (res.status == 200) {
@@ -94,4 +94,8 @@ export class CustomerRequestComponent {
 
   }  
 
+
+  onEdit(id:any){
+    this.router.navigate(['admin/edit-customer',id])
+  }
 }

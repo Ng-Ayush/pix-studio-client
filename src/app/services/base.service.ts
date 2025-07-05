@@ -85,6 +85,8 @@ export class BaseService {
     'deleteFeatures': '/api/mystudio/manage-features/deleteFeatures',
     'onImgUpload': '/api/mystudio/manage-features/onImgUpload',
     'getAllRequests': '/api/mystudio/customer-request/getAllRequests',
+    'getRequestById': '/api/mystudio/customer-request/getRequestById',
+    'updateRequest': '/api/mystudio/customer-request/updateRequest',
     'resolved': '/api/mystudio/customer-request/resolved',
 
 

@@ -49,6 +49,10 @@ export const routes: Routes = [
     loadComponent: () => import("./components/billing/billing-calendar/billing-calendar.component").then(m => m.BillingCalendarComponent)
   },
   {
+    path: 'manage-profile',
+    loadComponent: () => import("./components/manage-profile/manage-profile.component").then(m => m.ManageProfileComponent)
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [
@@ -115,6 +119,10 @@ export const routes: Routes = [
       {
         path: 'customer-request',
         loadComponent: () => import("./components/super-admin/customer-request/customer-request.component").then(m => m.CustomerRequestComponent),
+      },
+      {
+        path: 'edit-customer/:id',
+        loadComponent: () => import("./components/super-admin/customer-request/edit-customers/edit-customers.component").then(m => m.EditCustomersComponent),
       },
       {
         path: 'notifications',

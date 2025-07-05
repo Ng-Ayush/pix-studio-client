@@ -49,6 +49,7 @@ export class AdminService extends BaseService {
   updateFeature(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateFeature'], callback)
   }
+
   deleteFeatures(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteFeatures'] + "/" + id, callback)
   }
@@ -59,12 +60,18 @@ export class AdminService extends BaseService {
   getAllRequests(callback: any) {
     return this.getData({}, this.httpUrls['getAllRequests'], callback)
   }
-
+  
   markAsResolvedByStatus(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['resolved'] + "/" + id, callback)
   }
-
+  
   fetchSalesAndPendingGraphData(params: any, callback: any) {
     return this.getData({}, `${this.httpUrls['fetchSalesAndPendingGraphData']}?range=${params.range}`, callback)
+  }
+  getRequestById(userId: string, callback: any) {
+    return this.getData({}, this.httpUrls['getRequestById'] + "/" + userId, callback)
+  }
+  updateRequest(params: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateRequest'], callback)
   }
 }
