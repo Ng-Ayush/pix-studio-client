@@ -25,15 +25,15 @@ export class AdminService extends BaseService {
   getUsersById(userId: string, callback: any) {
     return this.getData({}, this.httpUrls['getUsersById'] + "/" + userId, callback)
   }
-
+  
   updateUsers(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateUsers'], callback)
   }
-
+  
   deleteUsers(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteUsers'] + "/" + id, callback)
   }
-
+  
   getAllFeatures(callback: any) {
     return this.getData({}, this.httpUrls['getAllFeatures'], callback)
   }
@@ -73,5 +73,11 @@ export class AdminService extends BaseService {
   }
   updateRequest(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateRequest'], callback)
+  }
+  getUsersByCurrentId(userId: string, callback: any) {
+    return this.getData({}, this.httpUrls['getUsersByCurrentId'] + "/" + userId, callback)
+  }
+  updateProfile(params: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateProfile'], callback)
   }
 }

@@ -1,1 +1,207 @@
-<p>manage-profile works!</p>
+<div class="dashboard-container">
+    <aside class="sidebar justify-center">
+        <nav class="sidebar-nav">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/admin/dashboard']">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+
+            </a>
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </a> -->
+            <a [routerLink]="['/admin/notifications']" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
+
+            </a>
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                </svg>
+
+            </a> -->
+            <a href="javascript:void(0);" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+
+            </a>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="border-l border-white bg-[#5758b2]">
+            <div class="p-5 ps-10">
+                <div class="heading flex gap-7">
+                    <div class="logo-img">
+                        <img src="../../../assets/logo.png" alt=""
+                            class="border radius-md text-white w-[50px] h-[50px]">
+                    </div>
+                    <div class="header-title">
+                        <h2 class="text-white">Hello, Suraj Production</h2>
+                        <small class="text-white">Tagline</small>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+                <div class="flex gap-5">
+                    <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
+                        {{todayDate|date : 'dd-MM-yyyy'}}</h3>
+                    <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
+                        {{todayDate|date : 'h:mm:ss a'}} </h3>
+                </div>
+                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+            </div>
+        </div>
+
+        <main class="min-h-screen bg-gray-50">
+            <div >
+                <div class="flex justify-between items-center">
+                    <div>
+                        <!-- <h1 class="text-3xl font-bold text-gray-800">Users</h1> -->
+                        <!-- <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} users</p> -->
+                    </div>
+                    <!-- <button 
+                        class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Users
+                    </button> -->
+                </div>
+
+                <!-- <div class="relative mb-6">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <input type="text" placeholder="Search users" [(ngModel)]="searchTerm" 
+                        class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
+                </div> -->
+
+
+
+                <div class="min-h-min   flex items-center justify-center">
+                    <div class="bg-white rounded-lg p-8 w-full">
+                       <div class="text-center mb-8">
+                            <h2 class="text-2xl font-bold text-gray-800"> Update Profile</h2>
+                        </div>
+
+                        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6 ">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full
+                                        Name</label>
+                                    <input type="text" id="name" formControlName="name"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your full name"
+                                        [class.border-red-500]="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+                                    <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Name is required
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email
+                                        Address</label>
+                                    <input type="email" id="email" formControlName="email"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your email"
+                                        [class.border-red-500]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+                                    <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        <span *ngIf="userForm.get('email')?.errors?.['required']">Email is
+                                            required</span>
+                                        <span *ngIf="userForm.get('email')?.errors?.['email']">Please enter a valid
+                                            email</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone
+                                        Number</label>
+                                    <input type="tel" id="phone" formControlName="phone_number"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your phone number"
+                                        [class.border-red-500]="userForm.get('phone_number')?.invalid && userForm.get('phone_number')?.touched">
+                                    <div *ngIf="userForm.get('phone_number')?.invalid && userForm.get('phone_number')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Phone number is required
+                                    </div>
+                                </div>
+                             
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Address</label>
+                                    <input type="text" id="name" formControlName="address"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your full name"
+                                        [class.border-red-500]="userForm.get('address')?.invalid && userForm.get('address')?.touched">
+                                    <div *ngIf="userForm.get('address')?.invalid && userForm.get('address')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Address is required
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Terms and Conditons</label>
+                                    <input type="text" id="name" formControlName="terms_and_condition"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your full name"
+                                        [class.border-red-500]="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched">
+                                    <div *ngIf="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Terms is required
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Category Icon</label>
+                                    <input type="file" id="name" (change)="onImgUpload($event)"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your category icon"
+                                        [class.border-red-500]="userForm.get('category_icon')?.invalid && userForm.get('category_icon')?.touched">
+                                    <div *ngIf="userForm.get('category_icon')?.invalid && userForm.get('category_icon')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Category icon is required
+                                    </div>
+                                </div> 
+                            </div>
+                                <button type="submit" [disabled]="userForm.invalid || isSubmitting"
+                                    class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                    <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    {{ itemId ? "Update User" : 'Create User' }}
+                                </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>

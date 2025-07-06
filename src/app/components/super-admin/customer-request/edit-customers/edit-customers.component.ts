@@ -56,7 +56,7 @@ export class EditCustomersComponent {
         this.service.updateRequest({ ...this.userForm.value, id: this.itemId }, (res: any) => {
           if (res.status == 200) {
             this.alert.success(res.message)
-            this.router.navigate(['admin/manage-features'])
+            this.router.navigate(['admin/customer-request'])
           } else {
             this.alert.error(res.message);
           }

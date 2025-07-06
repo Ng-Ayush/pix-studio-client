@@ -24,6 +24,8 @@ export class BaseService {
     'fetchCustomerFilesById': '/api/mystudio/customers/fetchCustomerFilesById',
     'searchCustomer': '/api/mystudio/customers/searchCustomer',
     'fetchSalesAndPendingGraphData':'/api/mystudio/dashboard/fetchSalesAndPendingGraphData',
+    'getUsersByCurrentId':'/api/mystudio/manage-profile/getUsersByCurrentId',
+    'updateProfile':'/api/mystudio/manage-profile/updateProfile',
 
     //Event
     'createEvent': '/api/mystudio/photo-selection/createEvent',

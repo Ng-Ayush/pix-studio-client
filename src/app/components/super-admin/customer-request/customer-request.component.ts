@@ -80,8 +80,6 @@ export class CustomerRequestComponent {
   }
 
   markAsResolved() {
-
-    
     this.service.markAsResolvedByStatus(this.id, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
@@ -93,7 +91,6 @@ export class CustomerRequestComponent {
     })
 
   }  
-
 
   onEdit(id:any){
     this.router.navigate(['admin/edit-customer',id])

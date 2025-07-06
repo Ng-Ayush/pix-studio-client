@@ -68,7 +68,8 @@ export class LoginComponent {
     };
     this.authService.getOTPForPinUser(params, (res: any) => {
       if (res.status == 200) {
-        console.log(res);
+     let currentUser:any = res.user_id;
+        localStorage.setItem("currentUserId", JSON.stringify(currentUser))
         this.alert.success(res.message);
         this.showOTPBox = true;
         this.loader = false;
