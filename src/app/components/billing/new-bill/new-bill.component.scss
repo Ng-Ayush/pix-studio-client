@@ -248,3 +248,8 @@
         transform: scale(0.95);
     }
 }
+
+.advance-payment-link.disabled{
+    cursor: pointer;
+    pointer-events: none;
+}

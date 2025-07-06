@@ -127,6 +127,7 @@ export class NewBillComponent {
     this.billingService.getPastPayments(this.invoiceConfig.invoice_id, (res: any) => {
       if (res.status == 200) {
         this.pastPayments = res.data;
+        this.calculateTotals();
       }
     })
   }
@@ -245,9 +246,16 @@ export class NewBillComponent {
       this.totalAmount = this.totalAmount - ((this.totalAmount * this.discountAmountVal) / 100);
     }
     this.totalAmount = this.totalAmount - (this.discountAmountVal || 0);
-    if (this.advanceAmount) {
-      this.totalAmount = this.totalAmount - this.advanceAmount;
+    if (this.pastPayments.length>0) {
+      let advanceTotal = 0;
+      this.pastPayments.forEach((e:any)=>{
+        advanceTotal = advanceTotal + +e.amount_paid;
+      })
+      this.totalAmount = this.totalAmount - advanceTotal;
     }
+
+    console.log("TOTAL AMOT",this.totalAmount);
+    
   }
 
   updateEInvoice() {
@@ -299,7 +307,7 @@ export class NewBillComponent {
         this.loader.hide();
         this.alert.success(res.message);
         if (isEinvoice) {
-          this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
+          this.router.navigate(['billing/e-invoice', res.id], { queryParams: {} });
         } else {
           this.router.navigate(['/billing']);
         }

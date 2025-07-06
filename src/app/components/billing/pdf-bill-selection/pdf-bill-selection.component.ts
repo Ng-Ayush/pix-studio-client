@@ -7,6 +7,7 @@ import { AlertService } from '../../../services/alert.service';
 import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
 import { AppConstants } from '../../../constants/app.constants';
+import { AdminService } from '../../../services/admin.service';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
@@ -16,7 +17,7 @@ import { AppConstants } from '../../../constants/app.constants';
 })
 export class PdfBillSelectionComponent {
   todayDate: any = new Date();
-  selectedTemplateId: any = 'template1'
+  selectedTemplateId: any = 'template2'
   selectedColor: any = '#5958b2';
   colors: any = [
     '#5958b2', '#7e57c2', '#42a5f5', '#66bb6a', '#ffee58', '#ffa726', '#ef5350', '#8d6e63',
@@ -40,13 +41,24 @@ export class PdfBillSelectionComponent {
   @ViewChild('autoTextarea') textareaRef!: ElementRef;
 
   currentInvoiceId: any = -1;
+  currentUserId:any=0;
+  userData:any={};
 
-  constructor(public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router) {
+  constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router) {
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
         this.currentInvoiceId = params['invoice-id'];
         this.getInvoiceDetailsById();
       }
+    })
+    this.getUserData();   //to be commented and removed in future.
+  }
+
+  getUserData(){
+     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+      this.adminService.getUsersByCurrentId(this.currentUserId, (res: any) => {
+      // localStorage.setItem("user_data",JSON.stringify(res));
+      this.userData = res;
     })
   }
 

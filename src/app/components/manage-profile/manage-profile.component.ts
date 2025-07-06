@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
@@ -6,6 +6,8 @@ import { interval } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { AlertService } from '../../services/alert.service';
+import { getMetadata } from 'firebase/storage';
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 @Component({
   selector: 'app-manage-profile',
   standalone: true,
@@ -17,12 +19,12 @@ export class ManageProfileComponent {
   userForm: FormGroup;
   showPassword = false;
   isSubmitting = false;
-  itemId: any;
   todayDate: any = new Date();
   searchTerm: any = ''
-  currentUserId:any=0;  
-  
-  
+  currentUserId: any = 0;
+  storage = inject(Storage);
+  tempStudioIcon:any='';
+
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -30,14 +32,15 @@ export class ManageProfileComponent {
       phone_number: ['', [Validators.required]],
       address: ['', [Validators.required]],
       terms_and_condition: ['', [Validators.required]],
+      studio_icon:['',Validators.required]
     });
   }
-  
+
   ngOnInit() {
     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
-    this.service.getUsersByCurrentId(this.currentUserId,(res:any)=>{
-     this.userForm.patchValue(res)
-      
+    this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
+      localStorage.setItem("user_data",JSON.stringify(res));
+      this.userForm.patchValue(res)
     })
 
   }
@@ -70,11 +73,33 @@ export class ManageProfileComponent {
   }
 
   onImgUpload(event: any) {
-    console.log(event.target.files[0]);
-    this.service.onImgUpload({ files: event.target.files[0] }, (res: any) => {
-      console.log(res);
-      this.userForm.patchValue({ category_icon: "https://google.com" })
-    })
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      let compressedImage = reader.result as string;
+      let blob = this.dataURLtoBlob(compressedImage);
+      const fileRef = ref(this.storage, `studio-image/${this.userForm.value.name.split(" ").join("_")}`);
+      const uploadTask = uploadBytesResumable(fileRef, blob);
+      
+      uploadTask.then(async () => {
+        const url = await getDownloadURL(fileRef);
+        console.log(url,"dsadad");
+        this.userForm.patchValue({ studio_icon: url })
+      })
+    }
+  }
+
+  dataURLtoBlob(dataURL: string) {
+    const byteString = atob(dataURL.split(',')[1]);
+    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([arrayBuffer], { type: mimeString });
   }
 
 

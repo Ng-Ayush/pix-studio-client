@@ -651,7 +651,7 @@
                             </div>
                         </div>
                         <div class="flex justify-end items-center" *ngIf="invoiceConfig.invoice_type == 'sale'">
-                                <a href="javascript:void(0);" class="text-indigo-500 text-sm" [ngClass]="{'disabled':!subTotal}"
+                                <a href="javascript:void(0);" class="text-indigo-500 text-sm advance-payment-link" [ngClass]="{'disabled':!subTotal || !totalAmount}"
                                 (click)="togglePaymentModal()">+
                                 Add Advance Payment</a>
                         </div>

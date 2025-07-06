@@ -52,8 +52,8 @@
                             class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
-                        <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <h2 class="text-white">Hello, {{userData?.name}}</h2>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
@@ -268,11 +268,13 @@
                                 <div class="w-[800px] mx-auto p-4 font-sans text-sm">
                                     <!-- Header -->
                                     <div class="flex justify-between items-center mb-4">
-                                        <div class="text-base font-bold text-black"></div>
+                                        <div class="text-base font-bold text-black">
+                                            <img [src]="userData?.studio_icon" class="h-24 w-48" alt="dasda">
+                                        </div>
                                         <div class="text-right">
-                                            <h1 class="text-2xl font-semibold">{{constants.STUDIO_NAME}}</h1>
-                                            <p>{{constants.STUDIO_ADDRESS}}</p>
-                                            <p>Phone no: {{constants.STUDIO_CONTACT}}</p>
+                                            <h1 class="text-2xl font-semibold">{{userData?.name}}</h1>
+                                            <p>{{userData?.address}}</p>
+                                            <p>Phone no: {{userData?.phone_number}}</p>
                                             <!-- <p>Invoice No: {{ invoiceBillConfig.invoiceNumber }}</p> -->
                                             <!-- <p>Invoice Date: {{ invoiceBillConfig.invoiceDate }}</p> -->
                                         </div>
@@ -281,7 +283,7 @@
                                     <div class="w-full border-y-[2px] mb-2"
                                         [ngStyle]="{'border-color':getTemplateClass('')}">
                                         <h3 class="py-3 text-lg font-bold text-center"
-                                            [ngStyle]="{'color':getTemplateClass('')}">Sale Order</h3>
+                                            [ngStyle]="{'color':getTemplateClass('')}">{{invoiceBillConfig.invoice_type == 'sale'? 'Sale': 'Estimate'}} Order</h3>
                                     </div>
 
                                     <!-- Customer Details -->
@@ -393,7 +395,7 @@
                                                         <span>Total</span>
                                                         <span>₹{{invoiceBillConfig?.total}}</span>
                                                     </div>
-                                                    <div class="flex justify-between">
+                                                    <div class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                                                         <span>Advance</span>
                                                         <span>₹{{invoiceBillConfig.total - invoiceBillConfig.balance_left}}</span>
                                                     </div>
@@ -456,12 +458,12 @@
                                         class="mb-2" />
                                     <span class="text-sm font-medium text-gray-700">WHATSAPP</span>
                                 </button>
-                                <button
+                                <!-- <button
                                     class="cursor-pointer flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">
                                     <img src="https://cdn-icons-png.flaticon.com/512/733/733533.png" alt="SMS"
                                         class="mb-2" />
                                     <span class="text-sm font-medium text-gray-700">SMS</span>
-                                </button>
+                                </button> -->
 
                             </div>
                         </div>
