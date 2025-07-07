@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FileService } from '../../../services/file.service';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
 import { CommonModule } from '@angular/common';

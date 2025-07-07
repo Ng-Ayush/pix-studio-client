@@ -53,6 +53,10 @@ export const routes: Routes = [
     loadComponent: () => import("./components/manage-profile/manage-profile.component").then(m => m.ManageProfileComponent)
   },
   {
+    path: 'features',
+    loadComponent: () => import("./components/features/features.component").then(m => m.FeaturesComponent)
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [
