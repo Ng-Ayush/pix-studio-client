@@ -11,7 +11,7 @@ import { interval } from 'rxjs';
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,RouterLink,FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, FormsModule],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.scss'
 })
@@ -22,17 +22,15 @@ export class AddUserComponent {
   isSubmitting = false;
   itemId: any;
   todayDate: any = new Date();
-  searchTerm:any=''
+  searchTerm: any = '';
 
-
-
-  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router:Router) {
+  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
-      name: ['', [Validators.required]],
+      studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
       role: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      studio_logo:['',Validators.required]
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
@@ -48,9 +46,9 @@ export class AddUserComponent {
 
   }
 
-  togglePassword(): void {
-    this.showPassword = !this.showPassword;
-  }
+  // togglePassword(): void {
+  //   this.showPassword = !this.showPassword;
+  // }
 
   onSubmit(): void {
     if (this.userForm.valid) {
@@ -61,7 +59,7 @@ export class AddUserComponent {
             this.alert.success(res.message);
             this.router.navigate(['admin/users'])
           } else {
-            
+
             this.alert.error(res.message);
           }
         })
@@ -89,6 +87,9 @@ export class AddUserComponent {
     interval(1000).subscribe(() => {
       this.todayDate = new Date();
     })
+  }
+  onFileSelected(event: any) {
+
   }
 
 }

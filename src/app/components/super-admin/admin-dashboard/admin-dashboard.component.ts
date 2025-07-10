@@ -24,7 +24,7 @@ export class AdminDashboardComponent {
   ) { }
 
   ngOnInit() {
-    this.loadDashboardStats();
+    // this.loadDashboardStats();
     this.getRealTime();
   }
 

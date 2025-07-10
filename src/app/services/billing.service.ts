@@ -9,8 +9,8 @@ import { Observable, of } from 'rxjs';
 export class BillingService extends BaseService {
 
   private mockBookings:any = [
-    { date: '2025-08-14', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK001' },
-    { date: '2025-08-14', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK002' },
+    { date: '2025-08-14', name: 'Suraj', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK001' },
+    { date: '2025-08-14', name: 'Ayush', address: 'Ashiyana, Kanpur', phone: 'XXXXXX', id: 'BK002' },
     { date: '2025-08-21', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK003' },
     { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK004' },
     { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK005' },
