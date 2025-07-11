@@ -17,7 +17,6 @@ export class ManageFeaturesComponent {
   stats: any;
   todayDate: any = new Date();
   isModalOpen: boolean = false;
-  isEdit: boolean = false;
   users: any = [];
   deleteModal: boolean = false;
   id:Number=0;

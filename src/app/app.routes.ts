@@ -132,6 +132,10 @@ export const routes: Routes = [
         path: 'notifications',
         loadComponent: () => import("./components/super-admin/manage-features/notification/notification.component").then(m => m.NotificationComponent),
       },
+      {
+        path: 'practice',
+        loadComponent: () => import("./components/super-admin/practicevalidation/practicevalidation.component").then(m => m.PracticevalidationComponent),
+      },
    
     ]
 

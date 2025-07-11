@@ -18,8 +18,6 @@ import { AlertService } from '../../../services/alert.service';
 export class UsersComponent {
   stats: any;
   todayDate: any = new Date();
-  isModalOpen: boolean = false;
-  isEdit: boolean = false;
   users: any = [];
   deleteModal: boolean = false;
   id:Number=0;

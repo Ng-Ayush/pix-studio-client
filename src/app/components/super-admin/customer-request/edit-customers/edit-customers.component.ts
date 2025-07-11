@@ -31,6 +31,7 @@ export class EditCustomersComponent {
     this.userForm = this.fb.group({
       customer_name: ['', [Validators.required]],
       priority: ['', [Validators.required]],
+      phone_number: ['', [Validators.required]],
    
     });
     this.itemId = this.route.snapshot.paramMap.get('id');

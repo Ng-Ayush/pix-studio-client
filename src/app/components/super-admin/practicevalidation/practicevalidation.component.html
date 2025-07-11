@@ -1,0 +1,24 @@
+<form [formGroup]="loginForm" (ngSubmit)="getLoginCredential()">
+    <input type="text" formControlName="name" placeholder="enter name">
+    <br>
+    <div *ngIf="name && name.hasError('required')">this filed is requird</div>
+    <div *ngIf="name?.hasError?.('pattern')">
+        Only small alphabets allowed.
+    </div>
+    <br>
+    <input type="text" formControlName="email" placeholder="enter email">
+    <br>
+    <div *ngIf="loginForm?.get('email') && loginForm?.get('email')?.hasError('required')">email is required</div>
+    <div *ngIf="loginForm?.get('email')?.hasError?.('pattern') || loginForm.get('email')?.untouched">
+        Enter a valid email.
+    </div>
+    <br>
+    <input type="text" formControlName="password" placeholder="enter password">
+    <br>
+    <div *ngIf="loginForm?.get('password') && loginForm?.get('password')?.hasError('required')">password is required</div>
+    <div *ngIf="loginForm.get('password')?.hasError('minlength')">
+        Atlest 10 character contains password.
+    </div>
+    <br>
+    <button [disabled]="loginForm.invalid">Submit</button>
+</form>
