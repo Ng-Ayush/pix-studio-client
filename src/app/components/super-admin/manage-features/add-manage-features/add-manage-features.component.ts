@@ -28,7 +28,6 @@ export class AddManageFeaturesComponent {
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router:Router) {
     this.userForm = this.fb.group({
       title: ['', [Validators.required]],
-      name: ['', [Validators.required]],
       category: ['', [Validators.required]],
       category_icon: ['', [Validators.required]],
       price: ['', [Validators.required]],

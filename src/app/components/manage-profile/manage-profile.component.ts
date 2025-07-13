@@ -53,7 +53,7 @@ export class ManageProfileComponent {
       this.service.updateProfile({ ...this.userForm.value, id: this.currentUserId }, (res: any) => {
         if (res.status == 200) {
           this.alert.success(res.message)
-          this.router.navigate(['dashboard'])
+          this.router.navigate(['dashboard']);
         } else {
           this.alert.error(res.message);
         }

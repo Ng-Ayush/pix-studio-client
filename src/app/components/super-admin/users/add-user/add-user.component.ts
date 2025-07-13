@@ -6,6 +6,7 @@ import { AlertService } from '../../../../services/alert.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
+import { FolderListingScreenComponent } from '../../../folder-listing-screen/folder-listing-screen.component';
 
 
 @Component({
@@ -30,7 +31,10 @@ export class AddUserComponent {
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
       role: ['', [Validators.required]],
-      studio_logo:['',Validators.required]
+      studio_logo:['default.jpg',Validators.required],
+      youtube_url:['',Validators.required],
+      instagram_url:['',Validators.required],
+      facebook_url:['',Validators.required],
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
@@ -51,7 +55,10 @@ export class AddUserComponent {
   // }
 
   onSubmit(): void {
+    console.log(this.userForm.value);
     if (this.userForm.valid) {
+
+      
       this.isSubmitting = true;
       if (!this.itemId) {
         this.service.createUsers({ ...this.userForm.value }, (res: any) => {
@@ -89,7 +96,10 @@ export class AddUserComponent {
     })
   }
   onFileSelected(event: any) {
-
+    console.log(event.target.files[0]);
+    
   }
+
+  
 
 }

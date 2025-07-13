@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <aside class="sidebar justify-center">
-       <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -69,7 +69,7 @@
         </div>
 
         <main class="min-h-screen bg-gray-50">
-            <div >
+            <div>
                 <div class="flex justify-between items-center">
                     <div>
                         <!-- <h1 class="text-3xl font-bold text-gray-800">Users</h1> -->
@@ -103,7 +103,7 @@
 
                 <div class="min-h-min   flex items-center justify-center">
                     <div class="bg-white rounded-lg p-8 w-full">
-                       <div class="text-center mb-8">
+                        <div class="text-center mb-8">
                             <h2 class="text-2xl font-bold text-gray-800"> Update Profile</h2>
                         </div>
 
@@ -121,7 +121,7 @@
                                         Name is required
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email
                                         Address</label>
@@ -150,7 +150,7 @@
                                         Phone number is required
                                     </div>
                                 </div>
-                             
+
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Address</label>
@@ -166,10 +166,11 @@
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Terms and Conditons</label>
-                                    <input type="text" id="name" formControlName="terms_and_condition"
+
+                                    <textarea type="text" id="name" formControlName="terms_and_condition"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your full name"
-                                        [class.border-red-500]="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched">
+                                        [class.border-red-500]="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched"></textarea>
                                     <div *ngIf="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         TnC is required
@@ -186,24 +187,24 @@
                                         class="text-red-500 text-sm mt-1">
                                         Studio icon is required
                                     </div>
-                                </div> 
+                                </div>
                                 <div *ngIf="userForm.value.studio_icon">
                                     Preview Studio Icon
                                     <img class="h-48 w-96 object-cover ..." [src]="userForm.value.studio_icon" />
                                 </div>
                             </div>
-                                <button type="submit" [disabled]="userForm.invalid || isSubmitting"
-                                    class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
-                                    <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    {{ currentUserId ? "Update User" : 'Create User' }}
-                                </button>
+                            <button type="submit" [disabled]="userForm.invalid || isSubmitting"
+                                class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                {{ currentUserId ? "Update User" : 'Create User' }}
+                            </button>
                         </form>
 
                     </div>
