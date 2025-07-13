@@ -85,6 +85,8 @@ export class BaseService {
     'getFeatureById': '/api/mystudio/manage-features/getFeatureById',
     'updateFeature': '/api/mystudio/manage-features/updateFeature',
     'deleteFeatures': '/api/mystudio/manage-features/deleteFeatures',
+    'createOrder': '/api/mystudio/manage-features/create-order',
+    'verifyPayment': '/api/mystudio/manage-features/verify-payment',
     'onImgUpload': '/api/mystudio/manage-features/onImgUpload',
     'getAllRequests': '/api/mystudio/customer-request/getAllRequests',
     'getRequestById': '/api/mystudio/customer-request/getRequestById',

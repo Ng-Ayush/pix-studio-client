@@ -80,4 +80,12 @@ export class AdminService extends BaseService {
   updateProfile(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateProfile'], callback)
   }
+  
+   createOrder(params:any, callback:any) {
+    return this.postData(params, this.httpUrls['createOrder'], callback)
+  }
+
+  verifyPayment(params:any, callback:any) {
+    return this.postData(params, this.httpUrls['verifyPayment'], callback)
+  }
 }

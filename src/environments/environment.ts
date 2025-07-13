@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
+  razorpay_key:"rzp_test_jODMqQ414J8DOi",
   firebaseConfig : {
     apiKey: "AIzaSyBH-L41Eu4UImmKAnBu-L3db30p_fwNfEs",
     authDomain: "surajproductions-3f28b.firebaseapp.com",

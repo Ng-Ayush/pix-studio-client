@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { interval } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
+import { AdminService } from '../../services/admin.service';
+import { environment } from '../../../environments/environment';
+import { AlertService } from '../../services/alert.service';
+declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
@@ -18,7 +21,9 @@ export class FeaturesComponent {
   todayDate: any = new Date();
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private _adminService:AdminService,
+    private alert: AlertService
   ) { }
 
   ngOnInit() {
@@ -56,15 +61,14 @@ export class FeaturesComponent {
   travelCards:any = [
     {
       id: 1,
-      name: "Project Name",
+      title: "Project Name",
       description:
         "Discover the most beautiful destinations to explore in 2023, featuring diverse landscapes and cultural experiences for an unforgettable adventure.",
-      image: "/images/coastal-view.png",
+      category_icon: "/images/coastal-view.png",
       price: 10,
       category: "Travel",
-      fileType: "Video",
-      duration: "7 Days",
-      bestTime: "December - March",
+      youtube_link:'',
+      drive_link:'',
     },
     {
       id: 2,
@@ -142,12 +146,53 @@ export class FeaturesComponent {
     this.showVideoModal = true
   }
 
-  buy(): void {
-    // if (this.selectedCard) {
-    //   const randomVideoId = this.youtubeVideoIds[Math.floor(Math.random() * this.youtubeVideoIds.length)]
-    //   const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1`
-    //   this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
-    // }
+   payNow() {
+    // 1. Create Razorpay order
+    const params:any = {
+      amount: 50000,
+      currency: 'INR',
+      receipt: 'order_rcptid_11',
+    };
+
+    this._adminService.createOrder(params,(order:any)=>{
+
+        console.log("ORDER ",order);
+        
+        const options: any = {
+          key: environment.razorpay_key,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'Suraj Studio',
+          description: 'Test Transaction',
+          order_id: order.id,
+          handler: (response: any) => {
+            // 2. Send payment info to backend for verification
+            console.log("GOTHE ORDER",response);
+            
+            let data = {razorpay_payment_id:response.razorpay_payment_id,razorpay_order_id:response.razorpay_order_id,razorpay_signature:response.razorpay_signature}
+            this._adminService.verifyPayment(data,(res:any)=>{
+              console.log("GOT PAYMENT",res);
+              
+               if(res.status == 200){
+                  this.alert.success(res.message);
+               }else{
+                  this.alert.error(res.message);
+               }
+            })
+          },
+          prefill: {
+            name: 'Test User',
+            email: 'test@example.com',
+            contact: '9999999999',
+          },
+          theme: {
+            color: '#3399cc',
+          },
+        };
+
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+      });
   }
 
   closeVideo(): void {
@@ -155,4 +200,6 @@ export class FeaturesComponent {
     this.selectedCard = null
     this.currentVideoUrl = ""
   }
+
+ 
 }
