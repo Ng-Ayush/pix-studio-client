@@ -68,21 +68,18 @@
     </div>
 
     <div class="min-h-screen bg-gray-50 p-6">
-      <!-- Header -->
       <div class="mb-8">
         <h1 class="text-lg font-medium text-gray-800 mb-6">New Arrivals Project</h1>
 
-        <!-- Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <div *ngFor="let card of travelCards; let i = index" class="w-full max-w-sm">
+          <div *ngFor="let card of features; let i = index" class="w-full max-w-sm">
 
-            <!-- Card Container -->
             <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-4 shadow-lg mb-4">
-              <!-- Image Container with Play Button -->
               <div class="relative cursor-pointer group" (click)="playVideo(card)">
-                <img [src]="card.image" [alt]="card.name" class="w-full h-40 object-cover rounded-xl">
+                <img
+                  src="https://www.shutterstock.com/image-vector/new-feature-banner-speech-bubble-260nw-2186051519.jpg"
+                  [alt]="card.title" class="w-full h-40 object-cover rounded-xl">
 
-                <!-- Play Button Overlay -->
                 <div class="absolute inset-0 flex items-center justify-center">
                   <div
                     class="bg-white bg-opacity-90 rounded-full p-4 group-hover:bg-opacity-100 transition-all duration-200 shadow-lg">
@@ -92,22 +89,15 @@
                   </div>
                 </div>
 
-                <!-- Price Badge -->
                 <div class="absolute bottom-3 left-3">
                   <span class="text-white text-lg font-semibold">₹{{ card.price }}</span>
                 </div>
               </div>
 
-              <!-- Category and File Type Labels -->
-              <div class="flex justify-between mt-3 px-1">
-                <span class="text-white text-xs opacity-80">Category</span>
-                <span class="text-white text-xs opacity-80">File type</span>
-              </div>
             </div>
 
-            <!-- Project Details -->
             <div class="px-1">
-              <h3 class="text-gray-900 font-semibold text-base mb-2">{{ card.name }}</h3>
+              <h3 class="text-gray-900 font-semibold text-base mb-2">{{ card.title }}</h3>
               <p class="text-gray-600 text-sm leading-relaxed">{{ card.description }}</p>
             </div>
 
@@ -115,19 +105,17 @@
         </div>
       </div>
 
-      <!-- Video Modal -->
       <div *ngIf="showVideoModal"
         class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-outbg-gray-100 p-4 sm:p-8 flex justify-center items-start min-h-screen"
         (click)="closeVideo()">
         <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-auto"
           (click)="$event.stopPropagation()">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-gray-800">{{ selectedCard?.name }}</h2>
+            <h2 class="text-2xl font-bold text-gray-800">{{ selectedCard?.title }}</h2>
             <button (click)="closeVideo()"
               class="text-gray-500 hover:text-gray-700 text-2xl font-bold px-2 cursor-pointer">&times;</button>
           </div>
 
-          <!-- YouTube Video iframe -->
           <div class="relative w-full" style="padding-bottom: 56.25%; height: 0;">
             <iframe [src]="currentVideoUrl" class="absolute top-0 left-0 w-full h-full rounded-lg" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -135,23 +123,20 @@
             </iframe>
           </div>
 
-          <!-- Video Info -->
           <div class="mt-4 p-4 bg-gray-50 rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <p class="mb-2"><strong>Category:</strong> {{ selectedCard?.category }}</p>
-                <p class="mb-2"><strong>Duration:</strong> {{ selectedCard?.duration }}</p>
               </div>
               <div>
-                <p class="mb-2"><strong>Price:</strong> <span class="text-purple-600 text-lg font-bold"> ₹{{ selectedCard?.price
+                <p class="mb-2"><strong>Price:</strong> <span class="text-purple-600 text-lg font-bold"> ₹{{
+                    selectedCard?.price
                     }}</span></p>
-                <p class="mb-2"><strong>Best Time:</strong> {{ selectedCard?.bestTime }}</p>
               </div>
             </div>
             <p class="mt-3 text-gray-600">{{ selectedCard?.description }}</p>
           </div>
 
-          <!-- Action Buttons -->
           <div class="mt-4 flex gap-3">
             <button (click)="payNow()"
               class="cursor-pointer bg-indigo-600 text-white py-2 px-4 hover:bg-indigo-700 transition-colors duration-200">

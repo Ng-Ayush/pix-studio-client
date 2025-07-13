@@ -28,6 +28,21 @@ export class FeaturesComponent {
 
   ngOnInit() {
     this.getRealTime();
+    this.getAllFeatures()
+  }
+
+  features:any=[];
+
+  getAllFeatures() {
+    this._adminService.getAllFeatures((res: any) => {
+      if (res.status == 200) {
+        this.features = res.data;
+        console.log(res.data);
+        
+      } else {
+        this.alert.error(res.message);
+      }
+    })
   }
 
   getRealTime() {
