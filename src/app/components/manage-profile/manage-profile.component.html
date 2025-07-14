@@ -53,18 +53,18 @@
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
-            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+            <div class="w-full flex border-t border-white p-[10px] ">
                 <div class="flex gap-5">
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
                         {{todayDate|date : 'dd-MM-yyyy'}}</h3>
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+
             </div>
         </div>
 
@@ -95,7 +95,7 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search users" [(ngModel)]="searchTerm" 
+                    <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm" 
                         class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                 </div> -->
 
@@ -110,15 +110,15 @@
                         <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6 ">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full
+                                    <label for="studio_name" class="block text-sm font-medium text-gray-700 mb-2">Studio
                                         Name</label>
-                                    <input type="text" id="name" formControlName="name"
+                                    <input type="text" autocomplete="off" id="studio_name" formControlName="studio_name"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter your full name"
-                                        [class.border-red-500]="userForm.get('name')?.invalid && userForm.get('name')?.touched">
-                                    <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched"
+                                        placeholder="Enter your Studio Name"
+                                        [class.border-red-500]="userForm.get('studio_name')?.invalid && userForm.get('studio_name')?.touched">
+                                    <div *ngIf="userForm.get('studio_name')?.invalid && userForm.get('studio_name')?.touched"
                                         class="text-red-500 text-sm mt-1">
-                                        Name is required
+                                        Studio Name is required
                                     </div>
                                 </div>
 
@@ -154,10 +154,10 @@
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Address</label>
-                                    <input type="text" id="name" formControlName="address"
+                                    <textarea  autocomplete="off" id="name" formControlName="address"  rows="4"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter your full name"
-                                        [class.border-red-500]="userForm.get('address')?.invalid && userForm.get('address')?.touched">
+                                        placeholder="Enter Address"
+                                        [class.border-red-500]="userForm.get('address')?.invalid && userForm.get('address')?.touched"></textarea>
                                     <div *ngIf="userForm.get('address')?.invalid && userForm.get('address')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Address is required
@@ -166,14 +166,49 @@
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Terms and Conditons</label>
-
-                                    <textarea type="text" id="name" formControlName="terms_and_condition"
+                                    <textarea id="name" formControlName="terms_and_condition" rows="4"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter your full name"
+                                        placeholder="Enter Terms n Condition"
                                         [class.border-red-500]="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched"></textarea>
                                     <div *ngIf="userForm.get('terms_and_condition')?.invalid && userForm.get('terms_and_condition')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         TnC is required
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Youtube
+                                        Url</label>
+                                    <input type="text" autocomplete="off" id="phone" formControlName="youtube_url"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your youtube url"
+                                        [class.border-red-500]="userForm.get('youtube_url')?.invalid && userForm.get('youtube_url')?.touched">
+                                    <div *ngIf="userForm.get('youtube_url')?.invalid && userForm.get('youtube_url')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Youtube Url is required
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Instagram
+                                        Url</label>
+                                    <input type="text" autocomplete="off" id="phone" formControlName="instagram_url"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your instagram url"
+                                        [class.border-red-500]="userForm.get('instagram_url')?.invalid && userForm.get('instagram_url')?.touched">
+                                    <div *ngIf="userForm.get('instagram_url')?.invalid && userForm.get('instagram_url')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Instagram Url is required
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Facebook
+                                        Url</label>
+                                    <input type="text" autocomplete="off" id="phone" formControlName="facebook_url"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your facebook url"
+                                        [class.border-red-500]="userForm.get('facebook_url')?.invalid && userForm.get('facebook_url')?.touched">
+                                    <div *ngIf="userForm.get('facebook_url')?.invalid && userForm.get('facebook_url')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Facebook Url is required
                                     </div>
                                 </div>
                                 <div>
@@ -190,7 +225,7 @@
                                 </div>
                                 <div *ngIf="userForm.value.studio_icon">
                                     Preview Studio Icon
-                                    <img class="h-48 w-96 object-cover ..." [src]="userForm.value.studio_icon" />
+                                    <img class="h-24 w-24 object-cover ..." [src]="userForm.value.studio_icon" width="50" height="50" />
                                 </div>
                             </div>
                             <button type="submit" [disabled]="userForm.invalid || isSubmitting"

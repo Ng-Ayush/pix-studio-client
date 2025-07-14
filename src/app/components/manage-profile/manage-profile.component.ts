@@ -27,12 +27,15 @@ export class ManageProfileComponent {
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
-      name: ['', [Validators.required]],
+      studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
       address: ['', [Validators.required]],
       terms_and_condition: ['', [Validators.required]],
-      studio_icon:['',Validators.required]
+      studio_icon:['',Validators.required],
+      youtube_url:['',Validators.required],
+      instagram_url:['',Validators.required],
+      facebook_url:['',Validators.required],
     });
   }
 
@@ -80,7 +83,7 @@ export class ManageProfileComponent {
     reader.onload = async () => {
       let compressedImage = reader.result as string;
       let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `studio-image/${this.userForm.value.name.split(" ").join("_")}`);
+      const fileRef = ref(this.storage, `studio-image/${this.userForm.value.studio_name.split(" ").join("_")}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
       
       uploadTask.then(async () => {

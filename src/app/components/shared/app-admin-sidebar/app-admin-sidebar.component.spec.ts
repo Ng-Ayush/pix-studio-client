@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CalendarComponent } from './calendar.component';
+import { AppAdminSidebarComponent } from './app-admin-sidebar.component';
 
-describe('CalendarComponent', () => {
-  let component: CalendarComponent;
-  let fixture: ComponentFixture<CalendarComponent>;
+describe('AppAdminSidebarComponent', () => {
+  let component: AppAdminSidebarComponent;
+  let fixture: ComponentFixture<AppAdminSidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CalendarComponent]
+      imports: [AppAdminSidebarComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CalendarComponent);
+    fixture = TestBed.createComponent(AppAdminSidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -97,4 +97,8 @@ export class ManageFeaturesComponent {
     })
 
   }  
+
+  back(){
+    this.router.navigate(['/admin/dashboard']);
+  }
 }

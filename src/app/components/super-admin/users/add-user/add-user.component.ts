@@ -31,10 +31,10 @@ export class AddUserComponent {
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
       role: ['', [Validators.required]],
-      studio_logo:['default.jpg',Validators.required],
-      youtube_url:['',Validators.required],
-      instagram_url:['',Validators.required],
-      facebook_url:['',Validators.required],
+      studio_logo: ['default.jpg', Validators.required],
+      youtube_url: ['', Validators.required],
+      instagram_url: ['', Validators.required],
+      facebook_url: ['', Validators.required],
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
@@ -55,18 +55,15 @@ export class AddUserComponent {
   // }
 
   onSubmit(): void {
-    console.log(this.userForm.value);
     if (this.userForm.valid) {
-
-      
       this.isSubmitting = true;
       if (!this.itemId) {
         this.service.createUsers({ ...this.userForm.value }, (res: any) => {
           if (res.status == 200) {
             this.alert.success(res.message);
+            this.userForm.reset();
             this.router.navigate(['admin/users'])
           } else {
-
             this.alert.error(res.message);
           }
         })
@@ -75,15 +72,12 @@ export class AddUserComponent {
           if (res.status == 200) {
             this.alert.success(res.message)
             this.router.navigate(['admin/users'])
-
           } else {
             this.alert.error(res.message);
           }
-
         })
       }
       this.isSubmitting = false;
-      this.userForm.reset();
     } else {
       Object.keys(this.userForm.controls).forEach(key => {
         this.userForm.get(key)?.markAsTouched();
@@ -97,9 +91,9 @@ export class AddUserComponent {
   }
   onFileSelected(event: any) {
     console.log(event.target.files[0]);
-    
+
   }
 
-  
+
 
 }

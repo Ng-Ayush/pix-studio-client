@@ -248,3 +248,28 @@
         transform: scale(0.95);
     }
 }
+
+.calendar-day:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 1px;
+}
+
+.event-details {
+    transition: all 0.3s ease;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.event-details.active {
+    opacity: 1;
+    height: auto;
+}

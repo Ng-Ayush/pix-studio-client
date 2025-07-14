@@ -441,5 +441,8 @@ export class NewBillComponent {
     })
   }
 
+  back(){
+    this.router.navigate(['/billing']);
+  }
 
 }

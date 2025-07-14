@@ -52,18 +52,18 @@
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
-            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+            <div class="w-full flex border-t border-white p-[10px] ">
                 <div class="flex gap-5">
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
                         {{todayDate|date : 'dd-MM-yyyy'}}</h3>
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+                
             </div>
         </div>
 
@@ -71,17 +71,17 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-800">users</h1>
-                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Users</p>
+                        <h1 class="text-3xl font-bold text-gray-800">Admin User</h1>
+                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Admin Admins</p>
                     </div>
-                    <button (click)="addUsers()"
+                    <button (click)="addAdmins()"
                         class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                        Add Users
+                        Add Admin
                     </button>
                 </div>
 
@@ -94,7 +94,7 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search users" [(ngModel)]="searchTerm" (input)="searchUsers()"
+                    <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm" (input)="searchAdmins()"
                         class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                 </div>
 

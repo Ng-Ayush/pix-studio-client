@@ -9,13 +9,13 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
-            </a>
+            </a> -->
             <a href="javascript:void(0);" class="sidebar-nav-item">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -24,7 +24,7 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -51,23 +51,23 @@
                             class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
-                        <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <h2 class="text-white">Hello, {{commonservice?.adminUserData?.studio_name}}</h2>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
-            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+            <div class="w-full flex border-t border-white p-[10px] ">
                 <div class="flex gap-5">
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
                         {{todayDate|date : 'dd-MM-yyyy'}}</h3>
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+
             </div>
         </div>
 
-        <div class="p-10 mt-[20px]">
+        <div class="p-8">
             <div class="grid grid-cols-4 gap-4 mb-4">
                 <a class="dashboard-item" [routerLink]="['/billing']">
                     <div class="dashboard-item-icon">
@@ -122,6 +122,32 @@
             </div>
 
             <div class="grid grid-cols-3 gap-5 relative">
+                <div class="dashboard-item">
+                    <h3 class="dashboard-item-title mb-2 text-center text-2xl self-center">Dynamic Image with link</h3>
+                    <a href="javascript:void(0);" class="dynamic-image">
+                        <span>Image Placeholder</span>
+                    </a>
+                </div>
+
+                <div class="dashboard-item invoice">
+                    <h3 class="dashboard-item-title mb-2">Sales</h3>
+                    <apx-chart [series]="salesSeries" *ngIf="salesSeries" [chart]="chartOptions"
+                        [xaxis]="xAxis"></apx-chart>
+                </div>
+
+                <div class="dashboard-item invoice">
+                    <h3 class="dashboard-item-title mb-2">Pending</h3>
+                    <apx-chart *ngIf="estimateSeries" [series]="estimateSeries" [chart]="chartOptions"
+                        [xaxis]="xAxis"></apx-chart>
+                    <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
+                </div>
+                <select id="granularity" [(ngModel)]="granularity" (change)="loadDashboardStats()"
+                    class="border border-[#5758b2] px-2 py-1 rounded absolute right-0">
+                    <option value="daily">Daily</option>
+                    <!-- <option value="weekly">Weekly</option> -->
+                    <option value="monthly">Monthly</option>
+                </select>
+
                 <a class="dashboard-item " [routerLink]="['/photo-selection']" style="align-content: center;">
                     <div class="dashboard-item-icon block m-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -132,25 +158,6 @@
                     </div>
                     <h3 class="dashboard-item-title text-2xl">Photos Selection</h3>
                 </a>
-
-                    <div class="dashboard-item invoice">
-                        <h3 class="dashboard-item-title mb-2">Sales</h3>
-                        <apx-chart [series]="salesSeries" *ngIf="salesSeries" [chart]="chartOptions" [xaxis]="xAxis"></apx-chart>
-                    </div>
-
-                    <div class="dashboard-item invoice">
-                        <h3 class="dashboard-item-title mb-2">Pending</h3>
-                        <apx-chart *ngIf="estimateSeries" [series]="estimateSeries" [chart]="chartOptions" [xaxis]="xAxis"></apx-chart>
-                        <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
-                    </div>
-                    <select id="granularity" [(ngModel)]="granularity" (change)="loadDashboardStats()"
-                        class="border border-[#5758b2] px-2 py-1 rounded absolute right-0">
-                        <option value="daily">Daily</option>
-                        <!-- <option value="weekly">Weekly</option> -->
-                        <option value="monthly">Monthly</option>
-                    </select>
-
-
                 <div class="dashboard-item">
                     <div class="dashboard-item-icon block m-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -172,12 +179,11 @@
                                     d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v2.879h2.54v4.032c0 .574.416 1.042.94.926 1.22-.287 2.532-.46 3.846-.46 1.314 0 2.626.173 3.846.46.524.116.94-.352.94-.926v-4.032h2.54v-2.879h-2.54v-6.987C20.343 2.872 16.343 0 12 0S3.657 2.872 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v2.879h2.54v4.032c0 .574.416 1.042.94.926 1.22-.287 2.532-.46 3.846-.46 1.314 0 2.626.173 3.846.46.524.116.94-.352.94-.926v-4.032h2.54v-2.879h-2.54v-6.987C20.343 2.872 16.343 0 12 0z"
                                     clip-rule="evenodd" />
                             </svg></a>
-                        <a  class="hover:bg-indigo-200"><svg viewBox="0 0 24 24"
-                                fill="currentColor" class="w-6 h-6">
+                        <a class="hover:bg-indigo-200"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
                                     d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.148 3.228-1.691 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.148-4.771-1.691-4.919-4.919-.057-1.265-.069-1.644-.069-4.849 0-3.205.012-3.584.069-4.849.148-3.228 1.691-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 2.16c-3.259 0-3.668.014-4.948.079-3.102.141-4.555 1.589-4.696 4.696-.065 1.28-.078 1.688-.078 4.948s.013 3.668.078 4.948c.141 3.101 1.589 4.555 4.696 4.696 1.28.065 1.687.077 4.948.077s3.668-.013 4.948-.077c3.101-.141 4.555-1.589 4.696-4.696.065-1.28.077-1.687.077-4.948s-.012-3.668-.077-4.948c-.141-3.102-1.589-4.555-4.696-4.696-1.28-.065-1.687-.078-4.948-.078zm5.8 7.229c-.446 0-.809-.363-.809-.809 0-.446.363-.809.809-.809.446 0 .809.363.809.809 0 .446-.363.809-.809.809zm-5.8 3.985c-3.238 0-5.927-2.689-5.927-5.927 0-3.238 2.689-5.927 5.927-5.927 3.237 0 5.927 2.689 5.927 5.927 0 3.238-2.689 5.927-5.927 5.927zm0-10.214c-2.324 0-4.214 1.89-4.214 4.214 0 2.324 1.89 4.214 4.214 4.214 2.324 0 4.214-1.89 4.214-4.214 0-2.324-1.89-4.214-4.214-4.214z" />
                             </svg></a>
-                        <a routerLink="/manage-profile"  class="hover:bg-indigo-200"><svg viewBox="0 0 24 24"
+                        <a routerLink="/manage-profile" class="hover:bg-indigo-200"><svg viewBox="0 0 24 24"
                                 fill="currentColor" class="w-6 h-6">
                                 <path
                                     d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.359 2.627-4.384 8.864 0 6.237.462 8.619 4.384 8.864 3.599.248 11.626.246 15.23 0 3.897-.266 4.359-2.626 4.384-8.863 0-6.237-.462-8.62-4.384-8.864zm-10.615 12.864v-8l7.008 3.905-7.008 4.095z" />
@@ -185,12 +191,6 @@
                     </div>
                 </div>
 
-                <div class="dashboard-item">
-                    <h3 class="dashboard-item-title mb-2 text-center text-2xl self-center">Dynamic Image with link</h3>
-                    <!-- <a  href="javascript:void(0);" class="dynamic-image">
-                    <span>Image Placeholder</span>
-                </a> -->
-                </div>
             </div>
         </div>
 

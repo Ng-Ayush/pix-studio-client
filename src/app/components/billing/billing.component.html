@@ -53,33 +53,33 @@
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
-            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+            <div class="w-full flex justify-around border-t border-white p-[10px] ">
                 <div class="flex gap-5">
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
                         {{todayDate|date : 'dd-MM-yyyy'}}</h3>
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+                
             </div>
         </div>
 
         <div class="flex flex-col h-screen font-sans">
             <header class="p-6 flex items-center justify-start space-x-4">
                 <a [routerLink]="['/billing/new-bill']"
-                    class="bg-indigo-600 text-white py-10 px-8 rounded-xl shadow-md text-center hover:bg-indigo-700 cursor-pointer">
+                    class="bg-[#5758b2f5] text-white py-10 px-8 rounded-xl shadow-md text-center hover:bg-[#5758b2] cursor-pointer">
                     <div class="text-2xl opacity-80">NEW BILL</div>
                     <div class="text-sm font-bold"> (estimate)</div>
                 </a>
-                <div class="bg-indigo-600 text-white py-10 px-8 rounded-xl shadow-md text-center">
+                <div class="bg-[#5758b2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
                     <div class="text-2xl opacity-80">Total Sale ↓</div>
                     <div class="text-sm font-bold">₹ {{totalSales|number }}</div>
                 </div>
-                <div class="bg-indigo-600 text-white py-10 px-8 rounded-xl shadow-md text-center">
+                <div class="bg-[#5758b2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
                     <div class="text-2xl opacity-80">Remaining</div>
                     <div class="text-sm font-bold">₹ {{totalRemaining|number}}</div>
                 </div>
@@ -90,7 +90,7 @@
                 <aside class="w-1/4 bg-white border-r border-gray-200 p-4 overflow-y-auto">
                     <div class="flex items-center justify-between mb-4">
                         <div class="relative w-50">
-                            <input type="text" placeholder="Search Party"
+                            <input type="text" autocomplete="off" placeholder="Search Party"
                                 class="w-full py-2 px-4 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -138,7 +138,7 @@
                                 <div>
                                     <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Party
                                         Name <span class="text-red-500">*</span></label>
-                                    <input type="text" [(ngModel)]="partyConfig.party_name" id="partyName" name="partyName"
+                                    <input type="text" autocomplete="off" [(ngModel)]="partyConfig.party_name" id="partyName" name="partyName"
                                         class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                                 </div>
                                 <div>
@@ -284,44 +284,18 @@
                         <div>
                             <h2 class="text-xl font-semibold text-gray-800">{{partyConfig.party_name}}</h2>
                             <p class="text-sm text-gray-500">Phone: {{partyConfig.phone_number}}</p>
-                            <div class="text-sm text-gray-500">
+                            <!-- <div class="text-sm text-gray-500">
                                 No Credit Limit Set | <a href="#" class="text-blue-500 hover:underline">Set Credit
                                     Limit</a>
-                            </div>
+                            </div> -->
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-500">Address:</span>
-                            <button class="text-sm text-blue-500 hover:underline">Add Address</button>
-                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                            </button>
-                            <button class="p-1 text-gray-400 hover:text-gray-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                </svg>
-                            </button>
-                            <div class="flex items-center">
-                                <span class="text-sm text-gray-500 mr-2">Party Status</span>
-                                <div
-                                    class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle"
-                                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
-                                    <label for="toggle"
-                                        class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                </div>
-                            </div>
-                        </div>
+                      
                     </div>
 
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-700">TRANSACTIONS</h3>
                         <div class="relative">
-                            <input type="text" placeholder="Search Transactions"
+                            <input type="text" autocomplete="off" placeholder="Search Transactions"
                                 class="py-2 px-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent text-sm" />
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

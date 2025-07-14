@@ -19,10 +19,10 @@
 
     <button class="btn"  (click)="captureImage()">&#128247; Capture Photo</button>
     <div class="input-group w-100">
-        <input type="text"  [(ngModel)]="ai_upload_user.name"  placeholder="Enter full name" />
+        <input type="text" autocomplete="off"  [(ngModel)]="ai_upload_user.name"  placeholder="Enter full name" />
     </div>
     <div class="input-group w-100">
-        <input type="text" [(ngModel)]="ai_upload_user.phone" placeholder="Enter mobile" />
+        <input type="text" autocomplete="off" [(ngModel)]="ai_upload_user.phone" placeholder="Enter mobile" />
         <button (click)="sendOtp()">Send OTP</button>
     </div>
     <div class="input-group w-100" *ngIf="isOTPSent">

@@ -34,10 +34,10 @@ export class UsersComponent {
   ngOnInit() {
     // this.loadDashboardStats();
     this.getRealTime();
-    this.getAllUsers()
+    this.getAllAdmins()
   }
 
-  getAllUsers() {
+  getAllAdmins() {
     this.service.getAllUsers((res: any) => {
       if (res.status == 200) {
         this.users = res.data;
@@ -54,17 +54,17 @@ export class UsersComponent {
     })
   }
 
-  addUsers() {
+  addAdmins() {
     this.router.navigate(['admin/add-user'])
   }
 
-  searchUsers() {
+  searchAdmins() {
       if (!this.searchTerm) {
         this.filteredItems = [...this.users]; 
         return;
       }
       this.filteredItems = this.users.filter((item:any) =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        item.studio_name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
 
   }
@@ -92,7 +92,7 @@ export class UsersComponent {
       if (res.status == 200) {
         this.alert.success(res.message);
         this.onClose();
-        this.getAllUsers();
+        this.getAllAdmins();
       }
     })
 

@@ -53,18 +53,18 @@
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, Suraj Production</h2>
-                        <small class="text-white">Tagline</small>
+                        <!-- <small class="text-white">Tagline</small> -->
                     </div>
                 </div>
             </div>
-            <div class="w-full flex justify-around items-center border-t border-white p-[10px] ">
+            <div class="w-full flex border-t border-white p-[10px] ">
                 <div class="flex gap-5">
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Date :
                         {{todayDate|date : 'dd-MM-yyyy'}}</h3>
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                <input type="text" placeholder="Search..." class="text-white border rounded-md py-2 px-3 text-sm">
+                
             </div>
         </div>
 
@@ -95,7 +95,7 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search customer" (input)="searchCustomer($event)"
+                    <input type="text" autocomplete="off" placeholder="Search customer" (input)="searchCustomer($event)"
                         class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                 </div>
 
@@ -167,7 +167,7 @@
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
                                 </div>
-                                <input type="text" placeholder="Full Name" [(ngModel)]="customer_config.name"
+                                <input type="text" autocomplete="off" placeholder="Full Name" [(ngModel)]="customer_config.name"
                                     (keydown.enter)="onSubmit()" class="flex-1 p-3 outline-none" />
                             </div>
 
@@ -181,7 +181,7 @@
                                         </path>
                                     </svg>
                                 </div>
-                                <input type="text" placeholder="Mobile" maxlength="10"
+                                <input type="text" autocomplete="off" placeholder="Mobile" maxlength="10"
                                     [(ngModel)]="customer_config.phone" (keydown.enter)="onSubmit()"
                                     class="flex-1 p-3 outline-none" />
                             </div>

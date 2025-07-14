@@ -44,16 +44,27 @@ export class DashboardComponent implements OnInit {
   xAxis: ApexXAxis = {
     categories: []
   };
+  currentUserId:any=-1;
   constructor(
     private fileService: FileService,
     private router: Router,
     private _service: AdminService,
-    private commonservice:CommonService
+    public commonservice:CommonService
   ) { }
 
   ngOnInit() {
+    this.getAdminUserData();
     this.loadDashboardStats();
     this.getRealTime();
+  }
+
+  getAdminUserData(){
+     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+      this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
+      this.commonservice.adminUserData = res;
+      console.log(res);
+      
+    })
   }
 
   getRealTime() {
