@@ -68,13 +68,14 @@ export class LoginComponent {
     };
     this.authService.getOTPForPinUser(params, (res: any) => {
       if (res.status == 200) {
-     let currentUser:any = res.user_id;
+        let currentUser:any = res.user_id;
         localStorage.setItem("currentUserId", JSON.stringify(currentUser))
-        this.alert.success(res.message);
-        this.showOTPBox = true;
+        // this.alert.success(res.message);
+        // this.showOTPBox = true;  commented for app tesing
         this.loader = false;
         this.userData = res;
-        this.sendOTP(this.userData);
+        // this.sendOTP(this.userData);   commented for app tesing
+        this.handleOTP();
       } else {
         this.showOTPBox = false;
         this.loader = false;
@@ -101,7 +102,7 @@ export class LoginComponent {
 
   handleOTP(){
     const params: any = {
-      otp: this.otp,
+      otp: this.otp || 0,
       user_id: this.userData.user_id
     }
     this.authService.verifyOTPAndLogin(params, (res: any) => {
@@ -109,8 +110,8 @@ export class LoginComponent {
         console.log(res);
         this.alert.success(res.message);
         localStorage.setItem('token', res.token);
-        // localStorage.setItem('user', JSON.stringify(res.user));
         this.router.navigate(['/dashboard']);
+        // localStorage.setItem('user', JSON.stringify(res.user));
       } else {
         this.alert.error(res.message);
       }

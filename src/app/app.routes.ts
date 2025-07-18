@@ -57,6 +57,14 @@ export const routes: Routes = [
     loadComponent: () => import("./components/features/features.component").then(m => m.FeaturesComponent)
   },
   {
+    path: 'privacy-policy',
+    loadComponent: () => import("./components/shared/privacy-policy/privacy-policy.component").then(m => m.PrivacyPolicyComponent)
+  },
+  {
+    path: 'terms-and-condition',
+    loadComponent: () => import("./components/shared/terms-and-condition/terms-and-condition.component").then(m => m.TermsAndConditionComponent)
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [
@@ -132,8 +140,7 @@ export const routes: Routes = [
         path: 'notifications',
         loadComponent: () => import("./components/super-admin/manage-features/notification/notification.component").then(m => m.NotificationComponent),
       },
-   
-    ]
 
+    ]
   },
 ];
