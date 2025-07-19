@@ -69,7 +69,7 @@
         </div>
 
         <div class="flex flex-col h-screen font-sans">
-            <header class="p-6 flex items-center justify-start space-x-4">
+            <header class="p-6 flex items-center justify-start gap-5">
                 <a [routerLink]="['/billing/new-bill']"
                     class="bg-[#5758b2f5] text-white py-10 px-8 rounded-xl shadow-md text-center hover:bg-[#5758b2] cursor-pointer">
                     <div class="text-2xl opacity-80">NEW BILL</div>
@@ -116,7 +116,7 @@
                             [ngClass]="{'modal-fade-in': partyModal}">
                             <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
                                 <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Party</h1>
-                                <div class="flex items-center space-x-3">
+                                <div class="flex items-center gap-4">
                                     <button aria-label="Settings" class="text-gray-500 hover:text-gray-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -175,7 +175,7 @@
                                 </div> -->
                             </div>
 
-                            <nav class="flex space-x-4 sm:space-x-8 border-b border-gray-200 mb-6">
+                            <nav class="flex gap-5 sm:gap-10 border-b border-gray-200 mb-6">
                                 <button *ngFor="let tab of tabs" (click)="activeTab = tab.id" [ngClass]="{
                                 'border-indigo-600 text-indigo-600': activeTab === tab.id,
                                 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== tab.id
@@ -217,7 +217,7 @@
                                 </div> -->
                             </div>
 
-                            <footer class="flex justify-end space-x-3 pt-6 mt-8 border-t border-gray-200" *ngIf="!isEdit">
+                            <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200" *ngIf="!isEdit">
                                 <button type="button" (click)="saveAndNewParty()"
                                     class=" cursor-pointer px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Save & New
@@ -227,7 +227,7 @@
                                     Save
                                 </button>
                             </footer>
-                            <footer class="flex justify-end space-x-3 pt-6 mt-8 border-t border-gray-200" *ngIf="isEdit">
+                            <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200" *ngIf="isEdit">
                                 <button type="button" (click)="toggleDeleteModal()"
                                     class=" cursor-pointer px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Delete
@@ -257,7 +257,7 @@
     
                         </div>
     
-                        <div class="bg-gray-50 p-4 flex justify-center space-x-4 rounded-b-lg">
+                        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
                             <button (click)="deleteModal = false"
                                 class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                                 Cancel

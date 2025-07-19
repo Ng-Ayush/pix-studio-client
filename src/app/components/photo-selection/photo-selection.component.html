@@ -191,7 +191,7 @@
                                 </label>{{event.is_event_submitted ? 'Completed' : 'Pending'}}
                             </span>
                         </div>
-                        <div class="flex space-x-4">
+                        <div class="flex gap-5">
                             <div (click)="copyMessage(event)"
                                 class="bg-white rounded-full px-8 py-1 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -315,7 +315,7 @@
 
             </div>
 
-            <div class="bg-gray-50 p-4 flex justify-center space-x-4 rounded-b-lg">
+            <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
                 <button (click)="onCancel()"
                     class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                     Cancel
