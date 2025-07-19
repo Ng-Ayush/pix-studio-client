@@ -13,6 +13,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { CommonService } from '../../services/common.service';
+import { AlertService } from '../../services/alert.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -45,11 +46,13 @@ export class DashboardComponent implements OnInit {
     categories: []
   };
   currentUserId:any=-1;
+  showLogOutModal:boolean=false;
   constructor(
     private fileService: FileService,
     private router: Router,
     private _service: AdminService,
-    public commonservice:CommonService
+    public commonservice:CommonService,
+    private alert:AlertService
   ) { }
 
   ngOnInit() {
@@ -73,10 +76,6 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  logout() {
-    // TODO: Implement logout in AuthService
-    this.router.navigate(['/login']);
-  }
 
   loadDashboardStats() {
     this._service.fetchSalesAndPendingGraphData({ range: this.granularity }, (res: any) => {
@@ -88,5 +87,16 @@ export class DashboardComponent implements OnInit {
       this.estimateSeries = [{ name: 'Estimates', data: estimates }];
       this.xAxis = { categories };
     });
+  }
+
+  toggleLogoutModal(){
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+  logout(){
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 }
