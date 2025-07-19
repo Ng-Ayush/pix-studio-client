@@ -73,7 +73,7 @@
             <aside class="w-64 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Select Theme</h2>
 
-                <div class="space-y-4">
+                <div class="gap-4">
                     <button *ngFor="let template of templates" (click)="selectTemplate(template.id)" [ngClass]="{
               'bg-blue-600 text-white shadow-lg': selectedTemplateId === template.id,
               'bg-gray-100 text-gray-700 hover:bg-gray-200': selectedTemplateId !== template.id}"
@@ -287,7 +287,7 @@
                                     </div>
 
                                     <!-- Customer Details -->
-                                    <!-- <div class="mb-4 space-y-1">
+                                    <!-- <div class="mb-4 gap-2">
                                         <p class="font-semibold">Order From</p>
                                         <p class="font-bold text-sm">{{ invoiceBillConfig.customer.name }}</p>
                                         <p class="pt-2">Phone: {{ invoiceBillConfig.customer.phone }}</p>
@@ -355,24 +355,24 @@
                                     <!-- Terms and Payment Info -->
                                     <div class="flex justify-between mt-4 text-xs gap-3">
                                         <div class="flex flex-col">
-                                            <div class="space-y-1">
+                                            <div class="gap-2">
                                                 <div class="max-w-md mx-auto rounded-lg overflow-hidden">
                                                     <div class="text-white p-2 text-medium font-semibold"
                                                         [ngStyle]="{'background-color':getTemplateClass('')}">
                                                         Order Amount in Words
                                                     </div>
-                                                    <div class="p-4 space-y-2">
+                                                    <div class="p-4 gap-3">
                                                         <p>{{invoiceBillConfig.priceInWords}}</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="space-y-1">
+                                            <div class="gap-2">
                                                 <div class="max-w-md mx-auto rounded-lg overflow-hidden">
                                                     <div class="text-white p-2 text-medium font-semibold"
                                                         [ngStyle]="{'background-color':getTemplateClass('')}">
                                                         TERMS AND CONDITIONS
                                                     </div>
-                                                    <div class="p-2 space-y-2">
+                                                    <div class="p-2 gap-3">
                                                       <textarea #autoTextarea class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="2" cols="50" [(ngModel)]="invoiceBillConfig.tnc" [innerHTML]="invoiceBillConfig.tnc"></textarea>
                                                     </div>
                                                 </div>
@@ -380,13 +380,13 @@
                                         </div>
 
 
-                                        <div class="w-1/2 space-y-1">
+                                        <div class="w-1/2 gap-2">
                                             <div class="max-w-md mx-auto rounded-lg overflow-hidden">
                                                 <div class="text-white p-2 text-medium font-semibold"
                                                     [ngStyle]="{'background-color':getTemplateClass('')}">
                                                     Amount
                                                 </div>
-                                                <div class="p-4 space-y-2">
+                                                <div class="p-4 gap-3">
                                                     <div class="flex justify-between">
                                                         <span>Sub Total</span>
                                                         <span>₹{{invoiceBillConfig?.total}}</span>
@@ -434,8 +434,8 @@
 
                     <!-- Right Sidebar for Actions -->
                     <aside
-                        class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center space-y-6">
-                        <div class="flex flex-col items-center space-y-3">
+                        class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center gap-6">
+                        <div class="flex flex-col items-center gap-4">
                             <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-full shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -468,7 +468,7 @@
                             </div>
                         </div>
 
-                        <div class="w-full border-t border-gray-200 pt-6 space-y-4 flex justify-between mb-5">
+                        <div class="w-full border-t border-gray-200 pt-6 gap-4 flex justify-between mb-5">
                             <div class="flex flex-col items-center">
                                 <button (click)="downloadPDF()"
                                     class="bg-red-600 hover:bg-red-700 text-white p-3 cursor-pointer rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
