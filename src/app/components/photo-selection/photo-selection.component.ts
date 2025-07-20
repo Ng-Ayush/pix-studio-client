@@ -148,8 +148,6 @@ export class PhotoSelectionComponent {
   copyMessage(event:any){
     const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : http://localhost:4200/selection/\n\nRegards Suraj Studios`
     navigator.clipboard.writeText(message).then(() => {
-      // this.copied = true;
-      // setTimeout(() => this.copied = false, 2000); // reset after 2 sec
       this.alert.success('Message copied to clipboard');
     }).catch(err => {
       console.error('Failed to copy message: ', err);

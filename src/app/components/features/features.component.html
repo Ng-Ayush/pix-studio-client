@@ -63,7 +63,7 @@
           <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
             {{todayDate|date : 'h:mm:ss a'}} </h3>
         </div>
-        
+
       </div>
     </div>
 
@@ -118,8 +118,8 @@
 
           <div class="relative w-full" style="padding-bottom: 56.25%; height: 0;">
             <iframe [src]="currentVideoUrl" class="absolute top-0 left-0 w-full h-full rounded-lg" frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen title="YouTube video player">
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+              title="YouTube video player">
             </iframe>
           </div>
 
@@ -154,4 +154,32 @@
 
 
   </main>
+</div>
+
+<div *ngIf="showDriveLink"
+  class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+  <div #modalContent
+    class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 transform transition-all duration-300 ease-in-out"
+    [ngClass]="{'modal-fade-in': showDriveLink}">
+    <div class="flex align-items-end p-3 justify-end">
+      <button (click)="showDriveLink=false"
+        class="text-gray-500 hover:text-gray-700 text-2xl font-bold px-2 cursor-pointer">
+        &times;
+      </button>
+    </div>
+    <div class="p-6 flex flex-col items-center">
+      <div class="w-full max-w-[200px] mb-4">
+        <img src="../../../assets/drive_logo.png" alt="Delete illustration" class="w-full h-auto" />
+      </div>
+
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Please copy the drive link below.
+      </h2>
+      <div class="mt-2 relative w-full" (click)="copyDriveLink(input)">
+        <input type="text"  readonly #input
+          value="https://drive.google.com/file/d/1aBCDeFGhIjKlMnOpQrS/view?usp=sharing"
+          class="cursor-pointer w-full border border-gray-300 rounded-lg py-2 pl-3 pr-10 text-sm text-gray-700 cursor-text focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
+      </div>
+    </div>
+  </div>
 </div>

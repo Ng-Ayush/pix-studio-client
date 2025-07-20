@@ -11,7 +11,7 @@ declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule,RouterModule, ],
+  imports: [CommonModule, RouterModule,],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
 })
@@ -19,42 +19,7 @@ export class FeaturesComponent {
 
   stats: any;
   todayDate: any = new Date();
-  constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private _adminService:AdminService,
-    private alert: AlertService
-  ) { }
-
-  ngOnInit() {
-    this.getRealTime();
-    this.getAllFeatures()
-  }
-
-  features:any=[];
-
-  getAllFeatures() {
-    this._adminService.getAllFeatures((res: any) => {
-      if (res.status == 200) {
-        this.features = res.data;
-        console.log(res.data);
-        
-      } else {
-        this.alert.error(res.message);
-      }
-    })
-  }
-
-  getRealTime() {
-    interval(1000).subscribe(() => {
-      this.todayDate = new Date();
-    })
-  }
-
-  logout() {
-    this.router.navigate(['/login']);
-  }
-
+  showDriveLink: boolean = false;
   showVideoModal = false
   selectedCard: any | null = null
   currentVideoUrl: SafeResourceUrl = ""
@@ -72,142 +37,104 @@ export class FeaturesComponent {
     "M7lc1UVf-VE", // Uptown Funk
     "RgKAFK5djSk", // See You Again
   ]
-
-  travelCards:any = [
-    {
-      id: 1,
-      title: "Project Name",
-      description:
-        "Discover the most beautiful destinations to explore in 2023, featuring diverse landscapes and cultural experiences for an unforgettable adventure.",
-      category_icon: "/images/coastal-view.png",
-      price: 10,
-      category: "Travel",
-      youtube_link:'',
-      drive_link:'',
-    },
-    {
-      id: 2,
-      name: "Mountain Adventure",
-      description:
-        "Experience breathtaking mountain views and thrilling adventures in the heart of nature. Perfect for hiking enthusiasts and nature lovers.",
-      image:
-        "https://images.unsplash.com/photo-1464822759844-d150baec0494?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: 25,
-      category: "Adventure",
-      fileType: "Video",
-      duration: "5 Days",
-      bestTime: "April - October",
-    },
-    {
-      id: 3,
-      name: "City Explorer",
-      description:
-        "Explore vibrant cityscapes, rich culture, and modern architecture. Discover hidden gems in bustling metropolitan areas.",
-      image:
-        "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: 15,
-      category: "Urban",
-      fileType: "Video",
-      duration: "3 Days",
-      bestTime: "Year Round",
-    },
-    {
-      id: 4,
-      name: "Desert Safari",
-      description:
-        "Journey through golden sand dunes and experience the magic of desert landscapes. Includes camel rides and stargazing.",
-      image:
-        "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: 30,
-      category: "Desert",
-      fileType: "Video",
-      duration: "4 Days",
-      bestTime: "October - February",
-    },
-    {
-      id: 5,
-      name: "Forest Retreat",
-      description:
-        "Immerse yourself in lush green forests and discover wildlife in their natural habitat. Perfect for eco-tourism enthusiasts.",
-      image:
-        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: 20,
-      category: "Forest",
-      fileType: "Video",
-      duration: "6 Days",
-      bestTime: "May - September",
-    },
-    {
-      id: 6,
-      name: "Coastal Drive",
-      description:
-        "Take a scenic coastal drive along pristine beaches and dramatic cliffs. Experience the beauty of ocean meets land.",
-      image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: 18,
-      category: "Coastal",
-      fileType: "Video",
-      duration: "4 Days",
-      bestTime: "March - November",
-    },
-  ]
+  features: any = [];
 
 
-  playVideo(card:any): void {
-    this.selectedCard = card
+  constructor(
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private _adminService: AdminService,
+    private alert: AlertService
+  ) { }
+
+  ngOnInit() {
+    this.getRealTime();
+    this.getAllFeatures()
+  }
+
+
+  getAllFeatures() {
+    this._adminService.getAllFeatures((res: any) => {
+      if (res.status == 200) {
+        this.features = res.data;
+        console.log(res.data);
+
+      } else {
+        this.alert.error(res.message);
+      }
+    })
+  }
+
+  getRealTime() {
+    interval(1000).subscribe(() => {
+      this.todayDate = new Date();
+    })
+  }
+
+  logout() {
+    this.router.navigate(['/login']);
+  }
+
+
+
+  playVideo(card: any): void {
+    this.selectedCard = card;
     const randomVideoId = this.youtubeVideoIds[Math.floor(Math.random() * this.youtubeVideoIds.length)]
     const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
     this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
-    this.showVideoModal = true
+    this.showVideoModal = true;
   }
 
-   payNow() {
+  payNow() {
     // 1. Create Razorpay order
-    const params:any = {
+    const params: any = {
       amount: 50000,
       currency: 'INR',
       receipt: 'order_rcptid_11',
     };
 
-    this._adminService.createOrder(params,(order:any)=>{
+    this._adminService.createOrder(params, (order: any) => {
 
-        console.log("ORDER ",order);
-        
-        const options: any = {
-          key: environment.razorpay_key,
-          amount: order.amount,
-          currency: order.currency,
-          name: 'Suraj Studio',
-          description: 'Test Transaction',
-          order_id: order.id,
-          handler: (response: any) => {
-            // 2. Send payment info to backend for verification
-            console.log("GOTHE ORDER",response);
-            
-            let data = {razorpay_payment_id:response.razorpay_payment_id,razorpay_order_id:response.razorpay_order_id,razorpay_signature:response.razorpay_signature}
-            this._adminService.verifyPayment(data,(res:any)=>{
-              console.log("GOT PAYMENT",res);
-              
-               if(res.status == 200){
-                  this.alert.success(res.message);
-               }else{
-                  this.alert.error(res.message);
-               }
-            })
-          },
-          prefill: {
-            name: 'Test User',
-            email: 'test@example.com',
-            contact: '9999999999',
-          },
-          theme: {
-            color: '#3399cc',
-          },
-        };
+      console.log("ORDER ", order);
 
-        const razorpay = new Razorpay(options);
-        razorpay.open();
-      });
+      const options: any = {
+        key: environment.razorpay_key,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Suraj Studio',
+        description: 'Test Transaction',
+        order_id: order.id,
+        handler: (response: any) => {
+          // 2. Send payment info to backend for verification
+          console.log("GOTHE ORDER", response);
+
+          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature }
+          this._adminService.verifyPayment(data, (res: any) => {
+            console.log("GOT PAYMENT", res);
+
+            if (res.status == 200) {
+              this.alert.success(res.message);
+            } else {
+              this.showVideoModal = false;
+              this.showDriveLink = true;
+              this.alert.success("Feature bought successfully");
+              // this.alert.error(res.message);
+            }
+          })
+        },
+        prefill: {
+          name: 'Test User',
+          email: 'test@example.com',
+          contact: '9999999999',
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+    });
   }
 
   closeVideo(): void {
@@ -216,5 +143,14 @@ export class FeaturesComponent {
     this.currentVideoUrl = ""
   }
 
- 
+  copyDriveLink(event: any) {
+    console.dir(event.defaultValue);
+    const message = event.defaultValue;
+    navigator.clipboard.writeText(message).then(() => {
+      this.alert.success('Copied to clipboard');
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  }
+
 }

@@ -38,21 +38,21 @@ export class DashboardComponent implements OnInit {
     type: 'bar',
     height: 350,
     toolbar: {
-    show: false
-  }
+      show: false
+    }
   };
 
   xAxis: ApexXAxis = {
     categories: []
   };
-  currentUserId:any=-1;
-  showLogOutModal:boolean=false;
+  currentUserId: any = -1;
+  showLogOutModal: boolean = false;
   constructor(
     private fileService: FileService,
     private router: Router,
     private _service: AdminService,
-    public commonservice:CommonService,
-    private alert:AlertService
+    public commonservice: CommonService,
+    private alert: AlertService
   ) { }
 
   ngOnInit() {
@@ -61,12 +61,12 @@ export class DashboardComponent implements OnInit {
     this.getRealTime();
   }
 
-  getAdminUserData(){
-     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
-      this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
+  getAdminUserData() {
+    this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+    this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
       this.commonservice.adminUserData = res;
       console.log(res);
-      
+
     })
   }
 
@@ -89,14 +89,25 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  toggleLogoutModal(){
+  toggleLogoutModal() {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-  logout(){
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  ngAfterViewInit() {
+    const carousel:any = document.getElementById('carousel');
+    let idx = 0;
+    const total = 3;
+
+    setInterval(() => {
+      idx = (idx + 1) % total;
+      carousel.style.transform = `translateX(-${idx * 100}%)`;
+    }, 2000);
   }
 }
