@@ -46,7 +46,7 @@
     <main class="main-content">
         <div class="border-l border-white bg-[#5758b2]">
             <div class="p-5 ps-10">
-                <div class="heading flex gap-7">
+                <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
                         <img src="../../../assets/logo.png" alt=""
                             class="border radius-md text-white w-[50px] h-[50px]">
@@ -271,10 +271,10 @@
                 </div>
 
                     <ul>
-                        <li *ngFor="let party of partyList" (dblclick)="editParty(party)" (click)="selectParty(party)"
+                        <li *ngFor="let party of partyList" (dblclick)="editParty(party)" (click)="!party.selected ? selectParty(party) : ''"
                             class="flex justify-between items-center py-2 px-3 mb-1 hover:bg-gray-100 rounded-md cursor-pointer border-l-4 border-transparent hover:border-indigo-500" [ngClass]="{'bg-gray-100 border-l-4 border-indigo-500': party.selected}">
                             <span class="text-sm font-medium text-dark" >{{party.party_name}}</span>
-                            <span class="text-xs text-green-600 font-semibold">{{party.balance_left}}</span>
+                            <span class="text-xs text-green-600 font-semibold" *ngIf="party.invoice_type == 'sale'">{{party.balance_left}}</span>
                         </li>
                     </ul>
                 </aside>
@@ -326,9 +326,9 @@
                                     <th
                                         class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Balance/Unbilled</th>
-                                    <th
+                                    <!-- <th
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Due Date</th>
+                                        Due Date</th> -->
                                     <th
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
@@ -346,7 +346,7 @@
                                     <td class="px-4 py-3 whitespace-nowrap text-gray-500">{{item?.invoice_date|date : 'dd-MM-yyyy'}}, {{item?.time}}</td>
                                     <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹ {{item?.total | number : '1.2-2'}}</td>
                                     <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹ {{item?.balance_left | number : '1.2-2'}}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-500"></td>
+                                    <!-- <td class="px-4 py-3 whitespace-nowrap text-gray-500"></td> -->
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         <span
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-black" [ngClass]="{'bg-red-100': +item?.balance_left == +item?.total,'bg-yellow-100':(+item?.balance_left > 0 && +item?.balance_left < +item?.total),'bg-green-100':(+item?.balance_left == 0 && item.invoice_type == 'sale'),'bg-gray-100':item.invoice_type == 'estimate'}" >

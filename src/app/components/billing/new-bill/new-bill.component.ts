@@ -72,6 +72,7 @@ export class NewBillComponent {
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
+  
 
 
   }
@@ -244,8 +245,9 @@ export class NewBillComponent {
     });
     if (this.discount_type == 'percentage' && this.discountAmountVal) {
       this.totalAmount = this.totalAmount - ((this.totalAmount * this.discountAmountVal) / 100);
+    }else{
+      this.totalAmount = this.totalAmount - (this.discountAmountVal || 0);
     }
-    this.totalAmount = this.totalAmount - (this.discountAmountVal || 0);
     if (this.pastPayments.length>0) {
       let advanceTotal = 0;
       this.pastPayments.forEach((e:any)=>{
@@ -268,7 +270,9 @@ export class NewBillComponent {
       total: +this.subTotal,
       balance_left: +this.totalAmount,
       invoice_type: this.invoiceConfig.invoice_type,
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location })))
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
+      discount_value: this.discountAmountVal,
+      discount_type: this.discount_type
     }
 
     console.log(this.invoiceConfig);
@@ -299,7 +303,9 @@ export class NewBillComponent {
       party_id: +this.invoiceConfig.party_id,
       balance_left: +this.totalAmount,
       invoice_type: this.invoiceConfig.invoice_type,
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location })))
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
+      discount_value: this.discountAmountVal,
+      discount_type: this.discount_type
     }
 
     this.billingService.generateInvoice(params, (res: any) => {
@@ -332,6 +338,8 @@ export class NewBillComponent {
       if (res.status == 200) {
         this.isEditInvoice = true;
         this.invoiceConfig = res.data;
+        this.discountAmountVal = this.invoiceConfig.discount_value || 0;
+        this.discount_type = this.invoiceConfig.discount_type || 'percentage';
         this.getPastPayments();
         this.loader.hide();
         this.invoiceConfig.invoice_items.forEach((item: any) => {

@@ -64,10 +64,9 @@
                     <h3 class="text-white border pt-[5px] pb-[5px] pr-[20px] pl-[20px] rounded-md text-sm">Time -
                         {{todayDate|date : 'h:mm:ss a'}} </h3>
                 </div>
-                
+
             </div>
         </div>
-
         <div class="w-full text-center mt-5 mb-5 px-5">
             <div class="add-button flex justify-center mb-10">
                 <button
@@ -87,10 +86,13 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card border-l-10 transition-border-color duration-200" [ngClass]="{'border-red-700':!event.is_event_submitted, 'border-green-700':event.is_event_submitted}" *ngFor="let event of filteredEvents">
+                    <div class="card border-l-10 transition-border-color duration-200"
+                        [ngClass]="{'border-red-700':!event.is_event_submitted, 'border-green-700':event.is_event_submitted}"
+                        *ngFor="let event of filteredEvents">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex flex-col items-start">
-                                <h2 class="text-sm font-semibold text-gray-800">{{event.customer_name|titlecase}}</h2>
+                                <h2 class="text-sm font-semibold text-gray-800">{{event.customer_name|titlecase}}
+                                </h2>
                                 <p class="text-sm text-gray-500">{{event.customer_phone}}</p>
                             </div>
                             <div class="text-right flex gap-3">
@@ -119,9 +121,11 @@
                             </div>
                         </div>
                         <div class="flex flex-col items-center border-t border-b border-gray-200 py-2">
-                            <div class="text-indigo-500 font-semibold text-base">{{event.event_name|titlecase}}</div>
+                            <div class="text-indigo-500 font-semibold text-base">{{event.event_name|titlecase}}
+                            </div>
                             <div class="flex gap-6 mt-2 w-full justify-around">
-                                <div class="flex items-center gap-2 text-gray-600 text-sm"  *ngIf="event.ai_guests.length>0">
+                                <div class="flex items-center gap-2 text-gray-600 text-sm"
+                                    *ngIf="event.ai_guests.length>0">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -162,7 +166,8 @@
                             <span class="status-pill flex items-center gap-2 ">
                                 <!-- From Uiverse.io by Galahhad -->
                                 <label class="switch">
-                                    <input [checked]="event.is_event_submitted" (change)="toggleEventStatus(event)" type="checkbox">
+                                    <input [checked]="event.is_event_submitted" (change)="toggleEventStatus(event)"
+                                        type="checkbox">
                                     <div class="slider">
                                         <div class="circle">
                                             <svg class="cross" xml:space="preserve"
@@ -221,112 +226,5 @@
                 </div>
             </div>
         </div>
-
-        <div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
-            *ngIf="isModalOpen">
-            <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl transform transition-all duration-300 ease-in-out"
-                [ngClass]="{'modal-fade-in': isModalOpen}">
-                <h2 class="text-xl font-semibold mb-4">Add Photo Selection</h2>
-
-                <!-- Select Customer -->
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select Customer</label>
-                <select [(ngModel)]="event_config.customer_id" [disabled]="isEdit" [ngClass]="{'bg-gray-200':isEdit}" 
-                    class="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                    <option value="" disabled selected>Select Customer</option>
-                    <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
-                </select>
-
-                <!-- Event Name -->
-                <input type="text" autocomplete="off" placeholder="Event Name Ex. Wedding, Birthday..."
-                    [(ngModel)]="event_config.event_name"
-                    class="placeholder:text-gray-500 placeholder:opacity-50 w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-
-                <!-- <span class="mb-4 font-bold block text-sm">Options</span> -->
-                <!-- <span class="flex items-center gap-2 mb-4" [ngClass]="{'opacity-50':isEdit}" >
-                    <label class="switch">
-                        <input [checked]="false" type="checkbox" [disabled]="isEdit" [(ngModel)]="event_config.is_ai_upload">
-                        <div class="slider">
-                            <div class="circle">
-                                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path data-original="#000000" fill="currentColor"
-                                            d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0">
-                                        </path>
-                                    </g>
-                                </svg>
-                                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 24 24" y="0" x="0" height="10" width="10"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path class="" data-original="#000000" fill="currentColor"
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                    </label> <span class="text-sm block">Photo Sharing (Face Recognition)</span>
-                </span> -->
-
-                <!-- <div class="mb-6 flex items-center gap-2" [ngClass]="{'opacity-50':isEdit}" >
-                    <p class="text-sm font-medium text-gray-700">Select Photo Quality :</p>
-                    <div class="flex gap-3">
-                        <button *ngFor="let quality of photoQualities" [disabled]="isEdit" (click)="selectQuality(quality)" [ngClass]="{
-                      'border border-indigo-600 text-indigo-600 bg-indigo-100': selectedQuality === quality,
-                      'border border-gray-300 text-gray-600': selectedQuality !== quality
-                    }" class="px-4 py-1 rounded-full text-xs transition-colors cursor-pointer">
-                            {{ quality }}
-                        </button>
-                    </div>
-                </div> -->
-
-                <!-- Action Buttons -->
-                <div class="flex justify-end gap-4">
-                    <button
-                        class="px-4 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
-                        (click)="onCancel()">
-                        Cancel
-                    </button>
-                    <button class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer"
-                        (click)="onSave()">
-                        Save
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="deleteModal"
-        class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
-        <div #modalContent
-            class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-            [ngClass]="{'modal-fade-in': deleteModal}">
-            <div class="p-6 flex flex-col items-center">
-                <div class="w-full max-w-[200px] mb-4">
-                    <img src="../../../assets/delete-img.svg" alt="Delete illustration" class="w-full h-auto" />
-                </div>
-
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    Are you sure you want to delete?
-                </h2>
-
-            </div>
-
-            <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                <button (click)="onCancel()"
-                    class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
-                    Cancel
-                </button>
-                <button (click)="deleteEvent()"
-                    class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
-                    Delete
-                </button>
-            </div>
-        </div>
-    </div>
-
     </main>
 </div>

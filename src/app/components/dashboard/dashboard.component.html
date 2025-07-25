@@ -45,7 +45,7 @@
     <main class="main-content">
         <div class="border-l border-white bg-[#5758b2]">
             <div class="p-5 ps-10">
-                <div class="heading flex gap-7 items-center">
+                <div class="heading flex gap-7 items-center items-center">
                     <div class="logo-img">
                         <img [src]="commonservice?.adminUserData?.studio_icon" alt=""
                             class="border radius-md text-white w-[50px] h-[50px]">
@@ -96,16 +96,16 @@
                     <h3 class="dashboard-item-title text-lg">Calendar</h3>
                 </div>
 
-                <div class="dashboard-item">
+                <a class="dashboard-item" [routerLink]="['/photo-sharing']">
                     <div class="dashboard-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image-alt" viewBox="0 0 16 16">
   <path d="M7 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m4.225 4.053a.5.5 0 0 0-.577.093l-3.71 4.71-2.66-2.772a.5.5 0 0 0-.63.062L.002 13v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4.5z"/>
 </svg>
                     </div>
                     <h3 class="dashboard-item-title text-lg">AI Photos Upload</h3>
-                </div>
+                </a>
 
-                <div class="dashboard-item" [routerLink]="'/features'">
+                <div class="dashboard-item" [routerLink]="['/features']">
                     <div class="dashboard-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
@@ -127,7 +127,6 @@
                         <img src="https://images.pexels.com/photos/53265/pexels-photo-53265.jpeg" class="w-full flex-shrink-0" alt="Image 2" />
                         <img src="https://images.pexels.com/photos/2041396/pexels-photo-2041396.jpeg" class="w-full flex-shrink-0" alt="Image 3" />
                     </div>
-                    <h3 class="dashboard-item-title mt-2 text-center text-2xl self-center">Dynamic Image with link</h3>
                 </div>
             </div>
 

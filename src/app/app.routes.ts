@@ -65,6 +65,10 @@ export const routes: Routes = [
     loadComponent: () => import("./components/shared/terms-and-condition/terms-and-condition.component").then(m => m.TermsAndConditionComponent)
   },
   {
+    path: 'photo-sharing',
+    loadComponent: () => import("./components/ai-photo-sharing/ai-photo-sharing.component").then(m => m.AiPhotoSharingComponent)
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [

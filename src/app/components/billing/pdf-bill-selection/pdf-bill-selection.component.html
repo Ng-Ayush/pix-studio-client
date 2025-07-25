@@ -46,7 +46,7 @@
     <main class="main-content">
         <div class="border-l border-white bg-[#5758b2]">
             <div class="p-5 ps-10">
-                <div class="heading flex gap-7">
+                <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
                         <img src="../../../assets/logo.png" alt=""
                             class="border radius-md text-white w-[50px] h-[50px]">
@@ -100,7 +100,7 @@
                         <!-- <input type="checkbox" id="show-invoice-preview"
                             class="form-checkbox h-5 w-5 text-blue-600 rounded" />
                         <label for="show-invoice-preview" class="text-gray-700">Do not show invoice preview</label> -->
-                        <button (click)="convertToSales()" class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400" [disabled]="invoiceBillConfig?.estimate_status == 'converted'">Convert to Sales</button>
+                        <button (click)="directconvertToSales()" class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400" [disabled]="invoiceBillConfig?.estimate_status == 'converted'">Convert to Sales</button>
                     </div>
                 </div>
 
@@ -275,8 +275,6 @@
                                             <h1 class="text-2xl font-semibold">{{userData?.studio_name}}</h1>
                                             <p>{{userData?.address}}</p>
                                             <p>Phone no: {{userData?.phone_number}}</p>
-                                            <!-- <p>Invoice No: {{ invoiceBillConfig.invoiceNumber }}</p> -->
-                                            <!-- <p>Invoice Date: {{ invoiceBillConfig.invoiceDate }}</p> -->
                                         </div>
                                     </div>
 
@@ -285,15 +283,6 @@
                                         <h3 class="py-3 text-lg font-bold text-center"
                                             [ngStyle]="{'color':getTemplateClass('')}">{{invoiceBillConfig.invoice_type == 'sale'? 'Sale': 'Estimate'}} Order</h3>
                                     </div>
-
-                                    <!-- Customer Details -->
-                                    <!-- <div class="mb-4 gap-2">
-                                        <p class="font-semibold">Order From</p>
-                                        <p class="font-bold text-sm">{{ invoiceBillConfig.customer.name }}</p>
-                                        <p class="pt-2">Phone: {{ invoiceBillConfig.customer.phone }}</p>
-                                        <p>Email: {{ invoiceBillConfig.customer.email }}</p>
-                                        <p>Address: {{ invoiceBillConfig.customer.address }}</p>
-                                    </div> -->
 
                                     <div class="detail flex justify-between my-3">
                                         <div class="order-from">
@@ -318,9 +307,6 @@
                                                     [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
                                                     <th>#</th>
                                                     <th colspan="5" class="py-2 px-2">Item Name</th>
-                                                    <!-- <th></th> -->
-                                                    <!-- <th class="py-2 px-2">Booking Date</th> -->
-                                                    <!-- <th class="py-2 px-2">Location</th> -->
                                                     <th class="py-2 px-2">Qty</th>
                                                     <th class="py-2 px-2">Price</th>
                                                     <th class="py-2 px-2">Amount</th>
@@ -332,8 +318,6 @@
                                                     <td>{{idx+1}}</td>
                                                     <td colspan="5" class="py-2 px-2 font-medium">{{ item.item_name }}
                                                     </td>
-                                                    <!-- <td class="py-2 px-2">{{ item.bookingDate }}</td> -->
-                                                    <!-- <td class="py-2 px-2">{{ item.location }}</td> -->
                                                     <td class="py-2 px-2">{{ item.quantity   }}</td>
                                                     <td class="py-2 px-2">₹{{ item.sale_price }}</td>
                                                     <td class="py-2 px-2">₹{{ item.quantity * item.sale_price }}</td>
@@ -373,7 +357,7 @@
                                                         TERMS AND CONDITIONS
                                                     </div>
                                                     <div class="p-2 gap-3">
-                                                      <textarea #autoTextarea class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="2" cols="50" [(ngModel)]="invoiceBillConfig.tnc" [innerHTML]="invoiceBillConfig.tnc"></textarea>
+                                                      <textarea #autoTextarea class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc" [innerHTML]="invoiceBillConfig.tnc"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -386,10 +370,14 @@
                                                     [ngStyle]="{'background-color':getTemplateClass('')}">
                                                     Amount
                                                 </div>
-                                                <div class="p-4 gap-3">
+                                                <div class="p-4 flex flex-col gap-3">
                                                     <div class="flex justify-between">
                                                         <span>Sub Total</span>
                                                         <span>₹{{invoiceBillConfig?.total}}</span>
+                                                    </div>
+                                                    <div class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value">
+                                                        <span>Discount</span>
+                                                        <span><span *ngIf="invoiceBillConfig?.discount_type != 'percentage'">₹</span>{{invoiceBillConfig?.discount_value}}<span *ngIf="invoiceBillConfig?.discount_type == 'percentage'">%</span></span>
                                                     </div>
                                                     <div class="flex justify-between font-bold">
                                                         <span>Total</span>
@@ -408,11 +396,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Footer Image -->
-                                    <!-- <div class="mt-4">
-                                        <img src="assets/images/header.png" class="w-full" alt="Footer Image" />
-                                    </div> -->
                                 </div>
 
 

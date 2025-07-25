@@ -132,7 +132,7 @@ export class PdfBillSelectionComponent {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
-  saveAndClose() {
+  saveAndClose(isUpdated?:boolean) {
     this.loader.show();
     const params: any = {
       invoice_id: this.currentInvoiceId,
@@ -142,7 +142,11 @@ export class PdfBillSelectionComponent {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        this.router.navigate(['billing']);
+        if(isUpdated){
+          this.updateAndconvertToSales()
+        }else{
+          this.router.navigate(['billing']);
+        }
       } else {
         this.loader.hide();
         this.alert.error(res.message);
@@ -162,7 +166,7 @@ export class PdfBillSelectionComponent {
     this.invoiceBillConfig.total_quantity = totalQty;
   }
 
-  updateAndClose() {
+  updateAndClose(isUpdated?: boolean) {
     this.loader.show();
     const params: any = {
       terms_and_conditions: this.invoiceBillConfig.tnc
@@ -171,7 +175,11 @@ export class PdfBillSelectionComponent {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        this.router.navigate(['billing']);
+        if(isUpdated){
+          this.updateAndconvertToSales()
+        }else{
+          this.router.navigate(['billing']);
+        }
       } else {
         this.loader.hide();
         this.alert.error(res.message);
@@ -179,7 +187,16 @@ export class PdfBillSelectionComponent {
     });
   }
 
-  convertToSales(){
+  directconvertToSales(){
+    this.loader.show();
+    if(this.invoiceBillConfig.tnc){
+      this.updateAndClose(true);
+    }else{
+      this.saveAndClose(true)
+    }
+  }
+
+  updateAndconvertToSales(){
     this.loader.show();
     this._service.convertToSales(this.currentInvoiceId, (res: any) => {
       if(res.status == 200){
@@ -192,6 +209,5 @@ export class PdfBillSelectionComponent {
         }
     })
   }
-
 
 }

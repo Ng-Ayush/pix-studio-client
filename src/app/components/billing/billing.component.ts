@@ -44,7 +44,7 @@ export class BillingComponent {
   fetchPartyList() {
     this.loader.show();
     this.billingService.getAllParty((res: any) => {
-      if (res.status == 200) {
+      if (res.status == 200 && res.data.length>0) {
         this.loader.hide();
         this.partyList = res.data;
         this.calculateTotalAndRemainingSales();
@@ -68,7 +68,9 @@ export class BillingComponent {
 
   saveParty() {
     this.loader.show();
-    if(!this.partyConfig.name || !this.partyConfig.phone || !this.partyConfig.billing_address || !this.partyConfig.email){
+    console.log(this.partyConfig);
+    
+    if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;
