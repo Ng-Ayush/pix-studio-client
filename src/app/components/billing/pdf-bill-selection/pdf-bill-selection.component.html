@@ -107,7 +107,7 @@
                 <div class="flex-1 flex overflow-hidden gap-6">
                     <!-- Template Display Area (ngSwitch) -->
                     <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
-                        <div [ngSwitch]="selectedTemplateId" class="w-vw h-vh" id="print-section">
+                        <div [ngSwitch]="selectedTemplateId" class="flex justify-center" id="print-section">
                             <!-- Template 1: Invoice Template -->
                             <div *ngSwitchCase="'template1'">
                                 <div class="overflow-y-auto border-2">
@@ -403,8 +403,530 @@
 
                             <!-- Template 3 Placeholder -->
                             <div *ngSwitchCase="'template3'"
-                                class="flex items-center justify-center h-full bg-green-50 rounded-lg border-2 border-dashed border-green-200 text-green-500 text-xl font-medium">
-                                Template 3 Content (Coming Soon!)
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="invoice-container"> 
+
+                                    <div class="flex justify-between">
+                                        <div class="p-2">
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                        </div>
+                                        <div class="p-2">
+                                            <h2 class="text-2xl text-right">INVOICE</h2> 
+                                            <div class="header">
+                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <hr>
+                                  
+                                    <div class="details">
+                                      <div class="col">
+                                        <p><strong>Date:</strong> {{ invoiceBillConfig.invoice_date }}</p>
+                                        <p><strong>Billed to:</strong></p>
+                                        <p>{{ invoiceBillConfig.party_name }}<br>
+                                          {{ invoiceBillConfig.phone_number }}<br>
+                                          <!-- Add address/email if available -->
+                                        </p>
+                                      </div>
+                                  
+                                      <div class="col">
+                                        <p><strong>From:</strong></p>
+                                        <p>{{ userData.studio_name }}<br>
+                                           {{ userData.email }}<br>
+                                           {{ userData.address }}
+                                        </p>
+                                      </div>
+                                      <hr>
+                                    </div>
+                                  
+                                    <table class="table w-300">
+                                      <thead>
+                                        <tr>
+                                          <th colspan="2">Item Name</th>
+                                          <th></th>
+                                          <th>Booking Date</th>
+                                          <th>Location</th>
+                                          <th>Price</th>
+                                          <th>Qty</th>
+                                          <th>Amount</th>
+                                        </tr>
+                                      </thead>
+                                  
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items">
+                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
+                                          <td>{{ item.booking_date }}</td>
+                                          <td>{{ item.location }}</td>
+                                          <td>{{ item.sale_price }}</td>
+                                          <td>{{ item.quantity }}</td>
+                                          <td>{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                  
+                                        <tr>
+                                          <td colspan="7" style="text-align: right;"><b>TOTAL</b></td>
+                                          <td><b>{{ invoiceBillConfig.total }}</b></td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <div class="footer">
+                                      <p><strong>Payment method:</strong> {{ invoiceBillConfig.payment_type }}</p>
+                                      <p><strong>Note:</strong> Thank you for choosing us!</p>
+                                    </div>
+                                  
+                                    <div>
+                                      <!-- <img src="assets/images/footer3.png" width="600px" /> -->
+                                    </div>
+                                  </div>
+                                  
+                            </div>
+                            <div *ngSwitchCase="'template4'"
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="container">
+                                    <div class="header">
+                                      <div class="logo">
+                                        <i class="fas fa-home"></i>
+                                        <span>{{ invoiceBillConfig.staffDetails }}</span>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="flex justify-between">
+                                        <div class="p-2">
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                        </div>
+                                        <div class="p-2">
+                                            <h2 class="text-2xl text-right">INVOICE</h2> 
+                                            <div class="header">
+                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <hr>
+                                  
+                                  
+                                    <div class="cont">
+                                      <div class="invoice-details">
+                                        <p><strong>Invoice&nbsp;To:</strong><br>
+                                           {{ invoiceBillConfig.party_name }}<br>
+                                           {{ invoiceBillConfig.phone_number }}
+                                        </p>
+                                      </div>
+                                  
+                                      <div class="date">
+                                        <p>Invoice&nbsp;No: {{ invoiceBillConfig.invoice_number }}<br>
+                                           Invoice&nbsp;Date: {{ invoiceBillConfig.invoice_date }}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th colspan="2">Item&nbsp;Name</th>
+                                          <th></th>
+                                          <th>Booking&nbsp;Date</th>
+                                          <th>Location</th>
+                                          <th>Price</th>
+                                          <th>Qty</th>
+                                          <th>Amount</th>
+                                        </tr>
+                                      </thead>
+                                  
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items">
+                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
+                                          <td>{{ item.booking_date }}</td>
+                                          <td>{{ item.location }}</td>
+                                          <td>{{ item.sale_price }}</td>
+                                          <td>{{ item.quantity }}</td>
+                                          <td>{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                  
+                                        <tr>
+                                          <td colspan="7" class="total-label">Total&nbsp;Paid</td>
+                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7" class="total-label">Remaining&nbsp;Payment</td>
+                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7" class="total-label">Grand&nbsp;Total</td>
+                                          <td class="total">{{ invoiceBillConfig.total }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <div class="cont">
+                                      <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                                        <p *ngFor="let p of invoiceBillConfig.payments">
+                                          Received: {{ p.paidAmount }}  {{ p.paymentDate }}  Cash/Online
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="payment-terms">
+                                      <p class="pt-title">Payment&nbsp;Terms</p>
+                                      <p>{{ invoiceBillConfig.terms_and_conditions }}</p>
+                                    </div>
+                                  
+                                    <div class="thank-you">
+                                      <p>THANK&nbsp;YOU</p>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div *ngSwitchCase="'template5'"
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="container">
+                                    <div class="header">
+                                        <div class="flex justify-between">
+                                            <div class="p-2">
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                            </div>
+                                            <div class="p-2">
+                                                <h2 class="text-2xl text-right">INVOICE</h2> 
+                                                <div class="header">
+                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                                </div>
+                                            </div>
+                                        </div>   
+                                        <hr>
+                                  
+                                      <div class="invoice-header">
+                                        <div class="company-name">{{ invoiceBillConfig.staffDetails }}</div>
+                                        <div class="invoice-no">
+                                          INVOICE<br>
+                                          Invoice No: {{ invoiceBillConfig.invoice_number }}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  
+                                    <!-- Invoice To & Dates -->
+                                    <div class="invoice-header">
+                                      <div class="invoice-to">
+                                        Invoice To:<br>
+                                        <strong>{{ invoiceBillConfig.party_name }}</strong><br>
+                                        {{ invoiceBillConfig.phone_number }}<br>
+                                        {{ invoiceBillConfig.email }}
+                                      </div>
+                                      <div class="date">
+                                        <p>
+                                          Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                                          Invoice Date: {{ invoiceBillConfig.invoice_date }}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <!-- Table Section -->
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th colspan="2">Item Name</th>
+                                          <th></th>
+                                          <th>Booking Date</th>
+                                          <th>Location</th>
+                                          <th>Price</th>
+                                          <th>Qty</th>
+                                          <th>Amount</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
+                                          <td>{{ i + 1 }}</td>
+                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
+                                          <td>{{ item.booking_date }}</td>
+                                          <td>{{ item.location }}</td>
+                                          <td>{{ item.sale_price }}</td>
+                                          <td>{{ item.quantity }}</td>
+                                          <td>{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                  
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Total Paid</td>
+                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Remaining Payment</td>
+                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Grand Total</td>
+                                          <td class="total">{{ invoiceBillConfig.total }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <!-- Payment History -->
+                                    <div class="cont">
+                                      <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                                        <p *ngFor="let payment of invoiceBillConfig.payments">
+                                          Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <!-- Terms & Conditions -->
+                                    <div class="terms-conditions">
+                                      Term and Conditions<br>
+                                      Please send payment within 30 days of receiving this invoice.
+                                      There will be 10% interest charge per month on late invoice.
+                                    </div>
+                                  </div>
+                                  
+                            </div>
+                            <div *ngSwitchCase="'template6'"
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="container">
+                                    <div class="header">
+                                        <div class="flex justify-between">
+                                            <div class="p-2">
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                            </div>
+                                            <div class="p-2">
+                                                <h2 class="text-2xl text-right">INVOICE</h2> 
+                                                <div class="header">
+                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                                </div>
+                                            </div>
+                                        </div>   
+                                        <hr>
+                                    </div>
+                                    <div class="cont">
+                                      <div class="invoice-details">
+                                        <p>
+                                          Invoice To:<br>
+                                          {{ invoiceBillConfig.party_name }}<br>
+                                          {{ invoiceBillConfig.phone_number }}
+                                        </p>
+                                      </div>
+                                  
+                                      <div class="date">
+                                        <p>
+                                          Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                                          Invoice Date: {{ invoiceBillConfig.invoice_date }}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th colspan="2">Item Name</th>
+                                          <th></th>
+                                          <th>Booking Date</th>
+                                          <th>Location</th>
+                                          <th>Price</th>
+                                          <th>Qty</th>
+                                          <th>Amount</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
+                                          <td>{{ i + 1 }}</td>
+                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
+                                          <td>{{ item.booking_date }}</td>
+                                          <td>{{ item.location }}</td>
+                                          <td>{{ item.sale_price }}</td>
+                                          <td>{{ item.quantity }}</td>
+                                          <td>{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                  
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Total Paid</td>
+                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Remaining Payment</td>
+                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7"></td>
+                                          <td class="total">Grand Total</td>
+                                          <td class="total">{{ invoiceBillConfig.total }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <!-- Payments -->
+                                    <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                                      <p *ngFor="let payment of invoiceBillConfig.payments">
+                                        Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
+                                      </p>
+                                    </div>
+                                  
+                                    <!-- Customer Info -->
+                                    <p style="padding-top: 40px;">
+                                      {{ invoiceBillConfig.customer?.address }} - {{ invoiceBillConfig.customer?.phone }}<br>
+                                      {{ invoiceBillConfig.customer?.email }}
+                                    </p>
+                                  </div>
+                                  
+                                  
+                            </div>
+                            <div *ngSwitchCase="'template7'"
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="invoice-container">
+                                    <div class="header">
+                                        <div class="flex justify-between">
+                                            <div class="p-2">
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                            </div>
+                                            <div class="p-2">
+                                                <h2 class="text-2xl text-right">INVOICE</h2> 
+                                                <div class="header">
+                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                                </div>
+                                            </div>
+                                        </div>   
+                                        <hr>
+                                    </div>
+                                  
+                                    <div class="invoice-details">
+                                      <div>
+                                        <h2>BILL TO:</h2>
+                                        <p>{{ invoiceBillConfig.party_name }}<br>{{ invoiceBillConfig.phone_number }}</p>
+                                      </div>
+                                  
+                                      <div>
+                                        <h2>ESTIMATE</h2>
+                                        <p>Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                                           Invoice Date: {{ invoiceBillConfig.invoice_date }}</p>
+                                      </div>
+                                    </div>
+                                  
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                      <thead>
+                                        <tr style="border: 1px solid black;">
+                                          <th style="border: 1px solid black;">#</th>
+                                          <th colspan="2" style="border: 1px solid black;">Item Name</th>
+                                          <th style="border: 1px solid black;">Booking Date</th>
+                                          <th style="border: 1px solid black;">Location</th>
+                                          <th style="border: 1px solid black;">Price</th>
+                                          <th style="border: 1px solid black;">Qty</th>
+                                          <th style="border: 1px solid black;">Amount</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index" style="border: 1px solid black;">
+                                          <td style="border: 1px solid black;">{{ i + 1 }}</td>
+                                          <td colspan="2" style="border: 1px solid black;">{{ item.item_name }}</td>
+                                          <td style="border: 1px solid black;">{{ item.booking_date }}</td>
+                                          <td style="border: 1px solid black;">{{ item.location }}</td>
+                                          <td style="border: 1px solid black;">{{ item.sale_price }}</td>
+                                          <td style="border: 1px solid black;">{{ item.quantity }}</td>
+                                          <td style="border: 1px solid black;">{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <div class="total">
+                                      <p>Total: {{ invoiceBillConfig.total }}</p>
+                                      <p>Total in Words: {{ invoiceBillConfig.priceInWords }}</p>
+                                      <p>Balance Left: {{ invoiceBillConfig.balance_left }}</p>
+                                    </div>
+                                  
+                                    <div class="terms">
+                                      <p><strong>TERMS AND CONDITIONS:</strong><br>{{ invoiceBillConfig.tnc }}</p>
+                                    </div>
+                                  </div>
+                                  
+                                  
+                                  
+                            </div>
+                            <div *ngSwitchCase="'template8'"
+                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                                <div class="container">
+                                    <div class="flex justify-between">
+                                        <div class="p-2">
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
+                                        </div>
+                                        <div class="p-2">
+                                            <h2 class="text-2xl text-right">INVOICE</h2> 
+                                            <div class="header">
+                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <hr>
+                                  
+                                    <div class="cont">
+                                      <div class="invoice-details">
+                                        <p>
+                                          Invoice To:<br />
+                                          {{ invoiceBillConfig?.party_name }}<br />
+                                          {{ invoiceBillConfig?.phone_number }}
+                                        </p>
+                                      </div>
+                                  
+                                      <div class="date">
+                                        <p>
+                                          Invoice No: {{ invoiceBillConfig?.invoice_number }}<br />
+                                          Invoice Date: {{ invoiceBillConfig?.invoice_date }}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  
+                                    <table class="table" border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th colspan="2">Item Name</th>
+                                          <th>Booking Date</th>
+                                          <th>Location</th>
+                                          <th>Price</th>
+                                          <th>Qty</th>
+                                          <th>Amount</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let item of invoiceBillConfig?.invoice_items; let i = index">
+                                          <td>{{ i + 1 }}</td>
+                                          <td colspan="2">{{ item.item_name }}</td>
+                                          <td>{{ item.booking_date }}</td>
+                                          <td>{{ item.location }}</td>
+                                          <td>{{ item.sale_price }}</td>
+                                          <td>{{ item.quantity }}</td>
+                                          <td>{{ item.quantity * item.sale_price }}</td>
+                                        </tr>
+                                  
+                                        <tr>
+                                          <td colspan="6"></td>
+                                          <td><strong>Total Paid</strong></td>
+                                          <td>{{ invoiceBillConfig?.total }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="6"></td>
+                                          <td><strong>Remaining Payment</strong></td>
+                                          <td>{{ invoiceBillConfig?.balance_left }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="6"></td>
+                                          <td><strong>Grand Total</strong></td>
+                                          <td>{{ invoiceBillConfig?.total }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  
+                                    <div class="cash">
+                                      <p>Payment Type: {{ invoiceBillConfig?.payment_type }}</p>
+                                      <p>{{ invoiceBillConfig?.payment_type_description }}</p>
+                                    </div>
+                                  
+                                    <p style="padding-top: 15px; padding-bottom: 20px;">
+                                      {{ userData?.address }} - {{ userData?.phone_number }}<br />
+                                      {{ userData?.email }}
+                                    </p>
+                                  </div>
+                                  
+                                  
+                                  
                             </div>
 
                             <!-- Default Case -->

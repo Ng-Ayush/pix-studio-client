@@ -58,7 +58,9 @@ export class PdfBillSelectionComponent {
      this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
       this.adminService.getUsersByCurrentId(this.currentUserId, (res: any) => {
       // localStorage.setItem("user_data",JSON.stringify(res));
+      console.log(res);
       this.userData = res;
+
     })
   }
 
