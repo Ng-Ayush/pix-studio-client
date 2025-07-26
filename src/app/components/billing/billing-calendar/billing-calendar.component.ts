@@ -19,14 +19,13 @@ export class BillingCalendarComponent {
   currentDate: Date = new Date();
   events: any = {};
   monthYear: string = '';
-  calendarDays: any[] = [];
-  selectedEvent: any = null;
+  calendarDays: any = [];
+  selectedEvent: any = {};
   constructor(private commonService: CommonService, private loader: LoaderService, private _service: BillingService, private router: Router, private alert: AlertService, private _adminService: AdminService) { }
 
 
   ngOnInit() {
     this.getCalendarEvents();
-    this.selectedEvent = { date: this.formatDate('2025-07-15'), events: this.events['2025-07-15'] || [] };
   }
 
   getCalendarEvents() {
@@ -43,6 +42,9 @@ export class BillingCalendarComponent {
   renderCalendar() {
     this.monthYear = `${this.getMonthName(this.currentDate.getMonth())} ${this.currentDate.getFullYear()}`;
     this.calendarDays = this.generateCalendarDays();
+    setTimeout(() => {
+      this.showEventDetails({date:new Date().getDate()})
+    }, 0);
   }
 
   generateCalendarDays() {
@@ -72,6 +74,8 @@ export class BillingCalendarComponent {
   }
 
   showEventDetails(day: any) {
+    console.log(day);
+    
     const dateStr = `${this.currentDate.getFullYear()}-${String(this.currentDate.getMonth() + 1).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`;
     this.selectedEvent = { date: this.formatDate(dateStr),formatedDate:this.commonService.formatDate(dateStr), events: this.events[dateStr] || [] };
     this.calendarDays.forEach((item: any) => {
@@ -80,8 +84,7 @@ export class BillingCalendarComponent {
         item.isSelected = true;
       }
     });
-
-    console.log(this.calendarDays);
+    console.log(this.selectedEvent);
     
     
   } 
