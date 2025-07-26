@@ -69,7 +69,7 @@
         </div>
 
         <div class="container mx-auto py-8 px-4">
-            <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="mx-auto bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="flex flex-col md:flex-row">
                     <!-- Calendar Section -->
                     <div class="w-full md:w-2/3 p-6">
@@ -96,9 +96,9 @@
                         </div>
 
                         <div class="grid grid-cols-7 gap-1">
-                            <div *ngFor="let day of calendarDays"
+                            <div *ngFor="let day of calendarDays;trackBy: trackByDay"
                                 class="calendar-day text-center py-2 cursor-pointer rounded-md hover:bg-blue-50"
-                                [ngClass]="{'bg-blue-100 font-medium': isToday(day)}" (click)="showEventDetails(day)">
+                                [ngClass]="{'bg-blue-100 font-medium': isToday(day) && day.isSelected, 'bg-blue-100 font-medium': day.isSelected}"  (click)="showEventDetails(day)">
                                 {{ day.date }}
                                 <div *ngIf="day.events.length" class="flex justify-center mt-1">
                                     <span *ngFor="let event of day.events" class="event-dot"
@@ -115,11 +115,15 @@
                             <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow-sm p-4 overflow-y-scroll h-96">
                                 <h3 class="font-medium text-lg mb-2 text-gray-700">{{ selectedEvent.date }}</h3>
                                 <h2 *ngIf="selectedEvent.events?.length == 0">No events for this day</h2>
-                                <div class="gap-4">
-                                    <div *ngFor="let event of selectedEvent.events" class="border-l-4 pl-3 py-1"
+                                <div class="flex flex-col gap-3">
+                                    <div *ngFor="let event of selectedEvent.events;trackBy: trackByIdx" class="border-l-4 pl-3 py-1 flex items-center gap-3 justify-between"
                                         [ngStyle]="{'border-color': getEventColor(event.index)}">
-                                        <p class="font-medium text-gray-800">{{ event.name }}</p>
-                                        <p class="text-sm text-gray-500">Phone: {{ event.phone }}</p>
+                                        <div>
+                                            <p class="font-medium text-gray-800">{{ event.name }}</p>
+                                            <p class="text-sm text-gray-500">Raebareli</p>
+                                        </div>
+                                        <p class="text-lg font-bold text-indigo-700">{{event.event_name}}</p>
+                                        <a href="tel:{{ event.phone }}" class="text-sm text-gray-500 hover:underline cursor-pointer">Phone: {{ event.phone }}</a>
                                     </div>
                                 </div>
                             </div>

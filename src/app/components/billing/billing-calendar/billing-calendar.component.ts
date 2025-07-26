@@ -5,6 +5,7 @@ import { LoaderService } from '../../../shared/loader.service';
 import { BillingService } from '../../../services/billing.service';
 import { AlertService } from '../../../services/alert.service';
 import { CommonService } from '../../../services/common.service';
+import { AdminService } from '../../../services/admin.service';
 
 @Component({
   selector: 'app-billing-calendar',
@@ -16,34 +17,27 @@ import { CommonService } from '../../../services/common.service';
 export class BillingCalendarComponent {
   todayDate: any = new Date();
   currentDate: Date = new Date();
-  events: any = {
-    '2025-07-15': [
-      { name: 'Ayush Srivastava', phone: '555-1234', date: '2023-01-15', index: 0 },
-      { name: 'Akash Kumar', phone: '555-5678', date: '2023-01-15', index: 1 },
-      { name: 'Akash Kumar', phone: '555-5678', date: '2023-01-15', index: 1 },
-      { name: 'Akash Kumar', phone: '555-5678', date: '2023-01-15', index: 1 },
-      { name: 'Akash Kumar', phone: '555-5678', date: '2023-01-15', index: 1 },
-      { name: 'Akash Kumar', phone: '555-5678', date: '2023-01-15', index: 1 },
-    ],
-    '2025-07-20': [
-      { name: 'Doctor Appointment', phone: '555-9012', date: '2023-01-20', index: 0 }
-    ],
-    '2025-07-25': [
-      { name: 'Birthday Party', phone: '555-3456', date: '2023-01-25', index: 0 }
-    ],
-    '2025-07-10': [
-      { name: 'Project Deadline', phone: '555-7890', date: '2023-02-10', index: 0 }
-    ]
-  };
+  events: any = {};
   monthYear: string = '';
   calendarDays: any[] = [];
   selectedEvent: any = null;
-  constructor(private commonService: CommonService, private loader: LoaderService, private _service: BillingService, private router: Router, private alert: AlertService) { }
+  constructor(private commonService: CommonService, private loader: LoaderService, private _service: BillingService, private router: Router, private alert: AlertService, private _adminService: AdminService) { }
 
 
   ngOnInit() {
-    this.renderCalendar();
-  this.selectedEvent = { date: this.formatDate('2025-07-15'), events: this.events['2025-07-15'] || [] };
+    this.getCalendarEvents();
+    this.selectedEvent = { date: this.formatDate('2025-07-15'), events: this.events['2025-07-15'] || [] };
+  }
+
+  getCalendarEvents() {
+    this.loader.show();
+    this._adminService.getCalendarEvents((response: any) => {
+      this.loader.hide();
+      if (response.status) {
+        this.events = response.data;
+        this.renderCalendar();
+      }
+    });
   }
 
   renderCalendar() {
@@ -79,8 +73,18 @@ export class BillingCalendarComponent {
 
   showEventDetails(day: any) {
     const dateStr = `${this.currentDate.getFullYear()}-${String(this.currentDate.getMonth() + 1).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`;
-    this.selectedEvent = { date: this.formatDate(dateStr), events: this.events[dateStr] || [] };
-  }
+    this.selectedEvent = { date: this.formatDate(dateStr),formatedDate:this.commonService.formatDate(dateStr), events: this.events[dateStr] || [] };
+    this.calendarDays.forEach((item: any) => {
+      item.isSelected =false;
+      if(item.date == day.date){
+        item.isSelected = true;
+      }
+    });
+
+    console.log(this.calendarDays);
+    
+    
+  } 
 
   isToday(day: any) {
     const today = new Date();
@@ -104,9 +108,9 @@ export class BillingCalendarComponent {
     return monthNames[monthIndex];
   }
 
-  formatDate(dateStr: string) {
+  formatDate(dateStr: any) {
     const date = new Date(dateStr);
-    const options:any = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const options: any = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
   }
 
@@ -114,4 +118,12 @@ export class BillingCalendarComponent {
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
     return colors[index % colors.length];
   }
+
+  trackByDay(index: number, item: any) {
+    return index;
+  }
+  trackByIdx(index: number, item: any) {
+    return index;
+  }
+
 }

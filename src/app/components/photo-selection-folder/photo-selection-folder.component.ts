@@ -25,6 +25,7 @@ export class PhotoSelectionFolderComponent {
   deleteModal:boolean=false;
   eventName:any='';
   aiGuests:any=[];
+  isAIuploaded:boolean=false;
 
   constructor(private service: CustomerService,private _pservice: PhotoSelectionService,private route:ActivatedRoute,private router:Router,private alert:AlertService){
     this.route.params.subscribe(params => {
@@ -32,6 +33,11 @@ export class PhotoSelectionFolderComponent {
         this.currentEventId = params['event-id'];
         this.fetchFolderByEventId();
         this.fetchAiGuestByEventId();
+      }
+    })
+    this.route.queryParams.subscribe(params => {
+      if(params['ai_uploaded']){
+        this.isAIuploaded = true;
       }
     })
   }

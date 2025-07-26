@@ -88,4 +88,8 @@ export class AdminService extends BaseService {
   verifyPayment(params:any, callback:any) {
     return this.postData(params, this.httpUrls['verifyPayment'], callback)
   }
+
+  getCalendarEvents(callback:any){
+    return this.getData({}, this.httpUrls['getCalendarEvents'], callback)
+  }
 }

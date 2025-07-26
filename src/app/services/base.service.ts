@@ -95,6 +95,9 @@ export class BaseService {
     'updateRequest': '/api/mystudio/customer-request/updateRequest',
     'resolved': '/api/mystudio/customer-request/resolved',
 
+    //Calendar
+    'getCalendarEvents': '/api/mystudio/dashboard/getCalendarEvents',
+
 
   }
 
