@@ -8,8 +8,8 @@ if(require('electron-squirrel-startup')) app.quit();
 
 function createWindow() {
     appWindow = new BrowserWindow({
-        width: 1000,
-        height: 600,
+        width: 1920,
+        height: 1080,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
