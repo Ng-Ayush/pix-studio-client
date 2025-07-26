@@ -113,4 +113,8 @@ export class BillingService extends BaseService {
   getPastPayments(invoice_id:any,callback:any){
     return this.getData({}, this.httpUrls['getPastPayments']+"/"+invoice_id, callback)
   }
+
+  getLastInsertedInvoiceNumber(callback:any){
+    return this.getData({}, this.httpUrls['getLastInvoiceNumber'], callback)
+  }
 }

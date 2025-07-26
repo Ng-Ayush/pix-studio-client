@@ -70,6 +70,7 @@ export class LoginComponent {
       if (res.status == 200) {
         let currentUser:any = res.user_id;
         localStorage.setItem("currentUserId", JSON.stringify(currentUser))
+        localStorage.setItem("userData", JSON.stringify(res.userData));
         // this.alert.success(res.message);
         // this.showOTPBox = true;  commented for app tesing
         this.loader = false;

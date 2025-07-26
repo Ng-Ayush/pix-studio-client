@@ -91,7 +91,7 @@ export class BillingComponent {
 
   saveAndNewParty() {
     this.loader.show();
-     if(!this.partyConfig.name || !this.partyConfig.phone || !this.partyConfig.billing_address || !this.partyConfig.email){
+     if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;

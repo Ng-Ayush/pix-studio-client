@@ -48,6 +48,7 @@ export class PhotoSelectionPhotosComponent {
   sortImagesModal:boolean = false;
   isEventSubmitted:boolean = false;
   originalDirectoryName:any='';
+  studio_name:any='';
 
   constructor(private loader:LoaderService ,private router: Router,private imageCompress: NgxImageCompressService , private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
@@ -59,7 +60,9 @@ export class PhotoSelectionPhotosComponent {
   }
 
   ngOnInit() {
-    this.user_id = localStorage.getItem("user_id") as unknown as number;
+    let parseData:any  = JSON.parse(<any>localStorage.getItem("userData"));
+    this.studio_name = parseData?.studio_name;
+    this.user_id = parseData?.id;
   }
 
   getUploadedPhotosByFolderId() {
@@ -177,7 +180,7 @@ export class PhotoSelectionPhotosComponent {
           blob = this.dataURLtoBlob(compressedImage);
         }
 
-        const fileRef = ref(this.storage, `photos/user_${this.user_id}/${this.customerName}_${this.customerUniqueId}/${this.eventName}_${this.currentEventId}/${this.folderName}_${this.currentFolderId}/${fileName}`);
+        const fileRef = ref(this.storage, `photos/studio_${this.studio_name}/${this.customerName}/${this.eventName}/${this.folderName}/${fileName}`);
         const uploadTask = uploadBytesResumable(fileRef, blob);
 
         uploadTask.then(async () => {

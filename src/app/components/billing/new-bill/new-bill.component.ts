@@ -72,7 +72,7 @@ export class NewBillComponent {
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
-  
+    this.fetchLastInsertedInvoiceNumber();
 
 
   }
@@ -81,6 +81,14 @@ export class NewBillComponent {
     this.fetchPartyList();
     this.addItem();
     this.getAllInvoiceItems();
+  }
+
+  fetchLastInsertedInvoiceNumber(){
+    this.billingService.getLastInsertedInvoiceNumber((res:any)=>{
+      if(res.status == 200){
+        this.invoiceConfig.invoice_number = +res.lastInvoiceId + 1;
+      }
+    })
   }
 
   addItem() {

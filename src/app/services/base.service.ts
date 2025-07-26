@@ -55,6 +55,8 @@ export class BaseService {
     'deleteParty': '/api/mystudio/billing-customer/deleteParty',
     'getInvoiceByPartyId': '/api/mystudio/billing-customer/getInvoiceByPartyId',
     'getInvoiceById': '/api/mystudio/invoices/getInvoiceById',
+    'getLastInvoiceNumber': '/api/mystudio/invoices/getLastInvoiceNumber',
+
 
     'addInvoiceItem': '/api/mystudio/invoice-items/addInvoiceItem',
     'getAllInvoiceItems': '/api/mystudio/invoice-items/getAllInvoiceItems',
