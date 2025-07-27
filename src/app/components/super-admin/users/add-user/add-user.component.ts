@@ -35,6 +35,7 @@ export class AddUserComponent {
       youtube_url: ['', Validators.required],
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
+      address: ['', Validators.required],
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {

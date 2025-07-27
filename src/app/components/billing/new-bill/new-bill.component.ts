@@ -66,19 +66,19 @@ export class NewBillComponent {
       if (params['invoice_number']) {
         this.invoice_number = params['invoice_number'];
         this.getInvoiceDetailByInvoiceNumber();
+      }else{
+        this.fetchPartyList();
+        this.fetchLastInsertedInvoiceNumber();
       }
     });
     this.invoiceConfig.invoice_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
-    this.fetchLastInsertedInvoiceNumber();
-
 
   }
 
   ngOnInit(): void {
-    this.fetchPartyList();
     this.addItem();
     this.getAllInvoiceItems();
   }
@@ -346,6 +346,7 @@ export class NewBillComponent {
       if (res.status == 200) {
         this.isEditInvoice = true;
         this.invoiceConfig = res.data;
+        this.fetchPartyList();
         this.discountAmountVal = this.invoiceConfig.discount_value || 0;
         this.discount_type = this.invoiceConfig.discount_type || 'percentage';
         this.getPastPayments();

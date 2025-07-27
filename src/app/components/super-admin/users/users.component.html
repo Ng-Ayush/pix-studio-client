@@ -56,6 +56,18 @@
                     </div>
                 </div>
             </div>
+            <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+              <a class="flex items-center cursor-pointer" [routerLink]="['/admin/dashboard']">
+                    <button
+                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+                            <path
+                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+                            </path>
+                        </svg> Go back</button>
+                </a>
+            </div>
         </div>
 
         <main class="min-h-screen bg-gray-50">
@@ -63,7 +75,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800">Admin User</h1>
-                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Admin Admins</p>
+                        <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} Admins</p>
                     </div>
                     <button (click)="addAdmins()"
                         class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
@@ -85,61 +97,124 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </div>
-                    <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm" (input)="searchAdmins()"
+                    <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm"
+                        (input)="searchAdmins()"
                         class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                    <div>
-                        <div *ngFor="let customer of filteredItems; let i = index"
-                            class="flex items-center justify-between p-4"
-                            [class.border-b]="i !== filteredItems.length - 1"
-                            [class.border-gray-200]="i !== filteredItems.length - 1">
-                            <div class="flex items-center">
-                                <div
-                                    class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium mr-4">
-                                    {{ customer.studio_name| uppercase |slice : 0 : 2 }}
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-800">{{ customer.studio_name }}</h3>
-                                    <p class="text-gray-600">{{ customer.phone }}</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <button (click)="onEdit(customer)"
-                                    class="bg-indigo-100 hover:bg-indigo-200 cursor-pointer text-indigo-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                    Edit
-                                </button>
-                                <button (click)="onDeleteModal(customer)"
-                                    class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="filteredItems.length === 0">
-                        <p class="p-4 text-gray-600">No users found.</p>
-                    </div>
+
+
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 light:bg-gray-700 light:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    Studio Name
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Phone Number
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Created At
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let customer of filteredItems; let i = index"
+                                class="bg-white border-b light:bg-gray-800 light:border-gray-700 border-gray-200 hover:bg-gray-50 light:hover:bg-gray-600">
+                                <th scope="row"
+                                    class="px-6 flex items-center py-4 font-medium text-gray-900 whitespace-nowrap light:text-white">
+                                    <img class="w-10 h-10 rounded-full mr-2" [src]="customer.studio_icon"
+                                        (error)="onImageError($event)" alt="Jese image">
+                                    <span>
+                                        {{ customer.studio_name}}
+                                    </span>
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{ customer.phone_number }}
+                                </td>
+                                <td class="px-6 py-4">{{customer.created_at | date : 'MMM, d y'}}</td>
+                                <td class="px-6 py-4">
+                                    <span class="status-pill flex items-center gap-2 ">
+                                        <!-- From Uiverse.io by Galahhad -->
+                                        <label class="switch">
+                                            <input [checked]="customer.status"
+                                                (change)="toggleAdminStatus(customer)" type="checkbox">
+                                            <div class="slider">
+                                                <div class="circle">
+                                                    <svg class="cross" xml:space="preserve"
+                                                        style="enable-background:new 0 0 512 512"
+                                                        viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g>
+                                                            <path data-original="#000000" fill="currentColor"
+                                                                d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0">
+                                                            </path>
+                                                        </g>
+                                                    </svg>
+                                                    <svg class="checkmark" xml:space="preserve"
+                                                        style="enable-background:new 0 0 512 512" viewBox="0 0 24 24"
+                                                        y="0" x="0" height="10" width="10"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g>
+                                                            <path class="" data-original="#000000" fill="currentColor"
+                                                                d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z">
+                                                            </path>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex gap-3">
+                                        <button (click)="onEdit(customer)"
+                                            class="bg-indigo-100 hover:bg-indigo-200 cursor-pointer text-indigo-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                </path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                </path>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button (click)="onDeleteModal(customer)"
+                                            class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path
+                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                </path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="filteredItems.length === 0">
+                                <p class="p-4 text-gray-600">No users found.</p>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-        
+
             <div *ngIf="deleteModal"
                 class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
                 <div #modalContent

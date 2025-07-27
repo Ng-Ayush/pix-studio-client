@@ -121,14 +121,14 @@
                         <div class="grid gap-3">
                             <div class="flex items-center">
                                 <label for="orderNo" class="w-1/3 text-xs font-medium text-gray-700">Order No.</label>
-                                <input [readOnly]="isEditInvoice" type="text" id="orderNo" name="orderNo" value="8"
+                                <input [readOnly]="true" type="text" id="orderNo" name="orderNo" value="8"
                                     [(ngModel)]="invoiceConfig.invoice_number"
                                     class="flex-1 p-2 border border-gray-300 rounded-md">
                             </div>
                             <div class="flex items-center">
                                 <label for="orderDate" class="w-1/3 text-xs font-medium text-gray-700">Order
                                     Date</label>
-                                <input type="date" [readOnly]="isEditInvoice" id="orderDate" name="orderDate"
+                                <input type="date"  id="orderDate" name="orderDate"
                                     [(ngModel)]="invoiceConfig.invoice_date"
                                     class="flex-1 p-2 border border-gray-300 rounded-md">
                             </div>

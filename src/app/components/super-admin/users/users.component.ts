@@ -20,9 +20,9 @@ export class UsersComponent {
   todayDate: any = new Date();
   users: any = [];
   deleteModal: boolean = false;
-  id:Number=0;
-  searchTerm:any='';
-  filteredItems:any=[];
+  id: Number = 0;
+  searchTerm: any = '';
+  filteredItems: any = [];
 
 
   constructor(
@@ -41,7 +41,7 @@ export class UsersComponent {
     this.service.getAllUsers((res: any) => {
       if (res.status == 200) {
         this.users = res.data;
-        this.filteredItems = [...this.users]; 
+        this.filteredItems = [...this.users];
       } else {
         this.alert.error(res.message);
       }
@@ -59,31 +59,31 @@ export class UsersComponent {
   }
 
   searchAdmins() {
-      if (!this.searchTerm) {
-        this.filteredItems = [...this.users]; 
-        return;
-      }
-      this.filteredItems = this.users.filter((item:any) =>
-        item.studio_name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+    if (!this.searchTerm) {
+      this.filteredItems = [...this.users];
+      return;
+    }
+    this.filteredItems = this.users.filter((item: any) =>
+      item.studio_name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
 
   }
 
   onEdit(user: any) {
-  this.router.navigate(['admin/edit-user', user.id])
-  
+    this.router.navigate(['admin/edit-user', user.id])
+
   }
 
   onDeleteModal(user: any) {
     console.log(user.id);
 
     this.id = user.id
-    
-  this.deleteModal=true;
+
+    this.deleteModal = true;
   }
 
   onClose() {
-    this.deleteModal=false;
+    this.deleteModal = false;
 
   }
 
@@ -96,8 +96,16 @@ export class UsersComponent {
       }
     })
 
-  }  
   }
+
+  onImageError(event:any){
+    event.target.src = 'assets/logo.png';
+  }
+
+  toggleAdminStatus(event:any){
+    
+  }
+}
 
 
 
