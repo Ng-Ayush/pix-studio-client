@@ -88,6 +88,8 @@ export class BaseService {
     'updateFeature': '/api/mystudio/manage-features/updateFeature',
     'deleteFeatures': '/api/mystudio/manage-features/deleteFeatures',
     'createCategory': '/api/mystudio/manage-features/createCategory',
+    'updateCategory': '/api/mystudio/manage-features/updateCategory',
+    'deleteCategory': '/api/mystudio/manage-features/deleteCategory',
     'getAllCategories': '/api/mystudio/manage-features/getAllCategories',
     'getFeaturesByCategory': '/api/mystudio/manage-features/getFeaturesByCategory',
     'getFeaturesByNewArrival': '/api/mystudio/manage-features/getFeaturesByNewArrival',

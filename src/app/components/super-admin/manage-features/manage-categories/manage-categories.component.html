@@ -1,0 +1,260 @@
+<div class="dashboard-container">
+    <aside class="sidebar justify-center">
+        <nav class="sidebar-nav">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/admin/dashboard']">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+
+            </a>
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </a> -->
+            <a [routerLink]="['/admin/notifications']" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
+
+            </a>
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                </svg>
+
+            </a> -->
+            <a href="javascript:void(0);" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+
+            </a>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="border-l border-white bg-[#5758b2]">
+            <div class="p-5 ps-10">
+                <div class="heading flex gap-7 items-center">
+                    <div class="logo-img">
+                        <img src="../../../assets/logo.png" alt=""
+                            class="border radius-md text-white w-[50px] h-[50px]">
+                    </div>
+                    <div class="header-title">
+                        <h2 class="text-white">Hello, Suraj Production</h2>
+                        <!-- <small class="text-white">Tagline</small> -->
+                    </div>
+                </div>
+            </div>
+            <div class="back-btn flex justify-between items-center py-3 px-10 bg-gray-200">
+                <a class="flex items-center cursor-pointer" [routerLink]="['/admin/manage-features']">
+                    <button
+                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+                            <path
+                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+                            </path>
+                        </svg> Go back</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="min-h-screen bg-gray-50">
+            <div class="min-h-min   flex items-center justify-center">
+                <div class="bg-white rounded-lg p-8 w-full">
+                    <div class="flex justify-between mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800">List Category </h2>
+                        <button
+                            class="cursor-pointer text-sm bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-full transition duration-200"
+                            (click)="categoryModal = true">Add Category</button>
+                    </div>
+                    <div class="container mx-auto px-4 sm:px-8">
+                        <div class="py-8">
+                            <div class="-mx-4 sm:-mx-8 overflow-x-auto">
+                                <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                                    <table class="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Sno
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Category Icon
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Category Name
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let cat of filteredItems; let i = index;trackBy : trackByFn">
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{i+1}}
+                                                </td>
+                                                <td>
+                                                    <img src="{{cat.category_icon}}" class="w-10 h-10 rounded-full"
+                                                        alt="">
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                        {{cat.category_name}}
+                                                    </p>
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <div class="flex gap-3">
+                                                        <button (click)="onEdit(cat)"
+                                                            class="bg-indigo-100 hover:bg-indigo-200 cursor-pointer text-indigo-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path
+                                                                    d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                                </path>
+                                                                <path
+                                                                    d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                                </path>
+                                                            </svg>
+                                                            Edit
+                                                        </button>
+                                                        <button (click)="onDeleteModal(cat)"
+                                                            class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                                <path
+                                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                                </path>
+                                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                            </svg>
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div *ngIf="filteredItems.length === 0">
+                                <p class="p-4 text-gray-600">No category found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div *ngIf="categoryModal"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': categoryModal}">
+        <div class="p-6 flex flex-col gap-3" [formGroup]="categoryForm">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Category Name</label>
+                <input type="text" autocomplete="off" id="name" formControlName="category_name" autocomplete="off"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                    placeholder="Enter your category name"
+                    [class.border-red-500]="categoryForm.get('category_name')?.invalid && categoryForm.get('category')?.touched">
+                <div *ngIf="categoryForm.get('category_name')?.invalid && categoryForm.get('category_name')?.touched"
+                    class="text-red-500 text-sm mt-1">
+                    Category is required
+                </div>
+            </div>
+            <div>
+                <label for="name" class="flex gap-2 text-sm font-medium text-gray-700 mb-2">
+                    Category Icon
+                    <span role="status" *ngIf="isIconUploading">
+                        <svg aria-hidden="true"
+                            class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor" />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill" />
+                        </svg>
+                    </span>
+                </label>
+
+                <input type="file" accept="image/*" id="name" (change)="onImgUpload($event)"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                    placeholder="Enter your category icon"
+                    [class.border-red-500]="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched">
+                <div *ngIf="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched"
+                    class="text-red-500 text-sm mt-1">
+                    Category icon is required
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-end gap-3 p-5 rounded-b-lg">
+            <button (click)="onClose()" [disabled]="isIconUploading"
+                class="disabled:bg-gray-400 cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="addCategory()" [disabled]="isIconUploading || categoryForm.invalid"
+                class=" disabled:bg-gray-400 cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+<div *ngIf="deleteCatModal"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': deleteCatModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[200px] mb-4">
+                <img src="../../../assets/delete-img.svg" alt="Delete illustration" class="w-full h-auto" />
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Are you sure you want to delete?
+            </h2>
+
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="onClose()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="deleteCategory()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>

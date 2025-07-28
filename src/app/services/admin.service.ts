@@ -95,6 +95,15 @@ export class AdminService extends BaseService {
   createCategory(params:any, callback:any) {
     return this.postData(params, this.httpUrls['createCategory'], callback)
   }
+
+  updateCategory(params:any,catId:any, callback:any) {
+    return this.putData(params, this.httpUrls['updateCategory'] + "/" + catId, callback)
+  }
+
+  deleteCategory(catId:any, callback:any) {
+    return this.deleteData({}, this.httpUrls['deleteCategory'] + "/" + catId, callback)
+
+  }
   getAllCategories(callback:any){
     return this.getData({}, this.httpUrls['getAllCategories'], callback)
   }

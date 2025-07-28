@@ -125,6 +125,10 @@ export const routes: Routes = [
         loadComponent: () => import("./components/super-admin/manage-features/manage-features.component").then(m => m.ManageFeaturesComponent),
       },
       {
+        path: 'manage-categories',
+        loadComponent: () => import("./components/super-admin/manage-features/manage-categories/manage-categories.component").then(m => m.ManageCategoriesComponent),
+      },
+      {
         path: 'add-features',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
       },
