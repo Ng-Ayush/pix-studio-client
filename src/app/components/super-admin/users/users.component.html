@@ -126,7 +126,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let user of filteredItems; let i = index"
+                            <tr *ngFor="let user of filteredItems; let i = index;trackBy : trackAdmins"
                                 class="bg-white border-b light:bg-gray-800 light:border-gray-700 border-gray-200 hover:bg-gray-50 light:hover:bg-gray-600">
                                 <th scope="row"
                                     class="px-6 flex items-center py-4 font-medium text-gray-900 whitespace-nowrap light:text-white">
