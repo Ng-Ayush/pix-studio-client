@@ -22,9 +22,9 @@ export class AddManageFeaturesComponent {
   itemId: any;
   todayDate: any = new Date();
   searchTerm: any = ''
-  deleteModal: boolean = false;
+  categoryModal: boolean = false;
   categoryForm: any;
-  categoryNames:any=[];
+  categoryNames: any = [];
 
 
 
@@ -34,7 +34,9 @@ export class AddManageFeaturesComponent {
       category: ['', [Validators.required]],
       price: ['', [Validators.required]],
       youtube_url: ['', [Validators.required]],
-      drive_url: ['', [Validators.required]]
+      drive_url: ['', [Validators.required]],
+      description: ['',],
+      is_new_arrival: ['',],
     });
     this.categoryForm = this.fb.group({
       category_name: ['', [Validators.required]],
@@ -54,7 +56,7 @@ export class AddManageFeaturesComponent {
 
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.getAllCategories();
   }
 
@@ -69,6 +71,7 @@ export class AddManageFeaturesComponent {
         this.service.createFeatures({ ...this.userForm.value }, (res: any) => {
           if (res.status == 200) {
             this.alert.success(res.message);
+            this.isSubmitting = false;
             this.router.navigate(['admin/manage-features'])
           } else {
 
@@ -78,20 +81,17 @@ export class AddManageFeaturesComponent {
       } else {
         this.service.updateFeature({ ...this.userForm.value, id: this.itemId }, (res: any) => {
           if (res.status == 200) {
-            this.alert.success(res.message)
+            this.alert.success(res.message);
+            this.userForm.reset();
+            this.isSubmitting = false;
             this.router.navigate(['admin/manage-features'])
           } else {
             this.alert.error(res.message);
           }
-
         })
       }
-      this.isSubmitting = false;
-      this.userForm.reset();
     } else {
-      Object.keys(this.userForm.controls).forEach(key => {
-        this.userForm.get(key)?.markAsTouched();
-      });
+      this.userForm.markAllAsTouched();
     }
   }
   getRealTime() {
@@ -108,24 +108,20 @@ export class AddManageFeaturesComponent {
     })
   }
 
-  onDeleteModal(user: any) {
-    console.log(user.id);
-
-
-    this.deleteModal = true;
+  oncategoryModal(user: any) {
+    this.categoryModal = true;
   }
 
   onClose() {
-    this.deleteModal = false;
-
+    this.categoryModal = false;
   }
 
-  onDelete() {
+  addCategory() {
     this.service.createCategory(this.categoryForm.value, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message)
-        this.deleteModal = false;
-
+        this.categoryModal = false;
+        this.getAllCategories();
       } else {
         this.alert.error(res.message);
       }
@@ -138,9 +134,6 @@ export class AddManageFeaturesComponent {
     this.service.getAllCategories((res: any) => {
       if (res.status == 200) {
         this.categoryNames = res.data;
-
-        console.log(res);
-        
       } else {
         this.alert.error(res.message);
       }

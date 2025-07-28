@@ -7,11 +7,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AdminService } from '../../services/admin.service';
 import { environment } from '../../../environments/environment';
 import { AlertService } from '../../services/alert.service';
+import { FormsModule } from '@angular/forms';
+import { LoaderService } from '../../shared/loader.service';
 declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, RouterModule,],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
 })
@@ -22,43 +24,47 @@ export class FeaturesComponent {
   showDriveLink: boolean = false;
   showVideoModal = false
   selectedCard: any | null = null
-  currentVideoUrl: SafeResourceUrl = ""
-
-  // Sample YouTube video IDs for random selection
-  private youtubeVideoIds = [
-    "dQw4w9WgXcQ", // Rick Roll
-    "9bZkp7q19f0", // Gangnam Style
-    "kJQP7kiw5Fk", // Despacito
-    "fJ9rUzIMcZQ", // Bohemian Rhapsody
-    "hTWKbfoikeg", // Smells Like Teen Spirit
-    "YQHsXMglC9A", // Hello - Adele
-    "CevxZvSJLk8", // Katy Perry - Roar
-    "JGwWNGJdvx8", // Shape of You
-    "M7lc1UVf-VE", // Uptown Funk
-    "RgKAFK5djSk", // See You Again
-  ]
+  currentVideoUrl: SafeResourceUrl = "";
   features: any = [];
-
+  currentDriveLink: any = '';
+  categoryList: any[] = [];
+  selectedCategory: any = null;
+  selectedCatName:any = 'New Arrival Features';
 
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
     private _adminService: AdminService,
-    private alert: AlertService
+    private alert: AlertService,
+    private loader: LoaderService
   ) { }
 
   ngOnInit() {
     this.getRealTime();
-    this.getAllFeatures()
+    this.getFeaturesByNewArrival();
+    this.getAllCategories();
   }
 
 
-  getAllFeatures() {
-    this._adminService.getAllFeatures((res: any) => {
+  getFeaturesByNewArrival() {
+    this.loader.show();
+    this._adminService.getFeaturesByNewArrival((res: any) => {
       if (res.status == 200) {
         this.features = res.data;
-        console.log(res.data);
+        this.loader.hide();
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
+  }
 
+  getAllCategories() {
+    this.loader.show();
+    this._adminService.getAllCategories((res: any) => {
+      if (res.status == 200) {
+        this.categoryList = res.data;
+        this.loader.hide();
       } else {
         this.alert.error(res.message);
       }
@@ -79,16 +85,28 @@ export class FeaturesComponent {
 
   playVideo(card: any): void {
     this.selectedCard = card;
-    const randomVideoId = this.youtubeVideoIds[Math.floor(Math.random() * this.youtubeVideoIds.length)]
+    const randomVideoId = this.extractYoutubeId(card.youtube_url);
     const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
     this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
     this.showVideoModal = true;
+    this.currentDriveLink = card.drive_url;
+  }
+
+  extractYoutubeId(url: any) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|shorts\/|)([^#&?]+)/;
+    const match = url.match(regex);
+
+    if (match && match[1]) {
+      return match[1];
+    } else {
+      return null;
+    }
   }
 
   payNow() {
     // 1. Create Razorpay order
     const params: any = {
-      amount: 50000,
+      amount: this.selectedCard.price,
       currency: 'INR',
       receipt: 'order_rcptid_11',
     };
@@ -99,11 +117,11 @@ export class FeaturesComponent {
 
       const options: any = {
         key: environment.razorpay_key,
-        amount: order.amount,
-        currency: order.currency,
+        amount: order.data.amount,
+        currency: order.data.currency,
         name: 'Suraj Studio',
         description: 'Test Transaction',
-        order_id: order.id,
+        order_id: order.data.id,
         handler: (response: any) => {
           // 2. Send payment info to backend for verification
           console.log("GOTHE ORDER", response);
@@ -114,11 +132,16 @@ export class FeaturesComponent {
 
             if (res.status == 200) {
               this.alert.success(res.message);
-            } else {
               this.showVideoModal = false;
               this.showDriveLink = true;
+              this.automaticStartDownload();
               this.alert.success("Feature bought successfully");
-              // this.alert.error(res.message);
+            } else {
+              this.showVideoModal = false;
+              // this.showDriveLink = true;
+              // this.automaticStartDownload();
+              // this.alert.success("Feature bought successfully");
+              this.alert.error(res.message);
             }
           })
         },
@@ -151,6 +174,61 @@ export class FeaturesComponent {
     }).catch(err => {
       console.error('Failed to copy: ', err);
     });
+  }
+
+  automaticStartDownload() {
+    const fileId = this.extractFileId(this.currentDriveLink);
+    const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    this.currentDriveLink = downloadUrl;
+    try {
+      setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = '';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        this.showDriveLink = false;
+      }, 300);
+    }
+    catch (error: any) {
+      this.alert.error("Error in downloading the file, copy paste the url in new tab")
+    }
+  }
+
+  extractFileId(url: string): string | null {
+    const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)\//);
+    return match ? match[1] : null;
+  }
+
+  selectCategory(category: any) {
+    this.selectedCategory = category.category_id;
+    this.selectedCatName = category.category_name;
+    this.getFeaturesByCategory();
+  }
+
+  getFeaturesByCategory() {
+    this.loader.show();
+    this._adminService.getFeaturesByCategory(this.selectedCategory, (res: any) => {
+      if (res.status == 200) {
+        this.features = res.data;
+        console.log(res.data);
+        this.loader.hide();
+      } else {
+        this.alert.error(res.message);
+      }
+    })
+  }
+
+  trackByFn(index: number, item: any) {
+    return item.id;
+  }
+
+  resetFilter() {
+    this.selectedCategory = null;
+    this.selectedCatName = 'New Arrival Features'
+    this.getFeaturesByNewArrival();
   }
 
 }

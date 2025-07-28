@@ -404,9 +404,7 @@ export class NewBillComponent {
 
   saveParty() {
     this.loader.show();
-    console.log(323);
-
-    if (!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email) {
+    if (!this.partyConfig.party_name || !this.partyConfig.phone_number) {
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;

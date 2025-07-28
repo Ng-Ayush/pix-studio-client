@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../../services/admin.service';
 import { AlertService } from '../../../../services/alert.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
-import { FolderListingScreenComponent } from '../../../folder-listing-screen/folder-listing-screen.component';
-
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-add-user',
@@ -24,6 +23,7 @@ export class AddUserComponent {
   itemId: any;
   todayDate: any = new Date();
   searchTerm: any = '';
+  storage = inject(Storage);
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
@@ -31,7 +31,7 @@ export class AddUserComponent {
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
       role: ['', [Validators.required]],
-      studio_logo: ['default.jpg', Validators.required],
+      studio_icon: ['', Validators.required],
       youtube_url: ['', Validators.required],
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
@@ -90,10 +90,38 @@ export class AddUserComponent {
       this.todayDate = new Date();
     })
   }
-  onFileSelected(event: any) {
-    console.log(event.target.files[0]);
-
-  }
+   onImgUpload(event: any) {
+     const file = event.target.files[0];
+     const reader = new FileReader();
+ 
+     reader.readAsDataURL(file);
+     reader.onload = async () => {
+       let compressedImage = reader.result as string;
+       let blob = this.dataURLtoBlob(compressedImage);
+       console.log(file);
+       
+       const fileRef = ref(this.storage, `studio-icon/${file.name}`);
+       const uploadTask = uploadBytesResumable(fileRef, blob);
+       
+       uploadTask.then(async () => {
+         const url = await getDownloadURL(fileRef);
+         console.log(url,"dsadad");
+         this.userForm.patchValue({ studio_icon: url })
+       })
+     }
+   }
+ 
+   dataURLtoBlob(dataURL: string) {
+     const byteString = atob(dataURL.split(',')[1]);
+     const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+     const arrayBuffer = new ArrayBuffer(byteString.length);
+     const intArray = new Uint8Array(arrayBuffer);
+     for (let i = 0; i < byteString.length; i++) {
+       intArray[i] = byteString.charCodeAt(i);
+     }
+     return new Blob([arrayBuffer], { type: mimeString });
+   }
+ 
 
 
 

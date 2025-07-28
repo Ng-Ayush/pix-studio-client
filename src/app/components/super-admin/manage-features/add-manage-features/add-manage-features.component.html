@@ -67,57 +67,42 @@
                             <h2 class="text-2xl font-bold text-gray-800">{{itemId ? 'Update Feature' : "Create Feature"}}</h2>
                         </div>
                         <div class="text-right">
-                            <button  class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" (click)="deleteModal = true">Add Category</button>
+                            <button
+                                class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+                                (click)="categoryModal = true">Add Category</button>
                         </div>
 
                         <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                                  
-                                    <select
-                                      id="category"
-                                      formControlName="category"
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                      [class.border-red-500]="categoryForm.get('category')?.invalid && categoryForm.get('category')?.touched"
-                                    >
-                                      <option value="">Select a category</option>
-                                      <option *ngFor="let cat of categoryNames" [value]="cat.category_id">{{ cat.category_name }}</option>
-                                    </select>
-                                  
-                                    <div *ngIf="categoryForm.get('category')?.invalid && categoryForm.get('category')?.touched" class="text-red-500 text-sm mt-1">
-                                      Category is required
-                                    </div>
-                                  </div>
-                                  
-                                <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                                         Title</label>
-                                    <textarea type="text" id="name" formControlName="title"
+                                    <input type="text" id="title" formControlName="title" autocomplete="off"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter your title"
-                                        [class.border-red-500]="userForm.get('title')?.invalid && userForm.get('title')?.touched"></textarea>
-                                    <div *ngIf="userForm.get('title')?.invalid && userForm.get('title')?.touched"
-                                        class="text-red-500 text-sm mt-1">
-                                        Title is required
-                                    </div>
-                                </div>
-                                <!-- <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Title</label>
-                                    <input type="text" autocomplete="off" id="name" formControlName="title"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter feature Title"
+                                        placeholder="Enter Title"
                                         [class.border-red-500]="userForm.get('title')?.invalid && userForm.get('title')?.touched">
                                     <div *ngIf="userForm.get('title')?.invalid && userForm.get('title')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Title is required
                                     </div>
-                                </div> -->
-                               
-                               
-                            </div>
-                            <div class="grid grid-cols-1 gap-4 my-2">
+                                </div>
+
+                                <div>
+                                    <label for="category"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select id="category" formControlName="category"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        [class.border-red-500]="categoryForm.get('category')?.invalid && categoryForm.get('category')?.touched">
+                                        <option value="">Select a category</option>
+                                        <option *ngFor="let cat of categoryNames" [value]="cat.category_id">
+                                            {{cat.category_name }}</option>
+                                    </select>
+
+                                    <div *ngIf="categoryForm.get('category')?.invalid && categoryForm.get('category')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Category is required
+                                    </div>
+                                </div>
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                                         Price</label>
@@ -125,12 +110,15 @@
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your Price"
                                         [class.border-red-500]="userForm.get('price')?.invalid && userForm.get('price')?.touched"
-                                        maxlength="3">
+                                        maxlength="5">
                                     <div *ngIf="userForm.get('price')?.invalid && userForm.get('price')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Price is required
                                     </div>
                                 </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 my-2">
+
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                                         Youtube Url</label>
@@ -157,14 +145,32 @@
                                     </div>
                                 </div>
 
-                            </div>
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Description</label>
+                                    <textarea type="text" id="name" formControlName="description" rows="5"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter description"
+                                        [class.border-red-500]="userForm.get('description')?.invalid && userForm.get('description')?.touched"></textarea>
+                                    <div *ngIf="userForm.get('description')?.invalid && userForm.get('description')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Description is required
+                                    </div>
+                                </div>
 
-                            <!-- Password Field -->
+                                <div class="flex items-center">
+                                    <input id="link-checkbox" type="checkbox" formControlName="is_new_arrival"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="link-checkbox" class="ms-2 text-sm font-medium text-gray-900">Show On
+                                        Landing Page? </label>
+                                </div>
+
+                            </div>
 
                         </form>
                         <button type="button" (click)="onSubmit()" [disabled]="userForm.invalid || isSubmitting"
-                            class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
-                            <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
+                            class="mt-5 flex items-center justify-center gap-2 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+                            <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" fill="none"
                                 viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
@@ -175,51 +181,52 @@
                             {{ itemId ? "Update Features" : 'Create Features' }}
                         </button>
                     </div>
-                    <div *ngIf="deleteModal"
-                    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
-                    <div #modalContent
-                        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-                        [ngClass]="{'modal-fade-in': deleteModal}">
-                        <div class="p-6 flex flex-col items-center" [formGroup]="categoryForm">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Category Name</label>
-                                <input type="text" autocomplete="off" id="name" formControlName="category_name" autocomplete="off"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                    placeholder="Enter your category name"
-                                    [class.border-red-500]="categoryForm.get('category_name')?.invalid && categoryForm.get('category')?.touched">
-                                <div *ngIf="categoryForm.get('category_name')?.invalid && categoryForm.get('category_name')?.touched"
-                                    class="text-red-500 text-sm mt-1">
-                                    Category is required
+                    <div *ngIf="categoryModal"
+                        class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+                        <div #modalContent
+                            class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+                            [ngClass]="{'modal-fade-in': categoryModal}">
+                            <div class="p-6 flex flex-col gap-3" [formGroup]="categoryForm">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Category Name</label>
+                                    <input type="text" autocomplete="off" id="name" formControlName="category_name"
+                                        autocomplete="off"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your category name"
+                                        [class.border-red-500]="categoryForm.get('category_name')?.invalid && categoryForm.get('category')?.touched">
+                                    <div *ngIf="categoryForm.get('category_name')?.invalid && categoryForm.get('category_name')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Category is required
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Category Icon</label>
-                                <input type="file" id="name" (change)="onImgUpload($event)"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                    placeholder="Enter your category icon"
-                                    [class.border-red-500]="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched">
-                                <div *ngIf="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched"
-                                    class="text-red-500 text-sm mt-1">
-                                    Category icon is required
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Category Icon</label>
+                                    <input type="file" id="name" (change)="onImgUpload($event)"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your category icon"
+                                        [class.border-red-500]="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched">
+                                    <div *ngIf="categoryForm.get('category_icon')?.invalid && categoryForm.get('category_icon')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Category icon is required
+                                    </div>
                                 </div>
+
+                                <!-- <p *ngIf="customer_config.events > 0" class="text-sm text-center">This customer has {{customer_config.events}} Events, that will be permanently deleted.</p> -->
                             </div>
-    
-                            <!-- <p *ngIf="customer_config.events > 0" class="text-sm text-center">This customer has {{customer_config.events}} Events, that will be permanently deleted.</p> -->
-                        </div>
-    
-                        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                            <button (click)="onClose()"
-                                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
-                                Cancel
-                            </button>
-                            <button (click)="onDelete()"
-                                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
-                                Save
-                            </button>
+
+                            <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+                                <button (click)="onClose()"
+                                    class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                                    Cancel
+                                </button>
+                                <button (click)="addCategory()"
+                                    class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                                    Save
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>

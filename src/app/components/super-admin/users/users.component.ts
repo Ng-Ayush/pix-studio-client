@@ -98,12 +98,28 @@ export class UsersComponent {
 
   }
 
-  onImageError(event:any){
+  onImageError(event: any) {
     event.target.src = 'assets/logo.png';
   }
 
-  toggleAdminStatus(event:any){
-    
+  toggleAdminStatus(user: any) {
+    const param: any = {
+      status: !user.status
+    };
+
+    this.service.toggleAdminStatus(param, user.id, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.getAllAdmins();
+      } else {
+        this.alert.error(res.message);
+      }
+    })
+
+  }
+
+  trackAdmins(index: any, item: any) {
+    return item.id;
   }
 }
 

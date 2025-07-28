@@ -89,6 +89,8 @@ export class BaseService {
     'deleteFeatures': '/api/mystudio/manage-features/deleteFeatures',
     'createCategory': '/api/mystudio/manage-features/createCategory',
     'getAllCategories': '/api/mystudio/manage-features/getAllCategories',
+    'getFeaturesByCategory': '/api/mystudio/manage-features/getFeaturesByCategory',
+    'getFeaturesByNewArrival': '/api/mystudio/manage-features/getFeaturesByNewArrival',
     'createOrder': '/api/mystudio/manage-features/create-order',
     'verifyPayment': '/api/mystudio/manage-features/verify-payment',
     'onImgUpload': '/api/mystudio/manage-features/onImgUpload',
@@ -96,6 +98,8 @@ export class BaseService {
     'getRequestById': '/api/mystudio/customer-request/getRequestById',
     'updateRequest': '/api/mystudio/customer-request/updateRequest',
     'resolved': '/api/mystudio/customer-request/resolved',
+    'toggleAdminStatus': '/api/mystudio/super-admin/toggleAdminStatus',
+
 
     //Calendar
     'getCalendarEvents': '/api/mystudio/dashboard/getCalendarEvents',

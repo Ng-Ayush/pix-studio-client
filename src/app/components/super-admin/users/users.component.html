@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-            <!-- <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
+            <!-- <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/user']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -126,26 +126,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let customer of filteredItems; let i = index"
+                            <tr *ngFor="let user of filteredItems; let i = index"
                                 class="bg-white border-b light:bg-gray-800 light:border-gray-700 border-gray-200 hover:bg-gray-50 light:hover:bg-gray-600">
                                 <th scope="row"
                                     class="px-6 flex items-center py-4 font-medium text-gray-900 whitespace-nowrap light:text-white">
-                                    <img class="w-10 h-10 rounded-full mr-2" [src]="customer.studio_icon"
+                                    <img class="w-10 h-10 rounded-full mr-2" [src]="user.studio_icon"
                                         (error)="onImageError($event)" alt="Jese image">
                                     <span>
-                                        {{ customer.studio_name}}
+                                        {{ user.studio_name}}
                                     </span>
                                 </th>
                                 <td class="px-6 py-4">
-                                    {{ customer.phone_number }}
+                                    {{ user.phone_number }}
                                 </td>
-                                <td class="px-6 py-4">{{customer.created_at | date : 'MMM, d y'}}</td>
+                                <td class="px-6 py-4">{{user.created_at | date : 'MMM, d y'}}</td>
                                 <td class="px-6 py-4">
                                     <span class="status-pill flex items-center gap-2 ">
                                         <!-- From Uiverse.io by Galahhad -->
                                         <label class="switch">
-                                            <input [checked]="customer.status"
-                                                (change)="toggleAdminStatus(customer)" type="checkbox">
+                                            <input [checked]="user.status"
+                                                (change)="toggleAdminStatus(user)" type="checkbox">
                                             <div class="slider">
                                                 <div class="circle">
                                                     <svg class="cross" xml:space="preserve"
@@ -177,7 +177,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex gap-3">
-                                        <button (click)="onEdit(customer)"
+                                        <button (click)="onEdit(user)"
                                             class="bg-indigo-100 hover:bg-indigo-200 cursor-pointer text-indigo-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -189,7 +189,7 @@
                                             </svg>
                                             Edit
                                         </button>
-                                        <button (click)="onDeleteModal(customer)"
+                                        <button (click)="onDeleteModal(user)"
                                             class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -229,7 +229,7 @@
                             Are you sure you want to delete?
                         </h2>
 
-                        <!-- <p *ngIf="customer_config.events > 0" class="text-sm text-center">This customer has {{customer_config.events}} Events, that will be permanently deleted.</p> -->
+                        <!-- <p *ngIf="user_config.events > 0" class="text-sm text-center">This user has {{user_config.events}} Events, that will be permanently deleted.</p> -->
                     </div>
 
                     <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">

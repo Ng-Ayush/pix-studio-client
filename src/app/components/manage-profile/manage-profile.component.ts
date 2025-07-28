@@ -83,7 +83,7 @@ export class ManageProfileComponent {
     reader.onload = async () => {
       let compressedImage = reader.result as string;
       let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `studio-image/${this.userForm.value.studio_name.split(" ").join("_")}`);
+      const fileRef = ref(this.storage, `studio-icon/${this.userForm.value.studio_name.split(" ").join("_")}/${this.userForm.value.id}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
       
       uploadTask.then(async () => {

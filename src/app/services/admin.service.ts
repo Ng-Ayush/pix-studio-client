@@ -98,4 +98,16 @@ export class AdminService extends BaseService {
   getAllCategories(callback:any){
     return this.getData({}, this.httpUrls['getAllCategories'], callback)
   }
+
+  toggleAdminStatus(params:any, id:any, callback:any) {
+    return this.putData(params, this.httpUrls['toggleAdminStatus'] + "/" + id, callback)
+  }
+
+  getFeaturesByCategory(category: any, callback: any) {
+    return this.getData({}, this.httpUrls['getFeaturesByCategory'] + "/" + category, callback)
+  }
+
+  getFeaturesByNewArrival(callback: any) {
+    return this.getData({}, this.httpUrls['getFeaturesByNewArrival'], callback)
+  }
 }
