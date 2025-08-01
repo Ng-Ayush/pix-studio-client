@@ -48,14 +48,25 @@
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img src="../../../assets/logo.png" alt=""
+                        <img [src]="userData?.studio_icon" alt=""
                             class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
-                        <h2 class="text-white">Hello, {{userData?.name}}</h2>
-                        <!-- <!-- <small class="text-white">Tagline</small> --> -->
+                        <h2 class="text-white">Hello, {{userData?.studio_name}}</h2>
                     </div>
                 </div>
+            </div>
+             <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+              <a class="flex items-center cursor-pointer" (click)="backToBill()">
+                    <button
+                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+                            <path
+                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+                            </path>
+                        </svg> Go back</button>
+                </a>
             </div>
         </div>
 

@@ -29,7 +29,7 @@ export class FeaturesComponent {
   currentDriveLink: any = '';
   categoryList: any[] = [];
   selectedCategory: any = null;
-  selectedCatName:any = 'New Arrival Features';
+  selectedCatName: any = 'New Arrival Features';
 
   constructor(
     private router: Router,
@@ -51,12 +51,21 @@ export class FeaturesComponent {
     this._adminService.getFeaturesByNewArrival((res: any) => {
       if (res.status == 200) {
         this.features = res.data;
+        this.sanitizeVideoUrl();
         this.loader.hide();
       } else {
         this.loader.hide();
         this.alert.error(res.message);
       }
     })
+  }
+
+  sanitizeVideoUrl() {
+    this.features.forEach((card: any) => {
+      const randomVideoId = this.extractYoutubeId(card.youtube_url);
+      const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
+      card.youtube_url = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
+    });
   }
 
   getAllCategories() {
@@ -85,9 +94,10 @@ export class FeaturesComponent {
 
   playVideo(card: any): void {
     this.selectedCard = card;
-    const randomVideoId = this.extractYoutubeId(card.youtube_url);
-    const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
-    this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
+    // const randomVideoId = this.extractYoutubeId(card.youtube_url);
+    // const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
+    // this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
+    this.currentVideoUrl = card.youtube_url;
     this.showVideoModal = true;
     this.currentDriveLink = card.drive_url;
   }
@@ -213,6 +223,7 @@ export class FeaturesComponent {
     this._adminService.getFeaturesByCategory(this.selectedCategory, (res: any) => {
       if (res.status == 200) {
         this.features = res.data;
+        this.sanitizeVideoUrl();
         console.log(res.data);
         this.loader.hide();
       } else {

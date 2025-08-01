@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { BillingService } from '../../services/billing.service';
 import { LoaderService } from '../../shared/loader.service';
 import { AlertService } from '../../services/alert.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-billing',
@@ -30,16 +31,23 @@ export class BillingComponent {
   deleteModal:boolean=false;
   totalSales:any=0;
   totalRemaining:any=0;
-  constructor(private billingService: BillingService, private loader: LoaderService,private router:Router,private alert:AlertService) {
-    setInterval(() => {
-      this.todayDate = new Date();
-    }, 1000);
-
+  userData:any={};
+  constructor(private billingService: BillingService, private loader: LoaderService,private router:Router,private alert:AlertService,private adminService:AdminService) {
+  
+    this.getUserData();
   }
 
   ngOnInit() {
     this.fetchPartyList();
   }
+
+   getUserData() {
+    this.adminService.getUsersByCurrentId(JSON.parse(<any>localStorage.getItem("currentUserId")), (res: any) => {
+      console.log(res);
+      this.userData = res;
+    })
+  }
+
 
   fetchPartyList() {
     this.loader.show();
@@ -70,9 +78,9 @@ export class BillingComponent {
     this.loader.show();
     console.log(this.partyConfig);
     
-    if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
+    if(!this.partyConfig.party_name || !this.partyConfig.phone_number){
       this.loader.hide();
-      this.alert.error('Please fill all the fields');
+      this.alert.error('Party name and phone number is required');
       return;
     }
     this.billingService.createParty(this.partyConfig, (res: any) => {
@@ -91,9 +99,9 @@ export class BillingComponent {
 
   saveAndNewParty() {
     this.loader.show();
-     if(!this.partyConfig.party_name || !this.partyConfig.phone_number || !this.partyConfig.billing_address || !this.partyConfig.email){
+     if(!this.partyConfig.party_name || !this.partyConfig.phone_number){
       this.loader.hide();
-      this.alert.error('Please fill all the fields');
+      this.alert.error('Party name and phone number is required');
       return;
     }
     this.billingService.createParty(this.partyConfig, (res: any) => {
@@ -120,13 +128,22 @@ export class BillingComponent {
 
   updateParty(){
       this.loader.show();
-      this.billingService.updateParty(this.partyConfig.id, this.partyConfig, (res: any) => {
+      const params:any={
+        party_name: this.partyConfig.party_name,
+        phone_number: this.partyConfig.phone_number,
+        email: this.partyConfig.email,
+        billing_address: this.partyConfig.billing_address,
+      }
+      this.billingService.updateParty(this.partyConfig.id, params, (res: any) => {
         if (res.status == 200) {
           this.loader.hide();
+          this.alert.success(res.message);
           this.isEdit = false;
           this.closeModal();
         }else{
           this.loader.hide();
+          this.alert.error(res.message);
+
         }
       })
   }

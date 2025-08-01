@@ -89,9 +89,11 @@
 
                 <a class="dashboard-item" [routerLink]="['/photo-sharing']">
                     <div class="dashboard-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image-alt" viewBox="0 0 16 16">
-  <path d="M7 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m4.225 4.053a.5.5 0 0 0-.577.093l-3.71 4.71-2.66-2.772a.5.5 0 0 0-.63.062L.002 13v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4.5z"/>
-</svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-image-alt" viewBox="0 0 16 16">
+                            <path
+                                d="M7 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m4.225 4.053a.5.5 0 0 0-.577.093l-3.71 4.71-2.66-2.772a.5.5 0 0 0-.63.062L.002 13v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4.5z" />
+                        </svg>
                     </div>
                     <h3 class="dashboard-item-title text-lg">AI Photos Upload</h3>
                 </a>
@@ -110,16 +112,16 @@
             </div>
 
             <div class="grid grid-cols-3 gap-5 relative">
-                <div class="dashboard-item">
-                    <div class="relative w-full max-w-lg mx-auto overflow-hidden rounded-lg">
-                        <div id="carousel" class="flex transition-transform duration-700"
-                        style="transform: translateX(0%)">
-                        <img src="https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg" class="w-full flex-shrink-0" alt="Image 1" />
-                        <img src="https://images.pexels.com/photos/53265/pexels-photo-53265.jpeg" class="w-full flex-shrink-0" alt="Image 2" />
-                        <img src="https://images.pexels.com/photos/2041396/pexels-photo-2041396.jpeg" class="w-full flex-shrink-0" alt="Image 3" />
+                <div class="dashboard-item carousel relative w-full max-w-lg mx-auto overflow-hidden rounded-lg">
+                    <div id="carousel" class="flex transition-transform duration-700" style="transform: translateX(0%)">
+                        <img src="https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg"
+                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 1" />
+                        <img src="https://images.pexels.com/photos/53265/pexels-photo-53265.jpeg"
+                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 2" />
+                        <img src="https://images.pexels.com/photos/2041396/pexels-photo-2041396.jpeg"
+                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 3" />
                     </div>
                 </div>
-            </div>
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Sales</h3>

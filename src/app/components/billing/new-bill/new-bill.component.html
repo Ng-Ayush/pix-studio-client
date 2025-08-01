@@ -48,12 +48,11 @@
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img src="../../../assets/logo.png" alt=""
+                        <img [src]="userData.studio_icon" alt=""
                             class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
-                        <h2 class="text-white">Hello, Suraj Productiosn</h2>
-                        <!-- <small class="text-white">Tagline</small> -->
+                        <h2 class="text-white">Hello, {{userData.studio_name}}</h2>
                     </div>
                 </div>
             </div>
@@ -145,7 +144,7 @@
 
                 <section class="mb-6 p-4 bg-white rounded-md shadow">
                     <h2 class="text-lg font-semibold text-gray-700 mb-3">Items / Amount <span
-                            class="text-xs text-gray-500">(has to be changeable)</span></h2>
+                            class="text-xs text-red-500">*</span></h2>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -305,11 +304,6 @@
                                         class="px-3 py-1 text-sm font-medium rounded-full focus:outline-none transition-colors duration-150 ease-in-out">
                                         Product
                                     </button>
-                                    <!-- <button (click)="itemType = 'service'"
-                                        [ngClass]="{'bg-white text-indigo-600 shadow': itemType === 'service', 'text-gray-600 hover:text-gray-800': itemType !== 'service'}"
-                                        class="px-3 py-1 text-sm font-medium rounded-full focus:outline-none transition-colors duration-150 ease-in-out">
-                                        Service
-                                    </button> -->
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 self-start sm:self-center">
@@ -338,22 +332,6 @@
                                     [(ngModel)]="newItemConfig.item_name"
                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
-                            <!-- <div>
-                                <label for="category"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                <select id="category" name="category" [(ngModel)]="newItemConfig.item_category"
-                                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
-                                    <option>Select Category</option>
-                                    <option>Electronics</option>
-                                    <option>Clothing</option>
-                                </select>
-                            </div> -->
-                            <!-- <div>
-                                <button type="button"
-                                    class="w-full p-2 border border-indigo-600 text-indigo-600 bg-indigo-50 rounded-md shadow-sm hover:bg-indigo-100 font-medium">
-                                    Select Unit
-                                </button>
-                            </div> -->
                             <div class="lg:col-span-2">
                                 <label for="description"
                                     class="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -374,20 +352,6 @@
                                     Assign Code
                                 </button>
                             </div>
-                            <!-- <div
-                                class="lg:col-start-4 lg:row-start-1 flex items-center justify-start md:justify-end h-full">
-                                <button type="button"
-                                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center p-2 rounded-md border border-dashed border-gray-400 hover:border-indigo-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-                                    </svg>
-                                    Add Item Image
-                                </button>
-                            </div> -->
                         </div>
 
                         <nav class="flex gap-5 sm:gap-10 border-b border-gray-200 mb-6">
@@ -403,12 +367,12 @@
                             <div *ngSwitchCase="'pricing'">
                                 <div class="gap-8">
                                     <section class="p-6 border border-gray-200 rounded-lg">
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Sale Price</h3>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Sale Price </h3>
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 items-end">
                                             <div>
                                                 <label for="salePrice"
                                                     class="block text-sm font-medium text-gray-700 mb-1">Sale
-                                                    Price</label>
+                                                    Price <span class="text-red-500">*</span></label>
                                                 <input type="number" id="salePrice" name="salePrice"
                                                     [(ngModel)]="newItemConfig.sale_price"
                                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
@@ -421,75 +385,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <!-- <button type="button"
-                                            class="mt-4 text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                fill="currentColor" class="w-4 h-4 mr-1">
-                                                <path
-                                                    d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                            </svg>
-                                            Add Wholesale Price
-                                        </button> -->
                                     </section>
 
-                                    <!-- <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> -->
-                                    <!-- <section class="lg:col-span-2 p-6 border border-gray-200 rounded-lg">
-                                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Purchase Price</h3>
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 items-end">
-                                                <div>
-                                                    <label for="purchasePrice"
-                                                        class="block text-sm font-medium text-gray-700 mb-1">Purchase
-                                                        Price</label>
-                                                    <input type="number" id="purchasePrice" name="purchasePrice"
-                                                        [(ngModel)]="newItemConfig.purchase_price"
-                                                        class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
-                                                </div>
-                                                <div>
-                                                    <select id="purchasePriceTaxType" name="purchasePriceTaxType"
-                                                        class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
-                                                        <option>Without Tax</option>
-                                                        <option>With Tax</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </section> -->
-
-                                    <!-- <section class="p-6 border border-gray-200 rounded-lg">
-                                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Taxes</h3>
-                                            <div>
-                                                <label for="taxRate"
-                                                    class="block text-sm font-medium text-gray-700 mb-1">Tax
-                                                    Rate</label>
-                                                <select id="taxRate" name="taxRate"
-                                                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white">
-                                                    <option>None</option>
-                                                    <option>GST 5%</option>
-                                                    <option>GST 12%</option>
-                                                    <option>GST 18%</option>
-                                                </select>
-                                            </div>
-                                        </section> -->
-                                    <!-- </div> -->
                                 </div>
                             </div>
-
-                            <!-- <div *ngSwitchCase="'stock'">
-                                <div class="gap-8">
-                                    <section class="p-6 border border-gray-200 rounded-lg">
-                                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Stock</h3>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 items-end">
-                                            <div>
-                                                <label for="salePrice"
-                                                    class="block text-sm font-medium text-gray-700 mb-1">Item
-                                                    Stock</label>
-                                                <input type="number" id="salePrice" name="salePrice"
-                                                    [(ngModel)]="newItemConfig.item_stock"
-                                                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                            </div> -->
                         </div>
 
                         <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200">
@@ -542,8 +441,8 @@
 
                     <div class="md:col-span-2 p-4 bg-white rounded-md shadow gap-4 flex flex-col">
                         <div class="flex justify-end items-center gap-3">
-                            <label for="discount" class="text-xs font-medium text-gray-700">Discount</label>
-                            <input type="number" id="discountValue" [disabled]="!subTotal" name="discountValue"
+                            <label for="discountValue" class="text-xs font-medium text-gray-700">Discount</label>
+                            <input type="text" maxLength="3" max="100" id="discountValue" [disabled]="!subTotal" name="discountValue"
                                 [(ngModel)]="discountAmountVal" (change)="calculateTotals()"
                                 class="w-20 p-1 border border-gray-300 rounded-md text-right">
                             <select id="discountType" name="discountType" [(ngModel)]="discount_type"
@@ -614,18 +513,18 @@
                     </div>
                 </section>
                 <div class="flex justify-end gap-4 pt-6 mt-8 bg-transparent">
-                    <button type="submit" (click)="isEditInvoice ? updateEInvoice() : generateEinvoice()"
+                    <button type="submit"  (click)="isEditInvoice ? updateEInvoice() : generateEinvoice()"
                         *ngIf="invoiceConfig?.invoice_type == 'estimate'"
-                        class="cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-indigo-700 hover:text-white transition duration-200">
-                        {{isEditInvoice ? 'Update' : 'Save'}} & Generate Estimate
+                        class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-indigo-700 hover:text-white transition duration-200">
+                        {{isEditInvoice ? 'Update' : 'Save'}} & Share Estimate
                     </button>
-                    <button type="submit" (click)="shareInvoice()" *ngIf="invoiceConfig?.invoice_type == 'sale'"
-                        class="cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-indigo-700 hover:text-white transition duration-200">
+                    <button type="submit"  (click)="updateEInvoice()" *ngIf="invoiceConfig?.invoice_type == 'sale'"
+                        class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-indigo-700 hover:text-white transition duration-200">
                         Update & Share
                     </button>
-                    <button type="submit" (click)="isEditInvoice ? updateInvoice() : generateInvoice()"
-                        class="cursor-pointer px-8 py-2.5 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700">
-                        {{isEditInvoice ? 'Update Only' : 'Save'}}
+                    <button type="submit" *ngIf="isEditInvoice && invoiceConfig?.invoice_type == 'estimate'" (click)="convertToSales()"
+                        class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700">
+                        Convert to sales
                     </button>
                 </div>
             </main>

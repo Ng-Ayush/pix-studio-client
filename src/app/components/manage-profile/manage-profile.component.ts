@@ -23,7 +23,7 @@ export class ManageProfileComponent {
   searchTerm: any = ''
   currentUserId: any = 0;
   storage = inject(Storage);
-  tempStudioIcon:any='';
+  tempStudioIcon: any = '';
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
@@ -32,17 +32,22 @@ export class ManageProfileComponent {
       phone_number: ['', [Validators.required]],
       address: ['', [Validators.required]],
       terms_and_condition: ['', [Validators.required]],
-      studio_icon:['',Validators.required],
-      youtube_url:['',Validators.required],
-      instagram_url:['',Validators.required],
-      facebook_url:['',Validators.required],
+      studio_icon: ['', Validators.required],
+      youtube_url: ['', Validators.required],
+      instagram_url: ['', Validators.required],
+      facebook_url: ['', Validators.required],
     });
   }
 
   ngOnInit() {
     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+    this.getUserDataCurrentId();
+
+  }
+
+  getUserDataCurrentId() {
     this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
-      localStorage.setItem("user_data",JSON.stringify(res));
+      localStorage.setItem("userData", JSON.stringify(res));
       this.userForm.patchValue(res)
     })
 
@@ -55,7 +60,8 @@ export class ManageProfileComponent {
     if (this.userForm.valid) {
       this.service.updateProfile({ ...this.userForm.value, id: this.currentUserId }, (res: any) => {
         if (res.status == 200) {
-          this.alert.success(res.message)
+          this.alert.success(res.message);
+          this.getUserDataCurrentId();
           this.router.navigate(['dashboard']);
         } else {
           this.alert.error(res.message);
@@ -85,10 +91,10 @@ export class ManageProfileComponent {
       let blob = this.dataURLtoBlob(compressedImage);
       const fileRef = ref(this.storage, `studio-icon/${this.userForm.value.studio_name.split(" ").join("_")}/${this.userForm.value.id}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
-      
+
       uploadTask.then(async () => {
         const url = await getDownloadURL(fileRef);
-        console.log(url,"dsadad");
+        console.log(url, "dsadad");
         this.userForm.patchValue({ studio_icon: url })
       })
     }

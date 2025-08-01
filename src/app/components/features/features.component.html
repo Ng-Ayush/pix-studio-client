@@ -56,9 +56,22 @@
           </div>
         </div>
       </div>
+       <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+              <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
+                    <button
+                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+                            <path
+                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+                            </path>
+                        </svg> Go back</button>
+                </a>
+            </div>
     </div>
     <div class="py-3 relative">
-      <button (click)="resetFilter()" *ngIf="this.selectedCategory" class="absolute cursor-pointer bottom-0 bg-indigo-600 text-white py-2 px-4 hover:bg-indigo-700 transition-colors duration-200">Reset</button>
+      <button (click)="resetFilter()" *ngIf="this.selectedCategory"
+        class="absolute cursor-pointer bottom-0 bg-indigo-600 text-white py-2 px-4 hover:bg-indigo-700 transition-colors duration-200">Reset</button>
       <div class="flex items-center justify-center gap-5 px-4">
         <ng-container *ngFor="let cat of categoryList;trackBy:trackByFn">
           <label
@@ -90,13 +103,14 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <div *ngFor="let card of features; let i = index"
-            class="w-full max-w-sm shadow-lg p-8 rounded-xl hover:bg-indigo-50 cursor-pointer">
+            class="w-full max-w-sm h-auto shadow-lg p-4 rounded-xl hover:bg-indigo-50 cursor-pointer">
 
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-4 shadow-lg mb-4">
+            <div class="rounded-2xl shadow-lg mb-4">
               <div class="relative cursor-pointer group" (click)="playVideo(card)">
-                <img
-                  src="https://www.shutterstock.com/image-vector/new-feature-banner-speech-bubble-260nw-2186051519.jpg"
-                  [alt]="card.title" class="w-full h-40 object-cover rounded-xl">
+                <iframe
+                  [src]="card.youtube_url" 
+                   class="w-full h-40 rounded-xl" loading="eager"> 
+                </iframe>
 
                 <div class="absolute inset-0 flex items-center justify-center">
                   <div
@@ -106,19 +120,15 @@
                     </svg>
                   </div>
                 </div>
-
-                <div class="absolute bottom-3 left-3">
-                  <span class="text-white text-lg font-semibold">₹{{ card.price }}</span>
-                </div>
               </div>
 
             </div>
 
             <div class="px-1">
               <h3 class="text-gray-900 font-semibold text-base mb-2">{{ card.title }}</h3>
-              <p class="text-gray-600 text-sm leading-relaxed truncate">{{ card.description }}</p>
+                <strong class="text-lg my-2 text-indigo-600 block">₹{{ card.price }}</strong>
+              <p class="text-gray-700 text-sm leading-relaxed truncate">{{ card.description }}</p>
             </div>
-
           </div>
         </div>
       </div>
@@ -144,7 +154,7 @@
           <div class="mt-4 p-4 bg-gray-50 rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <p class="mb-2"><strong>Category:</strong> {{ selectedCard?.category_name }}</p>
+                <p class="mb-2"><strong>Category:</strong> {{ selectedCard?.title }}</p>
               </div>
               <div>
                 <p class="mb-2"><strong>Price:</strong> <span class="text-purple-600 text-lg font-bold"> ₹{{

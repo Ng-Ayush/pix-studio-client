@@ -66,7 +66,6 @@ export class DashboardComponent implements OnInit {
     this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
       this.commonservice.adminUserData = res;
       console.log(res);
-
     })
   }
 

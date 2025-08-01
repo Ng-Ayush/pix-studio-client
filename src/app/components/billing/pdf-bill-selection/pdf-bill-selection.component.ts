@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, LocationStrategy } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
@@ -44,7 +44,7 @@ export class PdfBillSelectionComponent {
   currentUserId:any=0;
   userData:any={};
 
-  constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router) {
+  constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router,private location:LocationStrategy) {
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
         this.currentInvoiceId = params['invoice-id'];
@@ -70,7 +70,9 @@ export class PdfBillSelectionComponent {
         console.log(res);
         this.invoiceBillConfig = res.data;
         this.invoiceBillConfig['priceInWords'] = this.commonService.convertToRupeesInWords(+this.invoiceBillConfig.total);
-        this.invoiceBillConfig.tnc = res.data.terms_and_conditions || null;
+        this.invoiceBillConfig.tnc = res.data.terms_and_conditions ||  this.userData?.terms_and_condition || null;
+        console.log(this.invoiceBillConfig.tnc);
+        
         this.countTotalAndTotalQty();
       }
     })
@@ -210,6 +212,10 @@ export class PdfBillSelectionComponent {
           this.alert.error(res.message);
         }
     })
+  }
+
+  backToBill(){
+    this.location.back();
   }
 
 }

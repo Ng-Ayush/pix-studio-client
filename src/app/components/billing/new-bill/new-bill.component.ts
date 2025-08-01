@@ -6,6 +6,7 @@ import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
 import { AlertService } from '../../../services/alert.service';
 import { CommonService } from '../../../services/common.service';
+import { AdminService } from '../../../services/admin.service';
 @Component({
   selector: 'app-new-bill',
   standalone: true,
@@ -40,7 +41,7 @@ export class NewBillComponent {
   isEdit: boolean = false;
   isEditInvoice: boolean = false;
   currentItemIdx: any = 0;
-  discount_type: any = 'percentage';
+  discount_type: any = 'fixed';
   invoice_number: any = 0;
 
   partyList: any = [];
@@ -53,6 +54,18 @@ export class NewBillComponent {
   showAdvancePaymentModal: boolean = false;
   advancePaymentConfig: any = {};
   pastPayments: any = [];
+  isBillFormValid: boolean = false;
+  userData: any = {};
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: MouseEvent) {
+    const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
+    const clickedInside = el?.contains(event.target);
+    console.log(42342);
+
+    if (!clickedInside) {
+      this.dropdownVisible = false;
+    }
+  }
 
   constructor(private fb: FormBuilder,
     private billingService: BillingService,
@@ -61,12 +74,13 @@ export class NewBillComponent {
     private activatedRoute: ActivatedRoute,
     private eRef: ElementRef,
     private commonService: CommonService,
+    private adminService: AdminService,
     private router: Router) {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params['invoice_number']) {
         this.invoice_number = params['invoice_number'];
         this.getInvoiceDetailByInvoiceNumber();
-      }else{
+      } else {
         this.fetchPartyList();
         this.fetchLastInsertedInvoiceNumber();
       }
@@ -75,7 +89,7 @@ export class NewBillComponent {
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
-
+    this.getUserData();   //to be commented and removed in future.
   }
 
   ngOnInit(): void {
@@ -83,9 +97,16 @@ export class NewBillComponent {
     this.getAllInvoiceItems();
   }
 
-  fetchLastInsertedInvoiceNumber(){
-    this.billingService.getLastInsertedInvoiceNumber((res:any)=>{
-      if(res.status == 200){
+  getUserData() {
+    this.adminService.getUsersByCurrentId(JSON.parse(<any>localStorage.getItem("currentUserId")), (res: any) => {
+      console.log(res);
+      this.userData = res;
+    })
+  }
+
+  fetchLastInsertedInvoiceNumber() {
+    this.billingService.getLastInsertedInvoiceNumber((res: any) => {
+      if (res.status == 200) {
         this.invoiceConfig.invoice_number = +res.lastInvoiceId + 1;
       }
     })
@@ -153,19 +174,12 @@ export class NewBillComponent {
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
     };
-    this.dropdownVisible = true;
+    this.dropdownVisible = !this.dropdownVisible;
     this.currentItemIdx = idx;
     event.stopPropagation();
   }
 
-  @HostListener('document:click', ['$event'])
-  handleOutsideClick(event: MouseEvent) {
-    const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
-    const clickedInside = el?.contains(event.target);
-    if (!clickedInside) {
-      this.dropdownVisible = false;
-    }
-  }
+
 
   toggleItemModal() {
     this.itemModal = true;
@@ -253,19 +267,23 @@ export class NewBillComponent {
     });
     if (this.discount_type == 'percentage' && this.discountAmountVal) {
       this.totalAmount = this.totalAmount - ((this.totalAmount * this.discountAmountVal) / 100);
-    }else{
+    } else {
       this.totalAmount = this.totalAmount - (this.discountAmountVal || 0);
     }
-    if (this.pastPayments.length>0) {
+    if (this.pastPayments.length > 0) {
       let advanceTotal = 0;
-      this.pastPayments.forEach((e:any)=>{
+      this.pastPayments.forEach((e: any) => {
         advanceTotal = advanceTotal + +e.amount_paid;
       })
       this.totalAmount = this.totalAmount - advanceTotal;
     }
 
-    console.log("TOTAL AMOT",this.totalAmount);
-    
+    if (this.discountAmountVal > this.totalAmount) {
+
+    }
+
+    console.log("TOTAL AMOT", this.totalAmount);
+
   }
 
   updateEInvoice() {
@@ -273,6 +291,11 @@ export class NewBillComponent {
   }
 
   updateInvoice(isEInvoice?: boolean) {
+    if (!this.checkBillFormIsValid()) {
+      this.loader.hide();
+      this.alert.error('Please fill required fields');
+      return;
+    };
     const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
@@ -305,6 +328,11 @@ export class NewBillComponent {
 
   generateInvoice(isEinvoice?: boolean) {
     this.loader.show();
+    if (!this.checkBillFormIsValid()) {
+      this.loader.hide();
+      this.alert.error('Please fill required fields');
+      return;
+    };
     const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
@@ -456,8 +484,34 @@ export class NewBillComponent {
     })
   }
 
-  back(){
+  back() {
     this.router.navigate(['/billing']);
+  }
+
+  checkBillFormIsValid() {
+    console.log(this.invoiceConfig.invoice_items);
+
+    if (this.invoiceConfig.invoice_items.length == 0 || !this.invoiceConfig.party_id) {
+      this.isBillFormValid = false;
+      return false;
+    }
+    this.isBillFormValid = true;
+    return true;
+  }
+
+  convertToSales() {
+    this.updateInvoice(true);
+    this.loader.show();
+    this.billingService.convertToSales(this.invoiceConfig.invoice_id, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.loader.hide();
+        // this.getEstimateList();
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
   }
 
 }

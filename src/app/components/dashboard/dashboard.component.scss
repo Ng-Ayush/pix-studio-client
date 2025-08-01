@@ -89,6 +89,15 @@
     &.invoice:hover {
         transform: scale(1);
     }
+
+    &.carousel{
+        padding: 0px !important;
+        background:transparent !important;
+
+        img{
+            height: 438px;
+        }
+    }
 }
 
 .dashboard-item:hover {
