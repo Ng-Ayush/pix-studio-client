@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "app.mystudio",
+            "sha256_cert_fingerprints": [
+                "92:9B:34:C0:05:90:F8:A0:10:E3:BF:F8:C3:FE:6F:5B:5F:62:97:FA:58:D4:56:4B:AE:FB:FB:84:D2:B2:BA:75"
+            ]
+        }
+    }
+]

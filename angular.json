@@ -30,7 +30,12 @@
               "src/assets",
               "src/models",
               "src/manifest.webmanifest",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "src/assets/.well-known",
+                "output": "/.well-known"
+              }
             ],
             "styles": [
               "src/styles.scss",
