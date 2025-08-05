@@ -75,11 +75,6 @@ export class ManageProfileComponent {
       });
     }
   }
-  getRealTime() {
-    interval(1000).subscribe(() => {
-      this.todayDate = new Date();
-    })
-  }
 
   onImgUpload(event: any) {
     const file = event.target.files[0];

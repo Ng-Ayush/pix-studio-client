@@ -20,6 +20,11 @@ export class PhotoSelectionService extends BaseService {
     return this.getData({}, this.httpUrls['getAllEvents'], callback)
   }
 
+  getEventById(event_id:any,callback: any) {
+    return this.getData({}, this.httpUrls['getEventById'] + "/" + event_id , callback)
+  }
+
+
   updateEvent(params: any, id:any, callback: any) {
     return this.putData(params, this.httpUrls['updateEvent']+"/"+ id, callback)
   }
@@ -48,6 +53,10 @@ export class PhotoSelectionService extends BaseService {
     return this.getData({}, this.httpUrls['getAiGuestByEventId']+"/"+ id, callback)
   }
 
+  addAiGuest(params:any,callback:any){
+    return this.postData(params, this.httpUrls['addAiGuest'], callback)
+  }
+
   getUploadedPhotosByFolderId(folder_id:any,callback:any){
     return this.getData({}, this.httpUrls['getUploadedPhotosByFolderId']+"/"+ folder_id, callback)
   }
@@ -66,5 +75,9 @@ export class PhotoSelectionService extends BaseService {
   
   submitEvent(params:any,callback:any){
     return this.postData(params, this.httpUrls['submitEvent'], callback)
+  }
+
+  getAllPhotosByEventId(event_id:any,callback:any){
+    return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+ event_id, callback)
   }
 }

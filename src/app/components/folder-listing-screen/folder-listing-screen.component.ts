@@ -21,7 +21,9 @@ export class FolderListingScreenComponent {
   customerUniqueCode: any = '';
   event_id:any= '';
   showModal:boolean=false;
+  userData:any={}
   constructor(private _cService: CustomerService,private pservice: PhotoSelectionService,private router:Router) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
 

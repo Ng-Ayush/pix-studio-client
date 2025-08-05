@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
   };
   currentUserId: any = -1;
   showLogOutModal: boolean = false;
+  userData:any={};
   constructor(
     private fileService: FileService,
     private router: Router,
@@ -64,7 +65,7 @@ export class DashboardComponent implements OnInit {
   getAdminUserData() {
     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
     this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
-      this.commonservice.adminUserData = res;
+      this.userData = res;
       console.log(res);
     })
   }

@@ -6,8 +6,8 @@
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
           <div class="flex items-center gap-4">
-            <img src="assets/logo.png" alt="Pix Studio Pro Logo" class="h-10 w-10 object-contain">
-            <span class="text-2xl font-semibold text-gray-800">Pix Studio Pro</span>
+            <img [src]="userData?.studio_icon" [alt]="userData?.studio_name" class="h-10 w-10 object-contain">
+            <span class="text-2xl font-semibold text-gray-800">{{userData?.studio_name}}</span>
           </div>
   
           <div class="flex items-center gap-3 text-gray-600">

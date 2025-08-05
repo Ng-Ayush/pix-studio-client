@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, LocationStrategy, NgOptimizedImage } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -50,7 +50,7 @@ export class PhotoSelectionPhotosComponent {
   originalDirectoryName:any='';
   studio_name:any='';
 
-  constructor(private loader:LoaderService ,private router: Router,private imageCompress: NgxImageCompressService , private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
+  constructor(private loader:LoaderService ,private location:LocationStrategy , private router: Router,private imageCompress: NgxImageCompressService , private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];
@@ -81,7 +81,8 @@ export class PhotoSelectionPhotosComponent {
     })
   }
   backToEvents() {
-    this.router.navigate(['/photo-selection-folder', this.currentEventId]);
+    this.location.back();
+    // this.router.navigate(['/photo-selection-folder', this.currentEventId]);
   }
 
   uploadPhotos() {

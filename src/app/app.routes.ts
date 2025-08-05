@@ -75,7 +75,7 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'auth-screen',
-        pathMatch: 'full'
+        pathMatch:'full'
       },
       {
         path: 'auth-screen',

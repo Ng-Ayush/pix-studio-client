@@ -29,15 +29,15 @@ export class PhotoSelectionComponent {
   deleteModal:boolean=false;
   currentEventId:number= -1;
   filteredEvents:any=[];
+  userData:any={};
 
   constructor(private service: CustomerService, private eventService: PhotoSelectionService,private router:Router,private alert:AlertService) {
-
-  }
+      this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+      console.log(this.userData);
+      
+  } 
 
   ngOnInit() {
-    interval(1000).subscribe(() => {
-      this.todayDate = new Date();
-    });
     this.getAllEvents();
     this.getAllCustomers();
   }
@@ -45,7 +45,7 @@ export class PhotoSelectionComponent {
   getAllEvents() {
     this.eventService.getAllEvents((res: any) => {
       if (res.status == 200) {
-        this.eventList = res.data;
+        this.eventList = res.data.filter((item:any)=>!item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
       }
     })
@@ -146,7 +146,7 @@ export class PhotoSelectionComponent {
 
 
   copyMessage(event:any){
-    const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : http://localhost:4200/selection/\n\nRegards Suraj Studios`
+    const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : ${window.location.origin}/selection/auth-screen?studio-id=${this.userData.id}\n\nRegards ${this.userData?.studio_name}`
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Message copied to clipboard');
     }).catch(err => {

@@ -32,14 +32,18 @@ export class BaseService {
     'updateEvent': '/api/mystudio/photo-selection/updateEvent',
     'deleteEvent': '/api/mystudio/photo-selection/deleteEvent',
     'getAllEvents': '/api/mystudio/photo-selection/getAllEvents',
+    'getEventById': '/api/mystudio/photo-selection/getEventById',
     'getFolderByEventId': '/api/mystudio/photo-selection/getFolderByEventId',
     'createNewFolder': '/api/mystudio/photo-selection/createNewFolder',
     'updateFolder': '/api/mystudio/photo-selection/updateFolder',
     'deleteFolder': '/api/mystudio/photo-selection/deleteFolder',
     'getAiGuestByEventId': '/api/mystudio/photo-selection/getAiGuestByEventId',
+    'addAiGuest': '/api/mystudio/photo-selection/addAiGuest',
     'getUploadedPhotosByFolderId': '/api/mystudio/photo-selection/getUploadedPhotosByFolderId',
     'uploadPhotos': '/api/mystudio/photo-selection/uploadPhotos',
     'deletePhotos': '/api/mystudio/photo-selection/deletePhotos',
+    'getAllPhotosByEventId': '/api/mystudio/photo-selection/getAllPhotosByEventId',
+
 
     //Customer Photo Selection
     'verifyUniqueCode': '/api/mystudio/photo-selection/verifyUniqueCode',

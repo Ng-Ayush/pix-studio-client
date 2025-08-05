@@ -9,10 +9,12 @@ import { CustomerService } from '../../services/customer.service';
 import * as QRCode from 'qrcode';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import * as faceapi from 'face-api.js';
+import { FaceRecognitionService } from '../../services/face-recognition.service';
 @Component({
   selector: 'app-ai-photo-sharing',
   standalone: true,
-  imports: [RouterModule, CommonModule,FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './ai-photo-sharing.component.html',
   styleUrl: './ai-photo-sharing.component.scss'
 })
@@ -35,26 +37,33 @@ export class AiPhotoSharingComponent {
     private alert: AlertService,
     private router: Router,
     private eventService: PhotoSelectionService,
-    private service: CustomerService
+    private service: CustomerService,
+    private faceService: FaceRecognitionService
   ) { }
 
   ngOnInit() {
-    interval(1000).subscribe(() => {
-      this.todayDate = new Date();
-    });
     this.getAllEvents();
     this.getAllCustomers();
+    // this
   }
 
   getAllEvents() {
     this.eventService.getAllEvents((res: any) => {
       if (res.status == 200) {
-        this.eventList = res.data;
+        this.eventList = res.data.filter((item: any) => item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
+        if (this.eventList.length > 0) {
+          this.eventList.forEach((eve: any) => {
+            this.eventService.getAllPhotosByEventId(eve.event_id, (res: any) => {
+              if (res.status == 200) {
+                eve.photos = res.data;
+              }
+            })
+          })
+        }
       }
-    })
+    });
   }
-
 
   getAllCustomers() {
     this.service.getAllCustomers((res: any) => {
@@ -78,7 +87,7 @@ export class AiPhotoSharingComponent {
         customer_id: this.event_config.customer_id,
         event_name: this.event_config.event_name,
         is_event_submitted: false,
-        is_ai_upload: !!this.event_config.is_ai_upload,
+        is_ai_upload: true,
         quality: this.event_config.quality
       };
 
@@ -150,8 +159,10 @@ export class AiPhotoSharingComponent {
   }
 
 
-  copyAiShareLink() {
-    const message = `${window.location.origin}/ps/`
+  copyAiShareLink(event: any) {
+    console.log(event);
+
+    const message = `${window.location.origin}/ps/?event-id=${event.event_id}`
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Message copied to clipboard');
     }).catch(err => {
@@ -181,8 +192,8 @@ export class AiPhotoSharingComponent {
     }
   }
 
-  downloadQR() {
-  const url = 'https://mystudio.com';
+  downloadQR(event: any) {
+    const url = `${window.location.origin}/ps/?event-id=${event.event_id}`;
 
     QRCode.toDataURL(url)
       .then(qrDataUrl => {
@@ -198,7 +209,15 @@ export class AiPhotoSharingComponent {
       });
   }
 
-  publishAiPhotos(){
+   publishAiPhotos(event: any) {
+    if (event.ai_guests.length == 0) return;
 
+    console.log(event);
+    
+
+
+   const data:any =  this.faceService.filterPhotosByFaceMatch(event.ai_guests[0].image_url,event.photos)
+    console.log(data);
+    
   }
 }

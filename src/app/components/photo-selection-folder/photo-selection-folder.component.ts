@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, LocationStrategy, NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -9,7 +9,7 @@ import { AlertService } from '../../services/alert.service';
 @Component({
   selector: 'app-photo-selection-folder',
   standalone: true,
-  imports: [RouterModule,CommonModule,FormsModule],
+  imports: [RouterModule,CommonModule,FormsModule,NgOptimizedImage],
   templateUrl: './photo-selection-folder.component.html',
   styleUrl: './photo-selection-folder.component.scss'
 })
@@ -27,7 +27,7 @@ export class PhotoSelectionFolderComponent {
   aiGuests:any=[];
   isAIuploaded:boolean=false;
 
-  constructor(private service: CustomerService,private _pservice: PhotoSelectionService,private route:ActivatedRoute,private router:Router,private alert:AlertService){
+  constructor(private service: CustomerService,private location:LocationStrategy, private _pservice: PhotoSelectionService,private route:ActivatedRoute,private router:Router,private alert:AlertService){
     this.route.params.subscribe(params => {
       if(params['event-id']){
         this.currentEventId = params['event-id'];
@@ -78,7 +78,7 @@ export class PhotoSelectionFolderComponent {
 
   createNewFolder(){
     const params:any={
-      folder_name:"New Folder",
+      folder_name:`New Folder ${this.folders.length + 1}`,
       event_id:this.currentEventId
     }
 
@@ -134,7 +134,8 @@ export class PhotoSelectionFolderComponent {
   }
 
   backToEvents(){
-    this.router.navigate(['/photo-selection']);
+    this.location.back();
+    // this.router.navigate(['/photo-selection']);
   }
 
   openFolder(folder:any){
