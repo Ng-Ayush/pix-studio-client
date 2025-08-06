@@ -40,6 +40,7 @@ export class AiPhotoSharingComponent {
   dropdownOpen: boolean = false;
   partyModal: boolean = false;
   customerConfig: any = {};
+  userData:any={};
 
   constructor(
     private alert: AlertService,
@@ -50,7 +51,9 @@ export class AiPhotoSharingComponent {
     private loader: LoaderService,
     private customerService: CustomerService,
 
-  ) { }
+  ) { 
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+  }
 
   ngOnInit() {
     this.getAllEvents();
@@ -81,8 +84,8 @@ export class AiPhotoSharingComponent {
   getAllCustomers() {
     this.service.getAllCustomers((res: any) => {
       if (res.status == 200) {
-        this.customers = res.data.filter((item:any)=>item.is_ai_customer);
-        this.filteredCustomer  = [...this.customers] ; 
+        this.customers = res.data.filter((item: any) => item.is_ai_customer);
+        this.filteredCustomer = [...this.customers];
       }
     })
   }
@@ -176,7 +179,7 @@ export class AiPhotoSharingComponent {
   copyAiShareLink(event: any) {
     console.log(event);
 
-    const message = `${window.location.origin}/ps/?event-id=${event.event_id}`
+    const message = `${window.location.origin}/ps/`
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Message copied to clipboard');
     }).catch(err => {
@@ -206,21 +209,76 @@ export class AiPhotoSharingComponent {
     }
   }
 
-  downloadQR(event: any) {
-    const url = `${window.location.origin}/ps`;
+  async downloadQR(event: any) {
+    //    const qrData = {
+    //   couple: 'Mahima & Shekhar',
+    //   date: '11.12.2024',
+    //   studio: 'Neeraj Studios',
+    //   code: '445566',
+    //   contact: '45559773336545',
+    //   url: `${window.location.origin}/ps`
+    // };
 
-    QRCode.toDataURL(url)
-      .then(qrDataUrl => {
-        const a = document.createElement('a');
-        a.href = qrDataUrl;
-        a.download = 'mystudio-qr.png';
-        document.body.appendChild(a); // Required for Firefox
-        a.click();
-        document.body.removeChild(a);
-      })
-      .catch(err => {
-        console.error('QR Code generation failed', err);
-      });
+    // const qrString = JSON.stringify(qrData);
+
+    //   QRCode.toDataURL(qrString)
+    //     .then(qrDataUrl => {
+    //       const a = document.createElement('a');
+    //       a.href = qrDataUrl;
+    //       a.download = `mystudio-qr_${event.event_name}.png`;
+    //       document.body.appendChild(a); // Required for Firefox
+    //       a.click();
+    //       document.body.removeChild(a);
+    //     })
+    //     .catch(err => {
+    //       console.error('QR Code generation failed', err);
+    //     });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+   
+    const width = 600;
+    const height = 800;
+    canvas.width = width;
+    canvas.height = height;
+
+    // White background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+
+    // Fonts
+    ctx.fillStyle = '#2e3b20';
+    ctx.font = 'bold 30px Arial';
+    ctx.textAlign = 'center';
+
+    ctx.fillText(event.customer_name, width / 2, 60);
+
+    ctx.font = '24px Arial';
+    ctx.fillText(event.event_date || new Date().toLocaleDateString('en-US'), width / 2, 100);
+
+    const url = `${window.location.origin}/login`;
+    const qrDataUrl = await QRCode.toDataURL(url);
+    const qrImage = new Image();
+    qrImage.src = qrDataUrl;
+    qrImage.onload = () => {
+      const qrSize = 300;
+      ctx.drawImage(qrImage, (width - qrSize) / 2, 150, qrSize, qrSize);
+
+      ctx.font = '20px Arial';
+
+      ctx.fillText(`USE CODE: ${event.customer_unique_id}`, width / 2, 500);
+
+      ctx.font = '22px Arial';
+      ctx.fillText(this.userData?.studio_name, width / 2, 540);
+
+      ctx.font = '18px Arial';
+      ctx.fillText(`CONT- ${this.userData?.phone_number}`, width / 2, 580);
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = canvas.toDataURL('image/png');
+      downloadLink.download = 'qr_invitation.png';
+      downloadLink.click();
+    };
   }
 
   publishAiPhotos(event: any) {
@@ -268,7 +326,7 @@ export class AiPhotoSharingComponent {
       this.alert.error('Please fill all the fields');
       return;
     }
-    const params:any= { ...this.customerConfig,is_ai_customer: true };
+    const params: any = { ...this.customerConfig, is_ai_customer: true };
     this.customerService.createCustomer(params, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
