@@ -13,10 +13,10 @@ import { Router } from '@angular/router';
   styleUrl: './folder-listing-screen.component.scss'
 })
 export class FolderListingScreenComponent {
-  customerName = 'bittu';
-  eventName = 'Wedding';
+  customerName = '';
+  eventName = '';
   selectedPhotosCount = 0;
-  totalPhotosCount = 3;
+  totalPhotosCount = 0;
   folders: any = [];
   customerUniqueCode: any = '';
   event_id:any= '';
@@ -24,6 +24,10 @@ export class FolderListingScreenComponent {
   userData:any={}
   constructor(private _cService: CustomerService,private pservice: PhotoSelectionService,private router:Router) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    if(!this.userData){
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    }
   }
 
 
@@ -62,7 +66,7 @@ export class FolderListingScreenComponent {
       this.pservice.submitEvent({event_id:this.event_id},(res:any)=>{
         if(res.status == 200){
           this.showModal=false;
-          this.router.navigate(['/selection']);
+          this.router.navigate(['/login']);
         }else{
           
         }

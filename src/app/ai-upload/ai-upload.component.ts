@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -12,7 +12,7 @@ import { LoaderService } from '../shared/loader.service';
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgOptimizedImage],
   templateUrl: './ai-upload.component.html',
   styleUrl: './ai-upload.component.scss'
 })
@@ -34,24 +34,27 @@ export class AiUploadComponent {
   userData: any = {};
   isFormValid: boolean = false;
 
+  isBrowseAllFolder: boolean = false;
+  imageSelected: boolean = false;
+  photos: any = [];
+  isAllSelected: boolean = false;
   constructor(private route: ActivatedRoute, public loader: LoaderService, private eventService: PhotoSelectionService, private alert: AlertService, private service: AuthService) {
-    this.route.queryParams.subscribe(params => {
-      console.log(params);
-      if (params['event-id'])
-        this.eventId = params['event-id'];
-      this.getEventDetailsById();
-    })
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    this.eventId = this.userData?.event_id;
+    this.getPhotosByEventId();
   }
+
+
 
   ngAfterViewInit() {
-    this.startCamera();
+    // this.startCamera();
   }
 
-  getEventDetailsById() {
-    this.eventService.getEventById(this.eventId, (res: any) => {
+  getPhotosByEventId() {
+    this.eventService.getAllPhotosByEventId(this.eventId, this.userData?.created_by, (res: any) => {
       if (res.status == 200) {
-        this.eventData = res.data;
-        this.userData = res.data;
+        this.photos = res.data;
+        // this.userData = res.data;
       }
 
     })
@@ -164,8 +167,8 @@ export class AiUploadComponent {
         this.loader.hide();
       } else {
         this.alert.error(res.message);
-         this.loader.hide();
-         this.isFormValid = true;
+        this.loader.hide();
+        this.isFormValid = true;
       }
     })
   }
@@ -174,4 +177,57 @@ export class AiUploadComponent {
     this.isImageCaptured = false;
     location.reload();
   }
+
+  onBrowseAllFolder() {
+    this.isBrowseAllFolder = true;
+  }
+
+  trackPhotos(index: number, photo: any) {
+    return photo.id;
+  }
+
+  toggleSelectAll(): void {
+    this.isAllSelected = !this.isAllSelected;
+    this.photos.forEach((photo: any) => (photo.selected = this.isAllSelected));
+    this.imageSelected = this.photos.some((photo: any) => photo.selected)
+  }
+
+  updateSelectAllState(): void {
+    this.imageSelected = this.photos.some((photo: any) => photo.selected)
+  }
+
+  downloadPhoto() {
+    const selectedPhotos: any = this.photos.filter((photo: any) => photo.selected);
+    selectedPhotos.forEach((photo: any, index: any) => {
+      this.downloadFile(photo.photo_url, photo.photo_name);
+    });
+
+  }
+
+  togglePhoto(photo: any) {
+    photo.selected = !photo.selected;
+    this.updateSelectAllState();
+  }
+
+  private downloadFile(url: string, filename: string) {
+    this.loader.show();
+
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      })
+      .catch(err => console.error('Error downloading file:', err));
+    this.loader.hide();
+
+  }
+
+  goBack(){
+    this.isBrowseAllFolder = false;
+  }
+
 }

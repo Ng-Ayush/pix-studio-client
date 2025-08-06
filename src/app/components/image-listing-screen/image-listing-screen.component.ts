@@ -15,14 +15,18 @@ export class ImageListingScreenComponent {
 
   folderId:any='';
   folderName:any='';
-  customerName = 'bittu';
-  eventName = 'Wedding';
+  customerName = '';
+  eventName = '';
   selectedPhotosCount = 0;
   photos: any = [];
   customerUniqueCode: any = '';
   event_id:any= '';
+  userData:any={};
+  showModal:boolean=false;
 
-  constructor(private pservice: PhotoSelectionService,private router:Router) { }
+  constructor(private pservice: PhotoSelectionService,private router:Router) { 
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+  }
 
   ngOnInit() {
     this.folderId = localStorage.getItem("folderId");
@@ -97,5 +101,24 @@ export class ImageListingScreenComponent {
 
   backToFolderListing(){
     this.router.navigate(['/selection/folder-listing-screen']);
+  }
+
+  showEventModal(){
+    this.showModal = true;
+  }
+
+  submitEvent(){
+      this.pservice.submitEvent({event_id:this.event_id},(res:any)=>{
+        if(res.status == 200){
+          this.showModal=false;
+          this.router.navigate(['/login']);
+        }else{
+          
+        }
+      })
+  }
+
+    onCancel(){
+    this.showModal=false;
   }
 }

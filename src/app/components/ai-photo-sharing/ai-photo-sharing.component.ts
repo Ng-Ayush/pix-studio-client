@@ -63,15 +63,15 @@ export class AiPhotoSharingComponent {
       if (res.status == 200) {
         this.eventList = res.data.filter((item: any) => item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
-        if (this.eventList.length > 0) {
-          this.eventList.forEach((eve: any) => {
-            this.eventService.getAllPhotosByEventId(eve.event_id, (res: any) => {
-              if (res.status == 200) {
-                eve.photos = res.data;
-              }
-            })
-          })
-        }
+        // if (this.eventList.length > 0) {
+        //   this.eventList.forEach((eve: any) => {
+        //     this.eventService.getAllPhotosByEventId(eve.event_id, (res: any) => {
+        //       if (res.status == 200) {
+        //         eve.photos = res.data;
+        //       }
+        //     })
+        //   })
+        // }
       }
       console.log(this.eventList);
     });
@@ -207,7 +207,7 @@ export class AiPhotoSharingComponent {
   }
 
   downloadQR(event: any) {
-    const url = `${window.location.origin}/ps/?event-id=${event.event_id}`;
+    const url = `${window.location.origin}/ps`;
 
     QRCode.toDataURL(url)
       .then(qrDataUrl => {
@@ -253,7 +253,7 @@ export class AiPhotoSharingComponent {
     this.selectedParty = item.name;
     this.searchQuery = item.name;
     this.dropdownOpen = false;
-    this.event_config.event_name = item.id;
+    this.event_config.customer_id = item.id;
   }
 
   closeModal() {

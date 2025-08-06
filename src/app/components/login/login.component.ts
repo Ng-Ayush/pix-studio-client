@@ -21,7 +21,7 @@ export class LoginComponent {
   showOTPBox: boolean = false;
   loader: boolean = false;
   otp: any = null;
-  userData:any={};
+  userData: any = {};
 
   constructor(
     private authService: AuthService,
@@ -47,12 +47,6 @@ export class LoginComponent {
     this.isLogin = !this.isLogin;
   }
 
-  checkMaxLength(event: any) {
-    let val = event.target.value.replace(/\D/g, ''); // Remove non-digits
-    if (val.length > 5) val = val.substring(0, 6);
-    event.target.value = val;
-    this.loginPin = val;
-  }
 
   checkOtpMaxLength(event: any) {
     let val = event.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -68,15 +62,25 @@ export class LoginComponent {
     };
     this.authService.getOTPForPinUser(params, (res: any) => {
       if (res.status == 200) {
-        let currentUser:any = res.user_id;
-        localStorage.setItem("currentUserId", JSON.stringify(currentUser))
-        localStorage.setItem("userData", JSON.stringify(res.userData));
-        // this.alert.success(res.message);
-        // this.showOTPBox = true;  commented for app tesing
+        if (res.role == 'admin') {
+          this.alert.success(res.message);
+          let currentUser: any = res.user_id;
+          localStorage.setItem("currentUserId", JSON.stringify(currentUser))
+          localStorage.setItem("userData", JSON.stringify(res.userData));
+          localStorage.setItem('token', res.token);
+          this.userData = res;
+          this.router.navigate(['/dashboard']);
+        } else if (res.role == 'customer' && !res.is_event_submitted) {
+          localStorage.setItem("uniqueCode", this.loginPin);
+          localStorage.setItem("userData", JSON.stringify(res.data));
+          this.router.navigate(['/selection/folder-listing-screen']);
+        } else if (res.role == 'customer' && res.is_event_submitted) {
+          this.alert.info("Event already submitted");
+        } else if (res.role == 'ai_customer') {
+           localStorage.setItem("userData", JSON.stringify(res.data));
+          this.router.navigate(['/ps']);
+        }
         this.loader = false;
-        this.userData = res;
-        // this.sendOTP(this.userData);   commented for app tesing
-        this.handleOTP();
       } else {
         this.showOTPBox = false;
         this.loader = false;
@@ -101,7 +105,7 @@ export class LoginComponent {
     })
   }
 
-  handleOTP(){
+  handleOTP() {
     const params: any = {
       otp: this.otp || 0,
       user_id: this.userData.user_id
@@ -110,9 +114,6 @@ export class LoginComponent {
       if (res.status == 200) {
         console.log(res);
         this.alert.success(res.message);
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/dashboard']);
-        // localStorage.setItem('user', JSON.stringify(res.user));
       } else {
         this.alert.error(res.message);
       }

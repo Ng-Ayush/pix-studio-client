@@ -77,7 +77,7 @@ export class PhotoSelectionService extends BaseService {
     return this.postData(params, this.httpUrls['submitEvent'], callback)
   }
 
-  getAllPhotosByEventId(event_id:any,callback:any){
-    return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+ event_id, callback)
+  getAllPhotosByEventId(event_id:any,user_id:any,callback:any){
+    return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+event_id+"?user="+user_id, callback)
   }
 }
