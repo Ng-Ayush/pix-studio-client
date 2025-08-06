@@ -57,8 +57,8 @@
                     </div>
                 </div>
             </div>
-             <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
-              <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
+            <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+                <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
                         class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -178,7 +178,8 @@
                         </div>
                         <div class="flex justify-between gap-5">
                             <div (click)="publishAiPhotos(event)"
-                                class="rounded-full  group inline-block cursor-pointer px-10 py-3 transition-all duration-200 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer" [ngClass]="{'bg-indigo-600 text-white hover:bg-indigo-700':event.ai_guests.length> 0, 'text-black hover:text-black hover:bg-gray-100': event.ai_guests.length == 0}">
+                                class="rounded-full  group inline-block cursor-pointer px-10 py-3 transition-all duration-200 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer"
+                                [ngClass]="{'bg-indigo-600 text-white hover:bg-indigo-700':event.ai_guests.length> 0, 'text-black hover:text-black hover:bg-gray-100': event.ai_guests.length == 0}">
                                 {{event.ai_guests.length> 0 ? 'Publish Photos' : 'Pending / No Photos'}}
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Click To Publish Photos</span> -->
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Photos Published</span> -->
@@ -213,82 +214,127 @@
     </main>
 </div>
 
-<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
+<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-col justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
     *ngIf="isModalOpen">
-    <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl transform transition-all duration-300 ease-in-out"
+    <div class="bg-white rounded-xl w-full max-w-5xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
         [ngClass]="{'modal-fade-in': isModalOpen}">
         <h2 class="text-xl font-semibold mb-4">Add Photo Sharing</h2>
 
-        <!-- Select Customer -->
-        <label class="block text-sm font-medium text-gray-700 mb-1">Select Customer</label>
-        <select [(ngModel)]="event_config.customer_id" [disabled]="isEdit" [ngClass]="{'bg-gray-200':isEdit}"
-            class="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-            <option value="" disabled selected>Select Customer</option>
-            <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
-        </select>
+        <h2 class="text-2xl font-semibold mb-6">Create Event</h2>
+        <div>
+            <!-- Top row: Name, Date, Type of Event -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <div class="relative flex-1 min-w-[220px]">
+                    <label class="block text-gray-600 mb-1" for="event-name">Select Customer</label>
+                    <input type="text" autocomplete="off"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                        placeholder="Select Customer" [(ngModel)]="searchQuery" (focus)="toggleDropdown()"
+                        (input)="filterParty()" />
+                    <ul *ngIf="dropdownOpen"
+                        class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        <li (click)="addNewPartyModal()"
+                            class="text-indigo-600 flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-blue-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            Add party
+                        </li>
+                        <li *ngFor="let item of filteredCustomer" (click)="selectParty(item)"
+                            class="px-4 py-2 cursor-pointer hover:bg-blue-100">
+                            {{ item.name }}
+                        </li>
+                        <li *ngIf="filteredCustomer.length === 0" class="px-4 py-2 text-gray-500">No results
+                        </li>
+                    </ul>
+                    <span class="block text-xs text-gray-400 mt-1">Name your couple. This will displayed on the event
+                        cover</span>
+                </div>
+                <div class="flex-1 min-w-[220px]">
+                    <label class="block text-gray-600 mb-1" for="event-name">Name</label>
+                    <input id="event-name" type="text" placeholder="Name your event"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+                    <span class="block text-xs text-gray-400 mt-1">Name your event. This will displayed on the event
+                        cover</span>
+                </div>
+                <div class="flex-1 min-w-[170px]">
+                    <label class="block text-gray-600 mb-1" for="event-date">Date</label>
+                    <input id="event-date" type="date"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+                    <span class="block text-xs text-gray-400 mt-1">When did the event occur</span>
+                </div>
+                <div class="flex-1 min-w-[170px]">
+                    <label class="block text-gray-600 mb-1" for="event-type">Type of Event</label>
+                    <select id="event-type"
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400">
+                        <option>Wedding</option>
+                        <!-- Add other types as needed -->
+                    </select>
+                    <span class="block text-xs text-gray-400 mt-1">Select the type of event</span>
+                </div>
+            </div>
 
-        <!-- Event Name -->
-        <input type="text" autocomplete="off" placeholder="Event Name Ex. Wedding, Birthday..."
-            [(ngModel)]="event_config.event_name"
-            class="placeholder:text-gray-500 placeholder:opacity-50 w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <!-- Details -->
+            <div class="mb-6">
+                <label class="block text-gray-600 mb-1" for="event-details">Details</label>
+                <input id="event-details" type="text" placeholder="Event Details [Optional]"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+            </div>
 
-        <!-- <span class="mb-4 font-bold block text-sm">Options</span> -->
-        <!-- <span class="flex items-center gap-2 mb-4" [ngClass]="{'opacity-50':isEdit}" >
-                    <label class="switch">
-                        <input [checked]="false" type="checkbox" [disabled]="isEdit" [(ngModel)]="event_config.is_ai_upload">
-                        <div class="slider">
-                            <div class="circle">
-                                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path data-original="#000000" fill="currentColor"
-                                            d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0">
-                                        </path>
-                                    </g>
-                                </svg>
-                                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 24 24" y="0" x="0" height="10" width="10"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path class="" data-original="#000000" fill="currentColor"
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </div>
+            <!-- Add Branding -->
+            <div class="mb-6 px-4 py-3">
+                <label class="flex items-center text-gray-700 font-medium cursor-pointer">
+                    <input type="checkbox" class="mr-2 accent-blue-600" checked />
+                    Add Branding to the Event
+                </label>
+                <span class="block text-xs text-gray-400 mt-1">Your brand will be visible on client gallery</span>
+                <div class="mt-4">
+                    <div class="flex items-center gap-4">
+                        <input type="radio" name="branding" checked class="accent-blue-600" />
+                        <div>
+                            <span class="font-medium">Wedding Storytellers</span>
+                            <span class="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs">Default</span>
+                            <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">View
+                                mark</span>
                         </div>
-                    </label> <span class="text-sm block">Photo Sharing (Face Recognition)</span>
-                </span> -->
+                    </div>
+                </div>
+            </div>
 
-        <div class="mb-6 flex items-center gap-2" [ngClass]="{'opacity-50':isEdit}">
-            <p class="text-sm font-medium text-gray-700">Select Photo Quality :</p>
-            <div class="flex gap-3">
-                <button *ngFor="let quality of photoQualities" [disabled]="isEdit" (click)="selectQuality(quality)"
-                    [ngClass]="{
-                      'border border-indigo-600 text-indigo-600 bg-indigo-100': selectedQuality === quality,
-                      'border border-gray-300 text-gray-600': selectedQuality !== quality
-                    }" class="px-4 py-1 rounded-full text-xs transition-colors cursor-pointer">
-                    {{ quality }}
+            <!-- Sponsored Frame -->
+            <div class="mb-6  px-4 py-3">
+                <label class="flex items-center text-gray-700 font-medium cursor-pointer">
+                    <input type="checkbox" class="mr-2 accent-blue-600" />
+                    Add Sponsored Frame to the Event
+                </label>
+                <span class="block text-xs text-gray-400 mt-1">Mark the special event with custom frames on the
+                    images, increase sponsors visibility and reach</span>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="mb-8 px-4 py-3">
+                <span class="text-gray-700 font-medium">Notification Settings</span>
+                <span class="block text-xs text-gray-400 mt-1">How your clients should get notified about their
+                    photos</span>
+            </div>
+
+            <div class="flex justify-start gap-4">
+                <button type="submit" (click)="onSave()"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded">Create Event
+                    &gt;</button>
+                <button class="px-4 py-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
+                    (click)="onCancel()">
+                    Cancel
                 </button>
             </div>
         </div>
-        
-
-        <!-- Action Buttons -->
-        <div class="flex justify-end gap-4">
-            <button class="px-4 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
-                (click)="onCancel()">
-                Cancel
-            </button>
-            <button class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer"
-                (click)="onSave()">
-                Save
-            </button>
-        </div>
     </div>
+
+
+
+    <!-- Action Buttons -->
+
 </div>
 
 <div *ngIf="deleteModal"
@@ -317,5 +363,56 @@
                 Delete
             </button>
         </div>
+    </div>
+</div>
+
+<div #modalContent
+    class=" fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-outbg-gray-100 p-4 sm:p-8 flex justify-center items-start min-h-screen"
+    *ngIf="partyModal">
+    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md" [ngClass]="{'modal-fade-in': partyModal}">
+        <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
+            <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Customer</h1>
+            <div class="flex items-center gap-4">
+                <button aria-label="Settings" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9.594 3.94c.09-.542.56-1.007 1.057-1.228a48.249 48.249 0 0 1 3.413 0c.497.221.967.686 1.057 1.228m0 0c0 .878-.587 1.683-1.408 2.008M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm0 0a8.949 8.949 0 0 0 5.472-1.936C15.879 17.043 13.966 16.5 12 16.5c-1.966 0-3.879.543-5.472 1.564A8.949 8.949 0 0 0 12 21Zm0 0a9.003 9.003 0 0 0 4.372-1.126C15.001 18.79 13.27 18 12 18c-1.27 0-3.001.79-4.372 1.874A9.003 9.003 0 0 0 12 21Z" />
+                    </svg>
+                </button>
+                <button (click)="closeModal()" aria-label="Close"
+                    class="cursor-pointer text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 gap-3">
+            <div>
+                <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Customer
+                    Name <span class="text-red-500">*</span>
+                    <br>
+                <span class="text-xs text-gray-400">Couple name preferred</span></label>
+                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.name" id="partyName"
+                    name="partyName"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone
+                    Number <span class="text-red-500">*</span></label>
+                <input type="tel" maxlength="10" [(ngModel)]="customerConfig.phone" id="phoneNumber" name="phoneNumber"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+        </div>
+
+        <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200">
+            <button type="submit" (click)="saveParty()"
+                class="cursor-pointer px-6 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Save
+            </button>
+        </footer>
     </div>
 </div>

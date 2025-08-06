@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import * as faceapi from 'face-api.js';
 import { FaceRecognitionService } from '../../services/face-recognition.service';
+import { LoaderService } from '../../shared/loader.service';
 @Component({
   selector: 'app-ai-photo-sharing',
   standalone: true,
@@ -33,12 +34,22 @@ export class AiPhotoSharingComponent {
   deleteModal: boolean = false;
   currentEventId: number = -1;
   filteredEvents: any = [];
+  filteredCustomer: any = [];
+  searchQuery: any = '';
+  selectedParty: any = '';
+  dropdownOpen: boolean = false;
+  partyModal: boolean = false;
+  customerConfig: any = {};
+
   constructor(
     private alert: AlertService,
     private router: Router,
     private eventService: PhotoSelectionService,
     private service: CustomerService,
-    private faceService: FaceRecognitionService
+    private faceService: FaceRecognitionService,
+    private loader: LoaderService,
+    private customerService: CustomerService,
+
   ) { }
 
   ngOnInit() {
@@ -62,7 +73,9 @@ export class AiPhotoSharingComponent {
           })
         }
       }
+      console.log(this.eventList);
     });
+
   }
 
   getAllCustomers() {
@@ -209,15 +222,62 @@ export class AiPhotoSharingComponent {
       });
   }
 
-   publishAiPhotos(event: any) {
+  publishAiPhotos(event: any) {
     if (event.ai_guests.length == 0) return;
-
     console.log(event);
-    
-
-
-   const data:any =  this.faceService.filterPhotosByFaceMatch(event.ai_guests[0].image_url,event.photos)
+    const data: any = this.faceService.filterPhotosByFaceMatch(event.ai_guests[0].image_url, event.photos)
     console.log(data);
-    
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+    if (this.dropdownOpen) {
+      this.filterParty();
+    }
+  }
+
+  filterParty(): void {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredCustomer = this.customers.filter((item: any) =>
+      item.name
+        .toLowerCase().includes(query)
+    );
+  }
+
+  addNewPartyModal() {
+    this.partyModal = true;
+  }
+
+  selectParty(item: any): void {
+    this.selectedParty = item.name;
+    this.searchQuery = item.name;
+    this.dropdownOpen = false;
+  }
+
+  closeModal() {
+    this.isEdit = false;
+    this.partyModal = false;
+  }
+
+  saveParty() {
+    this.loader.show();
+    if (!this.customerConfig.name || !this.customerConfig.phone) {
+      this.loader.hide();
+      this.alert.error('Please fill all the fields');
+      return;
+    }
+    const params:any= { ...this.customerConfig,is_ai_customer: true };
+    this.customerService.createCustomer(params, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.loader.hide();
+        this.closeModal();
+        this.getAllCustomers();
+      } else {
+        this.alert.error(res.message);
+        this.loader.hide();
+      }
+    })
+
   }
 }
