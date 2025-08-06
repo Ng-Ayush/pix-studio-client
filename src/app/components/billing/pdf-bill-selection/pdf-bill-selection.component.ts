@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../services/alert.service';
 import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
-import { AppConstants } from '../../../constants/app.constants';
 import { AdminService } from '../../../services/admin.service';
+import { AppConstants } from '../../super-admin/users/constants/app.constants';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,

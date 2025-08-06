@@ -81,7 +81,8 @@ export class AiPhotoSharingComponent {
   getAllCustomers() {
     this.service.getAllCustomers((res: any) => {
       if (res.status == 200) {
-        this.customers = res.data;
+        this.customers = res.data.filter((item:any)=>item.is_ai_customer);
+        this.filteredCustomer  = [...this.customers] ; 
       }
     })
   }
@@ -252,6 +253,7 @@ export class AiPhotoSharingComponent {
     this.selectedParty = item.name;
     this.searchQuery = item.name;
     this.dropdownOpen = false;
+    this.event_config.event_name = item.id;
   }
 
   closeModal() {

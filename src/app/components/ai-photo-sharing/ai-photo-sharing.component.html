@@ -218,16 +218,13 @@
     *ngIf="isModalOpen">
     <div class="bg-white rounded-xl w-full max-w-5xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
         [ngClass]="{'modal-fade-in': isModalOpen}">
-        <h2 class="text-xl font-semibold mb-4">Add Photo Sharing</h2>
-
         <h2 class="text-2xl font-semibold mb-6">Create Event</h2>
         <div>
             <!-- Top row: Name, Date, Type of Event -->
             <div class="flex flex-wrap gap-4 mb-6">
                 <div class="relative flex-1 min-w-[220px]">
-                    <label class="block text-gray-600 mb-1" for="event-name">Select Customer</label>
                     <input type="text" autocomplete="off"
-                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
                         placeholder="Select Customer" [(ngModel)]="searchQuery" (focus)="toggleDropdown()"
                         (input)="filterParty()" />
                     <ul *ngIf="dropdownOpen"
@@ -248,50 +245,47 @@
                         <li *ngIf="filteredCustomer.length === 0" class="px-4 py-2 text-gray-500">No results
                         </li>
                     </ul>
-                    <span class="block text-xs text-gray-400 mt-1">Name your couple. This will displayed on the event
+                    <span class="block text-xs text-gray-400 mt-1">Your couple name. This will displayed on the event
                         cover</span>
                 </div>
                 <div class="flex-1 min-w-[220px]">
-                    <label class="block text-gray-600 mb-1" for="event-name">Name</label>
-                    <input id="event-name" type="text" placeholder="Name your event"
-                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+                    <input id="event-name" type="text" placeholder="Name your event" [(ngModel)]="event_config.event_name"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
                     <span class="block text-xs text-gray-400 mt-1">Name your event. This will displayed on the event
                         cover</span>
                 </div>
                 <div class="flex-1 min-w-[170px]">
-                    <label class="block text-gray-600 mb-1" for="event-date">Date</label>
                     <input id="event-date" type="date"
-                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
                     <span class="block text-xs text-gray-400 mt-1">When did the event occur</span>
                 </div>
-                <div class="flex-1 min-w-[170px]">
+                <!-- <div class="flex-1 min-w-[170px]">
                     <label class="block text-gray-600 mb-1" for="event-type">Type of Event</label>
                     <select id="event-type"
-                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400">
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400">
                         <option>Wedding</option>
-                        <!-- Add other types as needed -->
                     </select>
                     <span class="block text-xs text-gray-400 mt-1">Select the type of event</span>
-                </div>
+                </div> -->
             </div>
 
             <!-- Details -->
             <div class="mb-6">
                 <label class="block text-gray-600 mb-1" for="event-details">Details</label>
-                <input id="event-details" type="text" placeholder="Event Details [Optional]"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400" />
+                <input id="event-details" type="text" placeholder="Event Details"
+                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
             </div>
 
             <!-- Add Branding -->
             <div class="mb-6 px-4 py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" class="mr-2 accent-blue-600" checked />
+                    <input type="checkbox" class="mr-2 accent-blue-600" />
                     Add Branding to the Event
                 </label>
                 <span class="block text-xs text-gray-400 mt-1">Your brand will be visible on client gallery</span>
                 <div class="mt-4">
                     <div class="flex items-center gap-4">
-                        <input type="radio" name="branding" checked class="accent-blue-600" />
+                        <input type="radio" name="branding"  class="accent-blue-600" />
                         <div>
                             <span class="font-medium">Wedding Storytellers</span>
                             <span class="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs">Default</span>
