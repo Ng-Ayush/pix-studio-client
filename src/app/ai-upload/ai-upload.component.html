@@ -16,7 +16,7 @@
     </div>
 
     <!-- Main Card Section -->
-    <main class="flex-1 w-full flex flex-col items-center justify-center px-4">
+    <main class="flex-1 w-full flex flex-col items-center justify-center">
         <div *ngIf="!isBrowseAllFolder"
             class="w-full max-w-md min-h-auto bg-white rounded-2xl shadow-xl mb-4 px-2 pt-20 pb-20 flex flex-col items-center">
             <!-- Title -->
@@ -63,7 +63,7 @@
             </div>
         </div>
         <ng-container *ngIf="isBrowseAllFolder">
-            <div class="flex justify-between gap-3 w-full my-3">
+            <div class="flex justify-between gap-3 w-full mb-3 sticky top-0 z-100 bg-gray-200 p-2">
                 <div>
                     <a class="flex items-center cursor-pointer" (click)="goBack()">
                         <button
@@ -87,7 +87,7 @@
                     </button>
                 </div>
             </div>
-            <div class="grid grid-cols-1 w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-5">
+            <div class="grid grid-cols-1 w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-5 px-5">
                 <div *ngFor="let photo of photos;trackBy:trackPhotos"
                     class="bg-white rounded-lg shadow-lg overflow-hidden">
                     <div class="relative flex flex-col cursor-pointer z-10 px-2 pb-2 pt-6 group"
