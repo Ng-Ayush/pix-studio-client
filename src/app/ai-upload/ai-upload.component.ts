@@ -180,6 +180,8 @@ export class AiUploadComponent {
 
   onBrowseAllFolder() {
     this.isBrowseAllFolder = true;
+    this.photos.forEach((item:any)=>item.seleted = false);
+    this.isAllSelected = false;
   }
 
   trackPhotos(index: number, photo: any) {
