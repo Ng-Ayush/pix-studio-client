@@ -69,6 +69,10 @@ export const routes: Routes = [
     loadComponent: () => import("./components/ai-photo-sharing/ai-photo-sharing.component").then(m => m.AiPhotoSharingComponent)
   },
   {
+    path: 'calling',
+    loadComponent: () => import("./components/calling/calling.component").then(m => m.CallingComponent)
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [
