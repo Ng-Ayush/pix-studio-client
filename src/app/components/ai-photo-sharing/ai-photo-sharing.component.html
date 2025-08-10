@@ -89,8 +89,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card border-l-10 transition-border-color duration-200"
-                        [ngClass]="{'border-red-700':!event.is_event_submitted, 'border-green-700':event.is_event_submitted}"
+                    <div class="card border-l-10 transition-border-color duration-200 border border-gray-200 p-5 rounded-md"
                         *ngFor="let event of filteredEvents">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex flex-col items-start">
@@ -162,7 +161,7 @@
                                     <rect width="13" height="13" x="9" y="9" rx="2" ry="2" />
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                                 </svg>
-                                <span class="text-gray-700 text-xs font-semibold">Copy link</span>
+                                <span class="text-gray-700 text-xs font-semibold">Copy Code</span>
                             </div>
                             <div (click)="downloadQR(event)"
                                 class="bg-white rounded-full px-8 py-2 hover:bg-gray-100 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer">
@@ -236,7 +235,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
-                            Add party
+                            Add Couple
                         </li>
                         <li *ngFor="let item of filteredCustomer" (click)="selectParty(item)"
                             class="px-4 py-2 cursor-pointer hover:bg-blue-100">
@@ -249,7 +248,8 @@
                         cover</span>
                 </div>
                 <div class="flex-1 min-w-[220px]">
-                    <input id="event-name" type="text" placeholder="Name your event" [(ngModel)]="event_config.event_name"
+                    <input id="event-name" type="text" placeholder="Name your event"
+                        [(ngModel)]="event_config.event_name"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
                     <span class="block text-xs text-gray-400 mt-1">Name your event. This will displayed on the event
                         cover</span>
@@ -257,7 +257,7 @@
                 <div class="flex-1 min-w-[170px]">
                     <input id="event-date" type="date"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
-                    <span class="block text-xs text-gray-400 mt-1">When did the event occur</span>
+                    <span class="block text-xs text-gray-400 mt-1">(optional) When did the event occur</span>
                 </div>
                 <!-- <div class="flex-1 min-w-[170px]">
                     <label class="block text-gray-600 mb-1" for="event-type">Type of Event</label>
@@ -269,21 +269,19 @@
                 </div> -->
             </div>
 
-            <!-- Details -->
             <div class="mb-6">
-                <label class="block text-gray-600 mb-1" for="event-details">Details</label>
+                <label class="block text-gray-600 mb-1" for="event-details">Details (optional)</label>
                 <input id="event-details" type="text" placeholder="Event Details"
                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
             </div>
 
-            <!-- Add Branding -->
             <div class="mb-6 px-4 py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
                     <input type="checkbox" class="mr-2 accent-blue-600" />
                     Add Branding to the Event
                 </label>
                 <span class="block text-xs text-gray-400 mt-1">Your brand will be visible on client gallery</span>
-                <div class="mt-4">
+                <!-- <div class="mt-4">
                     <div class="flex items-center gap-4">
                         <input type="radio" name="branding"  class="accent-blue-600" />
                         <div>
@@ -293,30 +291,28 @@
                                 mark</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
-            <!-- Sponsored Frame -->
-            <div class="mb-6  px-4 py-3">
+            <!-- <div class="mb-6  px-4 py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
                     <input type="checkbox" class="mr-2 accent-blue-600" />
                     Add Sponsored Frame to the Event
                 </label>
                 <span class="block text-xs text-gray-400 mt-1">Mark the special event with custom frames on the
                     images, increase sponsors visibility and reach</span>
-            </div>
+            </div> -->
 
-            <!-- Notification Settings -->
-            <div class="mb-8 px-4 py-3">
+            <!-- <div class="mb-8 px-4 py-3">
                 <span class="text-gray-700 font-medium">Notification Settings</span>
                 <span class="block text-xs text-gray-400 mt-1">How your clients should get notified about their
                     photos</span>
-            </div>
+            </div> -->
 
             <div class="flex justify-start gap-4">
-                <button type="submit" (click)="onSave()"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded">Create Event
-                    &gt;</button>
+                <button type="submit" (click)="openPriceModal()"
+                    class="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded">Create
+                    Event</button>
                 <button class="px-4 py-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
                     (click)="onCancel()">
                     Cancel
@@ -365,7 +361,7 @@
     *ngIf="partyModal">
     <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md" [ngClass]="{'modal-fade-in': partyModal}">
         <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
-            <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Customer</h1>
+            <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Couple</h1>
             <div class="flex items-center gap-4">
                 <button aria-label="Settings" class="text-gray-500 hover:text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -386,11 +382,20 @@
 
         <div class="grid grid-cols-1 gap-3">
             <div>
-                <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Customer
-                    Name <span class="text-red-500">*</span>
+                <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Bride Name
+                    <span class="text-red-500">*</span>
                     <br>
-                <span class="text-xs text-gray-400">Couple name preferred</span></label>
-                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.name" id="partyName"
+                </label>
+                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.firstName" id="partyName"
+                    name="partyName"
+                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Bridegroom Name
+                    <span class="text-red-500">*</span>
+                    <br>
+                </label>
+                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.lastName" id="partyName"
                     name="partyName"
                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
@@ -410,3 +415,87 @@
         </footer>
     </div>
 </div>
+
+
+<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-col justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
+    *ngIf="showPaymentModal">
+    <div class="bg-white rounded-xl w-full max-w-5xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showPaymentModal}">
+       <div class="flex justify-end">
+           <button class="text-gray-500 hover:text-gray-700 text-2xl font-bold px-2 cursor-pointer" (click)="showPaymentModal = false">x</button>
+       </div>
+        <div class="flex items-center justify-center  px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+
+                <!-- Monthly Plan Card -->
+                <div (click)="selectPlan('month',49)" tabindex="0" role="button"
+                    class="bg-white rounded-3xl shadow-lg relative border transition-all duration-300 group cursor-pointer"
+                    [class.hover:scale-105]="planConfig.plan !== 'month'"
+                    [class.border-blue-500]="planConfig.plan === 'month'" [class.ring-2]="planConfig.plan === 'month'"
+                    [class.ring-blue-400]="planConfig.plan === 'month'">
+                    <!-- Icon -->
+                    <div
+                        class="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-100 p-4 rounded-full border border-blue-200">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M12 8v4l3 3" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="10" />
+                        </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="pt-10 pb-8 px-7 flex flex-col items-center">
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">One Month</h2>
+                        <p class="text-sm text-gray-500 mb-4">Data will be kept for 30 days</p>
+                        <div class="flex items-end mb-5">
+                            <span class="text-3xl font-extrabold text-blue-600">₹49</span>
+                        </div>
+                        <ul class="text-gray-600 text-sm space-y-2 text-left mb-6 w-full">
+                            <li>✔️ Upload photos</li>
+                            <li>✔️ Valid till 30 days</li>
+                            <li>✔️ Pay as go</li>
+                        </ul>
+                        <button (click)="payNow()"
+                            class="bg-[#5758b2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
+                            Choose
+                        </button>
+                    </div>
+                </div>
+
+                <div (click)="selectPlan('threeMonth',149)" tabindex="0" role="button"
+                    class="bg-white rounded-3xl shadow-lg relative border transition-all duration-300 group cursor-pointer"
+                    [class.hover:scale-105]="planConfig.plan !== 'threeMonth'"
+                    [class.border-blue-500]="planConfig.plan === 'threeMonth'" [class.ring-2]="planConfig.plan === 'threeMonth'"
+                    [class.ring-blue-400]="planConfig.plan === 'threeMonth'">
+                    <!-- Icon -->
+                    <div
+                        class="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-100 p-4 rounded-full border border-blue-200">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M12 8v4l3 3" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="10" />
+                        </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="pt-10 pb-8 px-7 flex flex-col items-center">
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">Three Months</h2>
+                        <p class="text-sm text-gray-500 mb-4">Data will be kept for 90 days</p>
+                        <div class="flex items-end mb-5">
+                            <span class="text-3xl font-extrabold text-blue-600">₹149</span>
+                        </div>
+                        <ul class="text-gray-600 text-sm space-y-2 text-left mb-6 w-full">
+                            <li>✔️ Upload photos</li>
+                            <li>✔️ Valid till 90 days</li>
+                            <li>✔️ Pay as go</li>
+                        </ul>
+                        <button (click)="payNow()"
+                            class="bg-[#5758b2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
+                            Choose
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>

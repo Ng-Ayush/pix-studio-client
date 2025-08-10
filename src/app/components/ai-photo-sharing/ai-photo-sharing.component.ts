@@ -6,8 +6,10 @@ import { CommonModule } from '@angular/common';
 import { CustomerService } from '../../services/customer.service';
 import * as QRCode from 'qrcode';
 import { FormsModule } from '@angular/forms';
-import { FaceRecognitionService } from '../../services/face-recognition.service';
 import { LoaderService } from '../../shared/loader.service';
+import { AdminService } from '../../services/admin.service';
+import { environment } from '../../../environments/environment';
+declare var Razorpay: any;
 @Component({
   selector: 'app-ai-photo-sharing',
   standalone: true,
@@ -36,18 +38,22 @@ export class AiPhotoSharingComponent {
   dropdownOpen: boolean = false;
   partyModal: boolean = false;
   customerConfig: any = {};
-  userData:any={};
+  userData: any = {};
+  isAiPaymentDone: boolean = false;
+  showPaymentModal: boolean = false;
+  planConfig: any = {price:49,plan:"month"};
 
   constructor(
     private alert: AlertService,
     private router: Router,
     private eventService: PhotoSelectionService,
     private service: CustomerService,
-    private faceService: FaceRecognitionService,
+    // private faceService: FaceRecognitionService,
     private loader: LoaderService,
     private customerService: CustomerService,
+    private _adminService: AdminService
 
-  ) { 
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
@@ -57,22 +63,18 @@ export class AiPhotoSharingComponent {
     // this
   }
 
+
   getAllEvents() {
+    this.loader.show();
     this.eventService.getAllEvents((res: any) => {
       if (res.status == 200) {
         this.eventList = res.data.filter((item: any) => item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
-        // if (this.eventList.length > 0) {
-        //   this.eventList.forEach((eve: any) => {
-        //     this.eventService.getAllPhotosByEventId(eve.event_id, (res: any) => {
-        //       if (res.status == 200) {
-        //         eve.photos = res.data;
-        //       }
-        //     })
-        //   })
-        // }
+        this.loader.hide();
+      } else {
+        this.alert.error(res.message);
+        this.loader.hide();
       }
-      console.log(this.eventList);
     });
 
   }
@@ -93,6 +95,10 @@ export class AiPhotoSharingComponent {
     this.deleteModal = false;
   }
 
+  openPriceModal(){
+    this.showPaymentModal=true;
+  }
+
   onSave() {
     if (!this.isEdit) {
 
@@ -101,7 +107,11 @@ export class AiPhotoSharingComponent {
         event_name: this.event_config.event_name,
         is_event_submitted: false,
         is_ai_upload: true,
-        quality: this.event_config.quality
+        quality: this.event_config.quality,
+        plan_data: this.planConfig,
+        razorpay_payment_id: this.event_config.payment_data.razorpay_payment_id,
+        razorpay_order_id: this.event_config.payment_data.razorpay_order_id,
+        razorpay_signature: this.event_config.payment_data.razorpay_signature
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -132,7 +142,7 @@ export class AiPhotoSharingComponent {
   }
 
   openModal() {
-    this.isModalOpen = true;
+      this.isModalOpen = true;
   }
 
   selectQuality(quality: string) {
@@ -175,9 +185,9 @@ export class AiPhotoSharingComponent {
   copyAiShareLink(event: any) {
     console.log(event);
 
-    const message = `${window.location.origin}/ps/`
+    const message = event.customer_unique_id;
     navigator.clipboard.writeText(message).then(() => {
-      this.alert.success('Message copied to clipboard');
+      this.alert.success('Unique code copied to clipboard');
     }).catch(err => {
       console.error('Failed to copy message: ', err);
     });
@@ -232,7 +242,7 @@ export class AiPhotoSharingComponent {
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
-   
+
     const width = 600;
     const height = 800;
     canvas.width = width;
@@ -278,10 +288,10 @@ export class AiPhotoSharingComponent {
   }
 
   publishAiPhotos(event: any) {
-    if (event.ai_guests.length == 0) return;
-    console.log(event);
-    const data: any = this.faceService.filterPhotosByFaceMatch(event.ai_guests[0].image_url, event.photos)
-    console.log(data);
+    // if (event.ai_guests.length == 0) return;
+    // console.log(event);
+    // const data: any = this.faceService.filterPhotosByFaceMatch(event.ai_guests[0].image_url, event.photos)
+    // console.log(data);
   }
 
   toggleDropdown(): void {
@@ -317,12 +327,12 @@ export class AiPhotoSharingComponent {
 
   saveParty() {
     this.loader.show();
-    if (!this.customerConfig.name || !this.customerConfig.phone) {
+    if (!this.customerConfig.firstName || !this.customerConfig.lastName || !this.customerConfig.phone) {
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;
     }
-    const params: any = { ...this.customerConfig, is_ai_customer: true };
+    const params: any = { name: `${this.customerConfig.firstName} ${this.customerConfig.lastName}`, phone: this.customerConfig.phone, ...this.customerConfig, is_ai_customer: true };
     this.customerService.createCustomer(params, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
@@ -336,4 +346,57 @@ export class AiPhotoSharingComponent {
     })
 
   }
+
+  payNow() {
+    // 1. Create Razorpay order
+    const params: any = {
+      amount: this.planConfig.price,
+      currency: 'INR',
+      receipt: 'ai_event_plan',
+    };
+
+    this._adminService.createOrder(params, (order: any) => {
+
+      console.log("ORDER ", order);
+
+      const options: any = {
+        key: environment.razorpay_key,
+        amount: order.data.amount,
+        currency: order.data.currency,
+        name: this.userData?.studio_name,
+        description: 'Test Transaction',
+        order_id: order.data.id,
+        handler: (response: any) => {
+          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature }
+          this._adminService.verifyPayment(data, (res: any) => {
+            if (res.status == 200) {
+              this.alert.success(res.message);
+              this.showPaymentModal = false;
+              this.event_config = {...this.event_config,payment_data:data,plan_data:this.planConfig};
+              this.onSave();
+            } else {
+              this.alert.error(res.message);
+            }
+          })
+        },
+        prefill: {
+          name: 'Test User',
+          email: 'test@example.com',
+          contact: '9999999999',
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+    });
+  }
+
+  selectPlan(plan: string,price:any) {
+    this.planConfig.plan = plan;
+    this.planConfig.price = price;
+  }
+
 }
