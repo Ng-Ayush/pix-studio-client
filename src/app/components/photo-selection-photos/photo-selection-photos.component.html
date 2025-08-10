@@ -198,12 +198,12 @@
                 </div>
 
                 <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                  <button (click)="closeModal()"
+                  <button (click)="closeModal()" [disabled]="isLoading"
                     class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                     Cancel
                   </button>
-                  <button (click)="deletePhotos()"
-                    class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                  <button (click)="deletePhotos()" [disabled]="isLoading"
+                    class="cursor-pointer disabled:bg-red-400 px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
                     Delete
                   </button>
                 </div>

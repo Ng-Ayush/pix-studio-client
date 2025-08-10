@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
-import { getMetadata } from 'firebase/storage';
+import { deleteObject, getMetadata } from 'firebase/storage';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { LoaderService } from '../../shared/loader.service';
+import { ImageCompressionService } from '../../services/image-compression.service';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -45,22 +46,30 @@ export class PhotoSelectionPhotosComponent {
   batchStart = 1;
   batchEnd = 5;
 
-  sortImagesModal:boolean = false;
-  isEventSubmitted:boolean = false;
-  originalDirectoryName:any='';
-  studio_name:any='';
+  sortImagesModal: boolean = false;
+  isEventSubmitted: boolean = false;
+  originalDirectoryName: any = '';
+  studio_name: any = '';
+  isAIuploaded: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(private loader:LoaderService ,private location:LocationStrategy , private router: Router,private imageCompress: NgxImageCompressService , private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
+  constructor(private loader: LoaderService, private imageCompressService: ImageCompressionService, private location: LocationStrategy, private router: Router, private imageCompress: NgxImageCompressService, private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];
         this.getUploadedPhotosByFolderId();
       }
+    });
+
+    this.route.queryParams.subscribe(params => {
+      if (params['ai_uploaded']) {
+        this.isAIuploaded = true;
+      }
     })
   }
 
   ngOnInit() {
-    let parseData:any  = JSON.parse(<any>localStorage.getItem("userData"));
+    let parseData: any = JSON.parse(<any>localStorage.getItem("userData"));
     this.studio_name = parseData?.studio_name;
     this.user_id = parseData?.id;
   }
@@ -82,7 +91,6 @@ export class PhotoSelectionPhotosComponent {
   }
   backToEvents() {
     this.location.back();
-    // this.router.navigate(['/photo-selection-folder', this.currentEventId]);
   }
 
   uploadPhotos() {
@@ -112,12 +120,25 @@ export class PhotoSelectionPhotosComponent {
     }
   }
 
-  deletePhotos() {
+  async deletePhotos() {
     this.loader.show();
+    this.isLoading = true;
     const params: any = {
       folder_id: this.currentFolderId,
       photos: this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
+    };
+
+    for (let i = 0; i < params.photos.length; i++) {
+      // const filePath = this.getFilePathFromUrl(params.photos[i].url);
+      if(params.photos[i].url){
+        const fileRef = ref(this.storage, params.photos[i].url);
+        await deleteObject(fileRef);
+      }
     }
+
+    // console.log(deleted);
+
+
 
     this._pservice.deletePhotos(params, (res: any) => {
       if (res.status == 200) {
@@ -126,11 +147,20 @@ export class PhotoSelectionPhotosComponent {
         this.getUploadedPhotosByFolderId();
         this.closeModal();
         this.loader.hide();
-      }else{
+        this.isLoading = false;
+      } else {
         this.loader.hide();
+        this.isLoading = false;
       }
     })
 
+  }
+
+  getFilePathFromUrl(url: string): string {
+    const baseUrl = 'https://firebasestorage.googleapis.com/v0/b/';
+    const filePathWithEncodedSpaces = url.split(baseUrl)[1].split('?')[0];
+    const decodedPath = decodeURIComponent(filePathWithEncodedSpaces);
+    return decodedPath;
   }
 
   async handleFileInput(event: any) {
@@ -142,7 +172,6 @@ export class PhotoSelectionPhotosComponent {
     this.uploadedCount = 0;
     this.totalFiles = files.length;
 
-    // Handle uploads in batches (e.g., 5 at a time)
     const batchSize = 5;
     for (let i = 0; i < this.totalFiles; i += batchSize) {
       this.batchStart = i + 1;
@@ -170,19 +199,10 @@ export class PhotoSelectionPhotosComponent {
     return new Promise((resolve, reject) => {
       reader.readAsDataURL(file);
       reader.onload = async () => {
-        let compressedImage = reader.result as string;
-        let blob = this.dataURLtoBlob(compressedImage);
-
-        let quality = this.estimateCompression(blob.size);
-        if (blob.size > 100 * 1024) {
-          compressedImage = await this.imageCompress.compressFile(
-            reader.result as string, -1, quality, quality
-          );
-          blob = this.dataURLtoBlob(compressedImage);
-        }
-
+        let compressedImage: any = reader.result as string;
+        compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
         const fileRef = ref(this.storage, `photos/studio_${this.studio_name}/${this.customerName}/${this.eventName}/${this.folderName}/${fileName}`);
-        const uploadTask = uploadBytesResumable(fileRef, blob);
+        const uploadTask = uploadBytesResumable(fileRef, compressedImage);
 
         uploadTask.then(async () => {
           const url = await getDownloadURL(fileRef);
@@ -193,12 +213,6 @@ export class PhotoSelectionPhotosComponent {
         }).catch(reject);
       };
     });
-  }
-
-  estimateCompression(fileSize: number): number {
-    if (fileSize < 200 * 1024) return 80; // If <200KB, compress at 80%
-    if (fileSize < 500 * 1024) return 50; // If <500KB, compress at 50%
-    return 30; // If >500KB, compress at 30%
   }
 
   dataURLtoBlob(dataURL: string) {
@@ -232,7 +246,7 @@ export class PhotoSelectionPhotosComponent {
     try {
       // Open folder selection prompt
       this.selectedFolderHandle = await (window as any).showDirectoryPicker();
-      this.originalDirectoryName = await this.selectedFolderHandle.name;     
+      this.originalDirectoryName = await this.selectedFolderHandle.name;
 
       // Attach fileHandle to images in the existing array
       for await (const entry of this.selectedFolderHandle.values()) {
@@ -240,8 +254,8 @@ export class PhotoSelectionPhotosComponent {
           // Find the matching file in imageArray
           const matchingImage = this.filteredPhotos.find((img: any) => img.photo_name == entry.name);
           if (matchingImage) {
-            console.log(matchingImage,"3213123123");
-            
+            console.log(matchingImage, "3213123123");
+
             matchingImage.fileHandle = entry; // Attach file handle to the image
           }
         }
@@ -260,14 +274,14 @@ export class PhotoSelectionPhotosComponent {
       alert("Please select a folder first!");
       return;
     }
-    
+
     try {
       this.loader.show();
       const selectedFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Selected", { create: true });
       const favouriteFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Important", { create: true });
 
       for (const image of this.filteredPhotos) {
-        if (!image.is_selected && !image.is_favourite) continue; 
+        if (!image.is_selected && !image.is_favourite) continue;
 
         const sourceFile = await image.fileHandle.getFile();
         const fileBuffer = await sourceFile.arrayBuffer();
@@ -300,22 +314,22 @@ export class PhotoSelectionPhotosComponent {
     return photo.photo_id;
   }
 
-  toggleDeleteModal(){
+  toggleDeleteModal() {
     this.deleteModal = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.deleteModal = false;
     this.sortImagesModal = false;
     this.photos.forEach((photo: any) => photo.selected = false);
   }
 
-  toggleSingleDeleteModal(photo:any){
+  toggleSingleDeleteModal(photo: any) {
     this.deleteModal = true;
     photo.selected = true;
   }
 
-  getSubmittedSelectedPhotos(){
+  getSubmittedSelectedPhotos() {
     console.log(213);
     this.sortImagesModal = true;
   }

@@ -159,8 +159,8 @@
                             </div>
                         </div>
                         <div class="flex justify-between items-center mb-4 px-5 border-b border-gray-200 py-2">
-                            <div class="bg-white rounded-full px-7 py-1 shadow-md border border-gray-300">
-                                <span class="text-gray-700 text-xs font-semibold">{{event.customer_unique_id}}</span>
+                            <div class="bg-white rounded-full px-7 py-1 shadow-md border border-gray-300 cursor-pointer hover:bg-indigo-50" (click)="copyCustomerCode(event)">
+                                <span class="text-gray-700 text-xs font-semibold ">{{event.customer_unique_id}}</span>
                             </div>
                             <span class="status-pill flex items-center gap-2 ">
                                 <!-- From Uiverse.io by Galahhad -->
@@ -196,7 +196,7 @@
                         </div>
                         <div class="flex gap-5 justify-between">
                             <div (click)="copyMessage(event)"
-                                class="bg-white rounded-full px-8 py-1 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer">
+                                class="bg-white rounded-full px-8 py-1 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-copy">

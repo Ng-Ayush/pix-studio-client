@@ -1,15 +1,11 @@
 import { Component } from '@angular/core';
 import { AlertService } from '../../services/alert.service';
-import { AdminService } from '../../services/admin.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { interval } from 'rxjs';
 import { CustomerService } from '../../services/customer.service';
 import * as QRCode from 'qrcode';
-import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
-import * as faceapi from 'face-api.js';
 import { FaceRecognitionService } from '../../services/face-recognition.service';
 import { LoaderService } from '../../shared/loader.service';
 @Component({
