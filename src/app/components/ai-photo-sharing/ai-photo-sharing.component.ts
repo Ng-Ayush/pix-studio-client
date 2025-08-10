@@ -347,8 +347,9 @@ export class AiPhotoSharingComponent {
 
   }
 
-  payNow() {
+  payNow(price:any) {
     // 1. Create Razorpay order
+    this.planConfig.price = price;
     const params: any = {
       amount: this.planConfig.price,
       currency: 'INR',

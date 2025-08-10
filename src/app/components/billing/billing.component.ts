@@ -32,6 +32,7 @@ export class BillingComponent {
   totalSales:any=0;
   totalRemaining:any=0;
   userData:any={};
+  fiteredPartyList:any= [];
   constructor(private billingService: BillingService, private loader: LoaderService,private router:Router,private alert:AlertService,private adminService:AdminService) {
   
     this.getUserData();
@@ -55,6 +56,7 @@ export class BillingComponent {
       if (res.status == 200 && res.data.length>0) {
         this.loader.hide();
         this.partyList = res.data;
+        this.fiteredPartyList = [...this.partyList];
         this.calculateTotalAndRemainingSales();
         this.selectParty(this.partyList[0]);
       } else {
@@ -195,5 +197,13 @@ export class BillingComponent {
         this.totalRemaining = this.totalRemaining + +item.balance_left;
       }
     })
+  }
+
+  search(event: any) {
+    if (event.target.value == '') {
+      this.fiteredPartyList = [...this.partyList];
+    } else {
+      this.fiteredPartyList = this.partyList.filter((item: any) => item.phone_number.toLowerCase().includes(event.target.value.toLowerCase()) ||(item.party_name.toLowerCase().includes(event.target.value.toLowerCase())));
+    }
   }
 }

@@ -92,7 +92,7 @@
                 <aside class="w-1/4 bg-white border-r border-gray-200 p-4 overflow-y-auto">
                     <div class="flex items-center justify-between mb-4">
                         <div class="relative w-50">
-                            <input type="text" autocomplete="off" placeholder="Search Party"
+                            <input type="text" autocomplete="off" placeholder="Search Party" (input)="search($event)"
                                 class="w-full py-2 px-4 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -273,7 +273,7 @@
                 </div>
 
                     <ul>
-                        <li *ngFor="let party of partyList" (dblclick)="editParty(party)" (click)="!party.selected ? selectParty(party) : ''"
+                        <li *ngFor="let party of fiteredPartyList" (dblclick)="editParty(party)" (click)="!party.selected ? selectParty(party) : ''"
                             class="flex justify-between items-center py-2 px-3 mb-1 hover:bg-gray-100 rounded-md cursor-pointer border-l-4 border-transparent hover:border-indigo-500" [ngClass]="{'bg-gray-100 border-l-4 border-indigo-500': party.selected}">
                             <span class="text-sm font-medium text-dark" >{{party.party_name}}</span>
                             <span class="text-xs text-green-600 font-semibold" *ngIf="party.invoice_type == 'sale'">{{party.balance_left}}</span>
