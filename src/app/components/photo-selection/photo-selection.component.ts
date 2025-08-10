@@ -54,7 +54,7 @@ export class PhotoSelectionComponent {
   getAllCustomers() {
     this.service.getAllCustomers((res: any) => {
       if (res.status == 200) {
-        this.customers = res.data;
+        this.customers = res.data.filter((item: any) => !item.is_ai_customer);
       }
     })
   }
@@ -183,6 +183,30 @@ export class PhotoSelectionComponent {
     } else {
       this.filteredEvents = this.eventList.filter((item: any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()));
     }
+  }
+
+  dropdownOpen = false;
+
+  toggleDropdown() {
+    if (!this.isEdit) {
+      this.dropdownOpen = !this.dropdownOpen;
+    }
+  }
+
+  selectCustomer(customer: any) {
+    this.event_config.customer_id = customer.id;
+    this.dropdownOpen = false;
+  }
+
+  getSelectedCustomerName() {
+    const selected = this.customers.find((c:any) => c.id === this.event_config.customer_id);
+    return selected ? selected.name : '';
+  }
+
+  goToAddCustomer(event: Event) {
+    event.stopPropagation();
+    this.dropdownOpen = false;
+    this.router.navigate(['/customer']); 
   }
 }
 

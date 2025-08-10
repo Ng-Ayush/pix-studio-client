@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, LocationStrategy } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -28,7 +28,7 @@ export class CustomerComponent {
     { filename: 'image3.jpg', imageData: 'data:image/jpeg;base64,...' },
     // more images
   ];
-  constructor(private service: CustomerService) {
+  constructor(private service: CustomerService,private location:LocationStrategy) {
 
   }
 
@@ -155,6 +155,10 @@ export class CustomerComponent {
       }
     })
 
+  }
+
+  goBack(){
+    this.location.back();
   }
 
 }
