@@ -119,4 +119,12 @@ export class AdminService extends BaseService {
   getFeaturesByNewArrival(callback: any) {
     return this.getData({}, this.httpUrls['getFeaturesByNewArrival'], callback)
   }
+
+  getAgents(callback:any){
+    return this.getData({}, this.httpUrls['getAgents'], callback)
+  }
+
+  createAgent(params:any, callback:any) {
+    return this.postData(params, this.httpUrls['createAgent'], callback)
+  }
 }

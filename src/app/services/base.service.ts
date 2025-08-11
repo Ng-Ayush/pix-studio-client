@@ -110,6 +110,10 @@ export class BaseService {
     //Calendar
     'getCalendarEvents': '/api/mystudio/dashboard/getCalendarEvents',
 
+    //Calling
+    'getAgents': '/api/mystudio/calling/getAgents',
+    'createAgent': '/api/mystudio/calling/addAgent',
+
 
   }
 
