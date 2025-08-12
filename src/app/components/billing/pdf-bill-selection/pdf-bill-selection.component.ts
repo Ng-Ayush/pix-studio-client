@@ -45,13 +45,14 @@ export class PdfBillSelectionComponent {
   userData:any={};
 
   constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router,private location:LocationStrategy) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
         this.currentInvoiceId = params['invoice-id'];
         this.getInvoiceDetailsById();
       }
     })
-    this.getUserData();   //to be commented and removed in future.
+    // this.getUserData();   //to be commented and removed in future.
   }
 
   getUserData(){
