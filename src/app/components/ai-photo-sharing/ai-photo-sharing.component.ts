@@ -96,10 +96,20 @@ export class AiPhotoSharingComponent {
   }
 
   openPriceModal() {
+    if (!this.event_config.customer_id || !this.event_config.event_name) {
+      this.alert.error("Please select customer and event name");
+      return;
+    }
     this.showPaymentModal = true;
   }
 
   onSave() {
+
+    if (!this.event_config.customer_id || !this.event_config.event_name) {
+      this.alert.error("Please select customer and event name");
+      return;
+    }
+
     if (!this.isEdit) {
 
       const params: any = {

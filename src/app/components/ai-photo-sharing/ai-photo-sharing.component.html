@@ -68,20 +68,20 @@
             </div>
         </div>
         <div class="w-full text-center mt-5 mb-5 px-5">
-            <div class="add-button flex justify-center mb-10">
-                <button
-                    class="bg-[#5758b2] text-white rounded-md px-5 py-3 flex items-center gap-4 cursor-pointer transition-colors duration-200 hover:bg-indigo-700"
-                    (click)="openModal();">
+            <div class="add-button flex justify-end mb-10">
+                <button (click)="openModal()"
+                    class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-15">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                    <span class="block text-2xl">AI Photos Selection</span>
+                   Create AI Event
                 </button>
             </div>
             <div class="px-5 mb-20"> <!--overflow-y-scroll h-150 relative-->
                 <div class="mb-6">
-                    <input type="text" autocomplete="off" placeholder="Search photo selection" (input)="search($event)"
+                    <input type="text" autocomplete="off" placeholder="Search by event" (input)="search($event)"
                         class="bg-[#fff] w-full h-full px-4 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
@@ -272,39 +272,20 @@
                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
             </div>
 
-            <div class="mb-6 px-4 py-3">
+            <div class="py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" class="mr-2 accent-blue-600" />
+                    <input type="checkbox"  [(ngModel)]="event_config.add_branding" class="mr-2 accent-blue-600" />
                     Add Branding to the Event
                 </label>
                 <span class="block text-xs text-gray-400 mt-1">Your brand will be visible on client gallery</span>
-                <!-- <div class="mt-4">
-                    <div class="flex items-center gap-4">
-                        <input type="radio" name="branding"  class="accent-blue-600" />
-                        <div>
-                            <span class="font-medium">Wedding Storytellers</span>
-                            <span class="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-xs">Default</span>
-                            <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">View
-                                mark</span>
-                        </div>
-                    </div>
-                </div> -->
             </div>
-
-            <!-- <div class="mb-6  px-4 py-3">
+            <div class="mb-6 py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" class="mr-2 accent-blue-600" />
-                    Add Sponsored Frame to the Event
+                    <input type="checkbox" [(ngModel)]="event_config.browse_all" class="mr-2 accent-blue-600" />
+                    Browse and download photos ?
                 </label>
-                <span class="block text-xs text-gray-400 mt-1">Mark the special event with custom frames on the
-                    images, increase sponsors visibility and reach</span>
-            </div> -->
-
-            <!-- <div class="mb-8 px-4 py-3">
-                <span class="text-gray-700 font-medium">Notification Settings</span>
-                <span class="block text-xs text-gray-400 mt-1">How your clients should get notified about their
-                    photos</span>
-            </div> -->
+                <span class="block text-xs text-gray-400 mt-1">Customer will be able to access and download all photos</span>
+            </div>
 
             <div class="flex justify-start gap-4">
                 <button type="submit" (click)="openPriceModal()"

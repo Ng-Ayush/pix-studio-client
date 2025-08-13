@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="container mx-auto py-8 px-4">
+        <div class="w-full py-8 px-4">
             <div class="mx-auto bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="flex flex-col md:flex-row">
                     <!-- Calendar Section -->
@@ -87,18 +87,18 @@
                         <div class="text-xl font-semibold text-center mb-4 text-gray-700">{{ monthYear }}</div>
 
                         <div class="grid grid-cols-7 gap-1 mb-2">
-                            <div class="text-center font-medium text-gray-500 py-2">Sun</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Mon</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Tue</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Wed</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Thu</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Fri</div>
-                            <div class="text-center font-medium text-gray-500 py-2">Sat</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Sun</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Mon</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Tue</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Wed</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Thu</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Fri</div>
+                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Sat</div>
                         </div>
 
-                        <div class="grid grid-cols-7 gap-1" *ngIf="calendarDays.length>0">
-                            <div *ngFor="let day of calendarDays;trackBy: trackByDay"
-                                class="calendar-day text-center py-2 cursor-pointer rounded-md hover:bg-blue-50"
+                        <div class="grid grid-cols-7 gap-1 h-screen" *ngIf="calendarDays.length>0">
+                            <div *ngFor="let day of calendarDays;trackBy: trackByDay" style="align-content: center;"
+                                class="calendar-day text-center py-2 cursor-pointer rounded-md hover:bg-blue-50 lg:text-2xl md:text-xl sm:text-lg"
                                 [ngClass]="{'bg-blue-100 font-medium': isToday(day)}"  (click)="showEventDetails(day)">
                                 {{ day.date }}
                                 <div *ngIf="day.events.length" class="flex justify-center mt-1">
@@ -110,10 +110,10 @@
                     </div>
 
                     <!-- Event Details Section -->
-                    <div class="w-full md:w-1/3 bg-gray-50 p-6 border-l border-gray-200">
+                    <div class=" md:w-1/3 bg-gray-50 p-6 border-l border-gray-200">
                         <h2 class="text-xl font-semibold mb-4 text-gray-700">Event Details</h2>
                         <div id="event-display" class="gap-4">
-                            <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow-sm p-4 overflow-y-scroll h-96">
+                            <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow-sm p-4 overflow-y-scroll h-screen">
                                 <h3 class="font-medium text-lg mb-2 text-gray-700">{{ selectedEvent.date }}</h3>
                                 <h2 *ngIf="selectedEvent?.events?.length == 0">No events for this day</h2>
                                 <div class="flex flex-col gap-3">
