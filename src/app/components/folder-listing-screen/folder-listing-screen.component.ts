@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
 import { Router } from '@angular/router';
+import { AlertService } from '../../services/alert.service';
+import { LoaderService } from '../../shared/loader.service';
 
 @Component({
   selector: 'app-folder-listing-screen',
@@ -19,12 +21,17 @@ export class FolderListingScreenComponent {
   totalPhotosCount = 0;
   folders: any = [];
   customerUniqueCode: any = '';
-  event_id:any= '';
-  showModal:boolean=false;
-  userData:any={}
-  constructor(private _cService: CustomerService,private pservice: PhotoSelectionService,private router:Router) {
+  event_id: any = '';
+  showModal: boolean = false;
+  userData: any = {};
+  constructor(private _cService: CustomerService,
+    private pservice: PhotoSelectionService,
+    private router: Router,
+    private alert: AlertService,
+    private loader:LoaderService
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
-    if(!this.userData){
+    if (!this.userData) {
       localStorage.clear();
       this.router.navigate(['/login']);
     }
@@ -49,27 +56,29 @@ export class FolderListingScreenComponent {
     })
   }
 
-  getPhotos(folderId:any) {
-
-    localStorage.setItem("folderId",folderId);
+  getPhotos(folderId: any) {
+    localStorage.setItem("folderId", folderId);
     this.router.navigate(['/selection/image-listing-screen']);
-      
   }
 
 
 
-  onCancel(){
-    this.showModal=false;
+  onCancel() {
+    this.showModal = false;
   }
 
-  submitEvent(){
-      this.pservice.submitEvent({event_id:this.event_id},(res:any)=>{
-        if(res.status == 200){
-          this.showModal=false;
-          this.router.navigate(['/login']);
-        }else{
-          
-        }
-      })
+  submitEvent() {
+    this.loader.show();
+    this.pservice.submitEvent({ event_id: this.event_id }, (res: any) => {
+      if (res.status == 200) {
+        this.showModal = false;
+        this.alert.success(res.message);
+        this.loader.hide();
+        this.router.navigate(['/login']);
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
   }
 }
