@@ -387,7 +387,7 @@
                         </svg>
                     </div>
                     <input type="text" autocomplete="off" placeholder="Full Name" [(ngModel)]="customer_config.name"
-                        (keydown.enter)="addCustomer()" class="flex-1 p-3 outline-none" />
+                        (keyup.enter)="addCustomer()" class="flex-1 p-3 outline-none" />
                 </div>
 
                 <div class="flex border rounded-md overflow-hidden">
@@ -401,7 +401,7 @@
                         </svg>
                     </div>
                     <input type="text" autocomplete="off" placeholder="Mobile" maxlength="10"
-                        [(ngModel)]="customer_config.phone" (keydown.enter)="addCustomer()"
+                        [(ngModel)]="customer_config.phone" (keyup.enter)="addCustomer()"
                         class="flex-1 p-3 outline-none" />
                 </div>
             </div>

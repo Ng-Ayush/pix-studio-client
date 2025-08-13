@@ -168,7 +168,7 @@
                                     </svg>
                                 </div>
                                 <input type="text" autocomplete="off" placeholder="Full Name"
-                                    [(ngModel)]="customer_config.name" (keydown.enter)="onSubmit()"
+                                    [(ngModel)]="customer_config.name" (keyup.enter)="onSubmit()"
                                     class="flex-1 p-3 outline-none" />
                             </div>
 
@@ -183,7 +183,7 @@
                                     </svg>
                                 </div>
                                 <input type="text" autocomplete="off" placeholder="Mobile" maxlength="10"
-                                    [(ngModel)]="customer_config.phone" (keydown.enter)="onSubmit()"
+                                    [(ngModel)]="customer_config.phone" (keyup.enter)="onSubmit()"
                                     class="flex-1 p-3 outline-none" />
                             </div>
                         </div>
