@@ -31,8 +31,14 @@ export class PhotoSelectionComponent {
   filteredEvents: any = [];
   userData: any = {};
   showLogOutModal: boolean = false;
+  isCustomerModalOpen: boolean = false;
+  customer_config: any = {};
 
-  constructor(private service: CustomerService, private eventService: PhotoSelectionService, private router: Router, private alert: AlertService) {
+  constructor(private service: CustomerService,
+    private eventService: PhotoSelectionService,
+    private router: Router,
+    private alert: AlertService
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     console.log(this.userData);
 
@@ -65,6 +71,7 @@ export class PhotoSelectionComponent {
     this.isModalOpen = false;
     this.isEdit = false;
     this.deleteModal = false;
+    this.isCustomerModalOpen=false;
   }
 
   onSave() {
@@ -107,6 +114,7 @@ export class PhotoSelectionComponent {
 
   openModal() {
     this.isModalOpen = true;
+    this.event_config = {};
   }
 
   selectQuality(quality: string) {
@@ -200,26 +208,52 @@ export class PhotoSelectionComponent {
   }
 
   getSelectedCustomerName() {
-    const selected = this.customers.find((c:any) => c.id === this.event_config.customer_id);
+    const selected = this.customers.find((c: any) => c.id === this.event_config.customer_id);
     return selected ? selected.name : '';
   }
 
   goToAddCustomer(event: Event) {
     event.stopPropagation();
-    this.dropdownOpen = false;
-    this.router.navigate(['/customer']); 
+    // this.dropdownOpen = false;
+    // this.router.navigate(['/customer']);
+    this.isCustomerModalOpen = true;
   }
 
   toggleLogoutModal() {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-    logout() {
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
   }
+
+  navigateCustomer() {
+    this.router.navigate(['/customer']);
+  }
+
+  addCustomer() {
+    if (this.customer_config.name.trim() && this.customer_config.phone.trim()) {
+      const params: any = {
+        name: this.customer_config.name,
+        phone: this.customer_config.phone
+      };
+
+      this.service.createCustomer(params, (res: any) => {
+        if (res.status == 200) {
+          this.alert.success(res.message);
+          this.isCustomerModalOpen=false;
+          this.getAllCustomers();
+        } else {
+          this.alert.error(res.message);
+          this.onCancel();
+        }
+      })
+    }
+  }
+
 }
 
 

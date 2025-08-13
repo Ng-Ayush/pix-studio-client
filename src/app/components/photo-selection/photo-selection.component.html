@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <aside class="sidebar justify-center">
-         <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -69,15 +69,26 @@
         </div>
 
         <div class="w-full text-center mt-5 mb-5 px-5">
-            <div class="add-button flex justify-center mb-10">
+            <div class="add-button flex justify-between gap-5 mb-10">
+                <!-- From Uiverse.io by Yaya12085 -->
                 <button
-                    class="bg-[#5758b2] text-white rounded-md px-5 py-3 flex items-center gap-4 cursor-pointer transition-colors duration-200 hover:bg-indigo-700"
-                    (click)="openModal();">
+                    class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200 gap-2"
+                    (click)="navigateCustomer()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-15">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
-                    <span class="block text-2xl">Photos Selection</span>
+                    Add Customer
+                </button>
+                <button (click)="openModal()"
+                    class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    Add Photo Selection
                 </button>
             </div>
             <div class="mb-8 px-5"> <!--overflow-y-scroll h-150 relative-->
@@ -279,48 +290,7 @@
                     [(ngModel)]="event_config.event_name"
                     class="placeholder:text-gray-500 placeholder:opacity-50 w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
 
-                <!-- <span class="mb-4 font-bold block text-sm">Options</span> -->
-                <!-- <span class="flex items-center gap-2 mb-4" [ngClass]="{'opacity-50':isEdit}" >
-                    <label class="switch">
-                        <input [checked]="false" type="checkbox" [disabled]="isEdit" [(ngModel)]="event_config.is_ai_upload">
-                        <div class="slider">
-                            <div class="circle">
-                                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path data-original="#000000" fill="currentColor"
-                                            d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0">
-                                        </path>
-                                    </g>
-                                </svg>
-                                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512"
-                                    viewBox="0 0 24 24" y="0" x="0" height="10" width="10"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path class="" data-original="#000000" fill="currentColor"
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                    </label> <span class="text-sm block">Photo Sharing (Face Recognition)</span>
-                </span> -->
 
-                <!-- <div class="mb-6 flex items-center gap-2" [ngClass]="{'opacity-50':isEdit}" >
-                    <p class="text-sm font-medium text-gray-700">Select Photo Quality :</p>
-                    <div class="flex gap-3">
-                        <button *ngFor="let quality of photoQualities" [disabled]="isEdit" (click)="selectQuality(quality)" [ngClass]="{
-                      'border border-indigo-600 text-indigo-600 bg-indigo-100': selectedQuality === quality,
-                      'border border-gray-300 text-gray-600': selectedQuality !== quality
-                    }" class="px-4 py-1 rounded-full text-xs transition-colors cursor-pointer">
-                            {{ quality }}
-                        </button>
-                    </div>
-                </div> -->
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end gap-4">
@@ -392,6 +362,59 @@
             <button (click)="logout()"
                 class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
                 Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isCustomerModalOpen"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': isCustomerModalOpen}">
+        <div class="p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">{{isEdit ? 'Edit' : 'Add New'}} Customer
+            </h2>
+
+            <div class="flex flex-col gap-4">
+                <div class="flex border rounded-md overflow-hidden">
+                    <div class="bg-gray-100 p-3 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <input type="text" autocomplete="off" placeholder="Full Name" [(ngModel)]="customer_config.name"
+                        (keydown.enter)="addCustomer()" class="flex-1 p-3 outline-none" />
+                </div>
+
+                <div class="flex border rounded-md overflow-hidden">
+                    <div class="bg-gray-100 p-3 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                    </div>
+                    <input type="text" autocomplete="off" placeholder="Mobile" maxlength="10"
+                        [(ngModel)]="customer_config.phone" (keydown.enter)="addCustomer()"
+                        class="flex-1 p-3 outline-none" />
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-end gap-4 rounded-b-lg">
+            <button (click)="onCancel()"
+                class="px-6 py-2 rounded-full bg-white text-gray-700 cursor-pointer font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="addCustomer()"
+                class="px-6 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-700 transition-colors duration-200 cursor-pointer">
+                Save
             </button>
         </div>
     </div>

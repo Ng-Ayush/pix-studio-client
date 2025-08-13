@@ -10,7 +10,7 @@ import { Storage, ref, uploadBytesResumable, getDownloadURL, deleteObject, listA
 @Component({
   selector: 'app-photo-selection-folder',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage],
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './photo-selection-folder.component.html',
   styleUrl: './photo-selection-folder.component.scss'
 })
