@@ -30,6 +30,8 @@ export class FeaturesComponent {
   categoryList: any[] = [];
   selectedCategory: any = null;
   selectedCatName: any = 'New Arrival Features';
+  userData: any = {};
+  showLogOutModal: boolean = false;
 
   constructor(
     private router: Router,
@@ -37,7 +39,9 @@ export class FeaturesComponent {
     private _adminService: AdminService,
     private alert: AlertService,
     private loader: LoaderService
-  ) { }
+  ) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+  }
 
   ngOnInit() {
     this.getRealTime();
@@ -85,12 +89,6 @@ export class FeaturesComponent {
       this.todayDate = new Date();
     })
   }
-
-  logout() {
-    this.router.navigate(['/login']);
-  }
-
-
 
   playVideo(card: any): void {
     this.selectedCard = card;
@@ -240,6 +238,17 @@ export class FeaturesComponent {
     this.selectedCategory = null;
     this.selectedCatName = 'New Arrival Features'
     this.getFeaturesByNewArrival();
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+  logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }

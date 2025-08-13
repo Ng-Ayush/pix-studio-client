@@ -41,8 +41,8 @@ export class AiPhotoSharingComponent {
   userData: any = {};
   isAiPaymentDone: boolean = false;
   showPaymentModal: boolean = false;
-  planConfig: any = {price:49,plan:"month"};
-
+  planConfig: any = { price: 49, plan: "month" };
+  showLogOutModal: boolean = false;
   constructor(
     private alert: AlertService,
     private router: Router,
@@ -95,8 +95,8 @@ export class AiPhotoSharingComponent {
     this.deleteModal = false;
   }
 
-  openPriceModal(){
-    this.showPaymentModal=true;
+  openPriceModal() {
+    this.showPaymentModal = true;
   }
 
   onSave() {
@@ -142,7 +142,7 @@ export class AiPhotoSharingComponent {
   }
 
   openModal() {
-      this.isModalOpen = true;
+    this.isModalOpen = true;
   }
 
   selectQuality(quality: string) {
@@ -347,7 +347,7 @@ export class AiPhotoSharingComponent {
 
   }
 
-  payNow(price:any) {
+  payNow(price: any) {
     // 1. Create Razorpay order
     this.planConfig.price = price;
     const params: any = {
@@ -373,7 +373,7 @@ export class AiPhotoSharingComponent {
             if (res.status == 200) {
               this.alert.success(res.message);
               this.showPaymentModal = false;
-              this.event_config = {...this.event_config,payment_data:data,plan_data:this.planConfig};
+              this.event_config = { ...this.event_config, payment_data: data, plan_data: this.planConfig };
               this.onSave();
             } else {
               this.alert.error(res.message);
@@ -395,9 +395,19 @@ export class AiPhotoSharingComponent {
     });
   }
 
-  selectPlan(plan: string,price:any) {
+  selectPlan(plan: string, price: any) {
     this.planConfig.plan = plan;
     this.planConfig.price = price;
   }
 
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+  logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
+  }
 }

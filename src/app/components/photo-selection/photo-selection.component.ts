@@ -30,6 +30,7 @@ export class PhotoSelectionComponent {
   currentEventId: number = -1;
   filteredEvents: any = [];
   userData: any = {};
+  showLogOutModal: boolean = false;
 
   constructor(private service: CustomerService, private eventService: PhotoSelectionService, private router: Router, private alert: AlertService) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
@@ -208,6 +209,18 @@ export class PhotoSelectionComponent {
     this.dropdownOpen = false;
     this.router.navigate(['/customer']); 
   }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
+  }
 }
+
 
 

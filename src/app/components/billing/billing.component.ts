@@ -33,6 +33,7 @@ export class BillingComponent {
   totalRemaining:any=0;
   userData:any={};
   fiteredPartyList:any= [];
+  showLogOutModal: boolean = false;
   constructor(private billingService: BillingService, private loader: LoaderService,private router:Router,private alert:AlertService,private adminService:AdminService) {
   
     this.getUserData();
@@ -205,5 +206,16 @@ export class BillingComponent {
     } else {
       this.fiteredPartyList = this.partyList.filter((item: any) => item.phone_number.toLowerCase().includes(event.target.value.toLowerCase()) ||(item.party_name.toLowerCase().includes(event.target.value.toLowerCase())));
     }
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 }

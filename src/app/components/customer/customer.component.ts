@@ -1,9 +1,10 @@
 import { CommonModule, LocationStrategy } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { debounce, debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
+import { AlertService } from '../../services/alert.service';
 @Component({
   selector: 'app-customer',
   standalone: true,
@@ -22,14 +23,16 @@ export class CustomerComponent {
   customer_config: any = {};
   searchText: any = new Subject();
   private subscription!: Subscription;
+  userData:any={};
   imagesArray = [
     { filename: 'image1.jpg', imageData: 'data:image/jpeg;base64,...' }, // Base64 encoded or URL
     { filename: 'image2.jpg', imageData: 'data:image/jpeg;base64,...' },
     { filename: 'image3.jpg', imageData: 'data:image/jpeg;base64,...' },
     // more images
   ];
-  constructor(private service: CustomerService,private location:LocationStrategy) {
-
+  showLogOutModal: boolean = false;
+  constructor(private service: CustomerService,private location:LocationStrategy,private router:Router, private alert: AlertService) {
+    this.userData  = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
   async ngOnInit() {
@@ -159,6 +162,17 @@ export class CustomerComponent {
 
   goBack(){
     this.location.back();
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }

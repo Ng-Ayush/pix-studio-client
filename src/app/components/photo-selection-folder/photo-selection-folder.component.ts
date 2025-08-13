@@ -31,6 +31,7 @@ export class PhotoSelectionFolderComponent {
   storage = inject(Storage);
   userData: any = {};
   customerName: any = '';
+  showLogOutModal: boolean = false;
 
   constructor(private service: CustomerService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService) {
     this.route.params.subscribe(params => {
@@ -178,6 +179,17 @@ export class PhotoSelectionFolderComponent {
   openFolder(folder: any) {
     this.router.navigate(['/photo-selection-photos', folder.id], this.isAIuploaded ? ({ queryParams: { ai_uploaded: true } }) : ({}));
 
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 

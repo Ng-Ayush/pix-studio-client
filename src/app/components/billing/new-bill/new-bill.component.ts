@@ -56,6 +56,7 @@ export class NewBillComponent {
   pastPayments: any = [];
   isBillFormValid: boolean = false;
   userData: any = {};
+  showLogOutModal: boolean = false;
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: MouseEvent) {
     const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
@@ -89,19 +90,13 @@ export class NewBillComponent {
     this.invoiceConfig.due_date = this.commonService.formatDate(this.todayDate);
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
-    this.getUserData();   //to be commented and removed in future.
+    // this.getUserData();   //to be commented and removed in future.
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
   ngOnInit(): void {
     this.addItem();
     this.getAllInvoiceItems();
-  }
-
-  getUserData() {
-    this.adminService.getUsersByCurrentId(JSON.parse(<any>localStorage.getItem("currentUserId")), (res: any) => {
-      console.log(res);
-      this.userData = res;
-    })
   }
 
   fetchLastInsertedInvoiceNumber() {
@@ -258,7 +253,8 @@ export class NewBillComponent {
     this.calculateTotals();
   }
 
-  calculateTotals() {
+  calculateTotals(typeChange=false) {
+    if(typeChange) this.discountAmountVal = 0;
     this.totalAmount = 0;
     this.subTotal = 0;
     this.invoiceConfig.invoice_items.forEach((item: any) => {
@@ -293,7 +289,7 @@ export class NewBillComponent {
   updateInvoice(isEInvoice?: boolean) {
     if (!this.checkBillFormIsValid()) {
       this.loader.hide();
-      this.alert.error('Please fill required fields');
+      this.alert.error('Please check mandatory fields or total value cannot be negative');
       return;
     };
     const params: any = {
@@ -330,7 +326,7 @@ export class NewBillComponent {
     this.loader.show();
     if (!this.checkBillFormIsValid()) {
       this.loader.hide();
-      this.alert.error('Please fill required fields');
+      this.alert.error('Please check mandatory fields or total value cannot be negative');
       return;
     };
     const params: any = {
@@ -490,8 +486,7 @@ export class NewBillComponent {
 
   checkBillFormIsValid() {
     console.log(this.invoiceConfig.invoice_items);
-
-    if (this.invoiceConfig.invoice_items.length == 0 || !this.invoiceConfig.party_id) {
+    if (this.invoiceConfig.invoice_items.length == 0 || !this.invoiceConfig.party_id || this.totalAmount < 0) {
       this.isBillFormValid = false;
       return false;
     }
@@ -512,6 +507,17 @@ export class NewBillComponent {
         this.alert.error(res.message);
       }
     })
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }

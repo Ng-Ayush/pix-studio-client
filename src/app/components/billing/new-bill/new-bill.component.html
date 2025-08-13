@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <aside class="sidebar justify-center">
-        <nav class="sidebar-nav">
+       <nav class="sidebar-nav">
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -8,13 +8,6 @@
                         d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
 
-            </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/customer']">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
             </a>
             <a href="javascript:void(0);" class="sidebar-nav-item">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -24,7 +17,7 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -32,14 +25,20 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/manage-profile']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
-
+            </a>
+            <a href="javascript:void(0);" class="sidebar-nav-item" (click)="toggleLogoutModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                </svg>
             </a>
         </nav>
     </aside>
@@ -442,11 +441,11 @@
                     <div class="md:col-span-2 p-4 bg-white rounded-md shadow gap-4 flex flex-col">
                         <div class="flex justify-end items-center gap-3">
                             <label for="discountValue" class="text-xs font-medium text-gray-700">Discount</label>
-                            <input type="text" maxLength="3" max="100" id="discountValue" [disabled]="!subTotal" name="discountValue"
+                            <input type="text" [maxLength]="discount_type == 'percentage' ? 3 : 4" max="100" id="discountValue" [disabled]="!subTotal" name="discountValue"
                                 [(ngModel)]="discountAmountVal" (change)="calculateTotals()"
                                 class="w-20 p-1 border border-gray-300 rounded-md text-right">
                             <select id="discountType" name="discountType" [(ngModel)]="discount_type"
-                                [disabled]="!subTotal" (change)="calculateTotals()"
+                                [disabled]="!subTotal" (change)="calculateTotals(true)"
                                 class="p-1 border border-gray-300 rounded-md text-xs">
                                 <option value="0">Select</option>
                                 <option value="percentage" [selected]="discount_type == 'percentage'">(%)</option>
@@ -665,5 +664,33 @@
                 Save
             </button>
         </footer>
+    </div>
+</div>
+
+<div *ngIf="showLogOutModal"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showLogOutModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[200px] mb-4">
+                <img src="../../../assets/logout.png" alt="Delete illustration" class="w-full h-auto" />
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Are you sure you want to logout?
+            </h2>
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="toggleLogoutModal()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="logout()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Logout
+            </button>
+        </div>
     </div>
 </div>

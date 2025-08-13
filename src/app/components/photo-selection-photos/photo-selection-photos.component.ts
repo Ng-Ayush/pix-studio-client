@@ -9,6 +9,7 @@ import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fir
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { LoaderService } from '../../shared/loader.service';
 import { ImageCompressionService } from '../../services/image-compression.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -52,8 +53,20 @@ export class PhotoSelectionPhotosComponent {
   studio_name: any = '';
   isAIuploaded: boolean = false;
   isLoading: boolean = false;
+  userData: any = {};
+  showLogOutModal: boolean = false;
 
-  constructor(private loader: LoaderService, private imageCompressService: ImageCompressionService, private location: LocationStrategy, private router: Router, private imageCompress: NgxImageCompressService, private _service: CustomerService, private _pservice: PhotoSelectionService, private route: ActivatedRoute) {
+  constructor(private loader: LoaderService,
+     private imageCompressService: ImageCompressionService,
+      private location: LocationStrategy, 
+      private router: Router, 
+      private imageCompress: NgxImageCompressService, 
+      private _service: CustomerService,
+       private _pservice: PhotoSelectionService, 
+       private route: ActivatedRoute,
+       private alert: AlertService
+      ) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];
@@ -130,7 +143,7 @@ export class PhotoSelectionPhotosComponent {
 
     for (let i = 0; i < params.photos.length; i++) {
       // const filePath = this.getFilePathFromUrl(params.photos[i].url);
-      if(params.photos[i].url){
+      if (params.photos[i].url) {
         const fileRef = ref(this.storage, params.photos[i].url);
         await deleteObject(fileRef);
       }
@@ -332,6 +345,17 @@ export class PhotoSelectionPhotosComponent {
   getSubmittedSelectedPhotos() {
     console.log(213);
     this.sortImagesModal = true;
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+  logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }

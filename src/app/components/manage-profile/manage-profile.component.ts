@@ -24,7 +24,8 @@ export class ManageProfileComponent {
   currentUserId: any = 0;
   storage = inject(Storage);
   tempStudioIcon: any = '';
-
+  userData: any = {};
+  showLogOutModal: boolean = false;
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
     this.userForm = this.fb.group({
       studio_name: ['', [Validators.required]],
@@ -37,6 +38,7 @@ export class ManageProfileComponent {
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
     });
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
   ngOnInit() {
@@ -104,6 +106,17 @@ export class ManageProfileComponent {
       intArray[i] = byteString.charCodeAt(i);
     }
     return new Blob([arrayBuffer], { type: mimeString });
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 

@@ -16,6 +16,7 @@ export class BillEstimateComponent {
 
   estimateList: any = [];
   todayDate: any = new Date();
+  showLogOutModal: boolean = false;
   constructor(private loader: LoaderService, private _service: BillingService, private router: Router, private alert: AlertService) { }
 
   ngOnInit() {
@@ -32,18 +33,29 @@ export class BillEstimateComponent {
   convertToSales(invoiceId: number) {
     this.loader.show();
     this._service.convertToSales(invoiceId, (res: any) => {
-      if(res.status == 200){
+      if (res.status == 200) {
         this.alert.success(res.message);
         this.loader.hide();
         this.getEstimateList();
-      }else{
-          this.loader.hide();
-          this.alert.error(res.message);
-        }
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
     })
   }
 
   viewEstimate(estimateId: number) {
-    this.router.navigate(['/billing/e-invoice',estimateId]);
+    this.router.navigate(['/billing/e-invoice', estimateId]);
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 } 

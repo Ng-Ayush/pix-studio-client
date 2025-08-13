@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
 import { AlertService } from '../../services/alert.service';
@@ -21,7 +21,8 @@ export class CallingComponent {
   agentList: any = [];
   filteredAgents: any = [];
   agentModal: boolean = false;
-  constructor(private adminService: AdminService, private loader: LoaderService, private alert: AlertService) {
+  showLogOutModal: boolean = false;
+  constructor(private adminService: AdminService, private loader: LoaderService, private alert: AlertService,private router:Router) {
     this.getUserData();
     this.getAgentList();
   }
@@ -91,6 +92,17 @@ export class CallingComponent {
         this.loader.hide();
       }
     })
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 

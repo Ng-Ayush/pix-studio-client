@@ -43,6 +43,8 @@ export class PdfBillSelectionComponent {
   currentInvoiceId: any = -1;
   currentUserId:any=0;
   userData:any={};
+  showLogOutModal: boolean = false;
+
 
   constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router,private location:LocationStrategy) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
@@ -217,6 +219,17 @@ export class PdfBillSelectionComponent {
 
   backToBill(){
     this.location.back();
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }

@@ -21,7 +21,17 @@ export class BillingCalendarComponent {
   monthYear: string = '';
   calendarDays: any = [];
   selectedEvent: any = {};
-  constructor(private commonService: CommonService, private loader: LoaderService, private _service: BillingService, private router: Router, private alert: AlertService, private _adminService: AdminService) { }
+  userData:any=  {};
+  showLogOutModal: boolean = false;
+  constructor(private commonService: CommonService,
+    private loader: LoaderService,
+    private _service: BillingService,
+    private router: Router,
+    private alert: AlertService,
+    private _adminService: AdminService
+  ) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+  }
 
 
   ngOnInit() {
@@ -43,7 +53,7 @@ export class BillingCalendarComponent {
     this.monthYear = `${this.getMonthName(this.currentDate.getMonth())} ${this.currentDate.getFullYear()}`;
     this.calendarDays = this.generateCalendarDays();
     setTimeout(() => {
-      this.showEventDetails({date:new Date().getDate()})
+      this.showEventDetails({ date: new Date().getDate() })
     }, 0);
   }
 
@@ -75,19 +85,19 @@ export class BillingCalendarComponent {
 
   showEventDetails(day: any) {
     console.log(day);
-    
+
     const dateStr = `${this.currentDate.getFullYear()}-${String(this.currentDate.getMonth() + 1).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`;
-    this.selectedEvent = { date: this.formatDate(dateStr),formatedDate:this.commonService.formatDate(dateStr), events: this.events[dateStr] || [] };
+    this.selectedEvent = { date: this.formatDate(dateStr), formatedDate: this.commonService.formatDate(dateStr), events: this.events[dateStr] || [] };
     this.calendarDays.forEach((item: any) => {
-      item.isSelected =false;
-      if(item.date == day.date){
+      item.isSelected = false;
+      if (item.date == day.date) {
         item.isSelected = true;
       }
     });
     console.log(this.selectedEvent);
-    
-    
-  } 
+
+
+  }
 
   isToday(day: any) {
     const today = new Date();
@@ -127,6 +137,17 @@ export class BillingCalendarComponent {
   }
   trackByIdx(index: number, item: any) {
     return index;
+  }
+
+  toggleLogoutModal() {
+    this.showLogOutModal = !this.showLogOutModal;
+  }
+
+    logout() {
+    this.showLogOutModal = false;
+    localStorage.clear();
+    this.alert.success('Logout Successfully');
+    this.router.navigate(['/login']);
   }
 
 }
