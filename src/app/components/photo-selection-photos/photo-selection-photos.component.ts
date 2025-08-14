@@ -10,6 +10,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
 import { LoaderService } from '../../shared/loader.service';
 import { ImageCompressionService } from '../../services/image-compression.service';
 import { AlertService } from '../../services/alert.service';
+import { UploadImgBackgroundService } from '../../services/upload-img-background.service';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -43,7 +44,6 @@ export class PhotoSelectionPhotosComponent {
   totalFiles = 0;
   isUploading = false;
   progressPercentage = 0;
-  currentFileName = '';
   batchStart = 1;
   batchEnd = 5;
 
@@ -57,19 +57,21 @@ export class PhotoSelectionPhotosComponent {
   showLogOutModal: boolean = false;
 
   constructor(private loader: LoaderService,
-     private imageCompressService: ImageCompressionService,
-      private location: LocationStrategy, 
-      private router: Router, 
-      private imageCompress: NgxImageCompressService, 
-      private _service: CustomerService,
-       private _pservice: PhotoSelectionService, 
-       private route: ActivatedRoute,
-       private alert: AlertService
-      ) {
+    private imageCompressService: ImageCompressionService,
+    private location: LocationStrategy,
+    private router: Router,
+    private imageCompress: NgxImageCompressService,
+    private _service: CustomerService,
+    private _pservice: PhotoSelectionService,
+    private route: ActivatedRoute,
+    private alert: AlertService,
+    private uploadImgBg: UploadImgBackgroundService
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];
+        this.uploadImgBg.currentFolderId = this.currentFolderId;
         this.getUploadedPhotosByFolderId();
       }
     });
@@ -77,6 +79,7 @@ export class PhotoSelectionPhotosComponent {
     this.route.queryParams.subscribe(params => {
       if (params['ai_uploaded']) {
         this.isAIuploaded = true;
+        this.uploadImgBg.isAIuploaded = true;
       }
     })
   }
@@ -85,6 +88,10 @@ export class PhotoSelectionPhotosComponent {
     let parseData: any = JSON.parse(<any>localStorage.getItem("userData"));
     this.studio_name = parseData?.studio_name;
     this.user_id = parseData?.id;
+
+    this.uploadImgBg.user_id = this.user_id;
+    this.uploadImgBg.studio_name = this.studio_name;
+
   }
 
   getUploadedPhotosByFolderId() {
@@ -94,9 +101,14 @@ export class PhotoSelectionPhotosComponent {
         this.photos = res.data.photos;
         this.eventName = res.data.event_name;
         this.customerName = res.data.customer_name;
-        this.customerUniqueId = res.data.customer_unique_id;
         this.folderName = res.data.folder_name;
+        this.customerUniqueId = res.data.customer_unique_id;
         this.currentEventId = res.data.event_id;
+        
+        this.uploadImgBg.eventName = this.eventName;
+        this.uploadImgBg.customerName = this.customerName;
+        this.uploadImgBg.folderName = this.folderName;
+
         this.isEventSubmitted = res.data.is_event_submitted;
         setTimeout(() => this.loader.hide(), 500);
       }
@@ -177,56 +189,9 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
-    this.loader.show();
-    const files: FileList = event.target.files;
-    if (files.length === 0) return;
-
-    this.isUploading = true;
-    this.uploadedCount = 0;
-    this.totalFiles = files.length;
-
-    const batchSize = 5;
-    for (let i = 0; i < this.totalFiles; i += batchSize) {
-      this.batchStart = i + 1;
-      this.batchEnd = Math.min(i + batchSize, this.totalFiles);
-
-      const batchFiles = Array.from(files).slice(i, i + batchSize);
-      await Promise.all(
-        batchFiles.map((file) =>
-          this.compressAndUpload(file).then(() => {
-            this.uploadedCount++;
-            this.progressPercentage = Math.round((this.uploadedCount / this.totalFiles) * 100);
-          })
-        )
-      );
-    }
-
-    this.storeUrlsInDatabase();
-    this.isUploading = false;
+    this.uploadImgBg.handleFileInput(event,this.currentEventId, this.folderName,this.studio_name,this.customerName,this.eventName,this.currentFolderId);
   }
 
-  async compressAndUpload(file: File): Promise<string> {
-    const fileName = file.name;
-    const reader = new FileReader();
-
-    return new Promise((resolve, reject) => {
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        let compressedImage: any = reader.result as string;
-        compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
-        const fileRef = ref(this.storage, `photos/studio_${this.studio_name}/${this.customerName}/${this.eventName}/${this.folderName}/${fileName}`);
-        const uploadTask = uploadBytesResumable(fileRef, compressedImage);
-
-        uploadTask.then(async () => {
-          const url = await getDownloadURL(fileRef);
-          const name = await getMetadata(fileRef);
-          this.uploadedUrls.push({ url: url, name });
-
-          resolve(url);
-        }).catch(reject);
-      };
-    });
-  }
 
   dataURLtoBlob(dataURL: string) {
     const byteString = atob(dataURL.split(',')[1]);
@@ -239,21 +204,6 @@ export class PhotoSelectionPhotosComponent {
     return new Blob([arrayBuffer], { type: mimeString });
   }
 
-  submitImages() {
-    console.log(23)
-  }
-
-  storeUrlsInDatabase() {
-    this.loader.show();
-    this._pservice.uploadPhotos({ uploadedUrls: this.uploadedUrls, uploaded_by: this.user_id, folder_id: this.currentFolderId }, (res: any) => {
-      if (res.status == 200) {
-        this.loader.hide();
-        this.progressPercentage = 0;
-        this.uploadedUrls = [];
-        this.getUploadedPhotosByFolderId();
-      }
-    })
-  }
 
   async selectFolder() {
     try {
