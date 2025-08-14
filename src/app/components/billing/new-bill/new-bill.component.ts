@@ -58,6 +58,8 @@ export class NewBillComponent {
   userData: any = {};
   showLogOutModal: boolean = false;
   @HostListener('document:click', ['$event'])
+  filteredInvoiceItems: any = [];
+
   handleOutsideClick(event: MouseEvent) {
     const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
     const clickedInside = el?.contains(event.target);
@@ -144,6 +146,7 @@ export class NewBillComponent {
     this.billingService.getAllInvoiceItems((res: any) => {
       if (res.status == 200) {
         this.invoiceItemsList = res.data;
+        this.filteredInvoiceItems = [...this.invoiceItemsList]
       }
     })
   }
@@ -162,22 +165,27 @@ export class NewBillComponent {
     this.calculateTotals();
   }
 
-  showDropdown(event: FocusEvent, idx: any) {
+  showDropdown(event: any, idx: any,item:any) {
+    console.log(232132131231231312);
+    
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
     this.dropdownPosition = {
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
     };
-    this.dropdownVisible = !this.dropdownVisible;
+    // this.dropdownVisible = !this.dropdownVisible;
     this.currentItemIdx = idx;
-    event.stopPropagation();
+    item.dropdownVisible = !item.dropdownVisible;
+    // this.invoiceConfig.invoice_items.forEach((item:any)=>item.dropdownVisible =false);
+    // event.stopPropagation();
   }
 
 
 
   toggleItemModal() {
     this.itemModal = true;
+    this.newItemConfig = {};
   }
 
   closeModal() {
@@ -186,6 +194,7 @@ export class NewBillComponent {
     this.partyModal = false;
     this.dropdownVisible = false;
     this.showAdvancePaymentModal = false;
+    this.filteredInvoiceItems = [...this.invoiceItemsList]
   }
 
   addInvoiceItem() {
@@ -236,10 +245,11 @@ export class NewBillComponent {
     })
   }
 
-  selectItem(invoiceItem: any) {
+  selectItem(invoiceItem: any,item:any) {
     this.invoiceConfig.invoice_items[this.currentItemIdx] = invoiceItem;
     this.calculateAmount(invoiceItem);
-    this.dropdownVisible = false;
+    item.dropdownVisible = false;
+    this.filteredInvoiceItems = [...this.invoiceItemsList];
     // this.closeModal();
     // this.addItem();
   }
@@ -253,8 +263,8 @@ export class NewBillComponent {
     this.calculateTotals();
   }
 
-  calculateTotals(typeChange=false) {
-    if(typeChange) this.discountAmountVal = 0;
+  calculateTotals(typeChange = false) {
+    if (typeChange) this.discountAmountVal = 0;
     this.totalAmount = 0;
     this.subTotal = 0;
     this.invoiceConfig.invoice_items.forEach((item: any) => {
@@ -513,11 +523,20 @@ export class NewBillComponent {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-    logout() {
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  searchItem(event: any, idx: any) {
+    if (event.target.value) {
+      this.dropdownVisible = true;
+      this.filteredInvoiceItems = this.invoiceItemsList.filter((item: any) => item.item_name.toLowerCase().includes(event.target.value.toLowerCase()));
+    } else {
+      this.filteredInvoiceItems = this.invoiceItemsList;
+    }
   }
 
 }
