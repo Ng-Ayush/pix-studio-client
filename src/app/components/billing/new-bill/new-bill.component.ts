@@ -165,9 +165,9 @@ export class NewBillComponent {
     this.calculateTotals();
   }
 
-  showDropdown(event: any, idx: any,item:any) {
+  showDropdown(event: any, idx: any, item: any) {
     console.log(232132131231231312);
-    
+
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
     this.dropdownPosition = {
@@ -245,7 +245,7 @@ export class NewBillComponent {
     })
   }
 
-  selectItem(invoiceItem: any,item:any) {
+  selectItem(invoiceItem: any, item: any) {
     this.invoiceConfig.invoice_items[this.currentItemIdx] = invoiceItem;
     this.calculateAmount(invoiceItem);
     item.dropdownVisible = false;
@@ -296,38 +296,43 @@ export class NewBillComponent {
     this.updateInvoice(true);
   }
 
-  updateInvoice(isEInvoice?: boolean) {
-    if (!this.checkBillFormIsValid()) {
-      this.loader.hide();
-      this.alert.error('Please check mandatory fields or total value cannot be negative');
-      return;
-    };
-    const params: any = {
-      ...this.invoiceConfig,
-      total: +this.subTotal,
-      balance_left: +this.totalAmount,
-      invoice_type: this.invoiceConfig.invoice_type,
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
-      discount_value: this.discountAmountVal,
-      discount_type: this.discount_type
-    }
+  async updateInvoice(isEInvoice?: boolean) {
+   return  new Promise((resolve, reject) => {
 
-    console.log(this.invoiceConfig);
-
-
-    this.billingService.updateInvoice(+this.invoiceConfig.party_id, params, (res: any) => {
-      if (res.status == 200) {
+      if (!this.checkBillFormIsValid()) {
         this.loader.hide();
-        this.alert.success(res.message);
-        if (isEInvoice) {
-          this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
-        } else {
-          this.router.navigate(['/billing']);
-        }
-      } else {
-        this.loader.hide();
-        this.alert.error(res.message);
+        this.alert.error('Please check mandatory fields or total value cannot be negative');
+        reject(false);
+        return;
+      };
+      const params: any = {
+        ...this.invoiceConfig,
+        total: +this.subTotal,
+        balance_left: +this.totalAmount,
+        invoice_type: this.invoiceConfig.invoice_type,
+        invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
+        discount_value: this.discountAmountVal,
+        discount_type: this.discount_type
       }
+
+      this.billingService.updateInvoice(+this.invoiceConfig.party_id, params, (res: any) => {
+        if (res.status == 200) {
+          this.loader.hide();
+          this.alert.success(res.message);
+          resolve(true);
+          if (isEInvoice) {
+            setTimeout(() => {
+              this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
+            }, 0);
+          } else {
+            this.router.navigate(['/billing']);
+          }
+        } else {
+          this.loader.hide();
+          this.alert.error(res.message);
+          reject(false)
+        }
+      })
     })
 
   }
@@ -504,19 +509,24 @@ export class NewBillComponent {
     return true;
   }
 
-  convertToSales() {
-    this.updateInvoice(true);
-    this.loader.show();
-    this.billingService.convertToSales(this.invoiceConfig.invoice_id, (res: any) => {
-      if (res.status == 200) {
-        this.alert.success(res.message);
-        this.loader.hide();
-        // this.getEstimateList();
-      } else {
-        this.loader.hide();
-        this.alert.error(res.message);
-      }
-    })
+  async convertToSales() {
+    const isUpdatedSuccess: any = await this.updateInvoice(true);
+    console.log("isUpdatedSuccess", isUpdatedSuccess);
+    
+    if (isUpdatedSuccess) {
+      this.loader.show();
+      this.billingService.convertToSales(this.invoiceConfig.invoice_id, (res: any) => {
+        if (res.status == 200) {
+          this.alert.success(res.message);
+          this.loader.hide();
+          // this.getEstimateList();
+        } else {
+          this.loader.hide();
+          this.alert.error(res.message);
+        }
+      })
+    }
+
   }
 
   toggleLogoutModal() {

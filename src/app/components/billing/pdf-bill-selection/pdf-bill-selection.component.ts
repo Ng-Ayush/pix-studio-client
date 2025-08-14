@@ -149,6 +149,7 @@ export class PdfBillSelectionComponent {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
+        this.invoiceBillConfig.estimate_id = res?.estimate_id;
         if(isUpdated){
           this.updateAndconvertToSales()
         }else{
@@ -178,7 +179,7 @@ export class PdfBillSelectionComponent {
     const params: any = {
       terms_and_conditions: this.invoiceBillConfig.tnc
     };
-    this._service.updateEstimate(this.invoiceBillConfig?.estimate_id, params,(res: any) => {
+    this._service.updateEstimate(this.invoiceBillConfig?.invoice_id, params,(res: any) => {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
@@ -196,7 +197,7 @@ export class PdfBillSelectionComponent {
 
   directconvertToSales(){
     this.loader.show();
-    if(this.invoiceBillConfig.tnc){
+    if(this.invoiceBillConfig.tnc && this.invoiceBillConfig.estimate_id){
       this.updateAndClose(true);
     }else{
       this.saveAndClose(true)
