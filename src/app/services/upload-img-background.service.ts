@@ -18,7 +18,7 @@ export class UploadImgBackgroundService {
     private imageCompressService: ImageCompressionService,
     private loader: LoaderService,
     private _pservice: PhotoSelectionService,
-    private alert:AlertService
+    private alert: AlertService
   ) { }
 
   isUploading$ = new BehaviorSubject<boolean>(false);
@@ -42,12 +42,12 @@ export class UploadImgBackgroundService {
   uploadQueue: any[] = [];
   isProcessingQueue = false;
 
-  handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any,currentFolderId:any) {
+  handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any, currentFolderId: any) {
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
 
     // Push into queue
-    this.uploadQueue.push({ files, eventId, folderName,studio_name,customerName,eventName,currentFolderId });
+    this.uploadQueue.push({ files, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
     this.alert.info("Uploading In Queue");
     // Start queue if not already running
     if (!this.isProcessingQueue) {
@@ -62,7 +62,7 @@ export class UploadImgBackgroundService {
     while (this.uploadQueue.length > 0) {
       const currentTask = this.uploadQueue.shift();
       if (!currentTask) continue;
-      const { files, eventId,studioName, customerName, eventName, folderName,currentFolderId } = currentTask;
+      const { files, eventId, studioName, customerName, eventName, folderName, currentFolderId } = currentTask;
 
       if (!files.length) return;
 
@@ -81,7 +81,7 @@ export class UploadImgBackgroundService {
         const batchFiles = files.slice(i, i + batchSize);
 
         await Promise.all(
-          batchFiles.map((file:any) =>
+          batchFiles.map((file: any) =>
             this.compressAndUpload(file, eventId, studioName, customerName, eventName, folderName).then(() => {
               this.uploadedPhotos++;
               const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
@@ -94,42 +94,43 @@ export class UploadImgBackgroundService {
       await this.storeUrlsInDatabase(currentFolderId);
       this.isUploading$.next(false);
     }
-      this.isProcessingQueue = false;
+    this.isProcessingQueue = false;
   }
 
-  async compressAndUpload(file: File, eventId: string, studio_name:string,customerName:string,eventName:string,folderName: string,): Promise < string > {
-      const fileName = file.name;
-      const reader = new FileReader();
+  async compressAndUpload(file: File, eventId: string, studio_name: string, customerName: string, eventName: string, folderName: string,): Promise<string> {
+    const fileName = file.name;
+    const reader = new FileReader();
 
-      return new Promise((resolve, reject) => {
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-          let compressedImage: any = reader.result as string;
-          compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
-          const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
-          const uploadTask = uploadBytesResumable(fileRef, compressedImage);
+    return new Promise((resolve, reject) => {
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        let compressedImage: any = reader.result as string;
+        compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
+        const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
+        const uploadTask = uploadBytesResumable(fileRef, compressedImage);
 
-          uploadTask.then(async () => {
-            const url = await getDownloadURL(fileRef);
-            const name = await getMetadata(fileRef);
-            this.uploadedUrls.push({ url: url, name });
+        uploadTask.then(async () => {
+          const url = await getDownloadURL(fileRef);
+          const name = await getMetadata(fileRef);
+          this.uploadedUrls.push({ url: url, name });
 
-            resolve(url);
-          }).catch(reject);
-        };
-      });
-    }
-
-    async storeUrlsInDatabase(currentFolderId:any) {
-      this.loader.show();
-      this._pservice.uploadPhotos({ uploadedUrls: this.uploadedUrls, uploaded_by: this.user_id, folder_id: currentFolderId }, (res: any) => {
-        if (res.status == 200) {
-          this.loader.hide();
-          this.uploadedUrls = [];
-        }
-      })
-    }
-
-
-
+          resolve(url);
+        }).catch(reject);
+      };
+    });
   }
+
+  async storeUrlsInDatabase(currentFolderId: any) {
+    this.loader.show();
+    this._pservice.uploadPhotos({ uploadedUrls: this.uploadedUrls, uploaded_by: this.user_id, folder_id: currentFolderId }, (res: any) => {
+      if (res.status == 200) {
+        this.loader.hide();
+        this.alert.success(res.message);
+        this.uploadedUrls = [];
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
+  }
+}
