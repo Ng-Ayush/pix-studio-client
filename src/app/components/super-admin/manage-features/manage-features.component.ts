@@ -17,7 +17,7 @@ export class ManageFeaturesComponent {
   stats: any;
   todayDate: any = new Date();
   isModalOpen: boolean = false;
-  users: any = [];
+  featureList: any = [];
   deleteModal: boolean = false;
   id:Number=0;
   searchTerm:any='';
@@ -38,8 +38,8 @@ export class ManageFeaturesComponent {
   getAllFeatures() {
     this.service.getAllFeatures((res: any) => {
       if (res.status == 200) {
-        this.users = res.data;
-        this.filteredItems = [...this.users]; 
+        this.featureList = res.data;
+        this.filteredItems = [...this.featureList]; 
       } else {
         this.alert.error(res.message);
       }
@@ -52,17 +52,17 @@ export class ManageFeaturesComponent {
     })
   }
 
-  addUsers() {
+  addFeature() {
     this.router.navigate(['admin/add-features'])
   }
 
-  searchUsers() {
+  searchFeature() {
       if (!this.searchTerm) {
-        this.filteredItems = [...this.users]; 
+        this.filteredItems = [...this.featureList]; 
         return;
       }
-      this.filteredItems = this.users.filter((item:any) =>
-        item.category.toLowerCase().includes(this.searchTerm.toLowerCase())
+      this.filteredItems = this.featureList.filter((item:any) =>
+        item.title.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
 
   }
