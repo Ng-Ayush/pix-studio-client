@@ -47,7 +47,8 @@ export class DashboardComponent implements OnInit {
   };
   currentUserId: any = -1;
   showLogOutModal: boolean = false;
-  userData:any={};
+  userData: any = {};
+  dynamicImages:any=[];
   constructor(
     private fileService: FileService,
     private router: Router,
@@ -59,7 +60,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.getAdminUserData();
     this.loadDashboardStats();
-    this.getRealTime();
+    this.loadDynamicIamgeUrl();
   }
 
   getAdminUserData() {
@@ -70,12 +71,14 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  getRealTime() {
-    interval(1000).subscribe(() => {
-      this.todayDate = new Date();
+  loadDynamicIamgeUrl() {
+    this._service.getDynamicImageUrl((res: any) => {
+      if (res.status == 200) {
+        this.dynamicImages = res.data;
+      }
+
     })
   }
-
 
   loadDashboardStats() {
     this._service.fetchSalesAndPendingGraphData({ range: this.granularity }, (res: any) => {
@@ -101,7 +104,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    const carousel:any = document.getElementById('carousel');
+    const carousel: any = document.getElementById('carousel');
     let idx = 0;
     const total = 3;
 

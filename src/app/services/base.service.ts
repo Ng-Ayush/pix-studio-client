@@ -105,6 +105,8 @@ export class BaseService {
     'updateRequest': '/api/mystudio/customer-request/updateRequest',
     'resolved': '/api/mystudio/customer-request/resolved',
     'toggleAdminStatus': '/api/mystudio/super-admin/toggleAdminStatus',
+    'getDynamicImageUrl':'/api/mystudio/super-admin/getDynamicImageUrl',
+    'insertImages':'/api/mystudio/super-admin/insertImages',
 
 
     //Calendar

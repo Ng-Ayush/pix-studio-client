@@ -43,8 +43,13 @@
             </div>
         </div>
 
-        <div class="p-10 mt-[20px]">
-            <div class="grid grid-cols-4 gap-4 mb-4">
+        <div class="flex justify-end items-center p-3">
+            <button class="px-4 py-2 bg-[#5758b2] text-white" (click)="openDynamicLinkModal()">Add Dynamic Image
+                Link</button>
+        </div>
+
+        <div class="px-10 pb-10 pt-5">
+            <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <a class="dashboard-item" [routerLink]="['/admin/customer-request']">
                     <div class="dashboard-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -87,4 +92,33 @@
         </div>
 
     </main>
+</div>
+
+
+
+<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-col justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
+    *ngIf="showModal">
+    <div class="bg-white rounded-xl w-full max-w-5xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showModal}">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center justify-between">Add Carousel Images
+            <button class="close cursor-pointer" (click)="showModal=false">x</button>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div *ngFor="let img of images; let i = index; trackBy: trackByIndex" loading="eager" (click)="triggerFileInput(i)"
+                class="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48 cursor-pointer hover:border-blue-400 transition relative overflow-hidden bg-gray-50">
+
+                <input type="file" accept="image/*" id="fileInput{{i}}" (change)="onFileSelected($event, i)"
+                    class="hidden" />
+
+                <ng-container *ngIf="img; else placeholder">
+                    <img [src]="img" alt="Preview" class="w-full h-full object-cover rounded-lg" />
+                </ng-container>
+
+                <ng-template #placeholder>
+                    <span class="text-gray-400">Click to Upload</span>
+                </ng-template>
+            </div>
+            <div class="py-3"> <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" (click)="uploadDynamicImages()">Save </button></div>
+        </div>
+    </div>
 </div>

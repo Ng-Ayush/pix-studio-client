@@ -113,12 +113,10 @@
             <div class="grid mb-4 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-5 relative">
                 <div class="dashboard-item carousel relative w-full max-w-lg mx-auto overflow-hidden rounded-lg">
                     <div id="carousel" class="flex transition-transform duration-700" style="transform: translateX(0%)">
-                        <img src="https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg"
-                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 1" />
-                        <img src="https://images.pexels.com/photos/53265/pexels-photo-53265.jpeg"
-                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 2" />
-                        <img src="https://images.pexels.com/photos/2041396/pexels-photo-2041396.jpeg"
-                            class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Image 3" />
+                        <ng-container *ngFor="let img of dynamicImages">
+                            <img [src]="img"
+                                class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover" alt="Loading.." />
+                        </ng-container>
                     </div>
                 </div>
 

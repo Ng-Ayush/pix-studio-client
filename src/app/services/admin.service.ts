@@ -25,27 +25,27 @@ export class AdminService extends BaseService {
   getUsersById(userId: string, callback: any) {
     return this.getData({}, this.httpUrls['getUsersById'] + "/" + userId, callback)
   }
-  
+
   updateUsers(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateUsers'], callback)
   }
-  
+
   deleteUsers(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteUsers'] + "/" + id, callback)
   }
-  
+
   getAllFeatures(callback: any) {
     return this.getData({}, this.httpUrls['getAllFeatures'], callback)
   }
-  
+
   createFeatures(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createFeatures'], callback)
   }
-  
+
   getFeatureById(userId: string, callback: any) {
     return this.getData({}, this.httpUrls['getFeatureById'] + "/" + userId, callback)
   }
-  
+
   updateFeature(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateFeature'], callback)
   }
@@ -53,18 +53,18 @@ export class AdminService extends BaseService {
   deleteFeatures(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteFeatures'] + "/" + id, callback)
   }
-  
+
   onImgUpload(params: any, callback: any) {
     return this.postData(params, this.httpUrls['onImgUpload'], callback)
   }
   getAllRequests(callback: any) {
     return this.getData({}, this.httpUrls['getAllRequests'], callback)
   }
-  
+
   markAsResolvedByStatus(id: any, callback: any) {
     return this.deleteData({}, this.httpUrls['resolved'] + "/" + id, callback)
   }
-  
+
   fetchSalesAndPendingGraphData(params: any, callback: any) {
     return this.getData({}, `${this.httpUrls['fetchSalesAndPendingGraphData']}?range=${params.range}`, callback)
   }
@@ -80,35 +80,35 @@ export class AdminService extends BaseService {
   updateProfile(params: any, callback: any) {
     return this.putData(params, this.httpUrls['updateProfile'], callback)
   }
-  
-   createOrder(params:any, callback:any) {
+
+  createOrder(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createOrder'], callback)
   }
 
-  verifyPayment(params:any, callback:any) {
+  verifyPayment(params: any, callback: any) {
     return this.postData(params, this.httpUrls['verifyPayment'], callback)
   }
-  
-  getCalendarEvents(callback:any){
+
+  getCalendarEvents(callback: any) {
     return this.getData({}, this.httpUrls['getCalendarEvents'], callback)
   }
-  createCategory(params:any, callback:any) {
+  createCategory(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createCategory'], callback)
   }
 
-  updateCategory(params:any,catId:any, callback:any) {
+  updateCategory(params: any, catId: any, callback: any) {
     return this.putData(params, this.httpUrls['updateCategory'] + "/" + catId, callback)
   }
 
-  deleteCategory(catId:any, callback:any) {
+  deleteCategory(catId: any, callback: any) {
     return this.deleteData({}, this.httpUrls['deleteCategory'] + "/" + catId, callback)
 
   }
-  getAllCategories(callback:any){
+  getAllCategories(callback: any) {
     return this.getData({}, this.httpUrls['getAllCategories'], callback)
   }
 
-  toggleAdminStatus(params:any, id:any, callback:any) {
+  toggleAdminStatus(params: any, id: any, callback: any) {
     return this.putData(params, this.httpUrls['toggleAdminStatus'] + "/" + id, callback)
   }
 
@@ -120,11 +120,19 @@ export class AdminService extends BaseService {
     return this.getData({}, this.httpUrls['getFeaturesByNewArrival'], callback)
   }
 
-  getAgents(callback:any){
+  getAgents(callback: any) {
     return this.getData({}, this.httpUrls['getAgents'], callback)
   }
 
-  createAgent(params:any, callback:any) {
+  createAgent(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createAgent'], callback)
+  }
+  
+  getDynamicImageUrl(callback: any) {
+    return this.getData({}, this.httpUrls['getDynamicImageUrl'], callback)
+  }
+
+  insertImages(params: any, callback: any) {
+    return this.postData(params, this.httpUrls['insertImages'], callback)
   }
 }
