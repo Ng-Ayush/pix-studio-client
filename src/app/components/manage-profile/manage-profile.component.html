@@ -9,14 +9,7 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-
-            </a>
+          
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -43,7 +36,7 @@
         </nav>
     </aside>
     <main class="main-content">
-        <div class="border-l border-white bg-[#5758b2]">
+        <div class="border-l border-white bg-[#494CA2]">
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
@@ -54,10 +47,10 @@
                     </div>
                 </div>
             </div>
-            <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
-                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                             <path
@@ -76,7 +69,7 @@
                         <!-- <p class="text-gray-600">{{ filteredItems.length > 0 ? filteredItems.length : 'No' }} users</p> -->
                     </div>
                     <!-- <button 
-                        class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
+                        class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-2 rounded-full flex items-center transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -231,7 +224,7 @@
                                 </div>
                             </div>
                             <button type="submit" [disabled]="userForm.invalid || isSubmitting"
-                                class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                class="mt-5 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                                 <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
                                     viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"

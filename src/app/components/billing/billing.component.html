@@ -9,14 +9,7 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-
-            </a>
+          
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -43,7 +36,7 @@
         </nav>
     </aside>
     <main class="main-content">
-        <div class="border-l border-white bg-[#5758b2]">
+        <div class="border-l border-white bg-[#494CA2]">
              <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
@@ -55,10 +48,10 @@
                     </div>
                 </div>
             </div>
-             <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+             <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
               <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
-                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                             <path
@@ -72,15 +65,15 @@
         <div class="flex flex-col h-screen font-sans">
             <header class="p-6 flex items-center justify-start gap-5">
                 <a [routerLink]="['/billing/new-bill']"
-                    class="bg-[#5758b2f5] text-white py-10 px-8 rounded-xl shadow-md text-center hover:bg-[#5758b2] cursor-pointer">
+                    class="bg-[#494CA2f5] text-white py-10 px-8 rounded-xl shadow-md text-center hover:bg-[#494CA2] cursor-pointer">
                     <div class="text-2xl opacity-80">NEW BILL</div>
                     <div class="text-sm font-bold"> (estimate)</div>
                 </a>
-                <div class="bg-[#5758b2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
+                <div class="bg-[#494CA2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
                     <div class="text-2xl opacity-80">Total Sale</div>
                     <div class="text-sm font-bold">₹ {{totalSales|number }}</div>
                 </div>
-                <div class="bg-[#5758b2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
+                <div class="bg-[#494CA2fc] text-white py-10 px-8 rounded-xl shadow-md text-center">
                     <div class="text-2xl opacity-80">Remaining</div>
                     <div class="text-sm font-bold">₹ {{totalRemaining|number}}</div>
                 </div>
@@ -102,7 +95,7 @@
                             </span>
                         </div>
                         <button (click)="openModal()"
-                            class="ml-2 px-2 py-3 bg-orange-500 text-white rounded-md hover:bg-orange-600 flex items-center cursor-pointer text-sm">
+                            class="ml-2 px-2 py-3 bg-[#494CA2f5] hover:bg-[#494CA2] text-white rounded-md flex items-center cursor-pointer text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -224,7 +217,7 @@
                                     Save & New
                                 </button>
                                 <button type="submit" (click)="saveParty()"
-                                    class="cursor-pointer px-6 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    class="cursor-pointer px-6 py-2 bg-[#494CA2] text-white rounded-md text-sm font-medium hover:bg-[#494CA2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Save
                                 </button>
                             </footer>
@@ -234,7 +227,7 @@
                                     Delete
                                 </button>
                                 <button type="submit" (click)="updateParty()"
-                                    class="cursor-pointer px-6 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    class="cursor-pointer px-6 py-2 bg-[#494CA2] text-white rounded-md text-sm font-medium hover:bg-[#494CA2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Update
                                 </button>
                             </footer>

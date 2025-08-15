@@ -29,7 +29,7 @@
         </nav>
     </aside>
     <main class="main-content">
-        <div class="border-l border-white bg-[#5758b2]">
+        <div class="border-l border-white bg-[#494CA2]">
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
@@ -42,10 +42,10 @@
                     </div>
                 </div>
             </div>
-            <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/admin/users']">
                     <button
-                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                             <path
@@ -187,7 +187,7 @@
                             <!-- Role Field -->
 
                             <button type="submit" [disabled]="userForm.invalid || isSubmitting"
-                                class="mt-5 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                                class="mt-5 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                                 <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
                                     viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"

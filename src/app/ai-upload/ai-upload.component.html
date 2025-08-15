@@ -1,7 +1,7 @@
 <div class="bg-[#FFFFFF] min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
-    <div class="bg-[#5758b2] w-full flex flex-col items-center pt-6 pb-8">
+    <div class="bg-[#494CA2] w-full flex flex-col items-center pt-6 pb-8">
         <div class="flex items-center mb-2">
             <!-- Profile Icon Circle -->
             <div class="bg-white bg-opacity-30 rounded-full w-8 h-8 flex items-center justify-center mr-4">
@@ -21,7 +21,7 @@
             class="w-full max-w-md min-h-auto bg-white rounded-2xl shadow-xl mb-4 px-2 pt-20 pb-20 flex flex-col items-center">
             <!-- Title -->
             <div
-                class="text-[#5758b2] text-center mb-8 font-[cursive] text-lg sm:text-xl font-semibold tracking-wide uppercase">
+                class="text-[#494CA2] text-center mb-8 font-[cursive] text-lg sm:text-xl font-semibold tracking-wide uppercase">
                 Welcome to My Studio AI Feature
             </div>
 
@@ -29,7 +29,7 @@
             <div class="flex flex-col items-center w-full mb-10">
                 <!-- Colored Icon Box -->
                 <div
-                    class="bg-[#5758b2] cursor-pointer rounded-[20px] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center mb-2 hover:bg-indigo-700">
+                    class="bg-[#494CA2] cursor-pointer rounded-[20px] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center mb-2 hover:bg-[#494CA2]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="text-white size-24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,7 +40,7 @@
 
                 </div>
                 <div
-                    class="text-[#5758b2] font-semibold text-base sm:text-lg tracking-wide font-[Arial] mt-1 text-center">
+                    class="text-[#494CA2] font-semibold text-base sm:text-lg tracking-wide font-[Arial] mt-1 text-center">
                     AI DOWNLOAD
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="flex flex-col items-center w-full">
                 <!-- Colored Icon Box -->
                 <div (click)="onBrowseAllFolder()"
-                    class="bg-[#5758b2] cursor-pointer hover:bg-indigo-700 rounded-[20px] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center mb-2">
+                    class="bg-[#494CA2] cursor-pointer hover:bg-[#494CA2] rounded-[20px] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="text-white size-24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -57,7 +57,7 @@
 
                 </div>
                 <div
-                    class="text-[#5758b2] font-semibold text-base sm:text-lg tracking-wide font-[Arial] mt-1 text-center">
+                    class="text-[#494CA2] font-semibold text-base sm:text-lg tracking-wide font-[Arial] mt-1 text-center">
                     BROWSE ALL FOLDERS
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 <div>
                     <a class="flex items-center cursor-pointer" (click)="goBack()">
                         <button
-                            class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                                 <path
@@ -78,11 +78,11 @@
                 </div>
                 <div class="flex gap-2">
                     <button (click)="toggleSelectAll()"
-                        class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer bg-indigo-600 text-white">
+                        class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer bg-[#494CA2] text-white">
                         {{isAllSelected ? 'Deselect All' : 'Select All'}}
                     </button>
                     <button *ngIf="imageSelected" (click)="downloadPhoto()"
-                        class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer bg-indigo-600 text-white">
+                        class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer bg-[#494CA2] text-white">
                         Download
                     </button>
                 </div>
@@ -123,7 +123,7 @@
         </ng-container>
     </main>
 
-    <footer class="bg-[#5758b2] w-full pt-4 pb-3 px-2 flex justify-between items-center">
+    <footer class="bg-[#494CA2] w-full pt-4 pb-3 px-2 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <a [href]="userData?.facebook_url" target="_blank"
                 class="text-[#3D8BFF] bg-white rounded-full w-7 h-7 flex items-center justify-center">

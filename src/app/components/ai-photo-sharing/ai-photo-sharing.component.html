@@ -9,14 +9,7 @@
                 </svg>
 
             </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-
-            </a>
+          
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -43,7 +36,7 @@
         </nav>
     </aside>
     <main class="main-content">
-        <div class="border-l border-white bg-[#5758b2]">
+        <div class="border-l border-white bg-[#494CA2]">
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
@@ -54,10 +47,10 @@
                     </div>
                 </div>
             </div>
-            <div class="back-btn flex items-center py-3 px-10 bg-gray-200">
+            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
-                        class="cursor-pointer rounded p-2 hover:bg-[#5758b2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                             <path
@@ -70,7 +63,7 @@
         <div class="w-full text-center mt-5 mb-5 px-5">
             <div class="add-button flex justify-end mb-10">
                 <button (click)="openModal()"
-                    class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
+                    class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -90,9 +83,9 @@
                         *ngFor="let event of filteredEvents">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex flex-col items-start">
-                                <h2 class="text-sm font-semibold text-gray-800">{{event.customer_name|titlecase}}
+                                <h2 class="text-lg font-semibold text-gray-800">{{event.customer_name|titlecase}}
                                 </h2>
-                                <p class="text-sm text-gray-500">{{event.customer_phone}}</p>
+                                <p class="text-md text-gray-500">{{event.customer_phone}}</p>
                             </div>
                             <div class="text-right flex gap-3">
                                 <div (click)="editModal(event)">
@@ -175,7 +168,7 @@
                         <div class="flex justify-between gap-5">
                             <div (click)="publishAiPhotos(event)"
                                 class="rounded-full  group inline-block cursor-pointer px-10 py-3 transition-all duration-200 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer"
-                                [ngClass]="{'bg-indigo-600 text-white hover:bg-indigo-700':event.ai_guests.length> 0, 'text-black hover:text-black hover:bg-gray-100': event.ai_guests.length == 0}">
+                                [ngClass]="{'bg-[#494CA2f5] text-white hover:bg-[#494CA2]':event.ai_guests.length> 0, 'text-black hover:text-black hover:bg-gray-100': event.ai_guests.length == 0}">
                                 {{event.ai_guests.length> 0 ? 'Publish Photos' : 'Pending / No Photos'}}
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Click To Publish Photos</span> -->
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Photos Published</span> -->
@@ -189,7 +182,7 @@
                                 </div>
                             </div>
                             <div (click)="goToPhotoSelection(event.event_id)"
-                                class="bg-indigo-700 rounded-full px-5 py-2 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer">
+                                class="bg-[#494CA2f5] rounded-full px-5 py-2 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer hover:bg-[#494CA2]">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-folder-open text-white">
@@ -387,7 +380,7 @@
 
         <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200">
             <button type="submit" (click)="saveParty()"
-                class="cursor-pointer px-6 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="cursor-pointer px-6 py-2 bg-[#494CA2] text-white rounded-md text-sm font-medium hover:bg-[#494CA2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Save
             </button>
         </footer>
@@ -434,7 +427,7 @@
                             <li>✔️ Pay as go</li>
                         </ul>
                         <button (click)="payNow(49)"
-                            class="bg-[#5758b2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
+                            class="bg-[#494CA2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
                             Choose
                         </button>
                     </div>
@@ -468,7 +461,7 @@
                             <li>✔️ Pay as go</li>
                         </ul>
                         <button (click)="payNow(149)"
-                            class="bg-[#5758b2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
+                            class="bg-[#494CA2] hover:bg-blue-700 text-white rounded-md w-full py-3 mt-auto font-semibold transition">
                             Choose
                         </button>
                     </div>

@@ -7,7 +7,7 @@
 }
 
 .sidebar {
-    background-color: #5758b2;
+    background-color: #494CA2;
     /* Dark purple sidebar background */
     color: #ede7f6;
     /* Light purple text in sidebar */
@@ -44,7 +44,7 @@
 
 .sidebar-nav-item:hover {
     background-color: #ffffff;
-    color: #5758b2;
+    color: #494CA2;
     /* Slightly lighter purple on hover */
 }
 
@@ -69,7 +69,7 @@
 }
 
 .dashboard-item {
-    background-color: #5758b2;
+    background-color: #494CA2;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -445,7 +445,7 @@
 /* actions */
 
 .switch input:checked+.slider {
-    background: #5758b2;
+    background: #494CA2;
 }
 
 .switch input:checked+.slider .checkmark {
@@ -503,7 +503,7 @@ button.add-btn {
     border: none;
     display: flex;
     padding: 0.75rem 1.5rem;
-    background-color: #5758b2;
+    background-color: #494CA2;
     color: #ffffff;
     font-size: 0.75rem;
     line-height: 1rem;
