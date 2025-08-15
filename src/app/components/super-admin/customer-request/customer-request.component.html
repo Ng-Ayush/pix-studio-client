@@ -127,12 +127,7 @@
                                     <tbody>
                                         <tr *ngFor="let feature of filteredItems; let i = index">
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <div class="flex">
-                                                    <div class="flex-shrink-0 w-10 h-10">
-                                                        <img class="w-full h-full rounded-full"
-                                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                                                            alt="" />
-                                                    </div>
+                                                <div class="flex items-center">
                                                     <div class="ml-3">
                                                         <p class="text-gray-900 whitespace-no-wrap">
                                                             {{feature.customer_name}}
@@ -144,8 +139,8 @@
                                                 <p class="text-gray-900 whitespace-no-wrap">{{feature.priority}}</p>
                                             </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">{{feature.status == 0 ?
-                                                    "false" : "true"}}</p>
+                                                <button class="p-2 px-4 rounded-xl text-white whitespace-no-wrap" [ngClass]="feature.status == 0 ? 'bg-yellow-300' : 'bg-lime-600'">{{feature.status == 0 ?
+                                                    "Pending" : "Resolved"}}</button>
                                             </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                 <div class="flex gap-3">
@@ -170,7 +165,7 @@
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 
                                                 <button (click)="viewDetails(feature)"
-                                                    class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200" [disabled]="feature.status ==1">
+                                                    class="bg-red-100 hover:bg-red-200 cursor-pointer gap-2 text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200" [disabled]="feature.status ==1">
                                                     <svg class="w-5 h-6 text-gray-800 text-red-400"
                                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                                         fill="none" viewBox="0 0 20 18">
