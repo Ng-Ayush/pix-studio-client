@@ -81,7 +81,15 @@ export class PhotoSelectionPhotosComponent {
         this.isAIuploaded = true;
         this.uploadImgBg.isAIuploaded = true;
       }
+    });
+
+    this.uploadImgBg.isUploading$.subscribe((item:any)=>{
+      if(!item){
+        this.getUploadedPhotosByFolderId();
+      }
+      
     })
+
   }
 
   ngOnInit() {
@@ -156,6 +164,8 @@ export class PhotoSelectionPhotosComponent {
     for (let i = 0; i < params.photos.length; i++) {
       // const filePath = this.getFilePathFromUrl(params.photos[i].url);
       if (params.photos[i].url) {
+        console.log("GOT HERE ", params.photos[i].url);
+        
         const fileRef = ref(this.storage, params.photos[i].url);
         await deleteObject(fileRef);
       }
@@ -189,6 +199,8 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
+    console.log(this.studio_name);
+    
     this.uploadImgBg.handleFileInput(event,this.currentEventId, this.folderName,this.studio_name,this.customerName,this.eventName,this.currentFolderId);
   }
 

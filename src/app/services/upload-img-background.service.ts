@@ -48,6 +48,8 @@ export class UploadImgBackgroundService {
 
     // Push into queue
     this.uploadQueue.push({ files, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+    console.log(eventId, folderName, studio_name, customerName, eventName, currentFolderId);
+    
     this.alert.info("Uploading In Queue");
     // Start queue if not already running
     if (!this.isProcessingQueue) {
@@ -62,7 +64,7 @@ export class UploadImgBackgroundService {
     while (this.uploadQueue.length > 0) {
       const currentTask = this.uploadQueue.shift();
       if (!currentTask) continue;
-      const { files, eventId, studioName, customerName, eventName, folderName, currentFolderId } = currentTask;
+      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId } = currentTask;
 
       if (!files.length) return;
 
@@ -82,7 +84,7 @@ export class UploadImgBackgroundService {
 
         await Promise.all(
           batchFiles.map((file: any) =>
-            this.compressAndUpload(file, eventId, studioName, customerName, eventName, folderName).then(() => {
+            this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName).then(() => {
               this.uploadedPhotos++;
               const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
               this.progressPercentage$.next(percent);

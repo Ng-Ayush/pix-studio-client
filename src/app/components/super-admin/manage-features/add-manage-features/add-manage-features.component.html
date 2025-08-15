@@ -68,8 +68,9 @@
                             </path>
                         </svg> Go back</button>
                 </a>
-                <a href="javascript:void(0);" [routerLink]="['/admin/manage-categories']" class="text-[#5758b2] hover:text-black hover:underline transition-all duration-200">
-                    View Categories 
+                <a href="javascript:void(0);" [routerLink]="['/admin/manage-categories']"
+                    class="text-[#5758b2] hover:text-black hover:underline transition-all duration-200">
+                    View Categories
                 </a>
             </div>
         </div>
@@ -82,7 +83,7 @@
                             <h2 class="text-2xl font-bold text-gray-800">{{itemId ? 'Update Feature' : "Create Feature"}}</h2>
                         </div>
 
-                        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="">
+                        <form [formGroup]="featureForm" (ngSubmit)="onSubmit()" class="">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
@@ -90,8 +91,8 @@
                                     <input type="text" id="title" formControlName="title" autocomplete="off"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter Title"
-                                        [class.border-red-500]="userForm.get('title')?.invalid && userForm.get('title')?.touched">
-                                    <div *ngIf="userForm.get('title')?.invalid && userForm.get('title')?.touched"
+                                        [class.border-red-500]="featureForm.get('title')?.invalid && featureForm.get('title')?.touched">
+                                    <div *ngIf="featureForm.get('title')?.invalid && featureForm.get('title')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Title is required
                                     </div>
@@ -108,18 +109,23 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Price</label>
-                                    <input type="tel" id="phone" formControlName="price" autocomplete="off"
+                                    <label for="youtube_thumbnail" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Youtube Thumbnail</label>
+                                    <input type="file" id="name" (change)="handleFileUpload($event)" autocomplete="off"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        placeholder="Enter your Price"
-                                        [class.border-red-500]="userForm.get('price')?.invalid && userForm.get('price')?.touched"
-                                        maxlength="5">
-                                    <div *ngIf="userForm.get('price')?.invalid && userForm.get('price')?.touched"
+                                        [class.border-red-500]="featureForm.get('youtube_thumbnail')?.invalid && featureForm.get('youtube_thumbnail')?.touched">
+                                    <div *ngIf="featureForm.get('youtube_thumbnail')?.invalid && featureForm.get('youtube_thumbnail')?.touched"
                                         class="text-red-500 text-sm mt-1">
-                                        Price is required
+                                        Youtube Thumbnail is required
                                     </div>
+                                 
                                 </div>
+
+                                <div *ngIf="featureForm.get('youtube_thumbnail')?.value" class="flex items-center gap-2">
+                                    <img [src]="featureForm.get('youtube_thumbnail')?.value" alt="Loading...."
+                                        class="w-32 h-32 object-cover rounded-lg">
+                                </div>
+
                             </div>
                             <div class="grid grid-cols-1 gap-4 my-2">
 
@@ -129,12 +135,27 @@
                                     <input type="url" id="name" formControlName="youtube_url" autocomplete="off"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your Youtube Url"
-                                        [class.border-red-500]="userForm.get('youtube_url')?.invalid && userForm.get('youtube_url')?.touched">
-                                    <div *ngIf="userForm.get('youtube_url')?.invalid && userForm.get('youtube_url')?.touched"
+                                        [class.border-red-500]="featureForm.get('youtube_url')?.invalid && featureForm.get('youtube_url')?.touched">
+                                    <div *ngIf="featureForm.get('youtube_url')?.invalid && featureForm.get('youtube_url')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Youtube url is required
                                     </div>
                                 </div>
+
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Price</label>
+                                    <input type="tel" id="phone" formControlName="price" autocomplete="off"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        placeholder="Enter your Price"
+                                        [class.border-red-500]="featureForm.get('price')?.invalid && featureForm.get('price')?.touched"
+                                        maxlength="5">
+                                    <div *ngIf="featureForm.get('price')?.invalid && featureForm.get('price')?.touched"
+                                        class="text-red-500 text-sm mt-1">
+                                        Price is required
+                                    </div>
+                                </div>
+
 
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
@@ -142,8 +163,8 @@
                                     <input type="url" id="name" formControlName="drive_url" autocomplete="off"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your Drive Url"
-                                        [class.border-red-500]="userForm.get('drive_url')?.invalid && userForm.get('drive_url')?.touched">
-                                    <div *ngIf="userForm.get('drive_url')?.invalid && userForm.get('drive_url')?.touched"
+                                        [class.border-red-500]="featureForm.get('drive_url')?.invalid && featureForm.get('drive_url')?.touched">
+                                    <div *ngIf="featureForm.get('drive_url')?.invalid && featureForm.get('drive_url')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Drive url is required
                                     </div>
@@ -155,8 +176,8 @@
                                     <textarea type="text" id="name" formControlName="description" rows="5"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter description"
-                                        [class.border-red-500]="userForm.get('description')?.invalid && userForm.get('description')?.touched"></textarea>
-                                    <div *ngIf="userForm.get('description')?.invalid && userForm.get('description')?.touched"
+                                        [class.border-red-500]="featureForm.get('description')?.invalid && featureForm.get('description')?.touched"></textarea>
+                                    <div *ngIf="featureForm.get('description')?.invalid && featureForm.get('description')?.touched"
                                         class="text-red-500 text-sm mt-1">
                                         Description is required
                                     </div>
@@ -172,7 +193,7 @@
                             </div>
 
                         </form>
-                        <button type="button" (click)="onSubmit()" [disabled]="userForm.invalid || isSubmitting"
+                        <button type="button" (click)="onSubmit()" [disabled]="featureForm.invalid || isSubmitting"
                             class="mt-5 flex items-center justify-center gap-2 cursor-pointer bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
                             <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" fill="none"
                                 viewBox="0 0 24 24">
