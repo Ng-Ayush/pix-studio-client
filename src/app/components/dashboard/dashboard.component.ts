@@ -4,7 +4,7 @@ import { FileService } from '../../services/file.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { interval } from 'rxjs';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -39,12 +39,24 @@ export class DashboardComponent implements OnInit {
     height: 350,
     toolbar: {
       show: false
-    }
+    },
   };
 
+  dataLabels: any = {
+    enabled: true,
+    style: { colors: ['#fff'], fontSize: '14px', fontWeight: 'bold' },
+  }
+
+  colors = ['#ffe7ff'];
+
   xAxis: ApexXAxis = {
-    categories: []
+    labels: { style: { colors: '#fff', fontSize: '15px' } }
   };
+
+  yAxis: ApexYAxis = {
+    labels: { style: { colors: '#fff', fontSize: '15px' } }
+  }
+
   currentUserId: any = -1;
   showLogOutModal: boolean = false;
   userData: any = {};
@@ -81,7 +93,7 @@ export class DashboardComponent implements OnInit {
         const categories = res.sales.map((x: any) => this.commonservice.formatDate(x.period));
         this.salesSeries = [{ name: 'Sales', data: sales }];
         this.estimateSeries = [{ name: 'Estimates', data: estimates }];
-        this.xAxis = { categories };
+        // this.xAxis = { categories };
       }
     });
   }

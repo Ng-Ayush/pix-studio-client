@@ -117,18 +117,18 @@
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Sales</h3>
-                    <apx-chart [series]="salesSeries" *ngIf="salesSeries.length>0" [chart]="chartOptions"
-                        [xaxis]="xAxis"></apx-chart>
+                    <apx-chart [series]="salesSeries" *ngIf="salesSeries.length>0" [dataLabels]="dataLabels" [colors]="colors" [chart]="chartOptions"
+                        [xaxis]="xAxis"  [yaxis]="yAxis"></apx-chart>
                 </div>
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Pending</h3>
-                    <apx-chart *ngIf="estimateSeries.length>0" [series]="estimateSeries" [chart]="chartOptions"
-                        [xaxis]="xAxis"></apx-chart>
+                    <apx-chart *ngIf="estimateSeries.length>0" [series]="estimateSeries" [dataLabels]="dataLabels" [colors]="colors" [chart]="chartOptions"
+                        [xaxis]="xAxis" [yaxis]="yAxis"></apx-chart>
                     <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
                 </div>
                 <select id="granularity" [(ngModel)]="granularity" (change)="loadDashboardStats()"
-                    class="border border-[#494CA2] px-2 py-1 rounded absolute right-0">
+                    class="border border-[#494CA2] p-3 bg-white rounded absolute right-0">
                     <option value="daily">Daily</option>
                     <option value="monthly">Monthly</option>
                 </select>
