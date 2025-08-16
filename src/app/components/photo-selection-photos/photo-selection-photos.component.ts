@@ -84,10 +84,7 @@ export class PhotoSelectionPhotosComponent {
     });
 
     this.uploadImgBg.isUploading$.subscribe((item: any) => {
-      if (!item) {
         this.getUploadedPhotosByFolderId();
-      }
-
     })
 
   }
@@ -107,6 +104,7 @@ export class PhotoSelectionPhotosComponent {
     this._pservice.getUploadedPhotosByFolderId(this.currentFolderId, (res: any) => {
       if (res.status == 200) {
         this.photos = res.data.photos;
+        this.uploadImgBg.photos = this.photos;
         this.eventName = res.data.event_name;
         this.customerName = res.data.customer_name;
         this.folderName = res.data.folder_name;
@@ -200,8 +198,6 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
-    console.log(this.studio_name);
-
     this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
   }
 

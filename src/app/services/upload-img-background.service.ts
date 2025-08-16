@@ -41,15 +41,41 @@ export class UploadImgBackgroundService {
 
   uploadQueue: any[] = [];
   isProcessingQueue = false;
+  photos: any = [];
 
   handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any, currentFolderId: any) {
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
 
+    const existingNameSet = new Set(
+      this.photos.map((photo: any) => photo.photo_name.toLowerCase())
+    );
+
+    const duplicateFiles: string[] = [];
+    const uniqueFiles = files.filter(file => {
+      const fileName = file.name.toLowerCase();
+      if (existingNameSet.has(fileName)) {
+        duplicateFiles.push(file.name);
+        return false;
+      }
+      return true;
+    });
+
+    if (duplicateFiles.length > 0) {
+      for (let i = 0; i < duplicateFiles.length; i++) {
+        this.alert.warning(`Skipped duplicate files: ${duplicateFiles[i]}`,5000);
+      }
+    }
+
+    if (uniqueFiles.length === 0) {
+      this.alert.info("No new files to upload.",5000);
+      return;
+    }
+
     // Push into queue
-    this.uploadQueue.push({ files, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+    this.uploadQueue.push({ files:uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
     console.log(eventId, folderName, studio_name, customerName, eventName, currentFolderId);
-    
+
     this.alert.info("Uploading In Queue");
     // Start queue if not already running
     if (!this.isProcessingQueue) {
@@ -94,6 +120,8 @@ export class UploadImgBackgroundService {
       }
 
       await this.storeUrlsInDatabase(currentFolderId);
+      console.log("got here dfdf d");
+      
       this.isUploading$.next(false);
     }
     this.isProcessingQueue = false;

@@ -10,34 +10,34 @@ export class AlertService {
 
    }
 
-   success(message:any){
+   success(message:any,duration=3000){
     this.toastr.success(message,"Success",{
-      timeOut: 3000,
+      timeOut: duration,
       progressAnimation:'decreasing',
       progressBar:true
     })
    }
    
 
-   warning(message:any){
+   warning(message:any,duration=3000){
     this.toastr.warning(message,"Warning",{
-      timeOut: 3000,
+      timeOut: duration,
       progressAnimation:'decreasing',
       progressBar:true
     })
    }
 
-   error(message:any){
+   error(message:any,duration=3000){
     this.toastr.error(message,"Error",{
-      timeOut: 3000,
+      timeOut: duration,
       progressAnimation:'decreasing',
       progressBar:true
     })
    }
 
-   info(message:any){
+   info(message:any,duration=3000){
     this.toastr.info(message,"Info",{
-      timeOut: 3000,
+      timeOut: duration,
       progressAnimation:'decreasing',
       progressBar:true
     })
