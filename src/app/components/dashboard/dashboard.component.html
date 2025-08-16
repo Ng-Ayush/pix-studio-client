@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -106,25 +106,26 @@
 
 
             <div class="grid mb-4 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-5 relative">
-                <div class="dashboard-item carousel relative w-full max-w-lg mx-auto overflow-hidden rounded-lg">
-                    <div id="carousel" class="flex transition-transform duration-700" style="transform: translateX(0%)">
-                        <ng-container *ngFor="let img of dynamicImages">
-                            <img [src]="img" class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover"
-                                alt="Loading.." />
-                        </ng-container>
+                <a class="dashboard-item " [routerLink]="['/photo-selection']" style="align-content: center;">
+                    <div class="dashboard-item-icon block m-auto mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                        </svg>
                     </div>
-                </div>
-
+                    <h3 class="dashboard-item-title text-3xl mt-5">Photos Selection</h3>
+                </a>
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Sales</h3>
-                    <apx-chart [series]="salesSeries" *ngIf="salesSeries.length>0" [dataLabels]="dataLabels" [colors]="colors" [chart]="chartOptions"
-                        [xaxis]="xAxis"  [yaxis]="yAxis"></apx-chart>
+                    <apx-chart [series]="salesSeries" *ngIf="salesSeries.length>0" [dataLabels]="dataLabels"
+                        [colors]="colors" [chart]="chartOptions" [xaxis]="xAxis" [yaxis]="yAxis"></apx-chart>
                 </div>
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Pending</h3>
-                    <apx-chart *ngIf="estimateSeries.length>0" [series]="estimateSeries" [dataLabels]="dataLabels" [colors]="colors" [chart]="chartOptions"
-                        [xaxis]="xAxis" [yaxis]="yAxis"></apx-chart>
+                    <apx-chart *ngIf="estimateSeries.length>0" [series]="estimateSeries" [dataLabels]="dataLabels"
+                        [colors]="colors" [chart]="chartOptions" [xaxis]="xAxis" [yaxis]="yAxis"></apx-chart>
                     <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
                 </div>
                 <select id="granularity" [(ngModel)]="granularity" (change)="loadDashboardStats()"
@@ -137,18 +138,8 @@
 
             <div class="grid mb-4 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-5 relative">
 
-                <a class="dashboard-item " [routerLink]="['/photo-selection']" style="align-content: center;">
-                    <div class="dashboard-item-icon block m-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
-                    </div>
-                    <h3 class="dashboard-item-title text-xl">Photos Selection</h3>
-                </a>
                 <div class="dashboard-item" routerLink="/calling">
-                    <div class="dashboard-item-icon block m-auto">
+                    <div class="dashboard-item-icon block m-auto mb-3">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-24">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -156,11 +147,11 @@
                         </svg>
 
                     </div>
-                    <h3 class="dashboard-item-title text-xl">Callings</h3>
+                    <h3 class="dashboard-item-title text-3xl mt-5">Callings</h3>
                 </div>
 
                 <div class="dashboard-item" routerLink="/manage-profile">
-                    <h3 class="dashboard-item-title mb-4 text-center text-xl">My Accounts</h3>
+                    <h3 class="dashboard-item-title mb-4 text-center text-3xl">My Accounts</h3>
                     <div class="my-accounts-icons flex gap-10 mt-[20px]">
                         <a [href]="userData?.facebook_url" target="_blank" class="hover:bg-indigo-200">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -181,6 +172,15 @@
                                 <path
                                     d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.359 2.627-4.384 8.864 0 6.237.462 8.619 4.384 8.864 3.599.248 11.626.246 15.23 0 3.897-.266 4.359-2.626 4.384-8.863 0-6.237-.462-8.62-4.384-8.864zm-10.615 12.864v-8l7.008 3.905-7.008 4.095z" />
                             </svg></a>
+                    </div>
+                </div>
+
+                <div class="dashboard-item carousel relative w-full max-w-lg mx-auto overflow-hidden rounded-lg">
+                    <div id="carousel" class="flex transition-transform duration-700" style="transform: translateX(0%)">
+                        <ng-container *ngFor="let img of dynamicImages">
+                            <img [src]="img" class="flex-shrink-0 h-full w-full flex-shrink-0 object-cover"
+                                alt="Loading.." />
+                        </ng-container>
                     </div>
                 </div>
 
