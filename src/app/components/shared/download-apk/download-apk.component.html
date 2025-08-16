@@ -1,0 +1,62 @@
+<div class="min-h-screen bg-gradient-to-bl from-indigo-300 via-indigo-900 flex flex-col justify-between font-sans text-gray-900">
+  <main class="flex flex-col items-center justify-center flex-grow px-3 py-10">
+    <div class="bg-white/90 rounded-2xl shadow-2xl p-6 sm:p-10 w-full max-w-3xl">
+
+      <!-- Header -->
+      <header class="text-center pb-6">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#494CA2] flex items-center justify-center gap-2"><img src="../../../../assets/logo.png" width="80" height="60" alt="" srcset=""> My Studio</h1>
+        <p class="mt-3 text-lg text-[#494CA2]">Your personal photo selection in one app</p>
+      </header>
+
+      <!-- App Preview Card with multiple images -->
+      <div class="mb-8">
+        <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory ">
+          <ng-container *ngFor="let img of previewImages">
+            <img
+              [src]="img"
+              alt="App preview"
+              loading="eager"
+              class="rounded-lg shadow-md w-84 h-84 object-cover flex-shrink-0 border border-[#8186D5] snap-center object-contain"
+            />
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Features List -->
+      <div class="mb-8 text-left p-3 inset-shadow-sm">
+        <h2 class="text-2xl font-semibold mb-4 text-[#494CA2]">✨ Features</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <li>Smart photo selection with one tap</li>
+          <li>Select your photos as favorites for special</li>
+          <li>Share easy unique code to your loved ones for their selection</li>
+          <li>Lightweight & fast performance</li>
+        </ul>
+      </div>
+
+      <!-- Download Button -->
+      <div class="mb-8 mb-8 flex items-center justify-center flex-col">
+        <a href="javascript:void(0)" (click)="automaticStartDownload()"
+          class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#494CA2] to-[#8186D5] text-white font-semibold px-6 sm:px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-75 text-center"
+          ><img src="../../../../assets/logo.png" width="20" height="20" alt="" srcset=""> Download My Studio APK</a>
+        <p class="mt-3 text-xs text-gray-600 italic text-center">
+          If prompted, please click “Download anyway” on Google Drive’s warning page.
+        </p>
+      </div>
+
+      <!-- Coming soon to Play Store -->
+      <div class="flex flex-col items-center bg-white/70 rounded-lg p-4 shadow w-full max-w-xs mx-auto mb-2">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+          alt="Coming soon to Google Play"
+          class="h-12 mb-3 mx-auto object-contain"
+        />
+        <p class="text-base text-[#494CA2] font-medium">Coming soon to Play Store!</p>
+      </div>
+      
+    </div>
+  </main>
+  <!-- Footer outside the card, overlays the background -->
+  <footer class="text-center py-6 text-sm text-[#E3E7F1]">
+    © 2025 My Studio. All rights reserved.
+  </footer>
+</div>

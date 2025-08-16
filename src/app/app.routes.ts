@@ -157,7 +157,12 @@ export const routes: Routes = [
   },
 
   {
+    path:'downlad-apk',
+    loadComponent: () => import("./components/shared/download-apk/download-apk.component").then(m => m.DownloadApkComponent)
+  },
+
+  {
     path: '**',
-    redirectTo:'/dashboard'
+    redirectTo:'/login'
   },
 ];
