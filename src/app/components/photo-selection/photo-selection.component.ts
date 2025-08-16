@@ -155,7 +155,7 @@ export class PhotoSelectionComponent {
 
 
   copyMessage(event: any) {
-    const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : ${window.location.origin}/login \n\nRegards ${this.userData?.studio_name}`
+    const message = `Dear ${event.customer_name},\nYour event ${event.event_name} is ready for photo selection. Your event code is ${event.customer_unique_id} and you can select photos from\n\nWebsite : ${window.location.origin}/login \n\nApp : ${window.location.origin}/download-apk \n\nRegards ${this.userData?.studio_name}`
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Message copied to clipboard');
     }).catch(err => {
