@@ -451,7 +451,8 @@ export class NewBillComponent {
     this.billingService.createParty(this.partyConfig, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
-        this.selectParty(this.partyConfig)
+        this.partyConfig.id = res.id;
+        this.selectParty(this.partyConfig)  
         this.loader.hide();
         this.closeModal();
         this.fetchPartyList();
