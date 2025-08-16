@@ -117,13 +117,13 @@
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Sales</h3>
-                    <apx-chart [series]="salesSeries" *ngIf="salesSeries" [chart]="chartOptions"
+                    <apx-chart [series]="salesSeries" *ngIf="salesSeries.length>0" [chart]="chartOptions"
                         [xaxis]="xAxis"></apx-chart>
                 </div>
 
                 <div class="dashboard-item invoice">
                     <h3 class="dashboard-item-title mb-2">Pending</h3>
-                    <apx-chart *ngIf="estimateSeries" [series]="estimateSeries" [chart]="chartOptions"
+                    <apx-chart *ngIf="estimateSeries.length>0" [series]="estimateSeries" [chart]="chartOptions"
                         [xaxis]="xAxis"></apx-chart>
                     <!-- <a class="dashboard-item-title " [routerLink]="['/bill-estimate']"></a> -->
                 </div>

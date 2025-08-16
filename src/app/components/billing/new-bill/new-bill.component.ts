@@ -79,6 +79,7 @@ export class NewBillComponent {
     private commonService: CommonService,
     private adminService: AdminService,
     private router: Router) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.activatedRoute.queryParams.subscribe(params => {
       if (params['invoice_number']) {
         this.invoice_number = params['invoice_number'];
@@ -93,7 +94,6 @@ export class NewBillComponent {
     this.invoiceConfig.time = this.commonService.setCurrentTime();
     this.invoiceConfig.invoice_type = 'estimate';
     // this.getUserData();   //to be commented and removed in future.
-    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
   ngOnInit(): void {
@@ -297,7 +297,7 @@ export class NewBillComponent {
   }
 
   async updateInvoice(isEInvoice?: boolean) {
-   return  new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
       if (!this.checkBillFormIsValid()) {
         this.loader.hide();
@@ -512,7 +512,7 @@ export class NewBillComponent {
   async convertToSales() {
     const isUpdatedSuccess: any = await this.updateInvoice(true);
     console.log("isUpdatedSuccess", isUpdatedSuccess);
-    
+
     if (isUpdatedSuccess) {
       this.loader.show();
       this.billingService.convertToSales(this.invoiceConfig.invoice_id, (res: any) => {

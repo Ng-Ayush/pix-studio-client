@@ -14,44 +14,38 @@ import { Router } from '@angular/router';
 })
 export class AdminLoginComponent {
 
-  loginForm:any;
-constructor(private fb:FormBuilder, private alert:AlertService, private service:AdminService, private router:Router){
+  loginForm: any;
+  constructor(private fb: FormBuilder, private alert: AlertService, private service: AdminService, private router: Router) {
 
-  this.loginForm = this.fb.group({
-    email:['',[Validators.required]],
-    password:['',[Validators.required]]
-  })
-}
-
-
-adminLogin(){
-  let email = this.loginForm.get("email").value;
-  let password = this.loginForm.get("password").value;
-  if(!email){
-    this.alert.warning('email is required !')
-    return;
-  }
-  if(!password){
-    this.alert.warning('password is required !');
-    return;
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required]],
+      password: ['', [Validators.required]]
+    })
   }
 
-  this.service.adminLogin(this.loginForm.value,(res:any)=>{
-    if(res.token){
-      this.alert.success("login success")
-      this.router.navigate(['/admin/dashboard'])
 
-      
-    }else{
-      this.alert.error("Invalid credential")
+  adminLogin() {
+    let email = this.loginForm.get("email").value;
+    let password = this.loginForm.get("password").value;
+    if (!email) {
+      this.alert.warning('email is required !')
+      return;
     }
-    
-  })
+    if (!password) {
+      this.alert.warning('password is required !');
+      return;
+    }
 
-
-console.log(this.loginForm.value);
-
-}
+    this.service.adminLogin(this.loginForm.value, (res: any) => {
+      if (res.token) {
+        this.alert.success("login success");
+        localStorage.setItem('token', res.token);
+        this.router.navigate(['/admin/dashboard'])
+      } else {
+        this.alert.error("Invalid credential")
+      }
+    })
+  }
 
 
 }

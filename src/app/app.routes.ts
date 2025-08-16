@@ -2,59 +2,83 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AiUploadComponent } from './ai-upload/ai-upload.component';
+import { authGuard } from './auth.guard';
+import { photoSelectionGuard } from './photo-selection.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'ps', component: AiUploadComponent },
+  {
+    path: 'login',
+    loadComponent: () => import("./components/login/login.component").then(m => m.LoginComponent)
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () => import("./components/dashboard/dashboard.component").then(m => m.DashboardComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'ps',
+    loadComponent: () => import("./ai-upload/ai-upload.component").then(m => m.AiUploadComponent),
+  },
   {
     path: 'photo-selection',
-    loadComponent: () => import("./components/photo-selection/photo-selection.component").then(m => m.PhotoSelectionComponent)
+    loadComponent: () => import("./components/photo-selection/photo-selection.component").then(m => m.PhotoSelectionComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'customer',
-    loadComponent: () => import("./components/customer/customer.component").then(m => m.CustomerComponent)
+    loadComponent: () => import("./components/customer/customer.component").then(m => m.CustomerComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'photo-selection-folder/:event-id',
-    loadComponent: () => import("./components/photo-selection-folder/photo-selection-folder.component").then(m => m.PhotoSelectionFolderComponent)
+    loadComponent: () => import("./components/photo-selection-folder/photo-selection-folder.component").then(m => m.PhotoSelectionFolderComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'photo-selection-photos/:folder-id',
-    loadComponent: () => import("./components/photo-selection-photos/photo-selection-photos.component").then(m => m.PhotoSelectionPhotosComponent)
+    loadComponent: () => import("./components/photo-selection-photos/photo-selection-photos.component").then(m => m.PhotoSelectionPhotosComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'billing',
-    loadComponent: () => import("./components/billing/billing.component").then(m => m.BillingComponent)
+    loadComponent: () => import("./components/billing/billing.component").then(m => m.BillingComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'billing/new-bill',
-    loadComponent: () => import("./components/billing/new-bill/new-bill.component").then(m => m.NewBillComponent)
+    loadComponent: () => import("./components/billing/new-bill/new-bill.component").then(m => m.NewBillComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'billing/e-invoice/:invoice-id',
-    loadComponent: () => import("./components/billing/pdf-bill-selection/pdf-bill-selection.component").then(m => m.PdfBillSelectionComponent)
+    loadComponent: () => import("./components/billing/pdf-bill-selection/pdf-bill-selection.component").then(m => m.PdfBillSelectionComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'billing/edit-bill',
-    loadComponent: () => import("./components/billing/new-bill/new-bill.component").then(m => m.NewBillComponent)
+    loadComponent: () => import("./components/billing/new-bill/new-bill.component").then(m => m.NewBillComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'bill-estimate',
-    loadComponent: () => import("./components/billing/bill-estimate/bill-estimate.component").then(m => m.BillEstimateComponent)
+    loadComponent: () => import("./components/billing/bill-estimate/bill-estimate.component").then(m => m.BillEstimateComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'billing/calendar',
-    loadComponent: () => import("./components/billing/billing-calendar/billing-calendar.component").then(m => m.BillingCalendarComponent)
+    loadComponent: () => import("./components/billing/billing-calendar/billing-calendar.component").then(m => m.BillingCalendarComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'manage-profile',
-    loadComponent: () => import("./components/manage-profile/manage-profile.component").then(m => m.ManageProfileComponent)
+    loadComponent: () => import("./components/manage-profile/manage-profile.component").then(m => m.ManageProfileComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'features',
-    loadComponent: () => import("./components/features/features.component").then(m => m.FeaturesComponent)
+    loadComponent: () => import("./components/features/features.component").then(m => m.FeaturesComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'privacy-policy',
@@ -66,11 +90,13 @@ export const routes: Routes = [
   },
   {
     path: 'photo-sharing',
-    loadComponent: () => import("./components/ai-photo-sharing/ai-photo-sharing.component").then(m => m.AiPhotoSharingComponent)
+    loadComponent: () => import("./components/ai-photo-sharing/ai-photo-sharing.component").then(m => m.AiPhotoSharingComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'calling',
-    loadComponent: () => import("./components/calling/calling.component").then(m => m.CallingComponent)
+    loadComponent: () => import("./components/calling/calling.component").then(m => m.CallingComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'selection',
@@ -79,7 +105,7 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'auth-screen',
-        pathMatch:'full'
+        pathMatch: 'full'
       },
       {
         path: 'auth-screen',
@@ -87,11 +113,13 @@ export const routes: Routes = [
       },
       {
         path: 'folder-listing-screen',
-        loadComponent: () => import("./components/folder-listing-screen/folder-listing-screen.component").then(m => m.FolderListingScreenComponent)
+        loadComponent: () => import("./components/folder-listing-screen/folder-listing-screen.component").then(m => m.FolderListingScreenComponent),
+        canMatch: [photoSelectionGuard]
       },
       {
         path: 'image-listing-screen',
         loadComponent: () => import("./components/image-listing-screen/image-listing-screen.component").then(m => m.ImageListingScreenComponent),
+        canMatch: [photoSelectionGuard]
       },
     ]
   },
@@ -111,58 +139,69 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import("./components/super-admin/admin-dashboard/admin-dashboard.component").then(m => m.AdminDashboardComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'users',
         loadComponent: () => import("./components/super-admin/users/users.component").then(m => m.UsersComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'add-user',
         loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'edit-user/:id',
         loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'manage-features',
         loadComponent: () => import("./components/super-admin/manage-features/manage-features.component").then(m => m.ManageFeaturesComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'manage-categories',
         loadComponent: () => import("./components/super-admin/manage-features/manage-categories/manage-categories.component").then(m => m.ManageCategoriesComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'add-features',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'edit-feature/:id',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'customer-request',
         loadComponent: () => import("./components/super-admin/customer-request/customer-request.component").then(m => m.CustomerRequestComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'edit-customer/:id',
         loadComponent: () => import("./components/super-admin/customer-request/edit-customers/edit-customers.component").then(m => m.EditCustomersComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'notifications',
         loadComponent: () => import("./components/super-admin/manage-features/notification/notification.component").then(m => m.NotificationComponent),
+        canActivate: [authGuard]
       },
 
     ]
   },
 
   {
-    path:'download-apk',
+    path: 'download-apk',
     loadComponent: () => import("./components/shared/download-apk/download-apk.component").then(m => m.DownloadApkComponent)
   },
 
   {
     path: '**',
-    redirectTo:'/login'
+    redirectTo: '/login'
   },
 ];

@@ -78,12 +78,7 @@
     align-content: center;
 
     &.invoice {
-        background-color: #ffffff;
         border: 2px solid #494CA2;
-
-        & .dashboard-item-title {
-            color: #000 !important;
-        }
     }
 
     &.invoice:hover {

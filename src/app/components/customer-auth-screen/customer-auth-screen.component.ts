@@ -47,6 +47,9 @@ export class CustomerAuthScreenComponent {
       } else if (res.is_event_submitted) {
         this.loader = false;
         this.alert.info("Event already submitted");
+      }else{
+        this.loader = false;
+        this.alert.error(res.message);
       }
     })
   }

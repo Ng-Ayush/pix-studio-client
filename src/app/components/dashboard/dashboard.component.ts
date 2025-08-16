@@ -48,27 +48,20 @@ export class DashboardComponent implements OnInit {
   currentUserId: any = -1;
   showLogOutModal: boolean = false;
   userData: any = {};
-  dynamicImages:any=[];
+  dynamicImages: any = [];
   constructor(
     private fileService: FileService,
     private router: Router,
     private _service: AdminService,
     public commonservice: CommonService,
     private alert: AlertService
-  ) { }
-
-  ngOnInit() {
-    this.getAdminUserData();
-    this.loadDashboardStats();
-    this.loadDynamicIamgeUrl();
+  ) {
+    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
-  getAdminUserData() {
-    this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
-    this._service.getUsersByCurrentId(this.currentUserId, (res: any) => {
-      this.userData = res;
-      console.log(res);
-    })
+  ngOnInit() {
+    this.loadDashboardStats();
+    this.loadDynamicIamgeUrl();
   }
 
   loadDynamicIamgeUrl() {
@@ -82,13 +75,14 @@ export class DashboardComponent implements OnInit {
 
   loadDashboardStats() {
     this._service.fetchSalesAndPendingGraphData({ range: this.granularity }, (res: any) => {
-      const sales = res.sales.map((x: any) => x.amount);
-      const estimates = res.estimates.map((x: any) => x.amount);
-      const categories = res.sales.map((x: any) => this.commonservice.formatDate(x.period));
-
-      this.salesSeries = [{ name: 'Sales', data: sales }];
-      this.estimateSeries = [{ name: 'Estimates', data: estimates }];
-      this.xAxis = { categories };
+      if (res.status == 200) {
+        const sales = res.sales.map((x: any) => x.amount);
+        const estimates = res.estimates.map((x: any) => x.amount);
+        const categories = res.sales.map((x: any) => this.commonservice.formatDate(x.period));
+        this.salesSeries = [{ name: 'Sales', data: sales }];
+        this.estimateSeries = [{ name: 'Estimates', data: estimates }];
+        this.xAxis = { categories };
+      }
     });
   }
 
