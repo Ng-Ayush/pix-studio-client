@@ -157,7 +157,7 @@ export const routes: Routes = [
   },
 
   {
-    path:'downlad-apk',
+    path:'download-apk',
     loadComponent: () => import("./components/shared/download-apk/download-apk.component").then(m => m.DownloadApkComponent)
   },
 
