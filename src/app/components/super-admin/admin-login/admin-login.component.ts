@@ -39,7 +39,7 @@ export class AdminLoginComponent {
     this.service.adminLogin(this.loginForm.value, (res: any) => {
       if (res.token) {
         this.alert.success("login success");
-        localStorage.setItem('token', res.token);
+        localStorage.setItem('adminToken', res.token);
         this.router.navigate(['/admin/dashboard'])
       } else {
         this.alert.error("Invalid credential")

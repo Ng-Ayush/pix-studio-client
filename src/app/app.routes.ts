@@ -4,6 +4,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AiUploadComponent } from './ai-upload/ai-upload.component';
 import { authGuard } from './auth.guard';
 import { photoSelectionGuard } from './photo-selection.guard';
+import { superAdminAuthGuard } from './super-admin-auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -139,57 +140,57 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import("./components/super-admin/admin-dashboard/admin-dashboard.component").then(m => m.AdminDashboardComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'users',
         loadComponent: () => import("./components/super-admin/users/users.component").then(m => m.UsersComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'add-user',
         loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'edit-user/:id',
         loadComponent: () => import("./components/super-admin/users/add-user/add-user.component").then(m => m.AddUserComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'manage-features',
         loadComponent: () => import("./components/super-admin/manage-features/manage-features.component").then(m => m.ManageFeaturesComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'manage-categories',
         loadComponent: () => import("./components/super-admin/manage-features/manage-categories/manage-categories.component").then(m => m.ManageCategoriesComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'add-features',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'edit-feature/:id',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'customer-request',
         loadComponent: () => import("./components/super-admin/customer-request/customer-request.component").then(m => m.CustomerRequestComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'edit-customer/:id',
         loadComponent: () => import("./components/super-admin/customer-request/edit-customers/edit-customers.component").then(m => m.EditCustomersComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
       {
         path: 'notifications',
         loadComponent: () => import("./components/super-admin/manage-features/notification/notification.component").then(m => m.NotificationComponent),
-        canActivate: [authGuard]
+        canActivate: [superAdminAuthGuard]
       },
 
     ]

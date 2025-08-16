@@ -15,10 +15,20 @@ export const authInterceptor: HttpInterceptorFn = (
   }
 
   const token = localStorage.getItem('token');
+  const adminToken = localStorage.getItem('adminToken');
   if (token) {
     const cloned = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
+      },
+    });
+    return next(cloned);
+  }
+
+  if (adminToken) {
+    const cloned = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${adminToken}`,
       },
     });
     return next(cloned);
