@@ -83,11 +83,11 @@ export class PhotoSelectionPhotosComponent {
       }
     });
 
-    this.uploadImgBg.isUploading$.subscribe((item:any)=>{
-      if(!item){
+    this.uploadImgBg.isUploading$.subscribe((item: any) => {
+      if (!item) {
         this.getUploadedPhotosByFolderId();
       }
-      
+
     })
 
   }
@@ -112,7 +112,7 @@ export class PhotoSelectionPhotosComponent {
         this.folderName = res.data.folder_name;
         this.customerUniqueId = res.data.customer_unique_id;
         this.currentEventId = res.data.event_id;
-        
+
         this.uploadImgBg.eventName = this.eventName;
         this.uploadImgBg.customerName = this.customerName;
         this.uploadImgBg.folderName = this.folderName;
@@ -164,21 +164,22 @@ export class PhotoSelectionPhotosComponent {
     for (let i = 0; i < params.photos.length; i++) {
       // const filePath = this.getFilePathFromUrl(params.photos[i].url);
       if (params.photos[i].url) {
-        console.log("GOT HERE ", params.photos[i].url);
-        
         const fileRef = ref(this.storage, params.photos[i].url);
-        await deleteObject(fileRef);
+        try {
+          await deleteObject(fileRef);
+          console.log(`Deleted: ${params.photos[i].url}`);
+        } catch (error) {
+          console.error(`Error deleting ${params.photos[i].url}:`, error);
+        }
+
       }
     }
-
-    // console.log(deleted);
-
-
 
     this._pservice.deletePhotos(params, (res: any) => {
       if (res.status == 200) {
         this.allSelected = false;
         this.imageSelected = false;
+        this.alert.info(res.message);
         this.getUploadedPhotosByFolderId();
         this.closeModal();
         this.loader.hide();
@@ -200,8 +201,8 @@ export class PhotoSelectionPhotosComponent {
 
   async handleFileInput(event: any) {
     console.log(this.studio_name);
-    
-    this.uploadImgBg.handleFileInput(event,this.currentEventId, this.folderName,this.studio_name,this.customerName,this.eventName,this.currentFolderId);
+
+    this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
   }
 
 
