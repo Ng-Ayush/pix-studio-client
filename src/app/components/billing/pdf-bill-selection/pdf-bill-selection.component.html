@@ -1,946 +1,958 @@
 <div class="dashboard-container">
-    <aside class="sidebar justify-center">
-        <nav class="sidebar-nav">
-            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                </svg>
+  <aside class="sidebar justify-center">
+    <nav class="sidebar-nav">
+      <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
 
-            </a>
-          
-            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                </svg>
+      </a>
 
-            </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/manage-profile']">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
-            </a>
-            <a href="javascript:void(0);" class="sidebar-nav-item" (click)="toggleLogoutModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                </svg>
-            </a>
-        </nav>
-    </aside>
-    <main class="main-content">
-        <div class="border-l border-white bg-[#494CA2]">
-            <div class="p-5 ps-10">
-                <div class="heading flex gap-7 items-center">
-                    <div class="logo-img">
-                        <img [src]="userData?.studio_icon" alt=""
-                            class="border radius-md text-white w-[50px] h-[50px]">
-                    </div>
-                    <div class="header-title">
-                        <h2 class="text-white">Hello, {{userData?.studio_name}}</h2>
-                    </div>
-                </div>
-            </div>
-             <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
-              <a class="flex items-center cursor-pointer" (click)="backToBill()">
-                    <button
-                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
-                            <path
-                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
-                            </path>
-                        </svg> Go back</button>
-                </a>
-            </div>
+      <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+        </svg>
+
+      </a>
+      <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/manage-profile']">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+      </a>
+      <a href="javascript:void(0);" class="sidebar-nav-item" (click)="toggleLogoutModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+        </svg>
+      </a>
+    </nav>
+  </aside>
+  <main class="main-content">
+    <div class="border-l border-white bg-[#494CA2]">
+      <div class="p-5 ps-10">
+        <div class="heading flex gap-7 items-center">
+          <div class="logo-img">
+            <img [src]="userData?.studio_icon" alt="" class="border radius-md text-white w-[50px] h-[50px]">
+          </div>
+          <div class="header-title">
+            <h2 class="text-white">Hello, {{userData?.studio_name}}</h2>
+          </div>
         </div>
+      </div>
+      <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
+        <a class="flex items-center cursor-pointer" (click)="backToBill()">
+          <button
+            class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+              <path
+                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+              </path>
+            </svg> Go back</button>
+        </a>
+      </div>
+    </div>
 
-        <div class="flex h-screen bg-gray-100 font-sans">
-            <!-- Left Sidebar for Template Selection -->
-            <aside class="w-64 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0">
-                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Select Theme</h2>
+    <div class="flex h-screen bg-gray-100 font-sans">
+      <!-- Left Sidebar for Template Selection -->
+      <aside class="w-64 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0">
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Select Theme</h2>
 
-                <div class="gap-4">
-                    <button *ngFor="let template of templates" (click)="selectTemplate(template.id)" [ngClass]="{
+        <div class="gap-4">
+          <button *ngFor="let template of templates" (click)="selectTemplate(template.id)" [ngClass]="{
               'bg-blue-600 text-white shadow-lg': selectedTemplateId === template.id,
               'bg-gray-100 text-gray-700 hover:bg-gray-200': selectedTemplateId !== template.id}"
-                        class="cursor-pointer w-full text-left py-3 px-4 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                        {{ template.name }}
-                    </button>
-                </div>
+            class="cursor-pointer w-full text-left py-3 px-4 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            {{ template.name }}
+          </button>
+        </div>
 
-                <h3 class="text-lg font-medium mt-8 mb-4 text-gray-800">Select Color</h3>
-                <div class="grid grid-cols-5 gap-2">
-                    <div *ngFor="let color of colors" (click)="selectColor(color)"
-                        [ngClass]="{ 'ring-2 ring-offset-2 ring-blue-500': selectedColor === color }"
-                        [style.backgroundColor]="color"
-                        class="w-8 h-8 rounded-full cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-110">
-                    </div>
-                </div>
-            </aside>
+        <h3 class="text-lg font-medium mt-8 mb-4 text-gray-800">Select Color</h3>
+        <div class="grid grid-cols-5 gap-2">
+          <div *ngFor="let color of colors" (click)="selectColor(color)"
+            [ngClass]="{ 'ring-2 ring-offset-2 ring-blue-500': selectedColor === color }"
+            [style.backgroundColor]="color"
+            class="w-8 h-8 rounded-full cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-110">
+          </div>
+        </div>
+      </aside>
 
-            <!-- Main Content Area -->
-            <main class="flex-1 flex flex-col p-6 overflow-hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-3xl font-bold text-gray-800">Preview</h1>
-                    <div class="flex items-center gap-4">
-                        <!-- <input type="checkbox" id="show-invoice-preview"
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col p-6 overflow-hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-bold text-gray-800">Preview</h1>
+          <div class="flex items-center gap-4">
+            <!-- <input type="checkbox" id="show-invoice-preview"
                             class="form-checkbox h-5 w-5 text-blue-600 rounded" />
                         <label for="show-invoice-preview" class="text-gray-700">Do not show invoice preview</label> -->
-                        <button (click)="directconvertToSales()" class="px-4 py-2 rounded-full bg-[#494CA2] text-white hover:bg-[#494CA2] cursor-pointer disabled:bg-gray-400" [disabled]="invoiceBillConfig?.estimate_status == 'converted'">Convert to Sales</button>
+            <button (click)="directconvertToSales()"
+              class="px-4 py-2 rounded-full bg-[#494CA2] text-white hover:bg-[#494CA2] cursor-pointer disabled:bg-gray-400"
+              [disabled]="invoiceBillConfig?.estimate_status == 'converted'">Convert to Sales</button>
+          </div>
+        </div>
+
+        <div class="flex-1 flex overflow-hidden gap-6">
+          <!-- Template Display Area (ngSwitch) -->
+          <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
+            <div [ngSwitch]="selectedTemplateId" class="flex justify-center">
+              <!-- Template 1: Invoice Template -->
+              <div *ngSwitchCase="'template1'" [id]="selectedTemplateId">
+                <div class="overflow-y-auto border-2">
+                  <section class="container-fluid container-lg invoice-template-root">
+                    <div class="row justify-content-center overflow-hidden my-5">
+                      <div class="col-lg-8 col-md-10 col-sm-12 col-12">
+                        <div class="bg-body-tertiary py-4 py-md-5 px-lg-5 px-4">
+                          <!-- Invoice header  -->
+                          <div class="d-block d-md-flex justify-content-between align-items-center">
+                            <div class="d-block d-md-flex align-items-center gap-md-4">
+                              <img src="https://placehold.co/80x80/000000/FFFFFF?text=Logo" alt=""
+                                class="img-fluid col-lg-2 col-md-2 col-sm-2 col-2 rounded-circle">
+                              <div>
+                                <p class="lead fw-bold text-uppercase mb-0 pb-0 fs-4 my-2 my-md-0 lh-base">
+                                  {{invoiceBillConfig.staffDetails}}</p>
+                                <p class="mb-0 fw-medium text-muted"># 7th cross . 24 th
+                                  man , koramangala<br>Phone no : 9876543210<br>Email
+                                  : Gstorell gmail.com<br>State : 29 Karnataka</p>
+                              </div>
+                            </div>
+                            <div>
+                              <h1 class="display-6 fw-bolder text-dark-emphasis text-uppercase mb-0 my-4 my-md-0">
+                                Estimate
+                              </h1>
+                            </div>
+                          </div>
+                          <!-- Invoice header  -->
+
+                          <!-- invoice body -->
+                          <div
+                            class="invoice-details d-flex justify-content-between align-items-start my-5 py-md-4 mb-4">
+                            <div>
+                              <p class="fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Estimate For :</p>
+                              <p class="client-name fw-normal mb-0">
+                                {{invoiceBillConfig.party_name}}</p>
+                            </div>
+                            <div>
+                              <p class="fw-normal mb-0">Estimate No. :
+                                <span class="invoice-number ">{{invoiceBillConfig.invoiceNumber}}</span>
+                              </p>
+                              <p class="fw-normal mb-0">Date :
+                                <span class="invoice-date ">{{invoiceBillConfig.invoiceDate}}</span>
+                              </p>
+                            </div>
+                          </div>
+
+                          <div class="item-desc">
+                            <div class="details-table">
+                              <table class="table table-responsive bg-transparent table-borderless">
+                                <thead>
+                                  <tr class="text-uppercase fs-6 table-head">
+                                    <th class="rounded-start-pill">Item name</th>
+                                    <th>HSN / SAC</th>
+                                    <th>Quantity</th>
+                                    <th>Price / Unit</th>
+                                    <th>Discount</th>
+                                    <th>GST Amount</th>
+                                    <th class="rounded-end-pill">Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr class="first-row" *ngFor="let item of invoiceBillConfig.billItems">
+                                    <td>{{item.item}}</td>
+                                    <td>1234</td> <!-- HSN/SAC mock -->
+                                    <td>{{item.qty}}</td>
+                                    <td>{{item.price}}</td>
+                                    <td>3.06 (5%)</td> <!-- Discount mock -->
+                                    <td>7.50</td> <!-- GST Amount mock -->
+                                    <td>{{item.totalPrice}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+                          <div class="row justify-content-center align-items-start g-5 mt-5">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                              <h6 class="fw-bold">ESTIMATE AMOUNT IN WORDS</h6>
+                              <p class="small">{{invoiceBillConfig.priceInWords}}</p>
+                              <h6 class="fw-bold">TERMS AND CONDITIONS:</h6>
+                              <!-- <textarea class="small">Make payment within 45 days from the date
+                                                                of final invoice. Thanks for doing business with us!</textarea> -->
+                            </div>
+                            <div class="sub-total col-lg-6 col-md-6 col-sm-12 col-12">
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">Sub Total</h6>
+                                <p class="price fw-light">201.00</p>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">Discount</h6>
+                                <p class="price fw-light">3.06</p>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">SGST 2.5%</h6>
+                                <p class="price fw-light">3.75</p>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">CGST 2.5%</h6>
+                                <p class="price fw-light">3.75</p>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">Round off</h6>
+                                <p class="price fw-light">0.44</p>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center text-uppercase">
+                                <h6 class="text-black fw-bold mb-1">Total</h6>
+                                <p class="price fw-light">{{invoiceBillConfig.totalPrice}}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- invoice body -->
+                        </div>
+
+                        <!-- Invoice footer  -->
+                        <div class="invoice-footer p-4 p-lg-5">
+                          <div
+                            class="row justify-content-center align-items-center rounded-pill bg-dark p-2 text-white">
+                            <div class="col-md-4 col-sm-12 col-12 p-0">
+                              <i class="bi bi-globe-americas pe-2"></i>
+                              <a href="#" class="link-light text-decoration-none">www.xyz.com</a>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-12 p-0">
+                              <i class="bi bi-telephone-fill pe-2"></i>
+                              <span>123-456-7890</span>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-12 p-0">
+                              <i class="bi bi-envelope-fill pe-2"></i>
+                              <span>kS6Hj example.com</span>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Invoice footer  -->
+                      </div>
                     </div>
+                  </section>
+                </div>
+              </div>
+
+              <!-- Template 2 Placeholder -->
+              <div *ngSwitchCase="'template2'" class="flex items-center justify-center border-2 text-xl font-medium"
+                [id]="selectedTemplateId">
+                <div class="w-[800px] mx-auto p-4 font-sans text-sm">
+                  <!-- Header -->
+                  <div class="flex justify-between items-center mb-4">
+                    <div class="text-base font-bold text-black">
+                      <img [src]="userData?.studio_icon" class="h-16 w-16" alt="dasda">
+                    </div>
+                    <div class="text-right">
+                      <h1 class="text-2xl font-semibold">{{userData?.studio_name}}</h1>
+                      <p>{{userData?.address}}</p>
+                      <p>Phone no: {{userData?.phone_number}}</p>
+                    </div>
+                  </div>
+
+                  <div class="w-full border-y-[2px] mb-2" [ngStyle]="{'border-color':getTemplateClass('')}">
+                    <h3 class="py-3 text-lg font-bold text-center" [ngStyle]="{'color':getTemplateClass('')}">
+                      {{invoiceBillConfig.invoice_type == 'sale'? 'Sale': 'Estimate'}} Order</h3>
+                  </div>
+
+                  <div class="detail flex justify-between my-3">
+                    <div class="order-from">
+                      <p class="font-bold">Order From</p>
+                      <p class="font-bold text-sm">{{ invoiceBillConfig.party_name }}</p>
+                      <p class="pt-2">Contact No: {{ invoiceBillConfig.phone_number }}</p>
+                    </div>
+                    <div class="order-detail flex flex-col items-end">
+                      <p class="font-bold">Order From</p>
+                      <p>Order No: {{ invoiceBillConfig.invoice_number ||'12134'}}</p>
+                      <p>Date: {{ invoiceBillConfig.invoice_date ||'12134'}}</p>
+                      <p>Time: {{ invoiceBillConfig.time ||'12134'}}</p>
+                      <p>Due Date: {{ invoiceBillConfig.due_date ||'12134'}}</p>
+                    </div>
+                  </div>
+
+                  <!-- Table -->
+                  <div class="overflow-x-auto">
+                    <table class="w-full border-collapse mb-4 text-sm">
+                      <thead>
+                        <tr class="text-white text-center"
+                          [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
+                          <th>#</th>
+                          <th colspan="5" class="py-2 px-2">Item Name</th>
+
+                          <th class="py-2 px-2">Booking Date</th>
+                          <th class="py-2 px-2">Location</th>
+                          <th class="py-2 px-2">Qty</th>
+                          <th class="py-2 px-2">Price</th>
+                          <th class="py-2 px-2">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
+                          class="text-center border-b">
+                          <td>{{idx+1}}</td>
+                          <td colspan="5" class="py-2 px-2 font-medium">{{ item.item_name }}
+                          </td>
+                          <td class="py-2 px-2">{{ item.booking_date | date: 'MMM d, y' }}</td>
+                          <td class="py-2 px-2">{{ item.location }}</td>
+                          <td class="py-2 px-2">{{ item.quantity }}</td>
+                          <td class="py-2 px-2">₹{{ item.sale_price }}</td>
+                          <td class="py-2 px-2">₹{{ item.quantity * item.sale_price }}</td>
+                        </tr>
+
+                        <tr class="">
+                          <td></td>
+                          <td colspan="5" class="text-center py-2 px-2 text-lg">Total Paid
+                          </td>
+                          <td class="text-center py-2 px-2 text-lg">{{ invoiceBillConfig?.total_quantity }}</td>
+                          <td></td>
+                          <td class="text-center py-2 px-2 font-extrabold text-lg">₹{{ invoiceBillConfig?.total }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Terms and Payment Info -->
+                  <div class="flex justify-between mt-4 text-xs gap-3">
+                    <div class="flex flex-col">
+                      <div class="gap-2">
+                        <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                          <div class="text-white p-2 text-medium font-semibold"
+                            [ngStyle]="{'background-color':getTemplateClass('')}">
+                            Order Amount in Words
+                          </div>
+                          <div class="p-4 gap-3">
+                            <p>{{invoiceBillConfig.priceInWords}}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="gap-2">
+                        <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                          <div class="text-white p-2 text-medium font-semibold"
+                            [ngStyle]="{'background-color':getTemplateClass('')}">
+                            TERMS AND CONDITIONS
+                          </div>
+                          <div class="p-2 gap-3">
+                            <div *ngIf="exportMode" class="small p-2 w-full" style="white-space:pre-wrap;">
+                              {{ invoiceBillConfig.tnc }}
+                            </div>
+                            <textarea *ngIf="!exportMode" #autoTextarea
+                              class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="5"
+                              cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="w-1/2 gap-2">
+                      <div class="max-w-md mx-auto rounded-lg overflow-hidden">
+                        <div class="text-white p-2 text-medium font-semibold"
+                          [ngStyle]="{'background-color':getTemplateClass('')}">
+                          Amount
+                        </div>
+                        <div class="p-4 flex flex-col gap-3">
+                          <div class="flex justify-between">
+                            <span>Sub Total</span>
+                            <span>₹{{invoiceBillConfig?.total}}</span>
+                          </div>
+                          <div class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value">
+                            <span>Discount</span>
+                            <span><span
+                                *ngIf="invoiceBillConfig?.discount_type != 'percentage'">₹</span>{{invoiceBillConfig?.discount_value}}<span
+                                *ngIf="invoiceBillConfig?.discount_type == 'percentage'">%</span></span>
+                          </div>
+                          <div class="flex justify-between font-bold">
+                            <span>Total</span>
+                            <span>₹{{invoiceBillConfig?.total}}</span>
+                          </div>
+                          <div class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
+                            <span>Advance</span>
+                            <span>₹{{invoiceBillConfig.total - invoiceBillConfig.balance_left}}</span>
+                          </div>
+                          <hr class="my-2 border-gray-300">
+                          <div class="flex justify-between font-bold text-lg">
+                            <span>Balance</span>
+                            <span>₹{{invoiceBillConfig.balance_left}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="flex-1 flex overflow-hidden gap-6">
-                    <!-- Template Display Area (ngSwitch) -->
-                    <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
-                        <div [ngSwitch]="selectedTemplateId" class="flex justify-center" >
-                            <!-- Template 1: Invoice Template -->
-                            <div *ngSwitchCase="'template1'" [id]="selectedTemplateId">
-                                <div class="overflow-y-auto border-2">
-                                    <section class="container-fluid container-lg invoice-template-root">
-                                        <div class="row justify-content-center overflow-hidden my-5">
-                                            <div class="col-lg-8 col-md-10 col-sm-12 col-12">
-                                                <div class="bg-body-tertiary py-4 py-md-5 px-lg-5 px-4">
-                                                    <!-- Invoice header  -->
-                                                    <div
-                                                        class="d-block d-md-flex justify-content-between align-items-center">
-                                                        <div class="d-block d-md-flex align-items-center gap-md-4">
-                                                            <img src="https://placehold.co/80x80/000000/FFFFFF?text=Logo"
-                                                                alt=""
-                                                                class="img-fluid col-lg-2 col-md-2 col-sm-2 col-2 rounded-circle">
-                                                            <div>
-                                                                <p
-                                                                    class="lead fw-bold text-uppercase mb-0 pb-0 fs-4 my-2 my-md-0 lh-base">
-                                                                    {{invoiceBillConfig.staffDetails}}</p>
-                                                                <p class="mb-0 fw-medium text-muted"># 7th cross . 24 th
-                                                                    man , koramangala<br>Phone no : 9876543210<br>Email
-                                                                    : Gstorell gmail.com<br>State : 29 Karnataka</p>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <h1
-                                                                class="display-6 fw-bolder text-dark-emphasis text-uppercase mb-0 my-4 my-md-0">
-                                                                Estimate
-                                                            </h1>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Invoice header  -->
 
-                                                    <!-- invoice body -->
-                                                    <div
-                                                        class="invoice-details d-flex justify-content-between align-items-start my-5 py-md-4 mb-4">
-                                                        <div>
-                                                            <p class="fw-bold text-uppercase mb-1"
-                                                                style="letter-spacing: 1px;">Estimate For :</p>
-                                                            <p class="client-name fw-normal mb-0">
-                                                                {{invoiceBillConfig.party_name}}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p class="fw-normal mb-0">Estimate No. :
-                                                                <span
-                                                                    class="invoice-number ">{{invoiceBillConfig.invoiceNumber}}</span>
-                                                            </p>
-                                                            <p class="fw-normal mb-0">Date :
-                                                                <span
-                                                                    class="invoice-date ">{{invoiceBillConfig.invoiceDate}}</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
+              </div>
 
-                                                    <div class="item-desc">
-                                                        <div class="details-table">
-                                                            <table
-                                                                class="table table-responsive bg-transparent table-borderless">
-                                                                <thead>
-                                                                    <tr class="text-uppercase fs-6 table-head">
-                                                                        <th class="rounded-start-pill">Item name</th>
-                                                                        <th>HSN / SAC</th>
-                                                                        <th>Quantity</th>
-                                                                        <th>Price / Unit</th>
-                                                                        <th>Discount</th>
-                                                                        <th>GST Amount</th>
-                                                                        <th class="rounded-end-pill">Total</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr class="first-row"
-                                                                        *ngFor="let item of invoiceBillConfig.billItems">
-                                                                        <td>{{item.item}}</td>
-                                                                        <td>1234</td> <!-- HSN/SAC mock -->
-                                                                        <td>{{item.qty}}</td>
-                                                                        <td>{{item.price}}</td>
-                                                                        <td>3.06 (5%)</td> <!-- Discount mock -->
-                                                                        <td>7.50</td> <!-- GST Amount mock -->
-                                                                        <td>{{item.totalPrice}}</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
+              <!-- Template 3 Placeholder -->
+              <div *ngSwitchCase="'template3'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="invoice-container">
 
-                                                    <div class="row justify-content-center align-items-start g-5 mt-5">
-                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                            <h6 class="fw-bold">ESTIMATE AMOUNT IN WORDS</h6>
-                                                            <p class="small">{{invoiceBillConfig.priceInWords}}</p>
-                                                            <h6 class="fw-bold">TERMS AND CONDITIONS:</h6>
-                                                            <!-- <textarea class="small">Make payment within 45 days from the date
-                                                                of final invoice. Thanks for doing business with us!</textarea> -->
-                                                        </div>
-                                                        <div class="sub-total col-lg-6 col-md-6 col-sm-12 col-12">
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">Sub Total</h6>
-                                                                <p class="price fw-light">201.00</p>
-                                                            </div>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">Discount</h6>
-                                                                <p class="price fw-light">3.06</p>
-                                                            </div>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">SGST 2.5%</h6>
-                                                                <p class="price fw-light">3.75</p>
-                                                            </div>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">CGST 2.5%</h6>
-                                                                <p class="price fw-light">3.75</p>
-                                                            </div>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">Round off</h6>
-                                                                <p class="price fw-light">0.44</p>
-                                                            </div>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center text-uppercase">
-                                                                <h6 class="text-black fw-bold mb-1">Total</h6>
-                                                                <p class="price fw-light">{{invoiceBillConfig.totalPrice}}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- invoice body -->
-                                                </div>
+                  <div class="flex justify-between">
+                    <div class="p-2">
+                      <img
+                        src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                        class="h-16 w-16 " alt="">
+                    </div>
+                    <div class="p-2">
+                      <h2 class="text-2xl text-right">INVOICE</h2>
+                      <div class="header">
+                        <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
 
-                                                <!-- Invoice footer  -->
-                                                <div class="invoice-footer p-4 p-lg-5">
-                                                    <div
-                                                        class="row justify-content-center align-items-center rounded-pill bg-dark p-2 text-white">
-                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
-                                                            <i class="bi bi-globe-americas pe-2"></i>
-                                                            <a href="#"
-                                                                class="link-light text-decoration-none">www.xyz.com</a>
-                                                        </div>
-                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
-                                                            <i class="bi bi-telephone-fill pe-2"></i>
-                                                            <span>123-456-7890</span>
-                                                        </div>
-                                                        <div class="col-md-4 col-sm-12 col-12 p-0">
-                                                            <i class="bi bi-envelope-fill pe-2"></i>
-                                                            <span>kS6Hj example.com</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Invoice footer  -->
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                            </div>
+                  <div class="details">
+                    <div class="col">
+                      <p><strong>Date:</strong> {{ invoiceBillConfig.invoice_date }}</p>
+                      <p><strong>Billed to:</strong></p>
+                      <p>{{ invoiceBillConfig.party_name }}<br>
+                        {{ invoiceBillConfig.phone_number }}<br>
+                        <!-- Add address/email if available -->
+                      </p>
+                    </div>
 
-                            <!-- Template 2 Placeholder -->
-                            <div *ngSwitchCase="'template2'"
-                                class="flex items-center justify-center border-2 text-xl font-medium" [id]="selectedTemplateId">
-                                <div class="w-[800px] mx-auto p-4 font-sans text-sm">
-                                    <!-- Header -->
-                                    <div class="flex justify-between items-center mb-4">
-                                        <div class="text-base font-bold text-black">
-                                            <img [src]="userData?.studio_icon" class="h-16 w-16" alt="dasda">
-                                        </div>
-                                        <div class="text-right">
-                                            <h1 class="text-2xl font-semibold">{{userData?.studio_name}}</h1>
-                                            <p>{{userData?.address}}</p>
-                                            <p>Phone no: {{userData?.phone_number}}</p>
-                                        </div>
-                                    </div>
+                    <div class="col">
+                      <p><strong>From:</strong></p>
+                      <p>{{ userData.studio_name }}<br>
+                        {{ userData.email }}<br>
+                        {{ userData.address }}
+                      </p>
+                    </div>
+                    <hr>
+                  </div>
 
-                                    <div class="w-full border-y-[2px] mb-2"
-                                        [ngStyle]="{'border-color':getTemplateClass('')}">
-                                        <h3 class="py-3 text-lg font-bold text-center"
-                                            [ngStyle]="{'color':getTemplateClass('')}">{{invoiceBillConfig.invoice_type == 'sale'? 'Sale': 'Estimate'}} Order</h3>
-                                    </div>
+                  <table class="table w-300">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Item Name</th>
+                        <th></th>
+                        <th>Booking Date</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
 
-                                    <div class="detail flex justify-between my-3">
-                                        <div class="order-from">
-                                            <p class="font-bold">Order From</p>
-                                            <p class="font-bold text-sm">{{ invoiceBillConfig.party_name }}</p>
-                                            <p class="pt-2">Contact No: {{ invoiceBillConfig.phone_number }}</p>
-                                        </div>
-                                        <div class="order-detail flex flex-col items-end">
-                                            <p class="font-bold">Order From</p>
-                                            <p>Order No: {{ invoiceBillConfig.invoice_number ||'12134'}}</p>
-                                            <p>Date: {{ invoiceBillConfig.invoice_date ||'12134'}}</p>
-                                            <p>Time: {{ invoiceBillConfig.time ||'12134'}}</p>
-                                            <p>Due Date: {{ invoiceBillConfig.due_date ||'12134'}}</p>
-                                        </div>
-                                    </div>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items">
+                        <td colspan="3">
+                          <h4>{{ item.item_name }}</h4>
+                        </td>
+                        <td>{{ item.booking_date }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.sale_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.quantity * item.sale_price }}</td>
+                      </tr>
 
-                                    <!-- Table -->
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full border-collapse mb-4 text-sm">
-                                            <thead>
-                                                <tr class="text-white text-center"
-                                                    [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
-                                                    <th>#</th>
-                                                    <th colspan="5" class="py-2 px-2">Item Name</th>
+                      <tr>
+                        <td colspan="7" style="text-align: right;"><b>TOTAL</b></td>
+                        <td><b>{{ invoiceBillConfig.total }}</b></td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                                                    <th class="py-2 px-2">Booking Date</th>
-                                                    <th class="py-2 px-2">Location</th>
-                                                    <th class="py-2 px-2">Qty</th>
-                                                    <th class="py-2 px-2">Price</th>
-                                                    <th class="py-2 px-2">Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
-                                                    class="text-center border-b">
-                                                    <td>{{idx+1}}</td>
-                                                    <td colspan="5" class="py-2 px-2 font-medium">{{ item.item_name }}
-                                                    </td>
-                                                    <td class="py-2 px-2">{{ item.booking_date | date: 'MMM d, y'   }}</td>
-                                                    <td class="py-2 px-2">{{ item.location   }}</td>
-                                                    <td class="py-2 px-2">{{ item.quantity   }}</td>
-                                                    <td class="py-2 px-2">₹{{ item.sale_price }}</td>
-                                                    <td class="py-2 px-2">₹{{ item.quantity * item.sale_price }}</td>
-                                                </tr>
+                  <div class="footer">
+                    <p><strong>Payment method:</strong> {{ invoiceBillConfig.payment_type }}</p>
+                    <p><strong>Note:</strong> Thank you for choosing us!</p>
+                  </div>
 
-                                                <tr class="">
-                                                    <td></td>
-                                                    <td colspan="5" class="text-center py-2 px-2 text-lg">Total Paid
-                                                    </td>
-                                                    <td class="text-center py-2 px-2 text-lg">{{ invoiceBillConfig?.total_quantity }}</td>
-                                                    <td></td>
-                                                    <td class="text-center py-2 px-2 font-extrabold text-lg">₹{{ invoiceBillConfig?.total }}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                  <div>
+                    <!-- <img src="assets/images/footer3.png" width="600px" /> -->
+                  </div>
+                </div>
 
-                                    <!-- Terms and Payment Info -->
-                                    <div class="flex justify-between mt-4 text-xs gap-3">
-                                        <div class="flex flex-col">
-                                            <div class="gap-2">
-                                                <div class="max-w-md mx-auto rounded-lg overflow-hidden">
-                                                    <div class="text-white p-2 text-medium font-semibold"
-                                                        [ngStyle]="{'background-color':getTemplateClass('')}">
-                                                        Order Amount in Words
-                                                    </div>
-                                                    <div class="p-4 gap-3">
-                                                        <p>{{invoiceBillConfig.priceInWords}}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="gap-2">
-                                                <div class="max-w-md mx-auto rounded-lg overflow-hidden">
-                                                    <div class="text-white p-2 text-medium font-semibold"
-                                                        [ngStyle]="{'background-color':getTemplateClass('')}">
-                                                        TERMS AND CONDITIONS
-                                                    </div>
-                                                    <div class="p-2 gap-3">
-                                                      <textarea #autoTextarea class="small p-2 resize-none overflow-hidden w-full" (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc" [innerHTML]="invoiceBillConfig.tnc"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+              </div>
+              <div *ngSwitchCase="'template4'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="container">
+                  <div class="header">
+                    <div class="logo">
+                      <i class="fas fa-home"></i>
+                      <span>{{ invoiceBillConfig.staffDetails }}</span>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-between">
+                    <div class="p-2">
+                      <img
+                        src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                        class="h-16 w-16 " alt="">
+                    </div>
+                    <div class="p-2">
+                      <h2 class="text-2xl text-right">INVOICE</h2>
+                      <div class="header">
+                        <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
 
 
-                                        <div class="w-1/2 gap-2">
-                                            <div class="max-w-md mx-auto rounded-lg overflow-hidden">
-                                                <div class="text-white p-2 text-medium font-semibold"
-                                                    [ngStyle]="{'background-color':getTemplateClass('')}">
-                                                    Amount
-                                                </div>
-                                                <div class="p-4 flex flex-col gap-3">
-                                                    <div class="flex justify-between">
-                                                        <span>Sub Total</span>
-                                                        <span>₹{{invoiceBillConfig?.total}}</span>
-                                                    </div>
-                                                    <div class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value">
-                                                        <span>Discount</span>
-                                                        <span><span *ngIf="invoiceBillConfig?.discount_type != 'percentage'">₹</span>{{invoiceBillConfig?.discount_value}}<span *ngIf="invoiceBillConfig?.discount_type == 'percentage'">%</span></span>
-                                                    </div>
-                                                    <div class="flex justify-between font-bold">
-                                                        <span>Total</span>
-                                                        <span>₹{{invoiceBillConfig?.total}}</span>
-                                                    </div>
-                                                    <div class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                                                        <span>Advance</span>
-                                                        <span>₹{{invoiceBillConfig.total - invoiceBillConfig.balance_left}}</span>
-                                                    </div>
-                                                    <hr class="my-2 border-gray-300">
-                                                    <div class="flex justify-between font-bold text-lg">
-                                                        <span>Balance</span>
-                                                        <span>₹{{invoiceBillConfig.balance_left}}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                  <div class="cont">
+                    <div class="invoice-details">
+                      <p><strong>Invoice&nbsp;To:</strong><br>
+                        {{ invoiceBillConfig.party_name }}<br>
+                        {{ invoiceBillConfig.phone_number }}
+                      </p>
+                    </div>
 
+                    <div class="date">
+                      <p>Invoice&nbsp;No: {{ invoiceBillConfig.invoice_number }}<br>
+                        Invoice&nbsp;Date: {{ invoiceBillConfig.invoice_date }}
+                      </p>
+                    </div>
+                  </div>
 
-                            </div>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Item&nbsp;Name</th>
+                        <th></th>
+                        <th>Booking&nbsp;Date</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
 
-                            <!-- Template 3 Placeholder -->
-                            <div *ngSwitchCase="'template3'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="invoice-container"> 
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items">
+                        <td colspan="3">
+                          <h4>{{ item.item_name }}</h4>
+                        </td>
+                        <td>{{ item.booking_date }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.sale_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.quantity * item.sale_price }}</td>
+                      </tr>
 
-                                    <div class="flex justify-between">
-                                        <div class="p-2">
-                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                        </div>
-                                        <div class="p-2">
-                                            <h2 class="text-2xl text-right">INVOICE</h2> 
-                                            <div class="header">
-                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                            </div>
-                                        </div>
-                                    </div>   
-                                    <hr>
-                                  
-                                    <div class="details">
-                                      <div class="col">
-                                        <p><strong>Date:</strong> {{ invoiceBillConfig.invoice_date }}</p>
-                                        <p><strong>Billed to:</strong></p>
-                                        <p>{{ invoiceBillConfig.party_name }}<br>
-                                          {{ invoiceBillConfig.phone_number }}<br>
-                                          <!-- Add address/email if available -->
-                                        </p>
-                                      </div>
-                                  
-                                      <div class="col">
-                                        <p><strong>From:</strong></p>
-                                        <p>{{ userData.studio_name }}<br>
-                                           {{ userData.email }}<br>
-                                           {{ userData.address }}
-                                        </p>
-                                      </div>
-                                      <hr>
-                                    </div>
-                                  
-                                    <table class="table w-300">
-                                      <thead>
-                                        <tr>
-                                          <th colspan="2">Item Name</th>
-                                          <th></th>
-                                          <th>Booking Date</th>
-                                          <th>Location</th>
-                                          <th>Price</th>
-                                          <th>Qty</th>
-                                          <th>Amount</th>
-                                        </tr>
-                                      </thead>
-                                  
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items">
-                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
-                                          <td>{{ item.booking_date }}</td>
-                                          <td>{{ item.location }}</td>
-                                          <td>{{ item.sale_price }}</td>
-                                          <td>{{ item.quantity }}</td>
-                                          <td>{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                  
-                                        <tr>
-                                          <td colspan="7" style="text-align: right;"><b>TOTAL</b></td>
-                                          <td><b>{{ invoiceBillConfig.total }}</b></td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <div class="footer">
-                                      <p><strong>Payment method:</strong> {{ invoiceBillConfig.payment_type }}</p>
-                                      <p><strong>Note:</strong> Thank you for choosing us!</p>
-                                    </div>
-                                  
-                                    <div>
-                                      <!-- <img src="assets/images/footer3.png" width="600px" /> -->
-                                    </div>
-                                  </div>
-                                  
-                            </div>
-                            <div *ngSwitchCase="'template4'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="container">
-                                    <div class="header">
-                                      <div class="logo">
-                                        <i class="fas fa-home"></i>
-                                        <span>{{ invoiceBillConfig.staffDetails }}</span>
-                                      </div>
-                                    </div>
-                                  
-                                    <div class="flex justify-between">
-                                        <div class="p-2">
-                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                        </div>
-                                        <div class="p-2">
-                                            <h2 class="text-2xl text-right">INVOICE</h2> 
-                                            <div class="header">
-                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                            </div>
-                                        </div>
-                                    </div>   
-                                    <hr>
-                                  
-                                  
-                                    <div class="cont">
-                                      <div class="invoice-details">
-                                        <p><strong>Invoice&nbsp;To:</strong><br>
-                                           {{ invoiceBillConfig.party_name }}<br>
-                                           {{ invoiceBillConfig.phone_number }}
-                                        </p>
-                                      </div>
-                                  
-                                      <div class="date">
-                                        <p>Invoice&nbsp;No: {{ invoiceBillConfig.invoice_number }}<br>
-                                           Invoice&nbsp;Date: {{ invoiceBillConfig.invoice_date }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <table class="table">
-                                      <thead>
-                                        <tr>
-                                          <th colspan="2">Item&nbsp;Name</th>
-                                          <th></th>
-                                          <th>Booking&nbsp;Date</th>
-                                          <th>Location</th>
-                                          <th>Price</th>
-                                          <th>Qty</th>
-                                          <th>Amount</th>
-                                        </tr>
-                                      </thead>
-                                  
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items">
-                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
-                                          <td>{{ item.booking_date }}</td>
-                                          <td>{{ item.location }}</td>
-                                          <td>{{ item.sale_price }}</td>
-                                          <td>{{ item.quantity }}</td>
-                                          <td>{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                  
-                                        <tr>
-                                          <td colspan="7" class="total-label">Total&nbsp;Paid</td>
-                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7" class="total-label">Remaining&nbsp;Payment</td>
-                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7" class="total-label">Grand&nbsp;Total</td>
-                                          <td class="total">{{ invoiceBillConfig.total }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <div class="cont">
-                                      <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
-                                        <p *ngFor="let p of invoiceBillConfig.payments">
-                                          Received: {{ p.paidAmount }}  {{ p.paymentDate }}  Cash/Online
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <div class="payment-terms">
-                                      <p class="pt-title">Payment&nbsp;Terms</p>
-                                      <p>{{ invoiceBillConfig.terms_and_conditions }}</p>
-                                    </div>
-                                  
-                                    <div class="thank-you">
-                                      <p>THANK&nbsp;YOU</p>
-                                    </div>
-                                  </div>
-                            </div>
-                            <div *ngSwitchCase="'template5'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="container">
-                                    <div class="header">
-                                        <div class="flex justify-between">
-                                            <div class="p-2">
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                            </div>
-                                            <div class="p-2">
-                                                <h2 class="text-2xl text-right">INVOICE</h2> 
-                                                <div class="header">
-                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                                </div>
-                                            </div>
-                                        </div>   
-                                        <hr>
-                                  
-                                      <div class="invoice-header">
-                                        <div class="company-name">{{ invoiceBillConfig.staffDetails }}</div>
-                                        <div class="invoice-no">
-                                          INVOICE<br>
-                                          Invoice No: {{ invoiceBillConfig.invoice_number }}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  
-                                    <!-- Invoice To & Dates -->
-                                    <div class="invoice-header">
-                                      <div class="invoice-to">
-                                        Invoice To:<br>
-                                        <strong>{{ invoiceBillConfig.party_name }}</strong><br>
-                                        {{ invoiceBillConfig.phone_number }}<br>
-                                        {{ invoiceBillConfig.email }}
-                                      </div>
-                                      <div class="date">
-                                        <p>
-                                          Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
-                                          Invoice Date: {{ invoiceBillConfig.invoice_date }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <!-- Table Section -->
-                                    <table class="table">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th colspan="2">Item Name</th>
-                                          <th></th>
-                                          <th>Booking Date</th>
-                                          <th>Location</th>
-                                          <th>Price</th>
-                                          <th>Qty</th>
-                                          <th>Amount</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
-                                          <td>{{ i + 1 }}</td>
-                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
-                                          <td>{{ item.booking_date }}</td>
-                                          <td>{{ item.location }}</td>
-                                          <td>{{ item.sale_price }}</td>
-                                          <td>{{ item.quantity }}</td>
-                                          <td>{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                  
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Total Paid</td>
-                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Remaining Payment</td>
-                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Grand Total</td>
-                                          <td class="total">{{ invoiceBillConfig.total }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <!-- Payment History -->
-                                    <div class="cont">
-                                      <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
-                                        <p *ngFor="let payment of invoiceBillConfig.payments">
-                                          Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <!-- Terms & Conditions -->
-                                    <div class="terms-conditions">
-                                      Term and Conditions<br>
-                                      Please send payment within 30 days of receiving this invoice.
-                                      There will be 10% interest charge per month on late invoice.
-                                    </div>
-                                  </div>
-                                  
-                            </div>
-                            <div *ngSwitchCase="'template6'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="container">
-                                    <div class="header">
-                                        <div class="flex justify-between">
-                                            <div class="p-2">
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                            </div>
-                                            <div class="p-2">
-                                                <h2 class="text-2xl text-right">INVOICE</h2> 
-                                                <div class="header">
-                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                                </div>
-                                            </div>
-                                        </div>   
-                                        <hr>
-                                    </div>
-                                    <div class="cont">
-                                      <div class="invoice-details">
-                                        <p>
-                                          Invoice To:<br>
-                                          {{ invoiceBillConfig.party_name }}<br>
-                                          {{ invoiceBillConfig.phone_number }}
-                                        </p>
-                                      </div>
-                                  
-                                      <div class="date">
-                                        <p>
-                                          Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
-                                          Invoice Date: {{ invoiceBillConfig.invoice_date }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <table class="table">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th colspan="2">Item Name</th>
-                                          <th></th>
-                                          <th>Booking Date</th>
-                                          <th>Location</th>
-                                          <th>Price</th>
-                                          <th>Qty</th>
-                                          <th>Amount</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
-                                          <td>{{ i + 1 }}</td>
-                                          <td colspan="3"><h4>{{ item.item_name }}</h4></td>
-                                          <td>{{ item.booking_date }}</td>
-                                          <td>{{ item.location }}</td>
-                                          <td>{{ item.sale_price }}</td>
-                                          <td>{{ item.quantity }}</td>
-                                          <td>{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                  
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Total Paid</td>
-                                          <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Remaining Payment</td>
-                                          <td class="total">{{ invoiceBillConfig.balance_left }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="7"></td>
-                                          <td class="total">Grand Total</td>
-                                          <td class="total">{{ invoiceBillConfig.total }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <!-- Payments -->
-                                    <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
-                                      <p *ngFor="let payment of invoiceBillConfig.payments">
-                                        Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
-                                      </p>
-                                    </div>
-                                  
-                                    <!-- Customer Info -->
-                                    <p style="padding-top: 40px;">
-                                      {{ invoiceBillConfig.customer?.address }} - {{ invoiceBillConfig.customer?.phone }}<br>
-                                      {{ invoiceBillConfig.customer?.email }}
-                                    </p>
-                                  </div>
-                                  
-                                  
-                            </div>
-                            <div *ngSwitchCase="'template7'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="invoice-container">
-                                    <div class="header">
-                                        <div class="flex justify-between">
-                                            <div class="p-2">
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                            </div>
-                                            <div class="p-2">
-                                                <h2 class="text-2xl text-right">INVOICE</h2> 
-                                                <div class="header">
-                                                    <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                                </div>
-                                            </div>
-                                        </div>   
-                                        <hr>
-                                    </div>
-                                  
-                                    <div class="invoice-details">
-                                      <div>
-                                        <h2>BILL TO:</h2>
-                                        <p>{{ invoiceBillConfig.party_name }}<br>{{ invoiceBillConfig.phone_number }}</p>
-                                      </div>
-                                  
-                                      <div>
-                                        <h2>ESTIMATE</h2>
-                                        <p>Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
-                                           Invoice Date: {{ invoiceBillConfig.invoice_date }}</p>
-                                      </div>
-                                    </div>
-                                  
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                      <thead>
-                                        <tr style="border: 1px solid black;">
-                                          <th style="border: 1px solid black;">#</th>
-                                          <th colspan="2" style="border: 1px solid black;">Item Name</th>
-                                          <th style="border: 1px solid black;">Booking Date</th>
-                                          <th style="border: 1px solid black;">Location</th>
-                                          <th style="border: 1px solid black;">Price</th>
-                                          <th style="border: 1px solid black;">Qty</th>
-                                          <th style="border: 1px solid black;">Amount</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index" style="border: 1px solid black;">
-                                          <td style="border: 1px solid black;">{{ i + 1 }}</td>
-                                          <td colspan="2" style="border: 1px solid black;">{{ item.item_name }}</td>
-                                          <td style="border: 1px solid black;">{{ item.booking_date }}</td>
-                                          <td style="border: 1px solid black;">{{ item.location }}</td>
-                                          <td style="border: 1px solid black;">{{ item.sale_price }}</td>
-                                          <td style="border: 1px solid black;">{{ item.quantity }}</td>
-                                          <td style="border: 1px solid black;">{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <div class="total">
-                                      <p>Total: {{ invoiceBillConfig.total }}</p>
-                                      <p>Total in Words: {{ invoiceBillConfig.priceInWords }}</p>
-                                      <p>Balance Left: {{ invoiceBillConfig.balance_left }}</p>
-                                    </div>
-                                  
-                                    <div class="terms">
-                                      <p><strong>TERMS AND CONDITIONS:</strong><br>{{ invoiceBillConfig.tnc }}</p>
-                                    </div>
-                                  </div>
-                                  
-                                  
-                                  
-                            </div>
-                            <div *ngSwitchCase="'template8'"
-                                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
-                                <div class="container">
-                                    <div class="flex justify-between">
-                                        <div class="p-2">
-                                            <img src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2" class="h-16 w-16 " alt="">
-                                        </div>
-                                        <div class="p-2">
-                                            <h2 class="text-2xl text-right">INVOICE</h2> 
-                                            <div class="header">
-                                                <p>NO. {{ invoiceBillConfig.invoice_number }}</p> 
-                                            </div>
-                                        </div>
-                                    </div>   
-                                    <hr>
-                                  
-                                    <div class="cont">
-                                      <div class="invoice-details">
-                                        <p>
-                                          Invoice To:<br />
-                                          {{ invoiceBillConfig?.party_name }}<br />
-                                          {{ invoiceBillConfig?.phone_number }}
-                                        </p>
-                                      </div>
-                                  
-                                      <div class="date">
-                                        <p>
-                                          Invoice No: {{ invoiceBillConfig?.invoice_number }}<br />
-                                          Invoice Date: {{ invoiceBillConfig?.invoice_date }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  
-                                    <table class="table" border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th colspan="2">Item Name</th>
-                                          <th>Booking Date</th>
-                                          <th>Location</th>
-                                          <th>Price</th>
-                                          <th>Qty</th>
-                                          <th>Amount</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr *ngFor="let item of invoiceBillConfig?.invoice_items; let i = index">
-                                          <td>{{ i + 1 }}</td>
-                                          <td colspan="2">{{ item.item_name }}</td>
-                                          <td>{{ item.booking_date }}</td>
-                                          <td>{{ item.location }}</td>
-                                          <td>{{ item.sale_price }}</td>
-                                          <td>{{ item.quantity }}</td>
-                                          <td>{{ item.quantity * item.sale_price }}</td>
-                                        </tr>
-                                  
-                                        <tr>
-                                          <td colspan="6"></td>
-                                          <td><strong>Total Paid</strong></td>
-                                          <td>{{ invoiceBillConfig?.total }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="6"></td>
-                                          <td><strong>Remaining Payment</strong></td>
-                                          <td>{{ invoiceBillConfig?.balance_left }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="6"></td>
-                                          <td><strong>Grand Total</strong></td>
-                                          <td>{{ invoiceBillConfig?.total }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  
-                                    <div class="cash">
-                                      <p>Payment Type: {{ invoiceBillConfig?.payment_type }}</p>
-                                      <p>{{ invoiceBillConfig?.payment_type_description }}</p>
-                                    </div>
-                                  
-                                    <p style="padding-top: 15px; padding-bottom: 20px;">
-                                      {{ userData?.address }} - {{ userData?.phone_number }}<br />
-                                      {{ userData?.email }}
-                                    </p>
-                                  </div>
-                                  
-                                  
-                                  
-                            </div>
+                      <tr>
+                        <td colspan="7" class="total-label">Total&nbsp;Paid</td>
+                        <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7" class="total-label">Remaining&nbsp;Payment</td>
+                        <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7" class="total-label">Grand&nbsp;Total</td>
+                        <td class="total">{{ invoiceBillConfig.total }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                            <!-- Default Case -->
-                            <div *ngSwitchDefault
-                                class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 text-gray-500 text-xl font-medium">
-                                Please select a template from the left sidebar.
-                            </div>
+                  <div class="cont">
+                    <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                      <p *ngFor="let p of invoiceBillConfig.payments">
+                        Received: {{ p.paidAmount }}  {{ p.paymentDate }}  Cash/Online
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="payment-terms">
+                    <p class="pt-title">Payment&nbsp;Terms</p>
+                    <p>{{ invoiceBillConfig.terms_and_conditions }}</p>
+                  </div>
+
+                  <div class="thank-you">
+                    <p>THANK&nbsp;YOU</p>
+                  </div>
+                </div>
+              </div>
+              <div *ngSwitchCase="'template5'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="container">
+                  <div class="header">
+                    <div class="flex justify-between">
+                      <div class="p-2">
+                        <img
+                          src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                          class="h-16 w-16 " alt="">
+                      </div>
+                      <div class="p-2">
+                        <h2 class="text-2xl text-right">INVOICE</h2>
+                        <div class="header">
+                          <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
                         </div>
-                    </section>
+                      </div>
+                    </div>
+                    <hr>
 
-                    <!-- Right Sidebar for Actions -->
-                    <aside
-                        class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center gap-6">
-                        <div class="flex flex-col items-center gap-4">
-                            <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-full shadow-lg">
+                    <div class="invoice-header">
+                      <div class="company-name">{{ invoiceBillConfig.staffDetails }}</div>
+                      <div class="invoice-no">
+                        INVOICE<br>
+                        Invoice No: {{ invoiceBillConfig.invoice_number }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Invoice To & Dates -->
+                  <div class="invoice-header">
+                    <div class="invoice-to">
+                      Invoice To:<br>
+                      <strong>{{ invoiceBillConfig.party_name }}</strong><br>
+                      {{ invoiceBillConfig.phone_number }}<br>
+                      {{ invoiceBillConfig.email }}
+                    </div>
+                    <div class="date">
+                      <p>
+                        Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                        Invoice Date: {{ invoiceBillConfig.invoice_date }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Table Section -->
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th colspan="2">Item Name</th>
+                        <th></th>
+                        <th>Booking Date</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td colspan="3">
+                          <h4>{{ item.item_name }}</h4>
+                        </td>
+                        <td>{{ item.booking_date }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.sale_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.quantity * item.sale_price }}</td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Total Paid</td>
+                        <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Remaining Payment</td>
+                        <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Grand Total</td>
+                        <td class="total">{{ invoiceBillConfig.total }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Payment History -->
+                  <div class="cont">
+                    <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                      <p *ngFor="let payment of invoiceBillConfig.payments">
+                        Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Terms & Conditions -->
+                  <div class="terms-conditions">
+                    Term and Conditions<br>
+                    Please send payment within 30 days of receiving this invoice.
+                    There will be 10% interest charge per month on late invoice.
+                  </div>
+                </div>
+
+              </div>
+              <div *ngSwitchCase="'template6'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="container">
+                  <div class="header">
+                    <div class="flex justify-between">
+                      <div class="p-2">
+                        <img
+                          src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                          class="h-16 w-16 " alt="">
+                      </div>
+                      <div class="p-2">
+                        <h2 class="text-2xl text-right">INVOICE</h2>
+                        <div class="header">
+                          <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+                  <div class="cont">
+                    <div class="invoice-details">
+                      <p>
+                        Invoice To:<br>
+                        {{ invoiceBillConfig.party_name }}<br>
+                        {{ invoiceBillConfig.phone_number }}
+                      </p>
+                    </div>
+
+                    <div class="date">
+                      <p>
+                        Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                        Invoice Date: {{ invoiceBillConfig.invoice_date }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th colspan="2">Item Name</th>
+                        <th></th>
+                        <th>Booking Date</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td colspan="3">
+                          <h4>{{ item.item_name }}</h4>
+                        </td>
+                        <td>{{ item.booking_date }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.sale_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.quantity * item.sale_price }}</td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Total Paid</td>
+                        <td class="total">{{ invoiceBillConfig.totalPayments }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Remaining Payment</td>
+                        <td class="total">{{ invoiceBillConfig.balance_left }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="7"></td>
+                        <td class="total">Grand Total</td>
+                        <td class="total">{{ invoiceBillConfig.total }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Payments -->
+                  <div class="cash" *ngIf="invoiceBillConfig.payments?.length">
+                    <p *ngFor="let payment of invoiceBillConfig.payments">
+                      Received: {{ payment.paidAmount }} {{ payment.paymentDate }} Cash/Online
+                    </p>
+                  </div>
+
+                  <!-- Customer Info -->
+                  <p style="padding-top: 40px;">
+                    {{ invoiceBillConfig.customer?.address }} - {{ invoiceBillConfig.customer?.phone }}<br>
+                    {{ invoiceBillConfig.customer?.email }}
+                  </p>
+                </div>
+
+
+              </div>
+              <div *ngSwitchCase="'template7'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="invoice-container">
+                  <div class="header">
+                    <div class="flex justify-between">
+                      <div class="p-2">
+                        <img
+                          src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                          class="h-16 w-16 " alt="">
+                      </div>
+                      <div class="p-2">
+                        <h2 class="text-2xl text-right">INVOICE</h2>
+                        <div class="header">
+                          <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+
+                  <div class="invoice-details">
+                    <div>
+                      <h2>BILL TO:</h2>
+                      <p>{{ invoiceBillConfig.party_name }}<br>{{ invoiceBillConfig.phone_number }}</p>
+                    </div>
+
+                    <div>
+                      <h2>ESTIMATE</h2>
+                      <p>Invoice No: {{ invoiceBillConfig.invoice_number }}<br>
+                        Invoice Date: {{ invoiceBillConfig.invoice_date }}</p>
+                    </div>
+                  </div>
+
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                      <tr style="border: 1px solid black;">
+                        <th style="border: 1px solid black;">#</th>
+                        <th colspan="2" style="border: 1px solid black;">Item Name</th>
+                        <th style="border: 1px solid black;">Booking Date</th>
+                        <th style="border: 1px solid black;">Location</th>
+                        <th style="border: 1px solid black;">Price</th>
+                        <th style="border: 1px solid black;">Qty</th>
+                        <th style="border: 1px solid black;">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index"
+                        style="border: 1px solid black;">
+                        <td style="border: 1px solid black;">{{ i + 1 }}</td>
+                        <td colspan="2" style="border: 1px solid black;">{{ item.item_name }}</td>
+                        <td style="border: 1px solid black;">{{ item.booking_date }}</td>
+                        <td style="border: 1px solid black;">{{ item.location }}</td>
+                        <td style="border: 1px solid black;">{{ item.sale_price }}</td>
+                        <td style="border: 1px solid black;">{{ item.quantity }}</td>
+                        <td style="border: 1px solid black;">{{ item.quantity * item.sale_price }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="total">
+                    <p>Total: {{ invoiceBillConfig.total }}</p>
+                    <p>Total in Words: {{ invoiceBillConfig.priceInWords }}</p>
+                    <p>Balance Left: {{ invoiceBillConfig.balance_left }}</p>
+                  </div>
+
+                  <div class="terms">
+                    <p><strong>TERMS AND CONDITIONS:</strong><br>{{ invoiceBillConfig.tnc }}</p>
+                  </div>
+                </div>
+
+
+
+              </div>
+              <div *ngSwitchCase="'template8'"
+                class="flex items-center justify-center h-full rounded-lg border-2  border-2  text-sm font-medium custom-width">
+                <div class="container">
+                  <div class="flex justify-between">
+                    <div class="p-2">
+                      <img
+                        src="https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/studio-image%2FTesting_Suraj_Studio?alt=media&token=173ce1be-570a-4c50-8f6f-4ce0fff9ddd2"
+                        class="h-16 w-16 " alt="">
+                    </div>
+                    <div class="p-2">
+                      <h2 class="text-2xl text-right">INVOICE</h2>
+                      <div class="header">
+                        <p>NO. {{ invoiceBillConfig.invoice_number }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+
+                  <div class="cont">
+                    <div class="invoice-details">
+                      <p>
+                        Invoice To:<br />
+                        {{ invoiceBillConfig?.party_name }}<br />
+                        {{ invoiceBillConfig?.phone_number }}
+                      </p>
+                    </div>
+
+                    <div class="date">
+                      <p>
+                        Invoice No: {{ invoiceBillConfig?.invoice_number }}<br />
+                        Invoice Date: {{ invoiceBillConfig?.invoice_date }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <table class="table" border="1" cellpadding="8" cellspacing="0"
+                    style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th colspan="2">Item Name</th>
+                        <th>Booking Date</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig?.invoice_items; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td colspan="2">{{ item.item_name }}</td>
+                        <td>{{ item.booking_date }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.sale_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.quantity * item.sale_price }}</td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="6"></td>
+                        <td><strong>Total Paid</strong></td>
+                        <td>{{ invoiceBillConfig?.total }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="6"></td>
+                        <td><strong>Remaining Payment</strong></td>
+                        <td>{{ invoiceBillConfig?.balance_left }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="6"></td>
+                        <td><strong>Grand Total</strong></td>
+                        <td>{{ invoiceBillConfig?.total }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="cash">
+                    <p>Payment Type: {{ invoiceBillConfig?.payment_type }}</p>
+                    <p>{{ invoiceBillConfig?.payment_type_description }}</p>
+                  </div>
+
+                  <p style="padding-top: 15px; padding-bottom: 20px;">
+                    {{ userData?.address }} - {{ userData?.phone_number }}<br />
+                    {{ userData?.email }}
+                  </p>
+                </div>
+
+
+
+              </div>
+
+              <!-- Default Case -->
+              <div *ngSwitchDefault
+                class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 text-gray-500 text-xl font-medium">
+                Please select a template from the left sidebar.
+              </div>
+            </div>
+          </section>
+
+          <!-- Right Sidebar for Actions -->
+          <aside class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center gap-6">
+            <div class="flex flex-col items-center gap-4">
+              <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-full shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -951,99 +963,99 @@
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
                                 Collect Payment
                             </button> -->
-                        </div>
+            </div>
 
-                        <div class="w-full border-t border-gray-200 pt-6">
-                            <h3 class="text-lg font-medium mb-4 text-gray-800">Share Invoice</h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <button
-                                    class="cursor-pointer flex flex-col items-center justify-center p-4 bg-green-100 rounded-lg hover:bg-green-200 transition duration-200">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/3128/3128322.png" alt="WhatsApp"
-                                        class="mb-2" />
-                                    <span class="text-sm font-medium text-gray-700">WHATSAPP</span>
-                                </button>
-                                <!-- <button
+            <div class="w-full border-t border-gray-200 pt-6">
+              <h3 class="text-lg font-medium mb-4 text-gray-800">Share Invoice</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <button
+                  class="cursor-pointer flex flex-col items-center justify-center p-4 bg-green-100 rounded-lg hover:bg-green-200 transition duration-200">
+                  <img src="https://cdn-icons-png.flaticon.com/512/3128/3128322.png" alt="WhatsApp" class="mb-2" />
+                  <span class="text-sm font-medium text-gray-700">WHATSAPP</span>
+                </button>
+                <!-- <button
                                     class="cursor-pointer flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">
                                     <img src="https://cdn-icons-png.flaticon.com/512/733/733533.png" alt="SMS"
                                         class="mb-2" />
                                     <span class="text-sm font-medium text-gray-700">SMS</span>
                                 </button> -->
 
-                            </div>
-                        </div>
+              </div>
+            </div>
 
-                        <div class="w-full border-t border-gray-200 pt-6 gap-4 flex justify-between mb-5">
-                            <div class="flex flex-col items-center">
-                                <button (click)="downloadPDF()"
-                                    class="bg-red-600 hover:bg-red-700 text-white p-3 cursor-pointer rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-printer">
-                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                        <path
-                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                        </path>
-                                        <rect width="12" height="8" x="6" y="14"></rect>
-                                    </svg>
-                                </button>
-                                <span
-                                    class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Download
-                                    PDF</span>
-                            </div>
-                            <div class="flex flex-col items-center">
-                                <button (click)="printSection()"
-                                    class=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-printer">
-                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                        <path
-                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                        </path>
-                                        <rect width="12" height="8" x="6" y="14"></rect>
-                                    </svg>
-                                </button>
-                                <span
-                                    class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Print
-                                    Invoice</span>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="flex flex-col items-center" (click)="invoiceBillConfig?.terms_and_conditions ? updateAndClose() : saveAndClose()">
-                                <span class="cursor-pointer text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Save & Close</span>
-                            </button>
-                        </div>
-                    </aside>
-                </div>
-            </main>
+            <div class="w-full border-t border-gray-200 pt-6 gap-4 flex justify-between mb-5">
+              <div class="flex flex-col items-center">
+                <button (click)="downloadPDF()"
+                  class="bg-red-600 hover:bg-red-700 text-white p-3 cursor-pointer rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-printer">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                    </path>
+                    <rect width="12" height="8" x="6" y="14"></rect>
+                  </svg>
+                </button>
+                <span
+                  class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Download
+                  PDF</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <button (click)="printSection()"
+                  class=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg flex items-center justify-center shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-printer">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                    </path>
+                    <rect width="12" height="8" x="6" y="14"></rect>
+                  </svg>
+                </button>
+                <span
+                  class="text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Print
+                  Invoice</span>
+              </div>
+            </div>
+            <div>
+              <button class="flex flex-col items-center"
+                (click)="invoiceBillConfig?.terms_and_conditions ? updateAndClose() : saveAndClose()">
+                <span
+                  class="cursor-pointer text-blue-600 font-semibold text-lg group-hover:text-blue-800 group-hover:font-bold transition duration-300 ease-in-out">Save
+                  & Close</span>
+              </button>
+            </div>
+          </aside>
         </div>
-    </main>
+      </main>
+    </div>
+  </main>
 </div>
 
 <div *ngIf="showLogOutModal"
-    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
-    <div #modalContent
-        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-        [ngClass]="{'modal-fade-in': showLogOutModal}">
-        <div class="p-6 flex flex-col items-center">
-            <div class="w-full max-w-[200px] mb-4">
-                <img src="../../../assets/logout.png" alt="Delete illustration" class="w-full h-auto" />
-            </div>
+  class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+  <div #modalContent
+    class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+    [ngClass]="{'modal-fade-in': showLogOutModal}">
+    <div class="p-6 flex flex-col items-center">
+      <div class="w-full max-w-[200px] mb-4">
+        <img src="../../../assets/logout.png" alt="Delete illustration" class="w-full h-auto" />
+      </div>
 
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                Are you sure you want to logout?
-            </h2>
-        </div>
-
-        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-            <button (click)="toggleLogoutModal()"
-                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
-                Cancel
-            </button>
-            <button (click)="logout()"
-                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
-                Logout
-            </button>
-        </div>
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Are you sure you want to logout?
+      </h2>
     </div>
+
+    <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+      <button (click)="toggleLogoutModal()"
+        class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+        Cancel
+      </button>
+      <button (click)="logout()"
+        class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+        Logout
+      </button>
+    </div>
+  </div>
 </div>

@@ -46,6 +46,7 @@ export class PdfBillSelectionComponent {
   currentUserId: any = 0;
   userData: any = {};
   showLogOutModal: boolean = false;
+  exportMode: boolean = false;
 
 
   constructor(private adminService: AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router, private location: LocationStrategy) {
@@ -98,14 +99,17 @@ export class PdfBillSelectionComponent {
   }
 
   printSection() {
-    const content = document.getElementById(this.selectedTemplateId);
-    const head = document.head.cloneNode(true) as HTMLElement;
-    const logoHTML = `<img src="${this.userData?.studio_icon}" alt="Logo" style="width:100px; margin-bottom:20px;">`;
-    console.log(logoHTML);
-    const printWindow = window.open('', '', 'width=800,height=900');
-    if (printWindow && content) {
-      printWindow.document.open();
-      printWindow.document.write(`
+    this.exportMode = true;
+    setTimeout(() => {
+      const content = document.getElementById(this.selectedTemplateId);
+      const head = document.head.cloneNode(true) as HTMLElement;
+      this.resizeTextarea();
+      const logoHTML = `<img src="${this.userData?.studio_icon}" alt="Logo" style="width:100px; margin-bottom:20px;">`;
+      console.log(logoHTML);
+      const printWindow = window.open('', '', 'width=800,height=900');
+      if (printWindow && content) {
+        printWindow.document.open();
+        printWindow.document.write(`
       <html>
         <head>
           <title>Print</title>
@@ -116,43 +120,52 @@ export class PdfBillSelectionComponent {
         </body>
       </html>
     `);
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-      }, 500);
-    }
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 500);
+      }
+      this.exportMode=false;
+    }, 100);
+
   }
 
   async downloadPDF() {
     this.loader.show();
-    const data = document.getElementById(this.selectedTemplateId);
-    const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
-    const canvas = await html2canvas(data!, { useCORS: true });
+    this.exportMode = true;
+    setTimeout(async () => {
 
-    const A4_WIDTH = 210;
-    const A4_HEIGHT = 297;
-    const MARGIN = 10;
+      const data = document.getElementById(this.selectedTemplateId);
+      const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
+      const canvas = await html2canvas(data!, { useCORS: true });
 
-    const imgWidth = A4_WIDTH - 2 * MARGIN;
-    const ratio = imgWidth / canvas.width;
-    const imgHeight = canvas.height * ratio;
+      const A4_WIDTH = 210;
+      const A4_HEIGHT = 297;
+      const MARGIN = 10;
 
-    const contentY = MARGIN + 15; // space for logo
-    const availableHeight = A4_HEIGHT - contentY - MARGIN;
-    const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
+      const imgWidth = A4_WIDTH - 2 * MARGIN;
+      const ratio = imgWidth / canvas.width;
+      const imgHeight = canvas.height * ratio;
 
-    const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
-    if (logo) {
-      pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
-    }
+      const contentY = MARGIN + 15; // space for logo
+      const availableHeight = A4_HEIGHT - contentY - MARGIN;
+      const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
 
-    const contentDataURL = canvas.toDataURL('image/png');
-    pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+      if (logo) {
+        pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+      }
 
-    pdf.save(`exported-file_${Date.now()}.pdf`);
-    this.loader.hide();
+      const contentDataURL = canvas.toDataURL('image/png');
+      pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+
+      pdf.save(`exported-file_${Date.now()}.pdf`);
+      this.loader.hide();
+      this.exportMode = false;
+    }, 100);
+
   }
 
   ngAfterViewInit() {
@@ -167,6 +180,7 @@ export class PdfBillSelectionComponent {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
+
   saveAndClose(isUpdated?: boolean) {
     this.loader.show();
     const params: any = {
