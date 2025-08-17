@@ -160,52 +160,6 @@ export class PhotoSelectionPhotosComponent {
     this.deleteModal = false;
     const fileredSelectedDeletionPhotos = this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
     this.deleteImgBg.enqueueDeletes(this.currentFolderId, fileredSelectedDeletionPhotos);
-    // const params: any = {
-    //   folder_id: this.currentFolderId,
-    //   photos: this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
-    // };
-
-    // for (let i = 0; i < params.photos.length; i++) {
-    //   if (params.photos[i].url) {
-    //     const fileRef = ref(this.storage, params.photos[i].url);
-    //     try {
-    //       await deleteObject(fileRef);
-    //       console.log(`Deleted: ${params.photos[i].url}`);
-    //     } catch (error) {
-    //       console.error(`Error deleting ${params.photos[i].url}:`, error);
-    //     }
-
-    //   }
-    // }
-
-    // try {
-    //   const batchSize = 100;
-    //   const total = params.photos.length;
-    //   for (let i = 0; i < total; i += batchSize) {
-    //     const batch = params.photos.slice(i, i + batchSize);
-    //     await new Promise<void>((resolve, reject) => {
-    //       this._pservice.deletePhotos(params, (res: any) => {
-    //         if (res.status == 200) {
-    //           resolve();
-    //         } else {
-    //           reject(res.message);
-    //         }
-    //       }
-    //       );
-    //     });
-    //   }
-
-    //   this.loader.hide();
-    //   this.alert.success("All photos deleted successfully!");
-    //   this.getUploadedPhotosByFolderId();
-    //   this.allSelected = false;
-    //   this.imageSelected = false;
-    //   this.isLoading = false;
-    // } catch (err) {
-    //   this.loader.hide();
-    //   this.alert.error("Error saving photos: " + err);
-    // }
-
   }
 
   getFilePathFromUrl(url: string): string {
