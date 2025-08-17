@@ -1,0 +1,27 @@
+<div *ngIf="deleteService.isDeleting$ | async" 
+     class="upload-progress-container sticky bottom-[15px] float-right right-[20px] z-100"
+     style="width: 380px;">
+  
+  <!-- Header with Trash Icon -->
+  <div class="progress-header">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+         stroke="currentColor" class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6 7.5h12M9.75 7.5v-1.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5M10.5 11.25v6M13.5 11.25v6M4.5 7.5h15l-1.5 12.75a1.5 1.5 0 0 1-1.492 1.25H7.492A1.5 1.5 0 0 1 6 20.25L4.5 7.5Z"/>
+    </svg>
+    <div class="progress-text">
+      <p>Deleting {{ deleteService.batchStart$ | async }}-{{ deleteService.batchEnd$ | async }}
+        of {{ deleteService.totalPhotos$ | async }} Photos</p>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-fill"
+         [style.width.%]="deleteService.deleteProgressPercentage$ | async">
+    </div>
+  </div>
+
+  <!-- Percentage -->
+  <p class="progress-percentage">{{ deleteService.deleteProgressPercentage$ | async }}%</p>
+</div>

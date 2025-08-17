@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
-import { deleteObject, getMetadata } from 'firebase/storage';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { LoaderService } from '../../shared/loader.service';
 import { ImageCompressionService } from '../../services/image-compression.service';
 import { AlertService } from '../../services/alert.service';
 import { UploadImgBackgroundService } from '../../services/upload-img-background.service';
+import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -40,13 +40,6 @@ export class PhotoSelectionPhotosComponent {
   uploadedUrls: any[] = [];
   storage = inject(Storage);
 
-  uploadedCount = 0;
-  totalFiles = 0;
-  isUploading = false;
-  progressPercentage = 0;
-  batchStart = 1;
-  batchEnd = 5;
-
   sortImagesModal: boolean = false;
   isEventSubmitted: boolean = false;
   originalDirectoryName: any = '';
@@ -55,7 +48,6 @@ export class PhotoSelectionPhotosComponent {
   isLoading: boolean = false;
   userData: any = {};
   showLogOutModal: boolean = false;
-
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
@@ -65,7 +57,8 @@ export class PhotoSelectionPhotosComponent {
     private _pservice: PhotoSelectionService,
     private route: ActivatedRoute,
     private alert: AlertService,
-    private uploadImgBg: UploadImgBackgroundService
+    private uploadImgBg: UploadImgBackgroundService,
+    private deleteImgBg: DeleteImgBackgroundService
   ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
@@ -83,8 +76,19 @@ export class PhotoSelectionPhotosComponent {
       }
     });
 
-    this.uploadImgBg.isUploading$.subscribe((item: any) => {
+    this.uploadImgBg.isImageUploadedCompleted$.subscribe((item: any) => {
+      if (item) {
         this.getUploadedPhotosByFolderId();
+      }
+    });
+    this.deleteImgBg.isImagDeletedCompleted$.subscribe((item: any) => {
+      if (item) {
+        this.closeModal();
+          this.allSelected = false;
+          this.imageSelected = false;
+          this.isLoading = false;
+        this.getUploadedPhotosByFolderId();
+      }
     })
 
   }
@@ -153,40 +157,54 @@ export class PhotoSelectionPhotosComponent {
 
   async deletePhotos() {
     this.loader.show();
-    this.isLoading = true;
-    const params: any = {
-      folder_id: this.currentFolderId,
-      photos: this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
-    };
+    this.deleteModal = false;
+    const fileredSelectedDeletionPhotos = this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
+    this.deleteImgBg.enqueueDeletes(this.currentFolderId, fileredSelectedDeletionPhotos);
+    // const params: any = {
+    //   folder_id: this.currentFolderId,
+    //   photos: this.photos.filter((photo: any) => photo.selected).map((item: any) => ({ url: item.photo_url, id: item.photo_id }))
+    // };
 
-    for (let i = 0; i < params.photos.length; i++) {
-      // const filePath = this.getFilePathFromUrl(params.photos[i].url);
-      if (params.photos[i].url) {
-        const fileRef = ref(this.storage, params.photos[i].url);
-        try {
-          await deleteObject(fileRef);
-          console.log(`Deleted: ${params.photos[i].url}`);
-        } catch (error) {
-          console.error(`Error deleting ${params.photos[i].url}:`, error);
-        }
+    // for (let i = 0; i < params.photos.length; i++) {
+    //   if (params.photos[i].url) {
+    //     const fileRef = ref(this.storage, params.photos[i].url);
+    //     try {
+    //       await deleteObject(fileRef);
+    //       console.log(`Deleted: ${params.photos[i].url}`);
+    //     } catch (error) {
+    //       console.error(`Error deleting ${params.photos[i].url}:`, error);
+    //     }
 
-      }
-    }
+    //   }
+    // }
 
-    this._pservice.deletePhotos(params, (res: any) => {
-      if (res.status == 200) {
-        this.allSelected = false;
-        this.imageSelected = false;
-        this.alert.info(res.message);
-        this.getUploadedPhotosByFolderId();
-        this.closeModal();
-        this.loader.hide();
-        this.isLoading = false;
-      } else {
-        this.loader.hide();
-        this.isLoading = false;
-      }
-    })
+    // try {
+    //   const batchSize = 100;
+    //   const total = params.photos.length;
+    //   for (let i = 0; i < total; i += batchSize) {
+    //     const batch = params.photos.slice(i, i + batchSize);
+    //     await new Promise<void>((resolve, reject) => {
+    //       this._pservice.deletePhotos(params, (res: any) => {
+    //         if (res.status == 200) {
+    //           resolve();
+    //         } else {
+    //           reject(res.message);
+    //         }
+    //       }
+    //       );
+    //     });
+    //   }
+
+    //   this.loader.hide();
+    //   this.alert.success("All photos deleted successfully!");
+    //   this.getUploadedPhotosByFolderId();
+    //   this.allSelected = false;
+    //   this.imageSelected = false;
+    //   this.isLoading = false;
+    // } catch (err) {
+    //   this.loader.hide();
+    //   this.alert.error("Error saving photos: " + err);
+    // }
 
   }
 

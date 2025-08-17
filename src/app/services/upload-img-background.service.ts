@@ -42,6 +42,7 @@ export class UploadImgBackgroundService {
   uploadQueue: any[] = [];
   isProcessingQueue = false;
   photos: any = [];
+  isImageUploadedCompleted$: any = new BehaviorSubject<boolean>(false);
 
   handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any, currentFolderId: any) {
     const files: File[] = Array.from(event.target.files || []);
@@ -63,17 +64,17 @@ export class UploadImgBackgroundService {
 
     if (duplicateFiles.length > 0) {
       for (let i = 0; i < duplicateFiles.length; i++) {
-        this.alert.warning(`Skipped duplicate files: ${duplicateFiles[i]}`,5000);
+        this.alert.warning(`Skipped duplicate files: ${duplicateFiles[i]}`, 5000);
       }
     }
 
     if (uniqueFiles.length === 0) {
-      this.alert.info("No new files to upload.",5000);
+      this.alert.info("No new files to upload.", 5000);
       return;
     }
 
     // Push into queue
-    this.uploadQueue.push({ files:uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+    this.uploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
     console.log(eventId, folderName, studio_name, customerName, eventName, currentFolderId);
 
     this.alert.info("Uploading In Queue");
@@ -101,7 +102,7 @@ export class UploadImgBackgroundService {
       this.progressPercentage$.next(0);
       this.isUploading$.next(true);
 
-      const batchSize = 5;
+      const batchSize = this.getBatchSize(this.totalPhotos);
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         this.batchStart$.next(i + 1);
         this.batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
@@ -120,9 +121,8 @@ export class UploadImgBackgroundService {
       }
 
       await this.storeUrlsInDatabase(currentFolderId);
-      console.log("got here dfdf d");
-      
       this.isUploading$.next(false);
+      this.isImageUploadedCompleted$.next(true);
     }
     this.isProcessingQueue = false;
   }
@@ -136,6 +136,8 @@ export class UploadImgBackgroundService {
       reader.onload = async () => {
         let compressedImage: any = reader.result as string;
         compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
+        console.log(this.storage, "DSKNBDJB");
+
         const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
         const uploadTask = uploadBytesResumable(fileRef, compressedImage);
 
@@ -150,17 +152,47 @@ export class UploadImgBackgroundService {
     });
   }
 
+  getBatchSize(fileCount: number): number {
+    if (fileCount < 100) return 50;
+    if (fileCount <= 500) return 100;
+    if (fileCount <= 1000) return 300;
+    if (fileCount <= 5000) return 500;
+    return 1000; // fallback for very large sets
+  }
+
   async storeUrlsInDatabase(currentFolderId: any) {
     this.loader.show();
-    this._pservice.uploadPhotos({ uploadedUrls: this.uploadedUrls, uploaded_by: this.user_id, folder_id: currentFolderId }, (res: any) => {
-      if (res.status == 200) {
-        this.loader.hide();
-        this.alert.success(res.message);
-        this.uploadedUrls = [];
-      } else {
-        this.loader.hide();
-        this.alert.error(res.message);
+    try {
+      const batchSize = 70;
+      const total = this.uploadedUrls.length;
+
+      for (let i = 0; i < total; i += batchSize) {
+        const batch = this.uploadedUrls.slice(i, i + batchSize);
+
+        await new Promise<void>((resolve, reject) => {
+          this._pservice.uploadPhotos(
+            {
+              uploadedUrls: batch,
+              uploaded_by: this.user_id,
+              folder_id: currentFolderId
+            },
+            (res: any) => {
+              if (res.status == 200) {
+                resolve();
+              } else {
+                reject(res.message);
+              }
+            }
+          );
+        });
       }
-    })
+
+      this.loader.hide();
+      this.alert.success("All photos saved successfully!");
+      this.uploadedUrls = [];
+    } catch (err) {
+      this.loader.hide();
+      this.alert.error("Error saving photos: " + err);
+    }
   }
 }
