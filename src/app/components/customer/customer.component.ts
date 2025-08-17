@@ -127,7 +127,8 @@ export class CustomerComponent {
             this.onClose();
             this.getAllCustomers();
           } else {
-            this.onClose();
+            this.alert.error(res.message);  
+            // this.onClose();
           }
         })
       }

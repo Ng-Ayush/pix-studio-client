@@ -74,6 +74,10 @@ export class PhotoSelectionComponent {
     this.isCustomerModalOpen=false;
   }
 
+  closeCustomerModal(){
+    this.isCustomerModalOpen=false;
+  }
+
   onSave() {
     if (!this.isEdit) {
 
@@ -244,11 +248,11 @@ export class PhotoSelectionComponent {
       this.service.createCustomer(params, (res: any) => {
         if (res.status == 200) {
           this.alert.success(res.message);
-          this.isCustomerModalOpen=false;
+         this.closeCustomerModal();
           this.getAllCustomers();
         } else {
           this.alert.error(res.message);
-          this.onCancel();
+          // this.onCancel();
         }
       })
     }

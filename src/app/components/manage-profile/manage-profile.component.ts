@@ -27,6 +27,7 @@ export class ManageProfileComponent {
   tempStudioIcon: any = '';
   userData: any = {};
   showLogOutModal: boolean = false;
+  iconLoader: boolean = false;
   constructor(private fb: FormBuilder,
      private service: AdminService,
       private alert: AlertService,
@@ -87,6 +88,7 @@ export class ManageProfileComponent {
   }
 
   onImgUpload(event: any) {
+    this.iconLoader = true;
     const file = event.target.files[0];
     const reader = new FileReader();
 
@@ -99,7 +101,7 @@ export class ManageProfileComponent {
 
       uploadTask.then(async () => {
         const url = await getDownloadURL(fileRef);
-        console.log(url, "dsadad");
+         this.iconLoader = false;
         this.userForm.patchValue({ studio_icon: url })
       })
     }

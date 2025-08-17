@@ -271,7 +271,7 @@
                         <!-- Customer List -->
                         <div *ngFor="let customer of customers" (click)="selectCustomer(customer)"
                             class="px-4 py-2 hover:bg-indigo-50 cursor-pointer"
-                            [ngClass]="{'bg-[#494CA2] font-semibold': customer.id === event_config.customer_id}">
+                            [ngClass]="{'bg-[#494CA2] font-semibold text-white': customer.id === event_config.customer_id}">
                             {{ customer.name }}
                         </div>
                     </div>
@@ -401,7 +401,7 @@
         </div>
 
         <div class="bg-gray-50 p-4 flex justify-end gap-4 rounded-b-lg">
-            <button (click)="onCancel()"
+            <button (click)="closeCustomerModal()"
                 class="px-6 py-2 rounded-full bg-white text-gray-700 cursor-pointer font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                 Cancel
             </button>

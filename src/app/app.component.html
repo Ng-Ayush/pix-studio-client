@@ -1,5 +1,7 @@
 <app-loader></app-loader>
-<!-- <app-side-bar></app-side-bar> -->
-<router-outlet />
+ <div class="loader-overlay" *ngIf="showLoader">
+  <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
+</div>
+<router-outlet/>
 <app-upload-image-progress></app-upload-image-progress>
 <app-delete-image-process></app-delete-image-process>
