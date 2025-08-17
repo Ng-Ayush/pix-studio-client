@@ -27,6 +27,7 @@ export class AddManageFeaturesComponent {
   categoryNames: any = [];
   thumbnailLoader: boolean = false;
   storage = inject(Storage);
+  date:any = new Date();
 
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
@@ -116,7 +117,7 @@ export class AddManageFeaturesComponent {
     reader.onload = async () => {
       let compressedImage = reader.result as string;
       let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `features/youtube_thumbnails/${file.name}`);
+      const fileRef = ref(this.storage, `features/youtube_thumbnails/${file.name}_${new Date().getTime()}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
 
       uploadTask.then(async () => {
