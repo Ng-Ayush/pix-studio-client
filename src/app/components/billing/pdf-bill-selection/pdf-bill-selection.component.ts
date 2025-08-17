@@ -127,7 +127,7 @@ export class PdfBillSelectionComponent {
           printWindow.close();
         }, 500);
       }
-      this.exportMode=false;
+      this.exportMode = false;
     }, 100);
 
   }
@@ -136,34 +136,41 @@ export class PdfBillSelectionComponent {
     this.loader.show();
     this.exportMode = true;
     setTimeout(async () => {
+      try {
+        const data = document.getElementById(this.selectedTemplateId);
+        const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
+        const canvas = await html2canvas(data!, { useCORS: true });
 
-      const data = document.getElementById(this.selectedTemplateId);
-      const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
-      const canvas = await html2canvas(data!, { useCORS: true });
+        const A4_WIDTH = 210;
+        const A4_HEIGHT = 297;
+        const MARGIN = 10;
 
-      const A4_WIDTH = 210;
-      const A4_HEIGHT = 297;
-      const MARGIN = 10;
+        const imgWidth = A4_WIDTH - 2 * MARGIN;
+        const ratio = imgWidth / canvas.width;
+        const imgHeight = canvas.height * ratio;
 
-      const imgWidth = A4_WIDTH - 2 * MARGIN;
-      const ratio = imgWidth / canvas.width;
-      const imgHeight = canvas.height * ratio;
+        const contentY = MARGIN + 15; // space for logo
+        const availableHeight = A4_HEIGHT - contentY - MARGIN;
+        const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
 
-      const contentY = MARGIN + 15; // space for logo
-      const availableHeight = A4_HEIGHT - contentY - MARGIN;
-      const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
+        const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+        if (logo) {
+          pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+        }
 
-      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
-      if (logo) {
-        pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+        const contentDataURL = canvas.toDataURL('image/png');
+        pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+
+        pdf.save(`exported-file_${Date.now()}.pdf`);
+        this.loader.hide();
+        this.exportMode = false;
+        this.alert.success('PDF downloaded successfully.');
       }
-
-      const contentDataURL = canvas.toDataURL('image/png');
-      pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
-
-      pdf.save(`exported-file_${Date.now()}.pdf`);
-      this.loader.hide();
-      this.exportMode = false;
+      catch (error) {
+        this.alert.error('Error downloading pdf');
+        this.exportMode = false;
+        this.loader.hide();
+      }
     }, 100);
 
   }
