@@ -101,12 +101,16 @@ export class NewBillComponent {
     this.getAllInvoiceItems();
   }
 
-  fetchLastInsertedInvoiceNumber() {
-    this.billingService.getLastInsertedInvoiceNumber((res: any) => {
-      if (res.status == 200) {
-        this.invoiceConfig.invoice_number = +res.lastInvoiceId + 1;
-      }
-    })
+  async fetchLastInsertedInvoiceNumber() {
+    return new Promise((resolve, reject) => {
+      this.billingService.getLastInsertedInvoiceNumber((res: any) => {
+        if (res.status == 200) {
+          this.invoiceConfig.invoice_number = +res.lastInvoiceId + 1;
+          resolve(true)
+        }
+      })
+    });
+
   }
 
   addItem() {
@@ -337,13 +341,16 @@ export class NewBillComponent {
 
   }
 
-  generateInvoice(isEinvoice?: boolean) {
+  async generateInvoice(isEinvoice?: boolean) {
     this.loader.show();
     if (!this.checkBillFormIsValid()) {
       this.loader.hide();
       this.alert.error('Please check mandatory fields or total value cannot be negative');
       return;
     };
+
+    await this.fetchLastInsertedInvoiceNumber();
+
     const params: any = {
       ...this.invoiceConfig,
       total: +this.subTotal,
@@ -452,7 +459,7 @@ export class NewBillComponent {
       if (res.status == 200) {
         this.alert.success(res.message);
         this.partyConfig.id = res.id;
-        this.selectParty(this.partyConfig)  
+        this.selectParty(this.partyConfig)
         this.loader.hide();
         this.closeModal();
         this.fetchPartyList();
