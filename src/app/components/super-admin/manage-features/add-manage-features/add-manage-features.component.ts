@@ -38,7 +38,7 @@ export class AddManageFeaturesComponent {
       youtube_url: ['', [Validators.required]],
       drive_url: ['', [Validators.required]],
       description: ['',],
-      is_new_arrival: ['',],
+      is_new_arrival: [false,],
       youtube_thumbnail: ['', [Validators.required]],
 
     });
