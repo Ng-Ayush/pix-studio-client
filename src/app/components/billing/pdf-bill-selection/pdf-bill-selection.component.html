@@ -301,6 +301,9 @@
                                                     [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
                                                     <th>#</th>
                                                     <th colspan="5" class="py-2 px-2">Item Name</th>
+
+                                                    <th class="py-2 px-2">Booking Date</th>
+                                                    <th class="py-2 px-2">Location</th>
                                                     <th class="py-2 px-2">Qty</th>
                                                     <th class="py-2 px-2">Price</th>
                                                     <th class="py-2 px-2">Amount</th>
@@ -312,6 +315,8 @@
                                                     <td>{{idx+1}}</td>
                                                     <td colspan="5" class="py-2 px-2 font-medium">{{ item.item_name }}
                                                     </td>
+                                                    <td class="py-2 px-2">{{ item.booking_date | date: 'MMM d, y'   }}</td>
+                                                    <td class="py-2 px-2">{{ item.location   }}</td>
                                                     <td class="py-2 px-2">{{ item.quantity   }}</td>
                                                     <td class="py-2 px-2">₹{{ item.sale_price }}</td>
                                                     <td class="py-2 px-2">₹{{ item.quantity * item.sale_price }}</td>
