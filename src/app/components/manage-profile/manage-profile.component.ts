@@ -8,6 +8,7 @@ import { AdminService } from '../../services/admin.service';
 import { AlertService } from '../../services/alert.service';
 import { getMetadata } from 'firebase/storage';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { ImageCompressionService } from '../../services/image-compression.service';
 @Component({
   selector: 'app-manage-profile',
   standalone: true,
@@ -26,7 +27,13 @@ export class ManageProfileComponent {
   tempStudioIcon: any = '';
   userData: any = {};
   showLogOutModal: boolean = false;
-  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder,
+     private service: AdminService,
+      private alert: AlertService,
+       private route: ActivatedRoute,
+        private router: Router,
+        private imgCompress:ImageCompressionService
+      ) {
     this.userForm = this.fb.group({
       studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -38,7 +45,7 @@ export class ManageProfileComponent {
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
     });
-    this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    // this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
   ngOnInit() {
@@ -50,6 +57,7 @@ export class ManageProfileComponent {
   getUserDataCurrentId() {
     this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
       localStorage.setItem("userData", JSON.stringify(res));
+      this.userData = res;
       this.userForm.patchValue(res)
     })
 
@@ -86,7 +94,7 @@ export class ManageProfileComponent {
     reader.onload = async () => {
       let compressedImage = reader.result as string;
       let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `studio-icon/${this.userForm.value.studio_name.split(" ").join("_")}/${this.userForm.value.id}`);
+      const fileRef = ref(this.storage, `studio-icon/${this.userForm.value.studio_name.split(" ").join("_")}/${this.userData.id}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
 
       uploadTask.then(async () => {

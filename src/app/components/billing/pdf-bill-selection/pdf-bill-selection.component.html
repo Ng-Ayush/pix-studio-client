@@ -101,9 +101,9 @@
                 <div class="flex-1 flex overflow-hidden gap-6">
                     <!-- Template Display Area (ngSwitch) -->
                     <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
-                        <div [ngSwitch]="selectedTemplateId" class="flex justify-center" id="print-section">
+                        <div [ngSwitch]="selectedTemplateId" class="flex justify-center" >
                             <!-- Template 1: Invoice Template -->
-                            <div *ngSwitchCase="'template1'">
+                            <div *ngSwitchCase="'template1'" [id]="selectedTemplateId">
                                 <div class="overflow-y-auto border-2">
                                     <section class="container-fluid container-lg invoice-template-root">
                                         <div class="row justify-content-center overflow-hidden my-5">
@@ -258,7 +258,7 @@
 
                             <!-- Template 2 Placeholder -->
                             <div *ngSwitchCase="'template2'"
-                                class="flex items-center justify-center border-2 text-xl font-medium">
+                                class="flex items-center justify-center border-2 text-xl font-medium" [id]="selectedTemplateId">
                                 <div class="w-[800px] mx-auto p-4 font-sans text-sm">
                                     <!-- Header -->
                                     <div class="flex justify-between items-center mb-4">

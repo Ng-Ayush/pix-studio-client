@@ -8,6 +8,8 @@ import { BillingService } from '../../../services/billing.service';
 import { LoaderService } from '../../../shared/loader.service';
 import { AdminService } from '../../../services/admin.service';
 import { AppConstants } from '../../super-admin/users/constants/app.constants';
+import * as jsPDF from 'jspdf';
+import html2canvas from 'html2canvas-pro';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
@@ -41,12 +43,12 @@ export class PdfBillSelectionComponent {
   @ViewChild('autoTextarea') textareaRef!: ElementRef;
 
   currentInvoiceId: any = -1;
-  currentUserId:any=0;
-  userData:any={};
+  currentUserId: any = 0;
+  userData: any = {};
   showLogOutModal: boolean = false;
 
 
-  constructor(private adminService:AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router,private location:LocationStrategy) {
+  constructor(private adminService: AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router, private location: LocationStrategy) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
@@ -57,9 +59,9 @@ export class PdfBillSelectionComponent {
     // this.getUserData();   //to be commented and removed in future.
   }
 
-  getUserData(){
-     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
-      this.adminService.getUsersByCurrentId(this.currentUserId, (res: any) => {
+  getUserData() {
+    this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+    this.adminService.getUsersByCurrentId(this.currentUserId, (res: any) => {
       // localStorage.setItem("user_data",JSON.stringify(res));
       console.log(res);
       this.userData = res;
@@ -73,9 +75,9 @@ export class PdfBillSelectionComponent {
         console.log(res);
         this.invoiceBillConfig = res.data;
         this.invoiceBillConfig['priceInWords'] = this.commonService.convertToRupeesInWords(+this.invoiceBillConfig.total);
-        this.invoiceBillConfig.tnc = res.data.terms_and_conditions ||  this.userData?.terms_and_condition || null;
+        this.invoiceBillConfig.tnc = res.data.terms_and_conditions || this.userData?.terms_and_condition || null;
         console.log(this.invoiceBillConfig.tnc);
-        
+
         this.countTotalAndTotalQty();
       }
     })
@@ -96,9 +98,10 @@ export class PdfBillSelectionComponent {
   }
 
   printSection() {
-    const content = document.getElementById('print-section');
+    const content = document.getElementById(this.selectedTemplateId);
     const head = document.head.cloneNode(true) as HTMLElement;
-
+    const logoHTML = `<img src="${this.userData?.studio_icon}" alt="Logo" style="width:100px; margin-bottom:20px;">`;
+    console.log(logoHTML);
     const printWindow = window.open('', '', 'width=800,height=900');
     if (printWindow && content) {
       printWindow.document.open();
@@ -122,12 +125,37 @@ export class PdfBillSelectionComponent {
     }
   }
 
-  downloadPDF(): void {
+  async downloadPDF() {
+    this.loader.show();
+    const data = document.getElementById(this.selectedTemplateId);
+    const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
+    const canvas = await html2canvas(data!, { useCORS: true });
 
+    const A4_WIDTH = 210;
+    const A4_HEIGHT = 297;
+    const MARGIN = 10;
+
+    const imgWidth = A4_WIDTH - 2 * MARGIN;
+    const ratio = imgWidth / canvas.width;
+    const imgHeight = canvas.height * ratio;
+
+    const contentY = MARGIN + 15; // space for logo
+    const availableHeight = A4_HEIGHT - contentY - MARGIN;
+    const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
+
+    const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+    if (logo) {
+      pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+    }
+
+    const contentDataURL = canvas.toDataURL('image/png');
+    pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+
+    pdf.save(`exported-file_${Date.now()}.pdf`);
+    this.loader.hide();
   }
 
   ngAfterViewInit() {
-    // Initial resize after view is ready
     this.resizeTextarea();
   }
 
@@ -139,7 +167,7 @@ export class PdfBillSelectionComponent {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
-  saveAndClose(isUpdated?:boolean) {
+  saveAndClose(isUpdated?: boolean) {
     this.loader.show();
     const params: any = {
       invoice_id: this.currentInvoiceId,
@@ -150,9 +178,9 @@ export class PdfBillSelectionComponent {
         this.loader.hide();
         this.alert.success(res.message);
         this.invoiceBillConfig.estimate_id = res?.estimate_id;
-        if(isUpdated){
+        if (isUpdated) {
           this.updateAndconvertToSales()
-        }else{
+        } else {
           this.router.navigate(['billing']);
         }
       } else {
@@ -179,13 +207,13 @@ export class PdfBillSelectionComponent {
     const params: any = {
       terms_and_conditions: this.invoiceBillConfig.tnc
     };
-    this._service.updateEstimate(this.invoiceBillConfig?.invoice_id, params,(res: any) => {
+    this._service.updateEstimate(this.invoiceBillConfig?.invoice_id, params, (res: any) => {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        if(isUpdated){
+        if (isUpdated) {
           this.updateAndconvertToSales()
-        }else{
+        } else {
           this.router.navigate(['billing']);
         }
       } else {
@@ -195,30 +223,30 @@ export class PdfBillSelectionComponent {
     });
   }
 
-  directconvertToSales(){
+  directconvertToSales() {
     this.loader.show();
-    if(this.invoiceBillConfig.tnc && this.invoiceBillConfig.estimate_id){
+    if (this.invoiceBillConfig.tnc && this.invoiceBillConfig.estimate_id) {
       this.updateAndClose(true);
-    }else{
+    } else {
       this.saveAndClose(true)
     }
   }
 
-  updateAndconvertToSales(){
+  updateAndconvertToSales() {
     this.loader.show();
     this._service.convertToSales(this.currentInvoiceId, (res: any) => {
-      if(res.status == 200){
+      if (res.status == 200) {
         this.alert.success(res.message);
         this.loader.hide();
         this.getInvoiceDetailsById();
-      }else{
-          this.loader.hide();
-          this.alert.error(res.message);
-        }
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
     })
   }
 
-  backToBill(){
+  backToBill() {
     this.location.back();
   }
 
@@ -226,7 +254,7 @@ export class PdfBillSelectionComponent {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-    logout() {
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
