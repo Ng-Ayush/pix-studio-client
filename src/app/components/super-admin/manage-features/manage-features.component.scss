@@ -29,7 +29,7 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    position : sticky;
+    position: sticky;
     bottom: 275px;
     top: 275px;
 }
@@ -250,4 +250,17 @@
         opacity: 0;
         transform: scale(0.95);
     }
+}
+.viewport {
+  display: block;   /* required for scrolling */
+  height: 500px;    /* adjust height */
+  overflow: auto;   /* scrollable */
+}
+
+table th{
+    width: 300px;
+}
+
+table td{
+   width: 350px;
 }

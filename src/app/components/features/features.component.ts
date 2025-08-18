@@ -9,11 +9,12 @@ import { environment } from '../../../environments/environment';
 import { AlertService } from '../../services/alert.service';
 import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule,ScrollingModule],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
 })

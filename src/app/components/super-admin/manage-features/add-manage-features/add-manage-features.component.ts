@@ -39,6 +39,7 @@ export class AddManageFeaturesComponent {
       drive_url: ['', [Validators.required]],
       description: ['',],
       is_new_arrival: [false,],
+      is_unique_feature: [false,],
       youtube_thumbnail: ['', [Validators.required]],
 
     });
@@ -87,6 +88,7 @@ export class AddManageFeaturesComponent {
             this.router.navigate(['admin/manage-features'])
           } else {
             this.alert.error(res.message);
+            this.isSubmitting = false;
           }
         })
       }

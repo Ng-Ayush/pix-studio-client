@@ -5,11 +5,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
 import { AlertService } from '../../../services/alert.service';
-
+import {ScrollingModule} from '@angular/cdk/scrolling';
 @Component({
   selector: 'app-manage-features',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink ],
+  imports: [CommonModule, FormsModule, RouterLink,ScrollingModule ],
   templateUrl: './manage-features.component.html',
   styleUrl: './manage-features.component.scss'
 })
@@ -100,5 +100,9 @@ export class ManageFeaturesComponent {
 
   back(){
     this.router.navigate(['/admin/dashboard']);
+  }
+
+  trackById(index: number, item: any) {
+    return item.id;
   }
 }

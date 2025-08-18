@@ -29,7 +29,7 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    position : sticky;
+    position: sticky;
     bottom: 275px;
 }
 
@@ -315,4 +315,11 @@
         opacity: 1;
         transform: scale(1);
     }
+}
+
+.viewport {
+    height: 700px;
+    width: 100%;
+    display: block;
+    overflow: auto;
 }
