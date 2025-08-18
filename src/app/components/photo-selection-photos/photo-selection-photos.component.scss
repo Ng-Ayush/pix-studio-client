@@ -557,3 +557,11 @@
     color: #6c5ce7;
     margin-top: 5px;
 }
+
+.viewport {
+    height: 800px;
+    /* or any fixed height like 700px */
+    width: 100%;
+    display: block;
+    overflow: auto;
+}

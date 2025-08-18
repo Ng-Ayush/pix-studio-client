@@ -101,7 +101,7 @@
 
         <cdk-virtual-scroll-viewport itemSize="50" class="viewport">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <div *cdkVirtualFor="let card of features; let i = index; trackBy: trackByFn"
+            <div *cdkVirtualFor="let card of features; let i = index; trackBy: trackByCdkFn"
               class="w-full max-w-sm h-auto shadow-lg hover:bg-indigo-50 cursor-pointer rounded-lg">
 
               <div class="shadow-lg mb-4">

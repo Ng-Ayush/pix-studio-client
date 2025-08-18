@@ -11,11 +11,12 @@ import { ImageCompressionService } from '../../services/image-compression.servic
 import { AlertService } from '../../services/alert.service';
 import { UploadImgBackgroundService } from '../../services/upload-img-background.service';
 import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-photo-selection-photos',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage],
+  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage,ScrollingModule],
   templateUrl: './photo-selection-photos.component.html',
   styleUrl: './photo-selection-photos.component.scss'
 })

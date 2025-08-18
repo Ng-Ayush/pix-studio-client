@@ -252,4 +252,8 @@ export class FeaturesComponent {
     this.router.navigate(['/login']);
   }
 
+  trackByCdkFn(index: number, item: any) {
+    return item.id;
+  }
+
 }
