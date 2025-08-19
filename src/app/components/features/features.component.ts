@@ -93,6 +93,8 @@ export class FeaturesComponent {
 
   playVideo(card: any): void {
     this.selectedCard = card;
+    console.log(card);
+    
     // const randomVideoId = this.extractYoutubeId(card.youtube_url);
     // const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
     // this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
@@ -133,9 +135,9 @@ export class FeaturesComponent {
         order_id: order.data.id,
         handler: (response: any) => {
           // 2. Send payment info to backend for verification
-          console.log("GOTHE ORDER", response);
-
-          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature }
+          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature,feature_id:this.selectedCard.id,amount:this.selectedCard.price }
+          console.log(data);
+          
           this._adminService.verifyPayment(data, (res: any) => {
             console.log("GOT PAYMENT", res);
 
@@ -145,6 +147,7 @@ export class FeaturesComponent {
               this.showDriveLink = true;
               this.automaticStartDownload();
               this.alert.success("Feature bought successfully");
+              this.getFeaturesByNewArrival();
             } else {
               this.showVideoModal = false;
               // this.showDriveLink = true;
