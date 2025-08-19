@@ -5,11 +5,12 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
 import { AlertService } from '../../services/alert.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-image-listing-screen',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage],
+  imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage,ScrollingModule],
   templateUrl: './image-listing-screen.component.html',
   styleUrl: './image-listing-screen.component.scss'
 })
@@ -137,8 +138,8 @@ export class ImageListingScreenComponent {
 
   viewImage(image:any) {
     console.log(image);
-    
     this.currentImage = image;
     this.showImageModal = true;
   }
+  
 }
