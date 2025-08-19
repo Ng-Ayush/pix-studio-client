@@ -27,7 +27,7 @@ export class AddManageFeaturesComponent {
   categoryNames: any = [];
   thumbnailLoader: boolean = false;
   storage = inject(Storage);
-  date:any = new Date();
+  date: any = new Date();
 
 
   constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
@@ -75,7 +75,7 @@ export class AddManageFeaturesComponent {
             this.isSubmitting = false;
             this.router.navigate(['admin/manage-features'])
           } else {
-
+            this.isSubmitting = false;
             this.alert.error(res.message);
           }
         })
@@ -87,14 +87,15 @@ export class AddManageFeaturesComponent {
             this.isSubmitting = false;
             this.router.navigate(['admin/manage-features'])
           } else {
-            this.alert.error(res.message);
             this.isSubmitting = false;
+            this.alert.error(res.message);
           }
         })
       }
     } else {
       this.featureForm.markAllAsTouched();
     }
+     this.isSubmitting = false;
   }
 
 
