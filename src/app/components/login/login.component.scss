@@ -89,11 +89,29 @@
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+@keyframes moveBG {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 1000px 1000px;
+    }
+}
+
+.animated-bg {
+    background: url('https://www.transparenttextures.com/patterns/45-degree-fabric-light.png'),
+        #1e3a8a;
+    /* Tailwind blue-900 fallback */
+    background-size: 200px 200px;
+    animation: moveBG 60s linear infinite;
 }
