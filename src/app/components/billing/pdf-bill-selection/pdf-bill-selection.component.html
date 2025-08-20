@@ -100,147 +100,117 @@
         </div>
 
         <div class="flex-1 flex overflow-hidden gap-6">
-          <!-- Template Display Area (ngSwitch) -->
           <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
             <div [ngSwitch]="selectedTemplateId" class="flex justify-center">
-              <!-- Template 1: Invoice Template -->
-              <div *ngSwitchCase="'template1'" [id]="selectedTemplateId">
-                <div class="overflow-y-auto border-2">
-                  <section class="container-fluid container-lg invoice-template-root">
-                    <div class="row justify-content-center overflow-hidden my-5">
-                      <div class="col-lg-8 col-md-10 col-sm-12 col-12">
-                        <div class="bg-body-tertiary py-4 py-md-5 px-lg-5 px-4">
-                          <!-- Invoice header  -->
-                          <div class="d-block d-md-flex justify-content-between align-items-center">
-                            <div class="d-block d-md-flex align-items-center gap-md-4">
-                              <img src="https://placehold.co/80x80/000000/FFFFFF?text=Logo" alt=""
-                                class="img-fluid col-lg-2 col-md-2 col-sm-2 col-2 rounded-circle">
-                              <div>
-                                <p class="lead fw-bold text-uppercase mb-0 pb-0 fs-4 my-2 my-md-0 lh-base">
-                                  {{invoiceBillConfig.staffDetails}}</p>
-                                <p class="mb-0 fw-medium text-muted"># 7th cross . 24 th
-                                  man , koramangala<br>Phone no : 9876543210<br>Email
-                                  : Gstorell gmail.com<br>State : 29 Karnataka</p>
-                              </div>
-                            </div>
-                            <div>
-                              <h1 class="display-6 fw-bolder text-dark-emphasis text-uppercase mb-0 my-4 my-md-0">
-                                Estimate
-                              </h1>
-                            </div>
-                          </div>
-                          <!-- Invoice header  -->
-
-                          <!-- invoice body -->
-                          <div
-                            class="invoice-details d-flex justify-content-between align-items-start my-5 py-md-4 mb-4">
-                            <div>
-                              <p class="fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Estimate For :</p>
-                              <p class="client-name fw-normal mb-0">
-                                {{invoiceBillConfig.party_name}}</p>
-                            </div>
-                            <div>
-                              <p class="fw-normal mb-0">Estimate No. :
-                                <span class="invoice-number ">{{invoiceBillConfig.invoiceNumber}}</span>
-                              </p>
-                              <p class="fw-normal mb-0">Date :
-                                <span class="invoice-date ">{{invoiceBillConfig.invoiceDate}}</span>
-                              </p>
-                            </div>
-                          </div>
-
-                          <div class="item-desc">
-                            <div class="details-table">
-                              <table class="table table-responsive bg-transparent table-borderless">
-                                <thead>
-                                  <tr class="text-uppercase fs-6 table-head">
-                                    <th class="rounded-start-pill">Item name</th>
-                                    <th>HSN / SAC</th>
-                                    <th>Quantity</th>
-                                    <th>Price / Unit</th>
-                                    <th>Discount</th>
-                                    <th>GST Amount</th>
-                                    <th class="rounded-end-pill">Total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr class="first-row" *ngFor="let item of invoiceBillConfig.billItems">
-                                    <td>{{item.item}}</td>
-                                    <td>1234</td> <!-- HSN/SAC mock -->
-                                    <td>{{item.qty}}</td>
-                                    <td>{{item.price}}</td>
-                                    <td>3.06 (5%)</td> <!-- Discount mock -->
-                                    <td>7.50</td> <!-- GST Amount mock -->
-                                    <td>{{item.totalPrice}}</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-
-                          <div class="row justify-content-center align-items-start g-5 mt-5">
-                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                              <h6 class="fw-bold">ESTIMATE AMOUNT IN WORDS</h6>
-                              <p class="small">{{invoiceBillConfig.priceInWords}}</p>
-                              <h6 class="fw-bold">TERMS AND CONDITIONS:</h6>
-                              <!-- <textarea class="small">Make payment within 45 days from the date
-                                                                of final invoice. Thanks for doing business with us!</textarea> -->
-                            </div>
-                            <div class="sub-total col-lg-6 col-md-6 col-sm-12 col-12">
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">Sub Total</h6>
-                                <p class="price fw-light">201.00</p>
-                              </div>
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">Discount</h6>
-                                <p class="price fw-light">3.06</p>
-                              </div>
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">SGST 2.5%</h6>
-                                <p class="price fw-light">3.75</p>
-                              </div>
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">CGST 2.5%</h6>
-                                <p class="price fw-light">3.75</p>
-                              </div>
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">Round off</h6>
-                                <p class="price fw-light">0.44</p>
-                              </div>
-                              <div class="d-flex justify-content-between align-items-center text-uppercase">
-                                <h6 class="text-black fw-bold mb-1">Total</h6>
-                                <p class="price fw-light">{{invoiceBillConfig.totalPrice}}</p>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- invoice body -->
-                        </div>
-
-                        <!-- Invoice footer  -->
-                        <div class="invoice-footer p-4 p-lg-5">
-                          <div
-                            class="row justify-content-center align-items-center rounded-pill bg-dark p-2 text-white">
-                            <div class="col-md-4 col-sm-12 col-12 p-0">
-                              <i class="bi bi-globe-americas pe-2"></i>
-                              <a href="#" class="link-light text-decoration-none">www.xyz.com</a>
-                            </div>
-                            <div class="col-md-4 col-sm-12 col-12 p-0">
-                              <i class="bi bi-telephone-fill pe-2"></i>
-                              <span>123-456-7890</span>
-                            </div>
-                            <div class="col-md-4 col-sm-12 col-12 p-0">
-                              <i class="bi bi-envelope-fill pe-2"></i>
-                              <span>kS6Hj example.com</span>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Invoice footer  -->
+              <div *ngSwitchCase="'template1'" class="flex items-center justify-center border-2 text-xl font-medium" [id]="selectedTemplateId">
+                <div class="w-[800px] mx-auto px-6 py-10 text-sm text-gray-800 font-sans">
+                  <!-- Header -->
+                  <div class="flex justify-between items-center mb-10">
+                    <div class="flex items-center gap-4">
+                      <img src="{{ userData?.studio_icon }}" alt="Logo" class="h-14 w-14 object-cover rounded" />
+                      <div>
+                        <h1 class="text-xl font-bold">{{userData?.studio_name | titlecase}}</h1>
+                        <p class="text-gray-500 text-sm">{{userData?.address}}</p>
                       </div>
                     </div>
-                  </section>
-                </div>
-              </div>
+                    <div class="text-right">
+                      <h2 class="text-3xl font-bold"> {{ invoiceBillConfig.invoice_type == 'sale'? 'SALE': 'ESTIMATE' }} INVOICE</h2>
+                    </div>
+                  </div>
 
+                  <!-- Invoice Info -->
+                  <div class="flex justify-between mb-8">
+                    <div class="space-y-1">
+                      <p class="font-medium">Invoice to:</p>
+                      <h2 class="font-bold">{{ invoiceBillConfig.party_name }}</h2>
+                      <p>{{ invoiceBillConfig.phone_number }}</p>
+                      <p>{{ userData?.address }}</p>
+                    </div>
+                    <div class="text-right space-y-1">
+                      <p><span class="font-bold">INVOICE NO:</span> #{{ invoiceBillConfig?.invoice_number }}</p>
+                      <p><span class="font-bold">Time:</span> {{ invoiceBillConfig?.time }}</p>
+                      <p><span class="font-bold">Date:</span> {{ invoiceBillConfig?.due_date }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Table -->
+                  <div class="overflow-x-auto mb-10">
+                    <table class="min-w-full border border-[#c5a86b] text-sm text-center">
+                      <thead class="bg-[#1f2d3d] text-white">
+                        <tr>
+                          <th class="border border-[#c5a86b] px-3 py-2">No</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">ITEM NAME</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">BOOKING DATE</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">LOCATION</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">QTY</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">PRICE</th>
+                          <th class="border border-[#c5a86b] px-3 py-2">AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
+                          <td class="border border-[#c5a86b] px-3 py-2">{{ idx + 1 }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">{{ item.item_name }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">{{ item.booking_date }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">{{ item.location }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">{{ item.quantity }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">₹{{ item.sale_price }}</td>
+                          <td class="border border-[#c5a86b] px-3 py-2">₹{{ item.quantity * item.sale_price }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="flex justify-between mb-12 gap-10">
+                    <div class="w-1/2 space-y-2">
+                      <p class="font-bold">Terms and Conditions:</p>
+                        <div class="gap-3">
+                            <div *ngIf="exportMode" class="small p-2 w-full" style="white-space:pre-wrap;">
+                              {{ invoiceBillConfig.tnc }}
+                            </div>
+                            <textarea *ngIf="!exportMode" #autoTextarea
+                              class="small p-2 resize-none overflow-hidden w-full border rounded" (input)="resizeTextarea()" rows="5"
+                              cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
+                          </div>
+                    </div>
+
+                    <div class="w-1/3 space-y-2 text-right">
+                      <p><span class="font-bold">Sub Total:</span> ₹ {{ invoiceBillConfig.total }}</p>
+                      <p><span class="font-bold">Discount:</span> {{ invoiceBillConfig.discount_value }}%</p>
+
+                      <div
+                        class="bg-[#28559A] text-white rounded-full px-5 py-2 text-base font-bold inline-block shadow">
+                        Total: ₹ {{ invoiceBillConfig.total }}
+                      </div>
+
+                      <p><span class="font-bold">Advance:</span> ₹ {{ invoiceBillConfig.total -
+                        invoiceBillConfig.balance_left }}</p>
+                      <p><span class="font-bold">Balance ₹:</span> {{ invoiceBillConfig.balance_left }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Footer -->
+                  <div class="border-t pt-6 text-center">
+                    <h2 class="text-lg font-bold mb-4">THANK YOU FOR YOUR BUSINESS</h2>
+
+                    <div class="flex justify-center gap-10 text-sm text-gray-700">
+                      <div class="flex items-center gap-2">
+                        <span class="material-icons text-yellow-600">Call</span>
+                        <span>{{ userData?.phone_number }}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="material-icons text-yellow-600">Email</span>
+                        <span>{{userData?.email}}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="material-icons text-yellow-600">Location</span>
+                        <span>{{ userData?.address }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
               <!-- Template 2 Placeholder -->
               <div *ngSwitchCase="'template2'" class="flex items-center justify-center border-2 text-xl font-medium"
                 [id]="selectedTemplateId">
@@ -251,7 +221,7 @@
                       <img [src]="userData?.studio_icon" class="h-16 w-16" alt="dasda">
                     </div>
                     <div class="text-right">
-                      <h1 class="text-2xl font-semibold">{{userData?.studio_name}}</h1>
+                      <h1 class="text-2xl font-semibold">{{userData?.studio_name | titlecase}}</h1>
                       <p>{{userData?.address}}</p>
                       <p>Phone no: {{userData?.phone_number}}</p>
                     </div>
@@ -951,24 +921,11 @@
 
           <!-- Right Sidebar for Actions -->
           <aside class="w-80 bg-white p-6 shadow-md overflow-y-auto flex-shrink-0 flex flex-col items-center gap-6">
-            <div class="flex flex-col items-center gap-4">
-              <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-full shadow-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
-                            <button
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                                Collect Payment
-                            </button> -->
-            </div>
 
             <div class="w-full border-t border-gray-200 pt-6">
               <h3 class="text-lg font-medium mb-4 text-gray-800">Share Invoice</h3>
               <div class="grid grid-cols-2 gap-4">
-                <button
+                <button (click)="shareViaWhatsapp()" [disabled]="isLoading"
                   class="cursor-pointer flex flex-col items-center justify-center p-4 bg-green-100 rounded-lg hover:bg-green-200 transition duration-200">
                   <img src="https://cdn-icons-png.flaticon.com/512/3128/3128322.png" alt="WhatsApp" class="mb-2" />
                   <span class="text-sm font-medium text-gray-700">WHATSAPP</span>
@@ -1058,4 +1015,8 @@
       </button>
     </div>
   </div>
+</div>
+
+ <div class="loader-overlay" *ngIf="isLoading">
+  <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image"/>
 </div>

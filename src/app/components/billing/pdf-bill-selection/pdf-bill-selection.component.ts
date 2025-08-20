@@ -1,5 +1,5 @@
 import { CommonModule, LocationStrategy } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +10,7 @@ import { AdminService } from '../../../services/admin.service';
 import { AppConstants } from '../../super-admin/users/constants/app.constants';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas-pro';
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
@@ -19,7 +20,7 @@ import html2canvas from 'html2canvas-pro';
 })
 export class PdfBillSelectionComponent {
   todayDate: any = new Date();
-  selectedTemplateId: any = 'template2'
+  selectedTemplateId: any = 'template1';
   selectedColor: any = '#5958b2';
   colors: any = [
     '#5958b2', '#7e57c2', '#42a5f5', '#66bb6a', '#ffee58', '#ffa726', '#ef5350', '#8d6e63',
@@ -47,9 +48,20 @@ export class PdfBillSelectionComponent {
   userData: any = {};
   showLogOutModal: boolean = false;
   exportMode: boolean = false;
+  isLoading: boolean = false;
+  storage = inject(Storage);
 
 
-  constructor(private adminService: AdminService, public constants: AppConstants, private loader: LoaderService, private _service: BillingService, private route: ActivatedRoute, private commonService: CommonService, private alert: AlertService, private router: Router, private location: LocationStrategy) {
+  constructor(private adminService: AdminService,
+    public constants: AppConstants,
+    private loader: LoaderService,
+    private _service: BillingService,
+    private route: ActivatedRoute,
+    private commonService: CommonService,
+    private alert: AlertService,
+    private router: Router,
+    private location: LocationStrategy
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
@@ -132,47 +144,56 @@ export class PdfBillSelectionComponent {
 
   }
 
-  async downloadPDF() {
+  async downloadPDF(isWhatsApp = false): Promise<{ data: Blob } | void> {
     this.loader.show();
     this.exportMode = true;
-    setTimeout(async () => {
-      try {
-        const data = document.getElementById(this.selectedTemplateId);
-        const logo: HTMLImageElement = document.getElementById('logo') as HTMLImageElement;
-        const canvas = await html2canvas(data!, { useCORS: true });
+    this.isLoading = true;
 
-        const A4_WIDTH = 210;
-        const A4_HEIGHT = 297;
-        const MARGIN = 10;
+    try {
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-        const imgWidth = A4_WIDTH - 2 * MARGIN;
-        const ratio = imgWidth / canvas.width;
-        const imgHeight = canvas.height * ratio;
+      const data = document.getElementById(this.selectedTemplateId);
+      if (!data) throw new Error("Template element not found");
 
-        const contentY = MARGIN + 15; // space for logo
-        const availableHeight = A4_HEIGHT - contentY - MARGIN;
-        const adjustedImgHeight = imgHeight > availableHeight ? availableHeight : imgHeight;
+      const logo = document.getElementById('logo') as HTMLImageElement | null;
+      const canvas = await html2canvas(data, { useCORS: true });
 
-        const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
-        if (logo) {
-          pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
-        }
+      const A4_WIDTH = 210;
+      const A4_HEIGHT = 297;
+      const MARGIN = 10;
 
-        const contentDataURL = canvas.toDataURL('image/png');
-        pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+      const imgWidth = A4_WIDTH - 2 * MARGIN;
+      const ratio = imgWidth / canvas.width;
+      const imgHeight = canvas.height * ratio;
 
+      const contentY = MARGIN + 15; // space for logo
+      const availableHeight = A4_HEIGHT - contentY - MARGIN;
+      const adjustedImgHeight = Math.min(imgHeight, availableHeight);
+
+      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+
+      if (logo) {
+        pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+      }
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+
+      if (!isWhatsApp) {
         pdf.save(`exported-file_${Date.now()}.pdf`);
-        this.loader.hide();
-        this.exportMode = false;
         this.alert.success('PDF downloaded successfully.');
+        this.isLoading=false;
       }
-      catch (error) {
-        this.alert.error('Error downloading pdf');
-        this.exportMode = false;
-        this.loader.hide();
-      }
-    }, 100);
 
+      return { data: pdf.output('blob') };
+
+    } catch (error: any) {
+      console.error(error);
+      this.alert.error('Error generating PDF.');
+    } finally {
+      this.exportMode = false;
+      this.loader.hide();
+    }
   }
 
   ngAfterViewInit() {
@@ -280,6 +301,66 @@ export class PdfBillSelectionComponent {
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  async shareViaWhatsapp() {
+    this.loader.show();
+    this.isLoading = true;
+    const data: any = await this.downloadPDF(true);
+    const fileRef = ref(this.storage, `invoice-pdf/${this.invoiceBillConfig.party_name.split(" ").join("_")}/${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`);
+    const uploadTask = uploadBytesResumable(fileRef, data.data, { contentType: 'application/pdf' });
+
+    uploadTask.then(async () => {
+      this.loader.show();
+      const url = await getDownloadURL(fileRef);
+      const params: any = {
+        url: url,
+        party_name: this.invoiceBillConfig.party_name,
+        phone_number: this.invoiceBillConfig.party_phone_number,
+        message_body: `Your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'} Invoice Bill is ready to download.`
+      }
+      this._service.sendPdfViaWhatsApp(params, (res: any) => {
+        if (res.status == 200) {
+          this.loader.hide();
+          this.isLoading = false;
+          this.alert.success(res.message);
+        } else {
+          this.loader.hide();
+          this.isLoading = false;
+          this.alert.error(res.message);
+        }
+      });
+
+    })
+
+  }
+
+  onImgUpload(event: any) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      let compressedImage = reader.result as string;
+      let blob = this.dataURLtoBlob(compressedImage);
+      const fileRef = ref(this.storage, `invoice_pdf/${this.invoiceBillConfig.party_name.split(" ").join("_")}/`);
+      const uploadTask = uploadBytesResumable(fileRef, blob);
+
+      uploadTask.then(async () => {
+        const url = await getDownloadURL(fileRef);
+      })
+    }
+  }
+
+  dataURLtoBlob(dataURL: string) {
+    const byteString = atob(dataURL.split(',')[1]);
+    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([arrayBuffer], { type: mimeString });
   }
 
 }

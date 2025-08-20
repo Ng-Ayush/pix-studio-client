@@ -60,6 +60,8 @@ export class BaseService {
     'getInvoiceByPartyId': '/api/mystudio/billing-customer/getInvoiceByPartyId',
     'getInvoiceById': '/api/mystudio/invoices/getInvoiceById',
     'getLastInvoiceNumber': '/api/mystudio/invoices/getLastInvoiceNumber',
+    'sendPdfViaWhatsApp': '/api/mystudio/invoices/sendPdfViaWhatsApp',
+
 
 
     'addInvoiceItem': '/api/mystudio/invoice-items/addInvoiceItem',

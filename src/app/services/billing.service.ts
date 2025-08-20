@@ -8,17 +8,6 @@ import { Observable, of } from 'rxjs';
 })
 export class BillingService extends BaseService {
 
-  private mockBookings:any = [
-    { date: '2025-08-14', name: 'Suraj', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK001' },
-    { date: '2025-08-14', name: 'Ayush', address: 'Ashiyana, Kanpur', phone: 'XXXXXX', id: 'BK002' },
-    { date: '2025-08-21', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK003' },
-    { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK004' },
-    { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK005' },
-    { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK006' },
-    { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK007' },
-    { date: '2025-08-22', name: 'Dileep Ji', address: 'Ashiyana, Lucknow', phone: 'XXXXXX', id: 'BK008' },
-  ];
-
   constructor(
     http: HttpClient,
   ) {
@@ -95,17 +84,6 @@ export class BillingService extends BaseService {
     return this.putData({}, this.httpUrls['convertToSales'] + "/" + invoiceId, callback)
   }
 
-  getBookingsForDate(date: string) {
-    console.log(32323);
-    
-    const filteredBookings = this.mockBookings.filter((b:any) => b.date == date);
-    return of(filteredBookings); // Return as an Observable
-  }
-
-  getAllBookings() {
-    return of(this.mockBookings);
-  }
-
   saveAdvancePayment(params:any,callback:any){
     return this.postData(params, this.httpUrls['saveAdvancePayment'], callback)
   }
@@ -114,7 +92,12 @@ export class BillingService extends BaseService {
     return this.getData({}, this.httpUrls['getPastPayments']+"/"+invoice_id, callback)
   }
 
+
   getLastInsertedInvoiceNumber(callback:any){
     return this.getData({}, this.httpUrls['getLastInvoiceNumber'], callback)
+  }
+
+  sendPdfViaWhatsApp(params:any,callback:any){
+    return this.postData(params, this.httpUrls['sendPdfViaWhatsApp'], callback)
   }
 }
