@@ -23,9 +23,10 @@ export class PdfBillSelectionComponent {
   selectedTemplateId: any = 'template1';
   selectedColor: any = '#5958b2';
   colors: any = [
-    '#5958b2', '#7e57c2', '#42a5f5', '#66bb6a', '#ffee58', '#ffa726', '#ef5350', '#8d6e63',
-    '#bdbdbd', '#78909c', '#4dd0e1', '#b2ff59', '#ffab00', '#f50057', '#e040fb', '#c6ff00',
-    '#00e5ff', '#ff1744', '#651fff', '#7c4dff', '#40c4ff'
+    '#5958b2', '#565462', '#141a23', '#304e60', '#4c0013', '#684740', '#647c9c', '#8d6e63',
+    '#463d21', '#516580', '#4b3935', '#30414b', '#050638', '#5a0505', '#78359a', '#46039a',
+    '#40c4ff', '#42a5f5', '#66bb6a', '#ffa726', '#ef5350',
+    '#bdbdbd', '#78909c', '#4dd0e1'
   ];
   templates: any = [
     { id: 'template1', name: 'GST Theme 1' },

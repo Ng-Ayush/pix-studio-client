@@ -22,6 +22,9 @@ export class LoginComponent {
   loader: boolean = false;
   otp: any = null;
   userData: any = {};
+  resendDisabled: boolean = true;
+  countdown: number = 30;
+  countdownInterval: any;
 
   constructor(
     private authService: AuthService,
@@ -57,14 +60,14 @@ export class LoginComponent {
 
   handlePin() {
     this.loader = true;
-    if(!this.loginPin){
+    if (!this.loginPin) {
       this.alert.error("Pin is required");
       return;
-    } 
+    }
     const params: any = {
       pin: this.loginPin
     };
-    this.authService.getOTPForPinUser(params, (res: any) => {
+    this.authService.getOTPForPinUser(params, async (res: any) => {
       if (res.status == 200) {
         if (res.role == 'admin') {
           this.alert.success(res.message);
@@ -72,8 +75,14 @@ export class LoginComponent {
           localStorage.setItem("currentUserId", JSON.stringify(currentUser))
           localStorage.setItem("userData", JSON.stringify(res.userData));
           localStorage.setItem('token', res.token);
-          this.userData = res;
-          this.router.navigate(['/dashboard']);
+          this.userData = res.userData;
+          this.showOTPBox = true;
+          const otpRes = await this.sendOTP();
+          console.log(otpRes);
+          if (this.showOTPBox) {
+            this.startResendCountdown();
+          }
+
         } else if (res.role == 'customer' && !res.is_event_submitted) {
           localStorage.setItem("uniqueCode", this.loginPin);
           localStorage.setItem("userData", JSON.stringify(res.data));
@@ -81,7 +90,7 @@ export class LoginComponent {
         } else if (res.role == 'customer' && res.is_event_submitted) {
           this.alert.info("Event already submitted");
         } else if (res.role == 'ai_customer') {
-           localStorage.setItem("userData", JSON.stringify(res.data));
+          localStorage.setItem("userData", JSON.stringify(res.data));
           this.router.navigate(['/ps']);
         }
         this.loader = false;
@@ -93,20 +102,24 @@ export class LoginComponent {
     })
   }
 
-  sendOTP(userData: any) {
-    const params: any = {
-      phone_number: userData.phone_number,
-      name: userData.name,
-      user_id: userData.user_id
-    }
-    this.authService.sendOTP(params, (res: any) => {
-      if (res.status == 200) {
-        console.log(res);
-        this.alert.success(res.message);
-      } else {
-        this.alert.error(res.message);
+  async sendOTP() {
+    return new Promise((resolve, reject) => {
+      const params: any = {
+        phone_number: this.userData.phone_number,
+        name: this.userData.studio_name,
+        user_id: this.userData.id
       }
+      this.authService.sendOTP(params, (res: any) => {
+        if (res.status == 200) {
+          this.alert.success(res.message);
+          resolve(res);
+        } else {
+          this.alert.error(res.message);
+          reject(res);
+        }
+      })
     })
+
   }
 
   handleOTP() {
@@ -116,11 +129,34 @@ export class LoginComponent {
     }
     this.authService.verifyOTPAndLogin(params, (res: any) => {
       if (res.status == 200) {
-        console.log(res);
+        this.router.navigate(['/dashboard']);
         this.alert.success(res.message);
       } else {
         this.alert.error(res.message);
       }
     })
+  }
+
+  resendOTP() {
+    this.sendOTP();
+    this.startResendCountdown();
+  }
+
+  startResendCountdown() {
+    this.resendDisabled = true;
+    this.countdown = 30;
+
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+
+    this.countdownInterval = setInterval(() => {
+      this.countdown--;
+
+      if (this.countdown <= 0) {
+        clearInterval(this.countdownInterval);
+        this.resendDisabled = false;
+      }
+    }, 1000);
   }
 }
