@@ -314,7 +314,7 @@ export class NewBillComponent {
         total: +this.subTotal,
         balance_left: +this.totalAmount,
         invoice_type: this.invoiceConfig.invoice_type,
-        invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
+        invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount ,description:item.description}))),
         discount_value: this.discountAmountVal,
         discount_type: this.discount_type
       }
@@ -491,13 +491,14 @@ export class NewBillComponent {
       party_id: this.invoiceConfig.party_id,
       amount_paid: this.advancePaymentConfig.amount,
       note: this.advancePaymentConfig.note,
-      method: this.advancePaymentConfig.method
+      method: this.advancePaymentConfig.method || 'Online'
     };
 
     this.billingService.saveAdvancePayment(params, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
         this.showAdvancePaymentModal = false;
+        this.advancePaymentConfig = {};
         this.getInvoiceDetailByInvoiceNumber();
       }
     })
