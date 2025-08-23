@@ -7,10 +7,15 @@ import { photoSelectionGuard } from './photo-selection.guard';
 import { superAdminAuthGuard } from './super-admin-auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', pathMatch: 'full',loadComponent: () => import("./shared/home-page/home-page.component").then(m => m.HomePageComponent) },
+
   {
     path: 'login',
     loadComponent: () => import("./components/login/login.component").then(m => m.LoginComponent)
+  },
+  {
+    path: 'about-us',
+    loadComponent: () => import("./shared/about-us/about-us.component").then(m => m.AboutUsComponent)
   },
   {
     path: 'dashboard',

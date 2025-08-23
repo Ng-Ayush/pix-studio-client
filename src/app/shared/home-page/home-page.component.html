@@ -1,0 +1,63 @@
+<div class="bg-gradient-to-r from-[#0b1e52] to-[#1e3a8a] text-white font-sans relative min-h-screen overflow-hidden">
+    <!-- Background Decorations -->
+    <img src="../assets/1.png" alt="background waves"
+        class="absolute bottom-0 left-0 max-w-[40%] w-full opacity-90 pointer-events-none select-none">
+    <img src="../assets/2.png" alt="tech tree"
+        class="absolute bottom-0 right-0 max-w-[70%] w-full pointer-events-none select-none">
+    <img src="../assets/3.png" alt="triangles"
+        class="absolute top-0 right-0 max-w-[30%] w-full pointer-events-none select-none">
+
+    <!-- Main Container -->
+    <div class="flex flex-col md:flex-row items-center justify-between px-10 relative z-10 min-h-screen">
+
+        <!-- Left Section -->
+        <div class="md:w-1/2 space-y-6">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
+                    <div class="w-4 h-4 border-t-2 border-r-2 border-white rounded-full rotate-45"></div>
+                </div>
+                <span class="text-xl font-bold">MY STUDIO</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
+                WHERE <br> CREATIVITY <br> MEETS <br> SIMPLICITY.
+            </h1>
+
+            <!-- Description -->
+            <p class="text-gray-200 text-lg max-w-md">
+                Effortless Photo Selection: Our intuitive mobile app allows you to effortlessly
+                select and organize your photos with just a few taps. Say goodbye to the hassle
+                of manual sorting!
+            </p>
+
+            <!-- Button -->
+            <a href="javascript:void(0);" routerLink="/about-us">
+                <button
+                    class="bg-[#2563eb] cursor-pointer hover:bg-[#1e40af] transition px-8 py-3 rounded-md font-semibold tracking-wide">
+                    ABOUT US
+                </button>
+            </a>
+        </div>
+
+        <!-- Right Section (Application Buttons) -->
+        <div class="md:w-1/2 relative flex flex-col items-start mt-12 md:mt-0 space-y-4">
+            <button
+                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
+                <img src="../assets/desktop.png" alt="desktop" class="w-10 h-10 mr-4" style="filter: invert(1);">
+                <span class="font-bold">DESKTOP APPLICATION</span>
+            </button>
+            <button
+                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
+                <img src="../assets/playstore.png" alt="mobile" class="w-8 h-8 mr-4">
+                <span class="font-bold">MOBILE APPLICATION</span>
+            </button>
+            <button (click)="goToLogin();"
+                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
+                <img src="../assets/web.png" alt="web" class="w-8 h-8 mr-4" style="filter: invert(1);">
+                <span class="font-bold">WEB APPLICATION</span>
+            </button>
+        </div>
+    </div>
+</div>
