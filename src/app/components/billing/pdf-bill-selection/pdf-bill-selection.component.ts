@@ -11,6 +11,7 @@ import { AppConstants } from '../../super-admin/users/constants/app.constants';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas-pro';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
@@ -61,7 +62,8 @@ export class PdfBillSelectionComponent {
     private commonService: CommonService,
     private alert: AlertService,
     private router: Router,
-    private location: LocationStrategy
+    private location: LocationStrategy,
+    private http: HttpClient
   ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
@@ -157,7 +159,7 @@ export class PdfBillSelectionComponent {
       if (!data) throw new Error("Template element not found");
 
       const logo = document.getElementById('logo') as HTMLImageElement | null;
-      const canvas = await html2canvas(data, { useCORS: true });
+      const canvas = await html2canvas(data, { scale: 3, useCORS: true });
 
       const A4_WIDTH = 210;
       const A4_HEIGHT = 297;
@@ -171,19 +173,19 @@ export class PdfBillSelectionComponent {
       const availableHeight = A4_HEIGHT - contentY - MARGIN;
       const adjustedImgHeight = Math.min(imgHeight, availableHeight);
 
-      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4', true);
 
       if (logo) {
-        pdf.addImage(logo.src, 'PNG', MARGIN, MARGIN, 30, 10);
+        pdf.addImage(logo.src, 'JPEG', MARGIN, MARGIN, 30, 10);
       }
 
-      const contentDataURL = canvas.toDataURL('image/png');
-      pdf.addImage(contentDataURL, 'PNG', MARGIN, contentY, imgWidth, adjustedImgHeight);
+      const contentDataURL = canvas.toDataURL('image/JPEG');
+      pdf.addImage(contentDataURL, 'JPEG', MARGIN, contentY, imgWidth, adjustedImgHeight);
 
       if (!isWhatsApp) {
         pdf.save(`exported-file_${Date.now()}.pdf`);
         this.alert.success('PDF downloaded successfully.');
-        this.isLoading=false;
+        this.isLoading = false;
       }
 
       return { data: pdf.output('blob') };
@@ -314,54 +316,39 @@ export class PdfBillSelectionComponent {
     uploadTask.then(async () => {
       this.loader.show();
       const url = await getDownloadURL(fileRef);
-      const params: any = {
-        url: url,
-        party_name: this.invoiceBillConfig.party_name,
-        phone_number: this.invoiceBillConfig.party_phone_number,
-        message_body: `Your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'} Invoice Bill is ready to download.`
-      }
-      this._service.sendPdfViaWhatsApp(params, (res: any) => {
-        if (res.status == 200) {
-          this.loader.hide();
-          this.isLoading = false;
-          this.alert.success(res.message);
-        } else {
-          this.loader.hide();
-          this.isLoading = false;
-          this.alert.error(res.message);
-        }
-      });
+      this.alert.success('PDF ready to share via WhatsApp.');
+      const message = `Hi ${this.invoiceBillConfig.party_name}, your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'
+        } Invoice Bill is ready to download.\n\nLink: ${url}`;
+      const whatsppUrl: any = `https://wa.me/+91${this.invoiceBillConfig.party_phone_number}?text=${encodeURIComponent(message)}`;
+      const whatsappWindow: any = window.open(whatsppUrl, '', "width=300,height=300");
+      setTimeout(() => {
+        whatsappWindow.close();
+      }, 2000);
+      this.isLoading = false;
+      this.loader.hide();
+
+      // ****below code to send pdf media via whatsapp****
+
+      // const params: any = {
+      //   url: url,
+      //   party_name: this.invoiceBillConfig.party_name,
+      //   phone_number: this.invoiceBillConfig.party_phone_number,
+      //   message_body: `Your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'} Invoice Bill is ready to download.`
+      // }
+      // this._service.sendPdfViaWhatsApp(params, (res: any) => {
+      //   if (res.status == 200) {
+      //     this.loader.hide();
+      //     this.isLoading = false;
+      //     this.alert.success(res.message);
+      //   } else {
+      //     this.loader.hide();
+      //     this.isLoading = false;
+      //     this.alert.error(res.message);
+      //   }
+      // });
 
     })
 
-  }
-
-  onImgUpload(event: any) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      let compressedImage = reader.result as string;
-      let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `invoice_pdf/${this.invoiceBillConfig.party_name.split(" ").join("_")}/`);
-      const uploadTask = uploadBytesResumable(fileRef, blob);
-
-      uploadTask.then(async () => {
-        const url = await getDownloadURL(fileRef);
-      })
-    }
-  }
-
-  dataURLtoBlob(dataURL: string) {
-    const byteString = atob(dataURL.split(',')[1]);
-    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([arrayBuffer], { type: mimeString });
   }
 
 }
