@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <aside class="sidebar justify-center">
-       <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -40,16 +40,15 @@
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img [src]="userData.studio_icon" alt=""
-                            class="border radius-md text-white w-[50px] h-[50px]">
+                        <img [src]="userData.studio_icon" alt="" class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, {{userData.studio_name}}</h2>
                     </div>
                 </div>
             </div>
-             <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
-              <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
+            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
+                <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
                         class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -62,40 +61,42 @@
             </div>
         </div>
 
-        <div class="w-full py-8 px-4">
-            <div class="mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-                <div class="flex flex-col md:flex-row">
+        <div class="w-full py-4 px-2">
+            <div class="bg-white rounded-xl px-4 shadow-md overflow-hidden">
+                <div class="flex flex-col lg:flex-row gap-0 lg:gap-4">
                     <!-- Calendar Section -->
-                    <div class="w-full md:w-2/3 p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h1 class="text-2xl font-bold text-gray-800">Event Calendar</h1>
-                            <div class="flex gap-3">
+                    <div class="w-full lg:w-2/3 p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Event Calendar</h1>
+                            <div class="flex gap-2">
                                 <button (click)="prevMonth()"
-                                    class="px-3 py-1 bg-gray-200 cursor-pointer rounded-md hover:bg-gray-300 transition">←</button>
+                                    class="px-2 py-1 bg-gray-200 cursor-pointer rounded hover:bg-gray-300 transition">←</button>
                                 <button (click)="nextMonth()"
-                                    class="px-3 py-1 bg-gray-200 cursor-pointer rounded-md hover:bg-gray-300 transition">→</button>
+                                    class="px-2 py-1 bg-gray-200 cursor-pointer rounded hover:bg-gray-300 transition">→</button>
                             </div>
                         </div>
 
-                        <div class="text-xl font-semibold text-center mb-4 text-gray-700">{{ monthYear }}</div>
+                        <div class="text-lg font-semibold text-center mb-2 text-gray-700">{{ monthYear }}</div>
 
-                        <div class="grid grid-cols-7 gap-1 mb-2">
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Sun</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Mon</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Tue</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Wed</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Thu</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Fri</div>
-                            <div class="text-center font-medium text-gray-500 py-2 lg:text-3xl md:text-2xl sm:text-xl">Sat</div>
+                        <!-- Days of week -->
+                        <div class="grid grid-cols-7 gap-1 mb-1">
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Sun</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Mon</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Tue</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Wed</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Thu</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Fri</div>
+                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Sat</div>
                         </div>
 
-                        <div class="grid grid-cols-7 gap-1 h-screen" *ngIf="calendarDays.length>0">
-                            <div *ngFor="let day of calendarDays;trackBy: trackByDay" style="align-content: center;"
-                                class="calendar-day text-center py-2 cursor-pointer rounded-md hover:bg-blue-50 lg:text-2xl md:text-xl sm:text-lg"
-                                [ngClass]="{'bg-blue-100 font-medium': isToday(day)}"  (click)="showEventDetails(day)">
+                        <!-- Calendar days grid -->
+                        <div class="grid grid-cols-7 gap-1">
+                            <div *ngFor="let day of calendarDays;trackBy: trackByDay"
+                                class="calendar-day text-center py-2 cursor-pointer rounded hover:bg-blue-50 text-sm md:text-lg lg:text-xl"
+                                [ngClass]="{'bg-blue-100 font-medium': isToday(day)}" (click)="showEventDetails(day)">
                                 {{ day.date }}
-                                <div *ngIf="day.events.length" class="flex justify-center mt-1">
-                                    <span *ngFor="let event of day.events" class="event-dot"
+                                <div *ngIf="day.events.length" class="flex justify-center mt-1 gap-1">
+                                    <span *ngFor="let event of day.events" class="event-dot w-2 h-2 rounded-full block"
                                         [ngStyle]="{'background-color': getEventColor(event.index)}"></span>
                                 </div>
                             </div>
@@ -103,99 +104,42 @@
                     </div>
 
                     <!-- Event Details Section -->
-                    <div class=" md:w-1/3 bg-gray-50 p-6 border-l border-gray-200">
-                        <h2 class="text-xl font-semibold mb-4 text-gray-700">Event Details</h2>
-                        <div id="event-display" class="gap-4">
-                            <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow-sm p-4 overflow-y-scroll h-screen">
-                                <h3 class="font-medium text-lg mb-2 text-gray-700">{{ selectedEvent.date }}</h3>
-                                <h2 *ngIf="selectedEvent?.events?.length == 0">No events for this day</h2>
-                                <div class="flex flex-col gap-3">
-                                    <div *ngFor="let event of selectedEvent.events;trackBy: trackByIdx" class="border-l-4 pl-3 py-1 flex items-center gap-3 justify-between"
+                    <div
+                        class="w-full lg:w-1/3 bg-gray-50 p-4 border-l border-gray-200 min-h-[300px] max-h-[600px] overflow-auto">
+                        <h2 class="text-lg md:text-xl font-semibold mb-2 text-gray-700">Event Details</h2>
+                        <div id="event-display">
+                            <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow p-3 overflow-y-auto"
+                                style="max-height:400px;">
+                                <h3 class="font-medium text-base md:text-lg mb-1 text-gray-700">{{ selectedEvent.date }}
+                                </h3>
+                                <h2 *ngIf="selectedEvent?.events?.length == 0" class="text-gray-500">No events for this
+                                    day</h2>
+                                <div class="flex flex-col gap-2">
+                                    <div *ngFor="let event of selectedEvent.events;trackBy: trackByIdx"
+                                        class="border-l-4 pl-3 py-1 flex items-center gap-2 justify-between"
                                         [ngStyle]="{'border-color': getEventColor(event.index)}">
                                         <div>
-                                            <p class="font-medium text-gray-800">{{ event.name }}</p>
-                                            <p class="text-sm text-gray-500">Raebareli</p>
+                                            <p class="font-medium text-gray-800 text-sm md:text-base">{{ event.name }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">Raebareli</p>
                                         </div>
-                                        <p class="text-lg font-bold text-indigo-700">{{event.event_name}}</p>
-                                        <a href="tel:{{ event.phone }}" class="text-sm text-gray-500 hover:underline cursor-pointer">Phone: {{ event.phone }}</a>
+                                        <p class="text-sm md:text-lg font-bold text-indigo-700">{{event.event_name}}</p>
+                                        <a href="tel:{{ event.phone }}"
+                                            class="text-xs text-gray-500 hover:underline cursor-pointer">Phone: {{
+                                            event.phone }}</a>
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="!selectedEvent" class="text-center py-8 text-gray-400">
-                                <img src="https://placehold.co/200x200" alt="No event selected"
-                                    class="mx-auto mb-4 rounded-lg" />
-                                <p>Select a date to view events</p>
+                            <div *ngIf="!selectedEvent" class="text-center py-6 text-gray-400">
+                                <img src="https://placehold.co/120x120" alt="No event selected"
+                                    class="mx-auto mb-2 rounded-lg" />
+                                <p class="text-xs">Select a date to view events</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- <div class="flex flex-col md:flex-row gap-8 p-8 bg-gray-100 min-h-screen">
-            <div class="md:w-1/2">
-                <div class="calendar-container bg-white p-4 rounded-lg shadow-md max-w-lg mx-auto">
-                    <div class="flex justify-between items-center mb-4">
-                        <button (click)="prevMonth()"
-                            class="cursor-pointer px-3 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200">Prev</button>
-                        <h2 class="text-xl font-semibold text-gray-800 capitalize"
-                            style="font-family: 'Dancing Script', cursive;">
-                            {{ currentMonth | date:'MMMM' }}
-                            <span class="text-sm font-normal">{{ currentMonth | date:'yyyy' }}</span>
-                        </h2>
-                        <button (click)="nextMonth()"
-                            class="cursor-pointer px-3 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200">Next</button>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-600">
-                        <div *ngFor="let weekday of weekdays" class="py-2">{{ weekday }}</div>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-1 text-center">
-                        <ng-container *ngFor="let day of days; let i = index">
-                            <div *ngIf="day"
-                                class="relative p-2 rounded-full cursor-pointer transition-colors duration-200"
-                                [class.bg-blue-500]="isSelected(day)" [class.text-white]="isSelected(day)"
-                                [class.bg-blue-100]="isToday(day) && !isSelected(day)"
-                                [class.text-gray-900]="!isSelected(day)" [class.hover:bg-gray-200]="!isSelected(day)"
-                                (click)="onDayClick(day)">
-                                {{ day.getDate() }}
-                                <div *ngIf="hasBooking(day)"
-                                    class="absolute bottom-1 right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
-                            </div>
-                            <div *ngIf="!day" class="p-2"></div>
-                        </ng-container>
-                    </div>
-                </div>
-            </div>
-            <div class="md:w-1/2">
-                <div class="booking-list-container bg-white p-4 rounded-lg shadow-md max-w-lg mx-auto">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">{{ selectedDate|date}}</h3>
-
-                    <div *ngIf="allBookings.length === 0" class="text-gray-600 text-center py-4">
-                        No bookings for this date.
-                    </div>
-
-                    <div *ngFor="let booking of allBookings"
-                        class="flex items-center p-3 mb-3 bg-gray-50 rounded-lg shadow-sm">
-                        <div class="flex-grow">
-                            <p class="font-medium text-gray-900">{{ booking.name }}</p>
-                            <p class="text-gray-700">Rs. 200</p>
-                        </div>
-                        <div class="text-right text-sm p-2 cursor-pointer ">
-                            <a href="tel:+917897909054">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-                            </svg>
-                        </a>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </main>
 </div>
 <div *ngIf="showLogOutModal"
