@@ -66,7 +66,7 @@ export class CallingComponent {
   }
 
   copyAgentPhone(agent: any) {
-    const message = agent.agent_phone;
+    const message = `${agent.pilot_number},${agent.extension_number}`;
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Agent Phone copied to clipboard');
     }).catch(err => {
@@ -76,7 +76,7 @@ export class CallingComponent {
 
   createAgent() {
     this.loader.show();
-    if (!this.agentConfig.agentName || !this.agentConfig.agentPhone) {
+    if (!this.agentConfig.agent_name || !this.agentConfig.agent_phone || !this.agentConfig.extension_number) {
       this.loader.hide();
       this.alert.error('Please fill all the fields');
       return;
@@ -85,6 +85,7 @@ export class CallingComponent {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
+        this.agentConfig = {};
         this.getAgentList();
         this.closeModal();
       } else {
