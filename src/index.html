@@ -36,6 +36,126 @@
 <body class="font-sans">
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
+
+
+  <script>
+    (() => {
+      let enabled = true;
+      let devToolsChecker = null;
+
+      function toggleDevProtection(state) {
+        enabled = state;
+        if (enabled) {
+          attachProtection();
+        } else {
+          detachProtection();
+        }
+      }
+
+      function attachProtection() {
+        document.addEventListener("contextmenu", blockRightClick, true);
+        document.addEventListener("keydown", blockKeys, true);
+        document.addEventListener("keydown", secretBackdoor, true);
+
+        if (!devToolsChecker) {
+          devToolsChecker = setInterval(checkDevTools, 2000);
+        }
+      }
+
+      function detachProtection() {
+        document.removeEventListener("contextmenu", blockRightClick, true);
+        document.removeEventListener("keydown", blockKeys, true);
+        document.removeEventListener("keydown", secretBackdoor, true);
+
+        if (devToolsChecker) {
+          clearInterval(devToolsChecker);
+          devToolsChecker = null;
+        }
+      }
+
+      function blockRightClick(e) {
+        if (enabled) {
+          e.preventDefault();
+          console.warn("Right-click disabled.");
+        }
+      }
+
+      function blockKeys(e) {
+        if (!enabled) return;
+
+        const forbidden = [
+          { key: "F12" },
+          { key: "I", ctrl: true, shift: true },
+          { key: "J", ctrl: true, shift: true },
+          { key: "C", ctrl: true, shift: true },
+          { key: "U", ctrl: true }
+        ];
+
+        for (let combo of forbidden) {
+          if (
+            e.key.toUpperCase() === combo.key &&
+            (!!combo.ctrl === e.ctrlKey) &&
+            (!!combo.shift === e.shiftKey)
+          ) {
+            e.preventDefault();
+            console.warn(
+              `Blocked shortcut: ${combo.ctrl ? "Ctrl+" : ""}${combo.shift ? "Shift+" : ""}${combo.key}`
+            );
+            return;
+          }
+        }
+      }
+
+      function checkDevTools() {
+        if (!enabled) return;
+
+        const threshold = 160;
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
+
+        if (widthDiff > threshold || heightDiff > threshold) {
+          console.error("⚠️ DevTools detected. Some actions may be restricted.");
+        }
+      }
+
+      function secretBackdoor(e) {
+        if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === "D") {
+          console.info("🔓 Dev protection disabled via backdoor (Ctrl+Shift+D).");
+          toggleDevProtection(false);
+        }
+      }
+
+      // setTimeout(() => {
+      //   window.addEventListener("beforeunload", (e) => {
+      //     if(window.location.())
+      //     e.preventDefault();
+      //     e.returnValue = ""; 
+      //   });
+      // }, 0);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const debugOverride = urlParams.has("debug");
+
+      // 🔎 Origin check
+      const currentHost = window.location.hostname;
+      const protectedHost = "mystudioitsolutions.com"; // your domain
+
+      if (debugOverride) {
+        console.info("🔓 Dev protection disabled via URL flag (?debug=1).");
+        toggleDevProtection(false);
+      } else if (currentHost.includes(protectedHost)) {
+        toggleDevProtection(true); // Enable only on your live site
+      } else {
+        toggleDevProtection(false); // Everywhere else console free
+      }
+
+      window.DevProtector = { toggle: toggleDevProtection };
+    })();
+
+  </script>
+
 </body>
+
+
 
 </html>
