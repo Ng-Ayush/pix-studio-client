@@ -97,6 +97,7 @@ export class LoginComponent {
           resolve(res);
         } else {
           this.alert.error(res.message);
+          this.loader=false;
           reject(res);
         }
       })
