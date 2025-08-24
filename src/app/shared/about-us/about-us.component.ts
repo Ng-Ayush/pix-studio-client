@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
         <div class="w-full md:w-1/2">
             <div class="mb-6">
                 <!-- Section Title -->
-                <div class="flex items-center space-x-3 mb-3">
+                <div class="flex items-center gap-3 mb-3">
                     <a href="javascript:void(0);" routerLink="/">
                         <button class="cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
