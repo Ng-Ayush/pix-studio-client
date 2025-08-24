@@ -103,3 +103,21 @@ input[type=number] {
     background-size: 200px 200px;
     animation: moveBG 60s linear infinite;
 }
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0000003e;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader-image {
+    width: 400px;
+    height: 350px;
+}

@@ -15,10 +15,15 @@
         <input type="text" autocomplete="off" class="form-control" id="otp" (input)="checkOtpMaxLength($event)"
             [(ngModel)]="otp" (keyup.enter)="handleOTP()" placeholder="xxx-xxx">
         <div class="mt-2 text-sm flex items-center justify-end gap-5 ">
-            <button [disabled]="resendDisabled" (click)="resendOTP()" class="disabled:text-gray-500 text-white hover:text-indigo-600 cursor-pointer hover:underline text-lg">
+            <button [disabled]="resendDisabled" (click)="resendOTP()"
+                class="disabled:text-gray-500 text-white hover:text-indigo-600 cursor-pointer hover:underline text-lg">
                 Resend OTP
             </button>
             <span *ngIf="resendDisabled" class="inline-block text-white text-lg"> ({{ countdown }}s)</span>
         </div>
     </div>
+</div>
+
+<div class="loader-overlay" *ngIf="loader">
+    <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>

@@ -13,10 +13,6 @@ import { AlertService } from '../../services/alert.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  isLogin = true;
-  email = '';
-  password = '';
-  name = '';
   loginPin: any = null;
   showOTPBox: boolean = false;
   loader: boolean = false;
@@ -25,30 +21,13 @@ export class LoginComponent {
   resendDisabled: boolean = true;
   countdown: number = 30;
   countdownInterval: any;
+  sentOtp: any = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private alert: AlertService
   ) { }
-
-  onSubmit() {
-    if (this.isLogin) {
-      this.authService.login(this.email, this.password).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
-        error: (error) => console.error('Login failed:', error)
-      });
-    } else {
-      this.authService.register(this.email, this.password, this.name).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
-        error: (error) => console.error('Registration failed:', error)
-      });
-    }
-  }
-
-  toggleForm() {
-    this.isLogin = !this.isLogin;
-  }
 
 
   checkOtpMaxLength(event: any) {
@@ -59,6 +38,7 @@ export class LoginComponent {
   }
 
   handlePin() {
+    if(this.loader) return;
     this.loader = true;
     if (!this.loginPin) {
       this.alert.error("Pin is required");
@@ -76,10 +56,10 @@ export class LoginComponent {
           localStorage.setItem("userData", JSON.stringify(res.userData));
           localStorage.setItem('token', res.token);
           this.userData = res.userData;
-          this.showOTPBox = true;
-          const otpRes = await this.sendOTP();
+          const otpRes: any = await this.sendOTP();
           console.log(otpRes);
-          if (this.showOTPBox) {
+          if (otpRes.status == 200) {
+            this.showOTPBox = true;
             this.startResendCountdown();
           }
 
@@ -107,10 +87,12 @@ export class LoginComponent {
       const params: any = {
         phone_number: this.userData.phone_number,
         name: this.userData.studio_name,
-        user_id: this.userData.id
+        user_id: this.userData.id,
+        email: this.userData.email
       }
       this.authService.sendOTP(params, (res: any) => {
         if (res.status == 200) {
+          this.sentOtp = res.otp;
           this.alert.success(res.message);
           resolve(res);
         } else {
@@ -123,15 +105,23 @@ export class LoginComponent {
   }
 
   handleOTP() {
+    this.loader = true;
+    if (this.otp != this.sentOtp) {
+      this.alert.error("Invalid or Expired OTP");
+      this.loader = false;
+      return;
+    }
     const params: any = {
       otp: this.otp || 0,
       user_id: this.userData.user_id
     }
     this.authService.verifyOTPAndLogin(params, (res: any) => {
       if (res.status == 200) {
+        this.loader = false;
         this.router.navigate(['/dashboard']);
         this.alert.success(res.message);
       } else {
+        this.loader = false;
         this.alert.error(res.message);
       }
     })
