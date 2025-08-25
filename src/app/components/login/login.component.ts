@@ -18,7 +18,7 @@ export class LoginComponent {
   loader: boolean = false;
   otp: any = null;
   userData: any = {};
-  resendDisabled: boolean = true;
+  resendDisabled: boolean = false;
   countdown: number = 30;
   countdownInterval: any;
   sentOtp: any = '';
@@ -38,7 +38,7 @@ export class LoginComponent {
   }
 
   handlePin() {
-    if (this.loader) return;
+    if (this.loader || this.resendDisabled) return;
     this.loader = true;
     if (!this.loginPin) {
       this.alert.error("Pin is required");
