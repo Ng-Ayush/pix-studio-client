@@ -38,7 +38,7 @@ export class LoginComponent {
   }
 
   handlePin() {
-    if(this.loader) return;
+    if (this.loader) return;
     this.loader = true;
     if (!this.loginPin) {
       this.alert.error("Pin is required");
@@ -83,6 +83,7 @@ export class LoginComponent {
   }
 
   async sendOTP() {
+    this.loader = true;
     return new Promise((resolve, reject) => {
       const params: any = {
         phone_number: this.userData.phone_number,
@@ -94,10 +95,11 @@ export class LoginComponent {
         if (res.status == 200) {
           this.sentOtp = res.otp;
           this.alert.success(res.message);
+          this.loader = false;
           resolve(res);
         } else {
           this.alert.error(res.message);
-          this.loader=false;
+          this.loader = false;
           reject(res);
         }
       })

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { AiUploadComponent } from './ai-upload/ai-upload.component';
 import { authGuard } from './auth.guard';
 import { photoSelectionGuard } from './photo-selection.guard';
 import { superAdminAuthGuard } from './super-admin-auth.guard';
@@ -21,10 +20,6 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import("./components/dashboard/dashboard.component").then(m => m.DashboardComponent),
     canActivate: [authGuard]
-  },
-  {
-    path: 'ps',
-    loadComponent: () => import("./ai-upload/ai-upload.component").then(m => m.AiUploadComponent),
   },
   {
     path: 'photo-selection',

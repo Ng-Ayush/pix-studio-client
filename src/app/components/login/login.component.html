@@ -11,7 +11,7 @@
             id="pin" placeholder="xxx-xxx">
     </div>
     <div class="form-group" *ngIf="showOTPBox">
-        <label for="otp" class="form-label mb-2 block">OTP from SMS</label>
+        <label for="otp" class="form-label mb-2 block">OTP</label>
         <input type="text" autocomplete="off" class="form-control" id="otp" (input)="checkOtpMaxLength($event)"
             [(ngModel)]="otp" (keyup.enter)="handleOTP()" placeholder="xxx-xxx">
         <div class="mt-2 text-sm flex items-center justify-end gap-5 ">
