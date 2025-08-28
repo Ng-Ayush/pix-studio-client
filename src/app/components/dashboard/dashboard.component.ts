@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { FileService } from '../../services/file.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { interval } from 'rxjs';
-import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
+import { NgApexchartsModule } from 'ng-apexcharts';
+declare var window: any;
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit {
         this.salesSeries = [{ name: 'Sales', data: sales }];
         this.estimateSeries = [{ name: 'Estimates', data: estimates }];
         // this.xAxis = { categories };
+
       }
     });
   }
@@ -106,6 +107,9 @@ export class DashboardComponent implements OnInit {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
+    if (window && window?.electronAPI) {
+      window.electronAPI.logout();
+    }
     this.router.navigate(['/login']);
   }
 

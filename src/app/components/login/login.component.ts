@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../services/alert.service';
+declare var window: any;
 
 @Component({
   selector: 'app-login',
@@ -121,6 +122,9 @@ export class LoginComponent {
     this.authService.verifyOTPAndLogin(params, (res: any) => {
       if (res.status == 200) {
         this.loader = false;
+        if (window && window?.electronAPI) {
+          window.electronAPI.setLogin(true);
+        }
         this.router.navigate(['/dashboard']);
         this.alert.success(res.message);
       } else {
