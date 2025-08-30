@@ -40,6 +40,7 @@ export class AddManageFeaturesComponent {
       description: ['',],
       is_new_arrival: [false,],
       is_unique_feature: [false,],
+      allow_promocode: [false,],
       youtube_thumbnail: ['', [Validators.required]],
 
     });

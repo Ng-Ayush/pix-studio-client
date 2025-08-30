@@ -14,7 +14,7 @@ declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule,ScrollingModule],
+  imports: [CommonModule, RouterModule, FormsModule, ScrollingModule],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
 })
@@ -33,6 +33,8 @@ export class FeaturesComponent {
   selectedCatName: any = 'New Arrival Features';
   userData: any = {};
   showLogOutModal: boolean = false;
+  isPromoApplied: boolean = false;
+  promocode: any = '';
 
   constructor(
     private router: Router,
@@ -94,7 +96,7 @@ export class FeaturesComponent {
   playVideo(card: any): void {
     this.selectedCard = card;
     console.log(card);
-    
+
     // const randomVideoId = this.extractYoutubeId(card.youtube_url);
     // const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
     // this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
@@ -122,60 +124,72 @@ export class FeaturesComponent {
       receipt: 'order_rcptid_11',
     };
 
-    this._adminService.createOrder(params, (order: any) => {
+    try {
 
-      console.log("ORDER ", order);
+      this._adminService.createOrder(params, (order: any) => {
 
-      const options: any = {
-        key: environment.razorpay_key,
-        amount: order.data.amount,
-        currency: order.data.currency,
-        name: 'Suraj Studio',
-        description: 'Test Transaction',
-        order_id: order.data.id,
-        handler: (response: any) => {
-          // 2. Send payment info to backend for verification
-          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature,feature_id:this.selectedCard.id,amount:this.selectedCard.price }
-          console.log(data);
-          
-          this._adminService.verifyPayment(data, (res: any) => {
-            console.log("GOT PAYMENT", res);
+        console.log("ORDER ", order);
 
-            if (res.status == 200) {
-              this.alert.success(res.message);
-              this.showVideoModal = false;
-              this.showDriveLink = true;
-              this.automaticStartDownload();
-              this.alert.success("Feature bought successfully");
-              this.getFeaturesByNewArrival();
-            } else {
-              this.showVideoModal = false;
-              // this.showDriveLink = true;
-              // this.automaticStartDownload();
-              // this.alert.success("Feature bought successfully");
-              this.alert.error(res.message);
-            }
-          })
-        },
-        prefill: {
-          name: 'Test User',
-          email: 'test@example.com',
-          contact: '9999999999',
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
+        if (order.status == 200) {
+          const options: any = {
+            key: environment.razorpay_key,
+            amount: order.data.amount,
+            currency: order.data.currency,
+            name: 'Suraj Studio',
+            description: 'Test Transaction',
+            order_id: order.data.id,
+            handler: (response: any) => {
+              // 2. Send payment info to backend for verification
+              let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature, feature_id: this.selectedCard.id, amount: this.selectedCard.price }
+              // console.log(data);
 
-      const razorpay = new Razorpay(options);
-      razorpay.open();
-    });
+              this._adminService.verifyPayment(data, (res: any) => {
+                // console.log("GOT PAYMENT", res);
+
+                if (res.status == 200) {
+                  this.alert.success(res.message);
+                  this.showVideoModal = false;
+                  // this.showDriveLink = true;
+                  this.automaticStartDownload();
+                  this.alert.success("Feature bought successfully");
+                  this.getFeaturesByNewArrival();
+                } else {
+                  this.showVideoModal = false;
+                  // this.showDriveLink = true;
+                  // this.automaticStartDownload();
+                  // this.alert.success("Feature bought successfully");
+                  this.alert.error(res.message);
+                }
+              })
+            },
+            prefill: {
+              name: 'Test User',
+              email: 'test@example.com',
+              contact: '9999999999',
+            },
+            theme: {
+              color: '#3399cc',
+            },
+          };
+
+          const razorpay = new Razorpay(options);
+          razorpay.open();
+        } else {
+          this.alert.error(order.message);
+        }
+
+      });
+    } catch (error) {
+      console.log(error);
+      this.alert.error(error);
+    }
   }
 
   closeVideo(): void {
     this.showVideoModal = false
     this.selectedCard = null
-    this.currentVideoUrl = ""
+    this.currentVideoUrl = "";
+
   }
 
   copyDriveLink(event: any) {
@@ -257,6 +271,34 @@ export class FeaturesComponent {
 
   trackByCdkFn(index: number, item: any) {
     return item.id;
+  }
+
+  tempFeaturePrice:any='';
+
+  verifyAndApplyPromoCode() {
+    this.tempFeaturePrice = this.selectedCard.price;
+    if(this.isPromoApplied){
+      this.alert.error('Promo code already applied');
+      return;
+    }
+    const params: any = {
+      feature_id: this.selectedCard.id,
+      promocode: this.promocode
+    }
+    this._adminService.verifyAndApplyPromoCode(params, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        if (res?.isFullDiscount) {
+          this.selectedCard.is_purchased = true;
+          this.alert.success("Download it for FREE !");
+        } else if (res?.isPartialDiscount) {
+          this.isPromoApplied = true;
+          this.selectedCard.price = this.selectedCard.price - (res?.discountAmount || 0);
+        }
+      } else {
+        this.alert.error(res.message);
+      }
+    })
   }
 
 }

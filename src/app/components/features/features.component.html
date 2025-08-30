@@ -69,7 +69,8 @@
     </div>
     <div class="py-3 relative">
       <button (click)="resetFilter()" *ngIf="this.selectedCategory"
-        class="absolute cursor-pointer rounded-full left-5 bottom-0 bg-[#494CA2] text-white py-2 px-4 hover:bg-[#494CA2] transition-colors duration-200">New Arrival</button>
+        class="absolute cursor-pointer rounded-full left-5 bottom-0 bg-[#494CA2] text-white py-2 px-4 hover:bg-[#494CA2] transition-colors duration-200">New
+        Arrival</button>
       <div class="flex items-center justify-center gap-5 px-4">
         <ng-container *ngFor="let cat of categoryList;trackBy:trackByFn">
           <label
@@ -106,7 +107,9 @@
 
               <div class="shadow-lg mb-4" [ngClass]="{'relative overflow-hidden':!!card.is_purchased}">
                 <div class="relative cursor-pointer group" (click)="playVideo(card)">
-                  <div class="project" *ngIf="card.is_purchased"><div class="diagonal badge red">Purchased</div></div>
+                  <div class="project" *ngIf="card.is_purchased">
+                    <div class="diagonal badge red">Purchased</div>
+                  </div>
                   <img [src]="card.youtube_thumbnail" class="w-full h-48 object-cover aspect-square" alt="Image"
                     loading="eager">
 
@@ -150,22 +153,50 @@
               allowfullscreen></iframe>
           </div>
 
-          <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div class="mt-6 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+            <!-- Product Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm items-center">
               <div>
-                <p class="mb-2"><strong>Category:</strong> {{ selectedCard?.title }}</p>
+                <p class="mb-2 text-gray-700">
+                  <span class="font-semibold">Category:</span> {{ selectedCard?.category_name}}
+                </p>
               </div>
               <div>
-                <p class="mb-2"><strong>Price:</strong> <span class="text-purple-600 text-lg font-bold"> ₹{{
-                    selectedCard?.price
-                    }}</span></p>
+                <p class="mb-2 text-gray-700">
+                  <span class="font-semibold">Price:</span>
+                  <span class="text-indigo-600 text-lg font-bold"> ₹{{ selectedCard?.price }}</span>
+                </p>
               </div>
+              <ng-container *ngIf="selectedCard?.allow_promocode && !selectedCard?.is_purchased">
+                <div></div>
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                  <input type="text" placeholder="Enter promo code" [(ngModel)]="promocode"
+                    class="flex-1 px-4 uppercase py-2 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                  <button (click)="verifyAndApplyPromoCode()"
+                    class="px-5 cursor-pointer py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">
+                    Apply
+                  </button>
+                </div>
+              </ng-container>
+
             </div>
-            <p class="mt-3 text-gray-600">{{ selectedCard?.description }}</p>
+
+            <!-- Description -->
+            <p class="mt-4 text-gray-600 leading-relaxed">
+              {{ selectedCard?.description }} Lorem ipsum dolor sit amet consectetur adipisicing elit. Error nesciunt
+              asperiores doloremque tempore tempora nemo perferendis exercitationem? Nisi, cumque molestias quis
+              temporibus omnis obcaecati error voluptas expedita quam totam reprehenderit dolores atque quibusdam modi
+              quaerat earum optio similique. Beatae placeat est temporibus. Id doloremque esse ratione aperiam labore
+              corporis omnis!
+            </p>
+
+            <!-- Promo Code Section -->
+
           </div>
 
+
           <div class="mt-4 flex gap-3">
-            <button (click)=" selectedCard.is_purchased ? automaticStartDownload() : payNow()"
+            <button (click)="selectedCard.is_purchased ? automaticStartDownload() : payNow()"
               class="cursor-pointer bg-[#494CA2] text-white py-2 px-4 hover:bg-[#494CA2] transition-colors duration-200">
               {{selectedCard.is_purchased ? "Download" : "Buy Now"}}
             </button>

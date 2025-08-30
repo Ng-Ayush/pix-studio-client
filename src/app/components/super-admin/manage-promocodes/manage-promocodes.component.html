@@ -1,0 +1,310 @@
+<div class="dashboard-container">
+    <aside class="sidebar justify-center">
+        <nav class="sidebar-nav">
+            <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/admin/dashboard']">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+
+            </a>
+            <a [routerLink]="['/admin/notifications']" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
+
+            </a>
+            <a href="javascript:void(0);" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+
+            </a>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="border-l border-white bg-[#494CA2]">
+            <div class="p-5 ps-10">
+                <div class="heading flex gap-7 items-center">
+                    <div class="logo-img">
+                        <img src="../../../assets/logo.png" alt=""
+                            class="border radius-md text-white w-[50px] h-[50px]">
+                    </div>
+                    <div class="header-title">
+                        <h2 class="text-white">Hello, Suraj Production</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="back-btn flex justify-between items-center py-3 px-10 bg-gray-200">
+                <a class="flex items-center cursor-pointer" [routerLink]="['/admin/manage-features']">
+                    <button
+                        class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
+                            <path
+                                d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18">
+                            </path>
+                        </svg> Go back</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="min-h-screen bg-gray-50">
+            <div class="min-h-min   flex items-center justify-center">
+                <div class="bg-white rounded-lg p-8 w-full">
+                    <div class="flex justify-between mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800">List Promocodes </h2>
+                        <button
+                            class="cursor-pointer text-sm bg-[#494CA2] hover:bg-[#494CA2] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-full transition duration-200"
+                            (click)="promocodeModal = true">Add Promocode</button>
+                    </div>
+                    <div class="grid px-4">
+                        <div class="py-8">
+                            <div class="overflow-x-auto">
+                                <div class="shadow-md rounded-lg overflow-hidden">
+                                    <table class="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Sno
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Promocode
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Discount Type
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Discount Value
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Valid From
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Valid To
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Created At
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Status
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="filteredItems.length > 0">
+                                            <tr *ngFor="let cat of filteredItems; let i = index;trackBy : trackByFn">
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{i+1}}
+                                                </td>
+                                                <td class="px-5 py-5 text-md border-b border-gray-200 bg-white font-bolder hover:text-[#494CA2] transition-all duration-200">
+                                                   <a href="javascript:void(0);" (click)="copyMessage(cat.code)">{{cat.code | uppercase}}</a> 
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{cat.discount_type}}
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{cat.discount_value}}
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{(cat?.valid_from | date : 'MMM d,y') || 'N/A'}}
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{(cat?.valid_to | date : 'MMM d,y') || 'N/A'}}
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    {{cat?.created_at | date : 'MMM d,y'}}
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <span class="status-pill flex items-center gap-2 ">
+                                                        <label class="switch">
+                                                            <input [checked]="cat.is_active"
+                                                                (change)="togglePromocodeStatus(cat)" type="checkbox">
+                                                            <div class="slider">
+                                                                <div class="circle">
+                                                                    <svg class="cross" xml:space="preserve"
+                                                                        style="enable-background:new 0 0 512 512"
+                                                                        viewBox="0 0 365.696 365.696" y="0" x="0"
+                                                                        height="6" width="6"
+                                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                        version="1.1"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <g>
+                                                                            <path data-original="#000000"
+                                                                                fill="currentColor"
+                                                                                d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0">
+                                                                            </path>
+                                                                        </g>
+                                                                    </svg>
+                                                                    <svg class="checkmark" xml:space="preserve"
+                                                                        style="enable-background:new 0 0 512 512"
+                                                                        viewBox="0 0 24 24" y="0" x="0" height="10"
+                                                                        width="10"
+                                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                        version="1.1"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <g>
+                                                                            <path class="" data-original="#000000"
+                                                                                fill="currentColor"
+                                                                                d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z">
+                                                                            </path>
+                                                                        </g>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                        </label>
+                                                    </span>
+                                                </td>
+                                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                    <div class="flex gap-3">
+                                                        <button (click)="onDeleteModal(cat)"
+                                                            class="bg-red-100 hover:bg-red-200 cursor-pointer text-red-600 px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                                <path
+                                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                                </path>
+                                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                            </svg>
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div *ngIf="filteredItems.length === 0">
+                                <p class="p-4 text-gray-600">No promocode found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div *ngIf="promocodeModal"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': promocodeModal}">
+        <div class="p-6 flex flex-col gap-3" [formGroup]="promocodeForm">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Code <span class="inline-block text-xs text-gray-400">(Example :- MONSOON50)</span></label>
+                <input type="text" autocomplete="off" id="name" formControlName="code" autocomplete="off"
+                    class="w-full px-4 py-3 uppercase border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+                    placeholder="Enter promocode"
+                    [class.border-red-500]="promocodeForm.get('code')?.invalid && promocodeForm.get('code')?.touched">
+                <div *ngIf="promocodeForm.get('code')?.invalid && promocodeForm.get('code')?.touched"
+                    class="text-red-500 text-sm mt-1">
+                    Promocode is required
+                </div>
+            </div>
+            <div>
+                <label for="name" class="flex gap-2 text-sm font-medium text-gray-700 mb-2">
+                    Promocode Discount Type
+                </label>
+                <select  id="" formControlName="discount_type"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg">
+                    <option value="" selected hidden>Select Discount Type</option>
+                    <option value="PERCENT">Percentage</option>
+                    <option value="FLAT">Flat</option>
+                </select>
+            </div>
+            <div>
+                <label for="name" class="flex gap-2 text-sm font-medium text-gray-700 mb-2">
+                    Promocode Discount Value
+                </label>
+                <input type="number" autocomplete="off" id="name" formControlName="discount_value" autocomplete="off"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+                    placeholder="Enter promocode value"
+                    [class.border-red-500]="promocodeForm.get('discount_value')?.invalid && promocodeForm.get('discount_value')?.touched">
+                <div *ngIf="promocodeForm.get('discount_value')?.invalid && promocodeForm.get('discount_value')?.touched"
+                    class="text-red-500 text-sm mt-1">
+                    Promocode Value is required
+                </div>
+            </div>
+            <div>
+                <label for="name" class="flex gap-2 text-sm font-medium text-gray-700 mb-2">
+                    Valid From
+                </label>
+                <input type="date" autocomplete="off" id="name" formControlName="valid_from" autocomplete="off"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+            </div>
+            <div>
+                <label for="name" class="flex gap-2 text-sm font-medium text-gray-700 mb-2">
+                    Valid To
+                </label>
+                <input type="date" autocomplete="off" id="name" formControlName="valid_to" autocomplete="off"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-end gap-3 p-5 rounded-b-lg">
+            <button (click)="onClose()" [disabled]="isLoading"
+                class="disabled:bg-gray-400 cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="addPromocode()" [disabled]="isLoading || promocodeForm.invalid"
+                class=" disabled:bg-gray-400 cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+<div *ngIf="deleteCatModal"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': deleteCatModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[200px] mb-4">
+                <img src="../../../assets/delete-img.svg" alt="Delete illustration" class="w-full h-auto" />
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Are you sure you want to delete?
+            </h2>
+
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="onClose()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="deletePromocode()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>

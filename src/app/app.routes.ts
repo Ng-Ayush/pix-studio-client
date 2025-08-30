@@ -168,6 +168,11 @@ export const routes: Routes = [
         canActivate: [superAdminAuthGuard]
       },
       {
+        path: 'manage-promocodes',
+        loadComponent: () => import("./components/super-admin/manage-promocodes/manage-promocodes.component").then(m => m.ManagePromocodesComponent),
+        canActivate: [superAdminAuthGuard]
+      },
+      {
         path: 'add-features',
         loadComponent: () => import("./components/super-admin/manage-features/add-manage-features/add-manage-features.component").then(m => m.AddManageFeaturesComponent),
         canActivate: [superAdminAuthGuard]

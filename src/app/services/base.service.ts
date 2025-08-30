@@ -109,6 +109,13 @@ export class BaseService {
     'toggleAdminStatus': '/api/mystudio/super-admin/toggleAdminStatus',
     'getDynamicImageUrl':'/api/mystudio/super-admin/getDynamicImageUrl',
     'insertImages':'/api/mystudio/super-admin/insertImages',
+    'getAllPromocodes':'/api/mystudio/super-admin/getAllPromocodes',
+    'deletePromocode':'/api/mystudio/super-admin/deletePromocode',
+    'createPromocode':'/api/mystudio/super-admin/createPromocode',
+    'updatePromocode':'/api/mystudio/super-admin/updatePromocode',
+    'togglePromocodeStatus':'/api/mystudio/super-admin/togglePromocodeStatus',
+    
+    'verifyAndApplyPromoCode':'/api/mystudio/manage-features/verifyAndApplyPromoCode',
 
 
     //Calendar

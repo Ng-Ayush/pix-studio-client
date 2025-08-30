@@ -135,4 +135,28 @@ export class AdminService extends BaseService {
   insertImages(params: any, callback: any) {
     return this.postData(params, this.httpUrls['insertImages'], callback)
   }
+
+  getAllPromocodes(callback:any){
+    return this.getData({}, this.httpUrls['getAllPromocodes'], callback)
+  } 
+
+  createPromocode(params: any, callback: any) {
+    return this.postData(params, this.httpUrls['createPromocode'], callback)
+  }
+
+  deletePromocode(promocodeId: any, callback: any) {
+    return this.deleteData({}, this.httpUrls['deletePromocode'] + "/" + promocodeId, callback)
+  }
+
+  updatePromocode(params: any, promocodeId: any, callback: any) {
+    return this.putData(params, this.httpUrls['updatePromocode'] + "/" + promocodeId, callback)
+  }
+
+  togglePromocodeStatus(params:any, callback: any) {
+    return this.putData(params, this.httpUrls['togglePromocodeStatus'], callback)
+  }
+
+  verifyAndApplyPromoCode(params: any, callback: any) {
+    return this.postData(params, this.httpUrls['verifyAndApplyPromoCode'], callback)
+  }
 }
