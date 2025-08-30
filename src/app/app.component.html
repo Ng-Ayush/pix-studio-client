@@ -1,7 +1,39 @@
 <app-loader></app-loader>
- <div class="loader-overlay" *ngIf="showLoader">
-  <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image"/>
+<div class="loader-overlay" *ngIf="showLoader">
+  <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>
-<router-outlet/>
+
+<div *ngIf="hasDesktopUpdated"
+  class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+  <div #modalContent
+    class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+    [ngClass]="{'modal-fade-in': hasDesktopUpdated}">
+    <div class="w-full bg-gray-200 h-5 overflow-hidden">
+      <div id="progressBar"
+        class="bg-indigo-600 h-full w-0 text-xs text-center text-white transition-all duration-200 ease-in-out">
+        0%
+      </div>
+    </div>
+    <div class="p-6 flex flex-col items-center">
+      <div class="w-full max-w-[200px] mb-4">
+        <img src="../assets/update.png" alt="Delete illustration" class="w-full h-auto" />
+      </div>
+
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        You got a new update !
+      </h2>
+
+    </div>
+
+    <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+      <button (click)="updateProgress()"
+        class="cursor-pointer px-8 py-2 rounded-full bg-[#494CA2f5] text-white font-medium hover:bg-[#494CA2] transition-colors duration-200">
+        Update
+      </button>
+    </div>
+  </div>
+</div>
+
+<router-outlet />
 <app-upload-image-progress></app-upload-image-progress>
 <app-delete-image-process></app-delete-image-process>
