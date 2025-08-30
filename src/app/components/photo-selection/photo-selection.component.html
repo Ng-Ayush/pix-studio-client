@@ -87,7 +87,7 @@
             <div class="mb-8 px-5"> <!--overflow-y-scroll h-150 relative-->
                 <div class="mb-6 sticky top-0">
                     <input type="text" autocomplete="off" placeholder="Search by event" (input)="search($event)"
-                        class="bg-[#fffff] w-full h-full px-4 py-3 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                        class="bg-gray-100 w-full h-full px-4 py-3 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div class="grid grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-6">
@@ -167,7 +167,7 @@
                                 (click)="copyCustomerCode(event)">
                                 <span class="text-gray-700 text-xs font-semibold ">{{event.customer_unique_id}}</span>
                             </div>
-                            <span class="status-pill flex items-center gap-2 ">
+                            <span class="status-pill flex items-center gap-2">
                                 <!-- From Uiverse.io by Galahhad -->
                                 <label class="switch">
                                     <input [checked]="event.is_event_submitted" (change)="toggleEventStatus(event)"
@@ -197,7 +197,7 @@
                                             </svg>
                                         </div>
                                     </div>
-                                </label>{{event.is_event_submitted ? 'Completed' : 'Pending'}}
+                                </label> <span class="inline-block text-sm text-gray-700">{{event.is_event_submitted ? 'Completed' : 'Pending'}}</span>
                             </span>
                         </div>
                         <div class="flex gap-5 justify-between">
