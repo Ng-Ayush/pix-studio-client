@@ -28,8 +28,8 @@ export class ManagePromocodesComponent {
       code: ['', [Validators.required]],
       discount_type: ['', []],
       discount_value: ['', [Validators.required]],
-      valid_from: ['', []],
-      valid_to: ['', []],
+      valid_from: [null, []],
+      valid_to: [null, []],
     });
     this.getAllPromocodes();
   }
