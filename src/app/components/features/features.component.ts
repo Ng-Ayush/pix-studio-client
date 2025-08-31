@@ -50,8 +50,22 @@ export class FeaturesComponent {
     this.getRealTime();
     this.getFeaturesByNewArrival();
     this.getAllCategories();
+    // this.getFeatureListByUserId();
   }
 
+  getFeatureListByUserId() {
+    this.loader.show();
+    this._adminService.getFeatureListByUserId((res: any) => {
+      if (res.status == 200) {
+        console.log(res.data);
+        
+        this.loader.hide();
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
+  }
 
   getFeaturesByNewArrival() {
     this.loader.show();
@@ -289,7 +303,7 @@ export class FeaturesComponent {
       if (res.status == 200) {
         this.alert.success(res.message);
         if (res?.isFullDiscount) {
-          this.selectedCard.is_purchased = true;
+          this.selectedCard.is_feature_purchased = true;
           this.alert.success("Download it for FREE !");
         } else if (res?.isPartialDiscount) {
           this.isPromoApplied = true;

@@ -159,4 +159,8 @@ export class AdminService extends BaseService {
   verifyAndApplyPromoCode(params: any, callback: any) {
     return this.postData(params, this.httpUrls['verifyAndApplyPromoCode'], callback)
   }
+
+  getFeatureListByUserId(callback: any) {
+    return this.getData({}, this.httpUrls['getFeatureListByUserId'], callback)
+  }
 }

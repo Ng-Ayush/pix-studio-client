@@ -114,8 +114,9 @@ export class BaseService {
     'createPromocode':'/api/mystudio/super-admin/createPromocode',
     'updatePromocode':'/api/mystudio/super-admin/updatePromocode',
     'togglePromocodeStatus':'/api/mystudio/super-admin/togglePromocodeStatus',
-    
+
     'verifyAndApplyPromoCode':'/api/mystudio/manage-features/verifyAndApplyPromoCode',
+    'getFeatureListByUserId':'/api/mystudio/manage-features/getFeatureListByUserId',
 
 
     //Calendar

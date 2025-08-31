@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
 import { AlertService } from '../../services/alert.service';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-calling',
@@ -22,7 +23,14 @@ export class CallingComponent {
   filteredAgents: any = [];
   agentModal: boolean = false;
   showLogOutModal: boolean = false;
-  constructor(private adminService: AdminService, private loader: LoaderService, private alert: AlertService,private router:Router) {
+  isLoading:boolean=false;
+  
+  constructor(private adminService: AdminService,
+     private loader: LoaderService,
+      private alert: AlertService,
+      private router:Router,
+      private commonService:CommonService
+    ) {
     this.getUserData();
     this.getAgentList();
   }
@@ -76,12 +84,15 @@ export class CallingComponent {
 
   createAgent() {
     this.loader.show();
-    if (!this.agentConfig.agent_name || !this.agentConfig.agent_phone || !this.agentConfig.extension_number) {
+    this.isLoading=true;
+    if (!this.agentConfig.agent_name || !this.agentConfig.agent_phone) {
       this.loader.hide();
+      this.isLoading=false;
       this.alert.error('Please fill all the fields');
       return;
     }
     this.adminService.createAgent(this.agentConfig, (res: any) => {
+      this.isLoading=false;
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
@@ -104,6 +115,12 @@ export class CallingComponent {
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  filterByDate(event: any) {
+    this.loader.show();
+    this.filteredAgents = this.agentList.filter((item: any) => this.commonService.formatDate(item.created_at) == this.commonService.formatDate(event.target.value));
+    this.loader.hide();
   }
 
 
