@@ -79,7 +79,7 @@
                     <h3 class="dashboard-item-title text-xl">Calendar</h3>
                 </div>
 
-                <a class="dashboard-item" [routerLink]="['/photo-sharing']">
+                <a class="dashboard-item" (click)="underConstruction()">
                     <div class="dashboard-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-image-alt" viewBox="0 0 16 16">
@@ -215,6 +215,26 @@
             <button (click)="logout()"
                 class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
                 Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showUnderConstructionModal"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showUnderConstructionModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[500px] mb-4">
+                <img src="../../../assets/comingsoon.png" alt="Coming Soon" class="w-full h-auto" />
+            </div>
+        </div>
+
+        <div class="bg-gray-50 pb-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="showUnderConstructionModal =false;"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Close
             </button>
         </div>
     </div>

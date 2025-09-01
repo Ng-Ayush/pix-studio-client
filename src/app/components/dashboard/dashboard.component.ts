@@ -59,6 +59,7 @@ export class DashboardComponent implements OnInit {
 
   currentUserId: any = -1;
   showLogOutModal: boolean = false;
+  showUnderConstructionModal: boolean = false;
   userData: any = {};
   dynamicImages: any = [];
   constructor(
@@ -122,5 +123,9 @@ export class DashboardComponent implements OnInit {
       idx = (idx + 1) % total;
       carousel.style.transform = `translateX(-${idx * 100}%)`;
     }, 2000);
+  }
+
+  underConstruction(){
+    this.showUnderConstructionModal = true;
   }
 }

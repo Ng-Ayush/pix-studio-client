@@ -43,16 +43,20 @@
 
         <!-- Right Section (Application Buttons) -->
         <div class="md:w-1/2 relative flex flex-col items-start mt-12 md:mt-0 gap-4">
-            <button
-                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
-                <img src="../assets/desktop.png" alt="desktop" class="w-10 h-10 mr-4" style="filter: invert(1);">
-                <span class="font-bold">DESKTOP APPLICATION</span>
-            </button>
-            <button
-                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
-                <img src="../assets/playstore.png" alt="mobile" class="w-8 h-8 mr-4">
-                <span class="font-bold">MOBILE APPLICATION</span>
-            </button>
+            <a href="javascript:void(0);" (click)="downloadDesktopApp()">
+                <button
+                    class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
+                    <img src="../assets/desktop.png" alt="desktop" class="w-10 h-10 mr-4" style="filter: invert(1);">
+                    <span class="font-bold">DESKTOP APPLICATION</span>
+                </button>
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=app.mystudio&pcampaignid=web_share" target="_blank" >
+                <button
+                    class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
+                    <img src="../assets/playstore.png" alt="mobile" class="w-8 h-8 mr-4">
+                    <span class="font-bold">MOBILE APPLICATION</span>
+                </button>
+            </a>
             <button (click)="goToLogin();"
                 class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
                 <img src="../assets/web.png" alt="web" class="w-8 h-8 mr-4" style="filter: invert(1);">
