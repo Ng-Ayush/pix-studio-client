@@ -359,7 +359,8 @@ export class NewBillComponent {
       invoice_type: this.invoiceConfig.invoice_type,
       invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
       discount_value: this.discountAmountVal,
-      discount_type: this.discount_type
+      discount_type: this.discount_type,
+      terms_and_condition: this.userData.terms_and_condition || ''
     }
 
     this.billingService.generateInvoice(params, (res: any) => {
