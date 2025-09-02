@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -37,19 +37,18 @@
     </aside>
     <main class="main-content">
         <div class="border-l border-white bg-[#494CA2]">
-             <div class="p-5 ps-10">
+            <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img [src]="userData?.studio_icon" alt=""
-                            class="border radius-md text-white w-[50px] h-[50px]">
+                        <img [src]="userData?.studio_icon" alt="" class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, {{userData?.studio_name}}</h2>
                     </div>
                 </div>
             </div>
-             <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
-              <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
+            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
+                <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
                         class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -109,7 +108,8 @@
                         <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-5xl"
                             [ngClass]="{'modal-fade-in': partyModal}">
                             <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
-                                <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}} Party</h1>
+                                <h1 class="text-xl sm:text-2xl font-semibold text-gray-800">{{isEdit ? 'Edit' : 'Add'}}
+                                    Party</h1>
                                 <div class="flex items-center gap-4">
                                     <button aria-label="Settings" class="text-gray-500 hover:text-gray-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -118,7 +118,8 @@
                                                 d="M9.594 3.94c.09-.542.56-1.007 1.057-1.228a48.249 48.249 0 0 1 3.413 0c.497.221.967.686 1.057 1.228m0 0c0 .878-.587 1.683-1.408 2.008M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm0 0a8.949 8.949 0 0 0 5.472-1.936C15.879 17.043 13.966 16.5 12 16.5c-1.966 0-3.879.543-5.472 1.564A8.949 8.949 0 0 0 12 21Zm0 0a9.003 9.003 0 0 0 4.372-1.126C15.001 18.79 13.27 18 12 18c-1.27 0-3.001.79-4.372 1.874A9.003 9.003 0 0 0 12 21Z" />
                                         </svg>
                                     </button>
-                                    <button (click)="closeModal()" aria-label="Close" class="cursor-pointer text-gray-500 hover:text-gray-700">
+                                    <button (click)="closeModal()" aria-label="Close"
+                                        class="cursor-pointer text-gray-500 hover:text-gray-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -132,22 +133,23 @@
                                 <div>
                                     <label for="partyName" class="block text-sm font-medium text-gray-700 mb-1">Party
                                         Name <span class="text-red-500">*</span></label>
-                                    <input type="text" autocomplete="off" [(ngModel)]="partyConfig.party_name" id="partyName" name="partyName"
+                                    <input type="text" autocomplete="off" [(ngModel)]="partyConfig.party_name"
+                                        id="partyName" name="partyName"
                                         class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                                 </div>
                                 <div>
                                     <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone
                                         Number <span class="text-red-500">*</span></label>
-                                    <input type="tel" [(ngModel)]="partyConfig.phone_number" maxlength="10" id="phoneNumber" name="phoneNumber"
+                                    <input type="tel" [(ngModel)]="partyConfig.phone_number" maxlength="10"
+                                        id="phoneNumber" name="phoneNumber"
                                         class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                                 </div>
-                                  <div>
-                                            <label for="emailId"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Email
-                                                ID</label>
-                                            <input type="email" [(ngModel)]="partyConfig.email" id="emailId" name="emailId"
-                                                class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
-                                        </div>
+                                <div>
+                                    <label for="emailId" class="block text-sm font-medium text-gray-700 mb-1">Email
+                                        ID</label>
+                                    <input type="email" [(ngModel)]="partyConfig.email" id="emailId" name="emailId"
+                                        class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                </div>
                                 <!-- <div>
                                     <label for="partyGroup" class="block text-sm font-medium text-gray-700 mb-1">Party
                                         Group</label>
@@ -186,7 +188,8 @@
                                         <div class="md:row-span-2"> <label for="billingAddress"
                                                 class="block text-sm font-medium text-gray-700 mb-1">Billing
                                                 Address</label>
-                                            <textarea id="billingAddress" [(ngModel)]="partyConfig.billing_address" name="billingAddress" rows="4"
+                                            <textarea id="billingAddress" [(ngModel)]="partyConfig.billing_address"
+                                                name="billingAddress" rows="4"
                                                 class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                                         </div>
                                         <!-- <div class="md:col-start-1"> <button type="button"
@@ -236,39 +239,43 @@
                     </div>
 
                     <div *ngIf="deleteModal"
-                    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
-                    <div #modalContent
-                        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-                        [ngClass]="{'modal-fade-in': deleteModal}">
-                        <div class="p-6 flex flex-col items-center">
-                            <div class="w-full max-w-[200px] mb-4">
-                                <img src="../../../assets/delete-img.svg" alt="Delete illustration" class="w-full h-auto" />
+                        class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+                        <div #modalContent
+                            class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+                            [ngClass]="{'modal-fade-in': deleteModal}">
+                            <div class="p-6 flex flex-col items-center">
+                                <div class="w-full max-w-[200px] mb-4">
+                                    <img src="../../../assets/delete-img.svg" alt="Delete illustration"
+                                        class="w-full h-auto" />
+                                </div>
+
+                                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                                    Are you sure you want to delete?
+                                </h2>
+
                             </div>
-    
-                            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                                Are you sure you want to delete?
-                            </h2>
-    
-                        </div>
-    
-                        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                            <button (click)="deleteModal = false"
-                                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
-                                Cancel
-                            </button>
-                            <button (click)="deleteParty()"
-                                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
-                                Delete
-                            </button>
+
+                            <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+                                <button (click)="deleteModal = false"
+                                    class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                                    Cancel
+                                </button>
+                                <button (click)="deleteParty()"
+                                    class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
                     <ul>
-                        <li *ngFor="let party of fiteredPartyList" (dblclick)="editParty(party)" (click)="!party.selected ? selectParty(party) : ''"
-                            class="flex justify-between items-center py-2 px-3 mb-1 hover:bg-gray-100 rounded-md cursor-pointer border-l-4 border-transparent hover:border-indigo-500" [ngClass]="{'bg-gray-100 border-l-4 border-indigo-500': party.selected}">
-                            <span class="text-sm font-medium text-dark" >{{party.party_name}}</span>
-                            <span class="text-xs text-green-600 font-semibold" *ngIf="party.invoice_type == 'sale'">{{party.balance_left}}</span>
+                        <li *ngFor="let party of fiteredPartyList" (dblclick)="editParty(party)"
+                            (click)="!party.selected ? selectParty(party) : ''"
+                            class="flex justify-between items-center py-2 px-3 mb-1 hover:bg-gray-100 rounded-md cursor-pointer border-l-4 border-transparent hover:border-indigo-500"
+                            [ngClass]="{'bg-gray-100 border-l-4 border-indigo-500': party.selected}">
+                            <span class="text-sm font-medium text-dark">{{party.party_name}}</span>
+                            <span class="text-xs text-green-600 font-semibold"
+                                *ngIf="party.invoice_type == 'sale'">{{party.balance_left}}</span>
                         </li>
                     </ul>
                 </aside>
@@ -283,7 +290,7 @@
                                     Limit</a>
                             </div> -->
                         </div>
-                      
+
                     </div>
 
                     <div class="flex items-center justify-between mb-4">
@@ -301,7 +308,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+                    <div class="bg-white shadow-md rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -332,28 +339,48 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="hover:bg-gray-50 cursor-pointer" *ngFor="let item of partyInvoiceList" (click)="openInvoice(item)">
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{item.invoice_type|titlecase}}</td>
-                                    <td
+                                <tr class="hover:bg-gray-50 cursor-pointer relative"
+                                    (mouseleave)="showActionDropDown= {}"
+                                    *ngFor="let item of partyInvoiceList;let idx = index;">
+                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700" (click)="openInvoice(item)">
+                                        {{item.invoice_type|titlecase}}</td>
+                                    <td (click)="openInvoice(item)"
                                         class="px-4 py-3 whitespace-nowrap text-blue-600 hover:underline cursor-pointer">
                                         {{item?.invoice_number}}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-500">{{item?.invoice_date|date : 'dd-MM-yyyy'}}, {{item?.time}}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹ {{item?.total | number : '1.2-2'}}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹ {{item?.balance_left | number : '1.2-2'}}</td>
+                                    <td (click)="openInvoice(item)" class="px-4 py-3 whitespace-nowrap text-gray-500">
+                                        {{item?.invoice_date|date : 'dd-MM-yyyy'}}, {{item?.time}}</td>
+                                    <td (click)="openInvoice(item)"
+                                        class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹ {{item?.total |
+                                        number : '1.2-2'}}</td>
+                                    <td (click)="openInvoice(item)"
+                                        class="px-4 py-3 whitespace-nowrap text-gray-700 text-right">₹
+                                        {{item?.balance_left | number : '1.2-2'}}</td>
                                     <!-- <td class="px-4 py-3 whitespace-nowrap text-gray-500"></td> -->
-                                    <td class="px-4 py-3 whitespace-nowrap">
+                                    <td (click)="openInvoice(item)" class="px-4 py-3 whitespace-nowrap">
                                         <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-black" [ngClass]="{'bg-red-100': +item?.balance_left == +item?.total,'bg-yellow-100':(+item?.balance_left > 0 && +item?.balance_left < +item?.total),'bg-green-100':(+item?.balance_left == 0 && item.invoice_type == 'sale'),'bg-gray-100':item.invoice_type == 'estimate'}" >
-                                            {{item.invoice_type == 'sale' ? (+item?.balance_left == +item?.total ? 'Unpaid' : (+item?.balance_left > 0 && +item?.balance_left < +item?.total) ? 'Partial Paid' : 'Paid') : 'N/A'}}
-                                        </span>
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-black"
+                                            [ngClass]="{'bg-red-100': +item?.balance_left == +item?.total,'bg-yellow-100':(+item?.balance_left > 0 && +item?.balance_left < +item?.total),'bg-green-100':(+item?.balance_left == 0 && item.invoice_type == 'sale'),'bg-gray-100':item.invoice_type == 'estimate'}">
+                                            {{item.invoice_type == 'sale' ? (+item?.balance_left == +item?.total ?
+                                            'Unpaid' : (+item?.balance_left > 0 && +item?.balance_left < +item?.total)
+                                                ? 'Partial Paid' : 'Paid' ) : 'N/A' }} </span>
                                     </td>
-                                    <td
+                                    <td (mouseover)="showActionDropDown[idx]=true"
                                         class="px-4 py-3 whitespace-nowrap text-gray-400 hover:text-gray-600 cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                         </svg>
+                                        <ul *ngIf="showActionDropDown[idx]" (mouseover)="showActionDropDown[idx]=true" 
+                                            class="action-dropdown group-focus-within:block right-[50px] list-none absolute bg-gray-50 w-auto z-1 shadow-lg animate-slideIn">
+                                            <li class="py-3 px-4 rounded-md cursor-pointer hover:bg-gray-200 hover:text-red-700" (click)="deleteInvoiceModal(item)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                </svg>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             </tbody>
@@ -388,6 +415,34 @@
             <button (click)="logout()"
                 class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
                 Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showDeleteInvoiceModal"
+    class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showDeleteInvoiceModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[200px] mb-4">
+                <img src="../../../assets/delete-img.svg" alt="Delete illustration" class="w-full h-auto" />
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Are you sure you want to delete?
+            </h2>
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="closeDeleteInvoiceModal()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="deleteInvoice()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Delete
             </button>
         </div>
     </div>

@@ -100,4 +100,9 @@ export class BillingService extends BaseService {
   sendPdfViaWhatsApp(params:any,callback:any){
     return this.postData(params, this.httpUrls['sendPdfViaWhatsApp'], callback)
   }
+
+  deleteInvoice(invoice_id:any,callback:any){
+    return this.deleteData({}, this.httpUrls['deleteInvoice']+"/"+invoice_id, callback)
+
+  }
 }

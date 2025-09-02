@@ -61,6 +61,7 @@ export class BaseService {
     'getInvoiceById': '/api/mystudio/invoices/getInvoiceById',
     'getLastInvoiceNumber': '/api/mystudio/invoices/getLastInvoiceNumber',
     'sendPdfViaWhatsApp': '/api/mystudio/invoices/sendPdfViaWhatsApp',
+    'deleteInvoice': '/api/mystudio/invoices/deleteInvoice',
 
 
 
