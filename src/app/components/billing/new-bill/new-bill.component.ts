@@ -360,7 +360,7 @@ export class NewBillComponent {
       invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
       discount_value: this.discountAmountVal,
       discount_type: this.discount_type,
-      terms_and_condition: this.userData.terms_and_condition || ''
+      terms_and_condition: this.userData.terms_and_condition || 'Please add your terms and condition here',
     }
 
     this.billingService.generateInvoice(params, (res: any) => {
