@@ -437,7 +437,7 @@
                     <div class="md:col-span-2 p-4 bg-white rounded-md shadow gap-4 flex flex-col">
                         <div class="flex justify-end items-center gap-3">
                             <label for="discountValue" class="text-xs font-medium text-gray-700">Discount</label>
-                            <input type="text" [maxLength]="discount_type == 'percentage' ? 3 : 4" max="100" id="discountValue" [disabled]="!subTotal" name="discountValue"
+                            <input type="text" [maxLength]="discount_type == 'percentage' ? 3 : 5" id="discountValue" [disabled]="!subTotal" name="discountValue"
                                 [(ngModel)]="discountAmountVal" (change)="calculateTotals()"
                                 class="w-20 p-1 border border-gray-300 rounded-md text-right">
                             <select id="discountType" name="discountType" [(ngModel)]="discount_type"

@@ -338,7 +338,7 @@ export class NewBillComponent {
       party_id: +this.invoiceConfig.party_id,
       balance_left: +this.totalAmount,
       invoice_type: this.invoiceConfig.invoice_type,
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location }))),
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount ,description:item.description}))),
       discount_value: this.discountAmountVal,
       discount_type: this.discount_type,
       terms_and_condition: this.userData.terms_and_condition || 'Please add your terms and condition here',
