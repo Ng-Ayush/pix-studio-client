@@ -57,18 +57,8 @@ export class NewBillComponent {
   isBillFormValid: boolean = false;
   userData: any = {};
   showLogOutModal: boolean = false;
-  @HostListener('document:click', ['$event'])
   filteredInvoiceItems: any = [];
 
-  handleOutsideClick(event: MouseEvent) {
-    const el: any = document.getElementById(`inputRef_${this.currentItemIdx}`)
-    const clickedInside = el?.contains(event.target);
-    console.log(42342);
-
-    if (!clickedInside) {
-      this.dropdownVisible = false;
-    }
-  }
 
   constructor(private fb: FormBuilder,
     private billingService: BillingService,
@@ -170,19 +160,14 @@ export class NewBillComponent {
   }
 
   showDropdown(event: any, idx: any, item: any) {
-    console.log(232132131231231312);
-
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
     this.dropdownPosition = {
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
     };
-    // this.dropdownVisible = !this.dropdownVisible;
     this.currentItemIdx = idx;
     item.dropdownVisible = !item.dropdownVisible;
-    // this.invoiceConfig.invoice_items.forEach((item:any)=>item.dropdownVisible =false);
-    // event.stopPropagation();
   }
 
 
@@ -235,8 +220,6 @@ export class NewBillComponent {
   }
 
   updateInvoiceItem() {
-    console.log(312312);
-
     this.loader.show();
     this.billingService.updateInvoiceItem(this.newItemConfig.id, this.newItemConfig, (res: any) => {
       if (res.status == 200) {
@@ -254,8 +237,6 @@ export class NewBillComponent {
     this.calculateAmount(invoiceItem);
     item.dropdownVisible = false;
     this.filteredInvoiceItems = [...this.invoiceItemsList];
-    // this.closeModal();
-    // this.addItem();
   }
 
   calculateAmount(item: any) {
@@ -326,7 +307,7 @@ export class NewBillComponent {
           resolve(true);
           if (isEInvoice) {
             setTimeout(() => {
-              this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_id], { queryParams: {} });
+              this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_number], { queryParams: {} });
             }, 0);
           } else {
             this.router.navigate(['/billing']);
@@ -368,7 +349,7 @@ export class NewBillComponent {
         this.loader.hide();
         this.alert.success(res.message);
         if (isEinvoice) {
-          this.router.navigate(['billing/e-invoice', res.id], { queryParams: {} });
+          this.router.navigate(['billing/e-invoice', this.invoiceConfig.invoice_number], { queryParams: {} });
         } else {
           this.router.navigate(['/billing']);
         }
@@ -405,10 +386,6 @@ export class NewBillComponent {
     })
   }
 
-  printInvoice() {
-
-  }
-
   generateEinvoice() {
     this.generateInvoice(true);
   }
@@ -426,8 +403,6 @@ export class NewBillComponent {
     this.dropdownOpen = false;
     this.invoiceConfig.party_id = item.id;
     this.invoiceConfig.phone_number = item.phone_number;
-
-    // this.getInvoiceDetailByInvoiceNumber();
   }
 
   filterParty(): void {
@@ -521,8 +496,6 @@ export class NewBillComponent {
 
   async convertToSales() {
     const isUpdatedSuccess: any = await this.updateInvoice(true);
-    console.log("isUpdatedSuccess", isUpdatedSuccess);
-
     if (isUpdatedSuccess) {
       this.loader.show();
       this.billingService.convertToSales(this.invoiceConfig.invoice_id, (res: any) => {
@@ -557,6 +530,19 @@ export class NewBillComponent {
     } else {
       this.filteredInvoiceItems = this.invoiceItemsList;
     }
+  }
+
+  ngAfterViewInit() {
+    document.addEventListener('click', (event)=> {
+      const party_dropdown :any= document.getElementById('party_dropdown');
+      const invoice_items:any = document.getElementById(`inputRef_${this.currentItemIdx}`);
+      if (!party_dropdown?.contains(event.target)) {
+        this.dropdownOpen = false;
+      }
+      if (!invoice_items?.contains(event.target)) {
+        this.invoiceConfig.invoice_items.forEach((item:any)=>item.dropdownVisible = false);
+      }
+    });
   }
 
 }
