@@ -171,16 +171,13 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                                    <select id="role" formControlName="role"
-                                        class="w-sm px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                                        [class.border-red-500]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
-                                        <option value="">Select your role</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                    <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched"
+                                    <label for="access_expires_on" class="block text-sm font-medium text-gray-700 mb-2">Access Expires On</label>
+                                      <input type="date" formControlName="access_expires_on"
+                                        class="w-50 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                                        [class.border-red-500]="userForm.get('access_expires_on')?.invalid && userForm.get('access_expires_on')?.touched">
+                                    <div *ngIf="userForm.get('access_expires_on')?.invalid && userForm.get('access_expires_on')?.touched"
                                         class="text-red-500 text-sm mt-1">
-                                        Please select a role
+                                        Please select a date
                                     </div>
                                 </div>
                             </div>

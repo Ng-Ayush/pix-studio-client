@@ -30,12 +30,13 @@ export class AddUserComponent {
       studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       phone_number: ['', [Validators.required]],
-      role: ['', [Validators.required]],
+      role: ['',],
       studio_icon: ['', Validators.required],
       youtube_url: ['', Validators.required],
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
       address: ['', Validators.required],
+      access_expires_on: ['', Validators.required],
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {
