@@ -152,7 +152,7 @@
                       <tbody>
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                           <td class="border border-[#c5a86b] px-3 py-2">{{ idx + 1 }}</td>
-                          <td class="border border-[#c5a86b] px-3 py-2 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="border border-[#c5a86b] px-3 py-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.location }}</td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.quantity }}</td>
@@ -267,7 +267,7 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b">
                           <td class="py-2 px-4">{{idx+1}}</td>
-                          <td colspan="5" class="py-2 px-4 font-medium text-start">{{item.item_name}} <br> <small class="text-start"> {{item.description}} </small></td>
+                          <td colspan="5" class="py-2 px-4 font-medium text-center">{{item.item_name}} <br> <small class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-4">{{ item.booking_date | date: 'MMM d, y' }}</td>
                           <td class="py-2 px-4">{{ item.location }}</td>
                           <td class="py-2 px-4">{{ item.quantity }}</td>
@@ -405,7 +405,7 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b hover:bg-gray-50">
                           <td class="py-3">{{idx+1}}</td>
-                          <td class="py-3 px-4 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="py-3 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                           <td class="py-3 px-4">{{ item.booking_date | date : 'MMM d, y' }}</td>
                           <td class="py-3 px-4">{{ item.location }}</td>
                           <td class="py-3 px-4">₹{{ item.sale_price }}</td>
@@ -484,7 +484,7 @@
                         d="M0,64L80,90.7C160,117,320,171,480,160C640,149,800,75,960,58.7C1120,43,1280,85,1360,106.7L1440,128L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z">
                       </path>
                     </svg>
-                    <div class="absolute top-8 right-10 text-white">
+                    <div class="absolute right-10 text-white" style="top:50px">
                       <h1 class="text-3xl font-bold">{{userData?.studio_name}}</h1>
                     </div>
                     <div class="absolute top-14 left-10 text-white">
@@ -529,7 +529,7 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b">
                           <td>{{idx+1}}</td>
-                          <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="py-2 px-2">{{ item.location }}</td>
                           <td class="py-2 px-2">₹{{ item.sale_price }}</td>
@@ -614,7 +614,7 @@
                     <!-- Left Logo block -->
                     <div class="bg-black text-white flex items-center justify-center w-64 h-28 relative">
                       <img [src]="userData?.studio_icon" alt="logo" class="h-16">
-                      <div class="absolute bottom-2 left-2 text-xs text-gray-300">
+                      <div class="absolute bottom-2 left-16 text-gray-300 text-md">
                         {{ userData?.studio_name }}<br>
                       </div>
                     </div>
@@ -661,7 +661,7 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx=index;"
                           class="text-center border-b">
                           <td class="py-2 px-4">{{idx+1}}</td>
-                          <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-4">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="py-2 px-4">{{ item.location }}</td>
                           <td class="py-2 px-4">₹{{ item.sale_price }}</td>
@@ -778,7 +778,7 @@
                       <tr class="border-b text-gray-700"
                         *ngFor="let item of invoiceBillConfig.invoice_items;let idx = index;">
                         <td class="py-2 px-4">{{idx+1}}</td>
-                        <td class="py-2 px-4 flex flex-wrap flex-col gap-1">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                        <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-4">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-4">{{item.quantity}}</td>
                         <td class="py-2 px-4">{{item.sale_price}}</td>
@@ -882,7 +882,7 @@
                     <tbody>
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items;let idx = index;">
                         <td class="py-2 px-2">{{idx + 1}}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{item.quantity}}</td>
                         <td class="py-2 px-2">{{item.sale_price}}</td>
@@ -992,7 +992,7 @@
                     <tbody class="bg-gray-100">
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                         <td class="py-2 px-2">{{ idx + 1 }}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{ item.location }}</td>
                         <td class="py-2 px-2">₹{{ item.sale_price }}</td>
@@ -1112,7 +1112,7 @@
                     <tbody>
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                         <td class="py-2 px-2 text-center">{{idx + 1}}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{item.quantity}}</td>
                         <td class="py-2 px-2">{{item.sale_price}}</td>
@@ -1216,7 +1216,7 @@
                       <tbody>
                         <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
                           <td class="p-2">{{i +1}}</td>
-                          <td class="p-2 flex flex-wrap flex-col gap-1 items-start">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="p-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                           <td class="p-2">{{item.booking_date | date : "MMM d,y"}}</td>
                           <td class="p-2">{{item.quantity}}</td>
                           <td class="p-2">{{item.sale_price}}</td>
