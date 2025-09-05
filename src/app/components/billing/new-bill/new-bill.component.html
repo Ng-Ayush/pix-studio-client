@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <aside class="sidebar justify-center">
-       <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/dashboard']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -40,8 +40,7 @@
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img [src]="userData.studio_icon" alt=""
-                            class="border radius-md text-white w-[50px] h-[50px]">
+                        <img [src]="userData.studio_icon" alt="" class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, {{userData.studio_name}}</h2>
@@ -53,8 +52,7 @@
 
             <header class="bg-white shadow-sm p-3 flex justify-between items-center">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/billing']">
-                    <button
-                        class="cursor-pointer inline-flex items-center gap-2 justify-center  h-10 px-4 py-2"><svg
+                    <button class="cursor-pointer inline-flex items-center gap-2 justify-center  h-10 px-4 py-2"><svg
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-4 w-4">
                             <path
@@ -174,15 +172,16 @@
                                 <tr *ngFor="let item of invoiceConfig.invoice_items; let i = index">
                                     <td class="px-3 py-2 whitespace-nowrap text-gray-500">{{ i + 1 }}</td>
                                     <td class="px-3 py-2">
-                                        <input type="text" autocomplete="off" [(ngModel)]="item.item_name" (input)="searchItem($event,i)"
-                                            (click)="showDropdown($event,i,item)"
+                                        <input type="text" autocomplete="off" [(ngModel)]="item.item_name"
+                                            (input)="searchItem($event,i)" (click)="showDropdown($event,i,item)"
                                             class="w-full p-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 border border-gray-300 rounded"
-                                            id="inputRef_{{i}}"> 
+                                            id="inputRef_{{i}}">
                                         <!-- Dropdown -->
                                         <div *ngIf="item.dropdownVisible"
                                             class="absolute bg-white shadow-lg border border-gray-200 w-96 z-50"
                                             [ngStyle]="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }">
-                                            <div class="w-5xl border border-slate-200 rounded-xl overflow-y-scroll max-h-56">
+                                            <div
+                                                class="w-5xl border border-slate-200 rounded-xl overflow-y-scroll max-h-56">
                                                 <table class="w-full divide-y divide-slate-200">
                                                     <thead class="bg-slate-100 text-slate-800">
                                                         <tr class="cursor-pointer hover:bg-slate-200"
@@ -197,17 +196,29 @@
                                                                 Add Item
                                                             </th>
                                                             <th class="px-4 py-2 text-start">Sale Price</th>
-                                                            <!-- <th class="px-4 py-2 text-start">Purchase Price</th> -->
+                                                            <th class="px-4 py-2 text-start">Action</th>
                                                             <!-- <th class="px-4 py-2 text-start">Stock</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody class="divide-y divide-slate-200 bg-white text-slate-800">
                                                         <tr *ngFor="let opt of filteredInvoiceItems"
-                                                            (click)="selectItem(opt,item)"
                                                             class="hover:bg-slate-100 cursor-pointer odd:bg-white even:bg-slate-50">
-                                                            <td class="px-4 py-2">{{opt.item_name}}</td>
-                                                            <td class="px-4 py-2">{{opt.sale_price}}</td>
-                                                            <!-- <td class="px-4 py-2">{{opt.purchase_price}}</td> -->
+                                                            <td (click)="selectItem(opt,item)" class="px-4 py-2">
+                                                                {{opt.item_name}}</td>
+                                                            <td (click)="selectItem(opt,item)" class="px-4 py-2">
+                                                                {{opt.sale_price}}</td>
+                                                            <td class="px-4 py-2">
+                                                                <button class="cursor-pointer"
+                                                                    (click)="openEditItemModal(opt,i)">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                        viewBox="0 0 24 24" stroke-width="1.5"
+                                                                        stroke="currentColor" class="size-6">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                                    </svg>
+                                                                </button>
+                                                            </td>
                                                             <!-- <td class="px-4 py-2">{{opt.item_stock}}</td> -->
                                                         </tr>
                                                         <tr *ngIf="filteredInvoiceItems.length == 0">
@@ -293,12 +304,8 @@
                             <div class="flex items-center mb-3 sm:mb-0">
                                 <h1 class="text-xl sm:text-2xl font-semibold text-gray-800 mr-4">{{isEdit ? 'Edit' :
                                     'Add'}} Item</h1>
-                                <div class="flex items-center bg-gray-200 rounded-full p-0.5">
-                                    <button (click)="itemType = 'product'"
-                                        [ngClass]="{'bg-white text-indigo-600 shadow': itemType === 'product', 'text-gray-600 hover:text-gray-800': itemType !== 'product'}"
-                                        class="px-3 py-1 text-sm font-medium rounded-full focus:outline-none transition-colors duration-150 ease-in-out">
-                                        Product
-                                    </button>
+                                <div class="flex justify-between py-2 px-5 rounded bg-[#fad2e1]  text-[#7c193d]" *ngIf="isEdit">
+                                    <p class="font-sans">Editing the invoice items will impact the already generated invoices!</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 self-start sm:self-center">
@@ -309,7 +316,7 @@
                                             d="M9.594 3.94c.09-.542.56-1.007 1.057-1.228a48.249 48.249 0 0 1 3.413 0c.497.221.967.686 1.057 1.228m0 0c0 .878-.587 1.683-1.408 2.008M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm0 0a8.949 8.949 0 0 0 5.472-1.936C15.879 17.043 13.966 16.5 12 16.5c-1.966 0-3.879.543-5.472 1.564A8.949 8.949 0 0 0 12 21Zm0 0a9.003 9.003 0 0 0 4.372-1.126C15.001 18.79 13.27 18 12 18c-1.27 0-3.001.79-4.372 1.874A9.003 9.003 0 0 0 12 21Z" />
                                     </svg>
                                 </button>
-                                <button aria-label="Close" (click)="itemModal = false"
+                                <button aria-label="Close" (click)="closeInvoiceItemModal();"
                                     class="cursor-pointer text-gray-500 hover:text-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -335,18 +342,32 @@
                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <div>
-                                <label for="itemCode" class="block text-sm font-medium text-gray-700 mb-1">Item
-                                    Code</label>
-                                <input type="text" autocomplete="off" id="itemCode" name="itemCode"
-                                    [(ngModel)]="newItemConfig.item_code"
+                                <label for="booking_date" class="block text-sm font-medium text-gray-700 mb-1">Booking
+                                    Date</label>
+                                <input type="date" autocomplete="off" id="itemCode" name="itemCode"
+                                    [(ngModel)]="newItemConfig.booking_date"
                                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <div>
+                                <label for="location"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <input type="text" autocomplete="off" id="itemCode" name="itemCode"
+                                    [(ngModel)]="newItemConfig.location"
+                                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                            </div>
+                            <div>
+                                <label for="quantity"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                                <input type="number" autocomplete="off" [value]="1" id="itemCode" name="itemCode"
+                                    [(ngModel)]="newItemConfig.quantity"
+                                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                            </div>
+                            <!-- <div>
                                 <button type="button" (click)="assignCode()"
                                     class="cursor-pointer w-full p-2 border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-50 font-medium">
                                     Assign Code
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
 
                         <nav class="flex gap-5 sm:gap-10 border-b border-gray-200 mb-6">
@@ -387,7 +408,7 @@
                         </div>
 
                         <footer class="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-200">
-                            <button type="button" (click)="isEdit ? updateInvoiceItem() : addInvoiceItem()"
+                            <button type="button" (click)="isEdit ? confirmUpdateModal() : addInvoiceItem()"
                                 class="cursor-pointer px-8 py-2.5 bg-[#494CA2] text-white rounded-md text-sm font-medium hover:bg-[#494CA2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 {{isEdit ? 'Update' : 'Save'}}
                             </button>
@@ -437,8 +458,9 @@
                     <div class="md:col-span-2 p-4 bg-white rounded-md shadow gap-4 flex flex-col">
                         <div class="flex justify-end items-center gap-3">
                             <label for="discountValue" class="text-xs font-medium text-gray-700">Discount</label>
-                            <input type="text" [maxLength]="discount_type == 'percentage' ? 3 : 5" id="discountValue" [disabled]="!subTotal" name="discountValue"
-                                [(ngModel)]="discountAmountVal" (change)="calculateTotals()"
+                            <input type="text" [maxLength]="discount_type == 'percentage' ? 3 : 5" id="discountValue"
+                                [disabled]="!subTotal" name="discountValue" [(ngModel)]="discountAmountVal"
+                                (change)="calculateTotals()"
                                 class="w-20 p-1 border border-gray-300 rounded-md text-right">
                             <select id="discountType" name="discountType" [(ngModel)]="discount_type"
                                 [disabled]="!subTotal" (change)="calculateTotals(true)"
@@ -459,7 +481,8 @@
                             <input type="number" id="subTotal" name="subTotal" disabled [(ngModel)]="subTotal"
                                 class="w-28 p-1 border border-gray-300 rounded-md text-right">
                         </div>
-                        <div class="container mx-auto" *ngIf="pastPayments.length>0 && invoiceConfig.invoice_type == 'sale'">
+                        <div class="container mx-auto"
+                            *ngIf="pastPayments.length>0 && invoiceConfig.invoice_type == 'sale'">
                             <div class="">
                                 <h2 class="text-lg font-semibold leading-tight text-end">Past Payments</h2>
                                 <div class="py-4 overflow-x-auto flex justify-end">
@@ -508,16 +531,17 @@
                     </div>
                 </section>
                 <div class="flex justify-end gap-4 pt-6 mt-8 bg-transparent">
-                    <button type="submit"  (click)="isEditInvoice ? updateEInvoice() : generateEinvoice()"
+                    <button type="submit" (click)="isEditInvoice ? updateEInvoice() : generateEinvoice()"
                         *ngIf="invoiceConfig?.invoice_type == 'estimate'"
                         class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-[#494CA2] hover:text-white transition duration-200">
                         {{isEditInvoice ? 'Update' : 'Save'}} & Share Estimate
                     </button>
-                    <button type="submit"  (click)="updateEInvoice()" *ngIf="invoiceConfig?.invoice_type == 'sale'"
+                    <button type="submit" (click)="updateEInvoice()" *ngIf="invoiceConfig?.invoice_type == 'sale'"
                         class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-transparent-600 border rounded-md text-sm font-medium hover:bg-[#494CA2] hover:text-white transition duration-200">
                         Update & Share
                     </button>
-                    <button type="submit" *ngIf="isEditInvoice && invoiceConfig?.invoice_type == 'estimate'" (click)="convertToSales()"
+                    <button type="submit" *ngIf="isEditInvoice && invoiceConfig?.invoice_type == 'estimate'"
+                        (click)="convertToSales()"
                         class="disabled:opacity-50 disabled:pointer-events-none cursor-pointer px-8 py-2.5 bg-[#494CA2] text-white rounded-md text-sm font-medium hover:bg-[#494CA2]">
                         Convert to sales
                     </button>
@@ -562,7 +586,8 @@
             <div>
                 <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone
                     Number <span class="text-red-500">*</span></label>
-                <input type="tel" maxlength="10" [(ngModel)]="partyConfig.phone_number" id="phoneNumber" name="phoneNumber"
+                <input type="tel" maxlength="10" [(ngModel)]="partyConfig.phone_number" id="phoneNumber"
+                    name="phoneNumber"
                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
             <div>
@@ -663,18 +688,19 @@
     </div>
 </div>
 
-<div *ngIf="showLogOutModal"
+<div *ngIf="showLogOutModal || forceUpdateModal"
     class="fixed inset-0 bg-[#000000a3] opacity-100 flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
     <div #modalContent
         class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-        [ngClass]="{'modal-fade-in': showLogOutModal}">
+        [ngClass]="{'modal-fade-in': showLogOutModal || forceUpdateModal}">
         <div class="p-6 flex flex-col items-center">
             <div class="w-full max-w-[200px] mb-4">
-                <img src="../../../assets/logout.png" alt="Delete illustration" class="w-full h-auto" />
+                <img *ngIf="showLogOutModal" src="../../../assets/logout.png" alt="Delete illustration" class="w-full h-auto" />
+                <img *ngIf="forceUpdateModal" src="../../../assets/confirm.png" alt="Delete illustration" class="w-full h-auto" />
             </div>
 
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-                Are you sure you want to logout?
+                {{showLogOutModal ? 'Are you sure you want to logout?' : 'Are you sure you want to update?'}}
             </h2>
         </div>
 
@@ -683,10 +709,15 @@
                 class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                 Cancel
             </button>
-            <button (click)="logout()"
+            <button (click)="logout()" *ngIf="showLogOutModal"
                 class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
                 Logout
+            </button>
+            <button (click)="updateInvoiceItem()" *ngIf="forceUpdateModal"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Update
             </button>
         </div>
     </div>
 </div>
+

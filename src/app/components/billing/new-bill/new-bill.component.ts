@@ -56,8 +56,11 @@ export class NewBillComponent {
   pastPayments: any = [];
   isBillFormValid: boolean = false;
   userData: any = {};
+  tempInvoiceItemConfig: any = {};
   showLogOutModal: boolean = false;
   filteredInvoiceItems: any = [];
+  isEditItemModal: boolean = false;
+  forceUpdateModal: boolean = false;
 
 
   constructor(private fb: FormBuilder,
@@ -109,13 +112,10 @@ export class NewBillComponent {
       description: '',
       booking_date: '',
       location: '',
-      quantity: 0,
+      quantity: 1,
       sale_price: 0,
-      purchase_price: 0,
       amount: 0,
       item_code: 0,
-      item_category: '',
-      item_stock: 0
     })
   }
 
@@ -195,8 +195,10 @@ export class NewBillComponent {
         this.loader.hide();
         this.closeModal();
         this.invoiceConfig.invoice_items[this.currentItemIdx] = this.newItemConfig;
-        this.invoiceConfig.invoice_items[this.currentItemIdx].quantity = 1;
         this.invoiceConfig.invoice_items[this.currentItemIdx].id = res.id;
+        this.invoiceConfig.invoice_items[this.currentItemIdx].quantity = this.newItemConfig.quanity || 1;
+
+
         // this.newItemConfig = {};
         this.calculateAmount(this.invoiceConfig.invoice_items[this.currentItemIdx]);
       } else {
@@ -204,6 +206,7 @@ export class NewBillComponent {
       }
     })
   }
+
 
   getInvoiceItemById(id: any) {
     this.isEdit = true;
@@ -219,17 +222,26 @@ export class NewBillComponent {
     })
   }
 
-  updateInvoiceItem() {
+  async updateInvoiceItem() {
     this.loader.show();
     this.billingService.updateInvoiceItem(this.newItemConfig.id, this.newItemConfig, (res: any) => {
       if (res.status == 200) {
+        this.forceUpdateModal = false;
+        this.alert.success(res.message);
         this.loader.hide();
         this.closeModal();
         this.getAllInvoiceItems();
+        this.invoiceConfig.invoice_items[this.currentItemIdx] = this.newItemConfig;
+        this.calculateAmount(this.invoiceConfig.invoice_items[this.currentItemIdx]);
       } else {
         this.loader.hide();
+        this.alert.success(res.message);
       }
     })
+  }
+
+  async confirmUpdateModal() {
+    this.forceUpdateModal = true;
   }
 
   selectItem(invoiceItem: any, item: any) {
@@ -295,7 +307,7 @@ export class NewBillComponent {
         total: +this.subTotal,
         balance_left: +this.totalAmount,
         invoice_type: this.invoiceConfig.invoice_type,
-        invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount ,description:item.description}))),
+        invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, item_name: item.item_name, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount, description: item.description }))),
         discount_value: this.discountAmountVal,
         discount_type: this.discount_type
       }
@@ -338,7 +350,7 @@ export class NewBillComponent {
       party_id: +this.invoiceConfig.party_id,
       balance_left: +this.totalAmount,
       invoice_type: this.invoiceConfig.invoice_type,
-      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount ,description:item.description}))),
+      invoice_items: JSON.stringify(this.invoiceConfig.invoice_items.map((item: any) => ({ id: item.id, item_name: item.item_name, booking_date: item.booking_date, location: item.location, quantity: item.quantity, sale_price: item.sale_price, amount: item.amount, description: item.description }))),
       discount_value: this.discountAmountVal,
       discount_type: this.discount_type,
       terms_and_condition: this.userData.terms_and_condition || 'Please add your terms and condition here',
@@ -513,7 +525,8 @@ export class NewBillComponent {
   }
 
   toggleLogoutModal() {
-    this.showLogOutModal = !this.showLogOutModal;
+    this.showLogOutModal = false;
+    this.forceUpdateModal = false;
   }
 
   logout() {
@@ -533,16 +546,33 @@ export class NewBillComponent {
   }
 
   ngAfterViewInit() {
-    document.addEventListener('click', (event)=> {
-      const party_dropdown :any= document.getElementById('party_dropdown');
-      const invoice_items:any = document.getElementById(`inputRef_${this.currentItemIdx}`);
+    document.addEventListener('click', (event) => {
+      const party_dropdown: any = document.getElementById('party_dropdown');
+      const invoice_items: any = document.getElementById(`inputRef_${this.currentItemIdx}`);
       if (!party_dropdown?.contains(event.target)) {
         this.dropdownOpen = false;
       }
       if (!invoice_items?.contains(event.target)) {
-        this.invoiceConfig.invoice_items.forEach((item:any)=>item.dropdownVisible = false);
+        this.invoiceConfig.invoice_items.forEach((item: any) => item.dropdownVisible = false);
       }
     });
+  }
+
+  openEditItemModal(item: any, currentIidx: any) {
+    this.newItemConfig = item;
+    this.itemModal = true;
+    this.isEdit = true;
+    this.tempInvoiceItemConfig = JSON.parse(JSON.stringify(item));
+    this.currentItemIdx = currentIidx;
+  }
+
+  closeInvoiceItemModal() {
+    // this.invoiceConfig.invoice_items[this.currentItemIdx] = this.tempInvoiceItemConfig;
+    this.itemModal = false;
+    this.newItemConfig = {};
+    this.getAllInvoiceItems();
+    console.log(2323);
+
   }
 
 }
