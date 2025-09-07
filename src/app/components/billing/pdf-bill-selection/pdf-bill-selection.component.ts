@@ -113,7 +113,7 @@ export class PdfBillSelectionComponent {
           res.data.forEach((item:any)=>{
             total = total + +item.amount_paid;
           });
-          this.invoiceBillConfig['advancePayment'] = total;
+          this.invoiceBillConfig['advancePayment'] = total || 0;
           
           this.countTotalAndTotalQty();
           resolve(true)
