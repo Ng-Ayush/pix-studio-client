@@ -295,7 +295,6 @@ export class PdfBillSelectionComponent {
 
   directconvertToSales() {
     this.loader.show();
-    debugger;
     if (this.invoiceBillConfig.tnc && this.invoiceBillConfig.estimate_id) {
       this.updateAndClose(true);
     } else {
