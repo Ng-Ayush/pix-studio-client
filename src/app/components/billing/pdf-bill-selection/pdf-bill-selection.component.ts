@@ -45,7 +45,7 @@ export class PdfBillSelectionComponent {
 
   @ViewChild('autoTextarea') textareaRef!: ElementRef;
 
-  currentInvoiceId: any = -1;
+  currentInvoiceNumber: any = -1;
   currentUserId: any = 0;
   userData: any = {};
   showLogOutModal: boolean = false;
@@ -68,7 +68,7 @@ export class PdfBillSelectionComponent {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.route.params.subscribe(params => {
       if (params['invoice-id']) {
-        this.currentInvoiceId = params['invoice-id'];
+        this.currentInvoiceNumber = params['invoice-id'];
         this.getInvoiceDetailsById();
       }
     })
@@ -86,18 +86,44 @@ export class PdfBillSelectionComponent {
   }
 
   getInvoiceDetailsById() {
-    this._service.getInvoiceById(this.currentInvoiceId, (res: any) => {
+    this._service.getInvoiceById(this.currentInvoiceNumber, async (res: any) => {
       if (res.status == 200) {
         console.log(res);
         this.invoiceBillConfig = res.data;
         this.invoiceBillConfig['priceInWords'] = this.commonService.convertToRupeesInWords(+this.invoiceBillConfig.total);
         this.invoiceBillConfig.tnc = res.data.terms_and_conditions || this.userData?.terms_and_condition || null;
         console.log(this.invoiceBillConfig.tnc);
+        const hasPastPayment = await this.getPastPayments();
+        if(!hasPastPayment){
+          this.countTotalAndTotalQty();
+        }
 
-        this.countTotalAndTotalQty();
+        console.log(this.invoiceBillConfig);
+        
+
       }
     })
   }
+
+ async getPastPayments() {
+    return new Promise((resolve, reject) => {
+      this._service.getPastPayments(this.invoiceBillConfig.invoice_id, (res: any) => {
+        if (res.status == 200 && res.data.length>0) {
+          let total = 0;
+          res.data.forEach((item:any)=>{
+            total = total + +item.amount_paid;
+          });
+          this.invoiceBillConfig['advancePayment'] = total;
+          
+          this.countTotalAndTotalQty();
+          resolve(true)
+        }else{
+          resolve(false);
+        }
+      })
+    })
+  }
+
 
   selectColor(color: any) {
     this.selectedColor = color;
@@ -215,14 +241,13 @@ export class PdfBillSelectionComponent {
   saveAndClose(isUpdated?: boolean) {
     this.loader.show();
     const params: any = {
-      invoice_id: this.currentInvoiceId,
       terms_and_conditions: this.invoiceBillConfig.tnc
     };
-    this._service.createEstimate(params, (res: any) => {
+    this._service.updateEstimate(this.invoiceBillConfig?.invoice_id, params, (res: any) => {
       if (res.status == 200) {
         this.loader.hide();
         this.alert.success(res.message);
-        this.invoiceBillConfig.estimate_id = res?.estimate_id;
+        // this.invoiceBillConfig.estimate_id = res?.estimate_id;
         if (isUpdated) {
           this.updateAndconvertToSales()
         } else {
@@ -270,6 +295,7 @@ export class PdfBillSelectionComponent {
 
   directconvertToSales() {
     this.loader.show();
+    debugger;
     if (this.invoiceBillConfig.tnc && this.invoiceBillConfig.estimate_id) {
       this.updateAndClose(true);
     } else {
@@ -279,7 +305,7 @@ export class PdfBillSelectionComponent {
 
   updateAndconvertToSales() {
     this.loader.show();
-    this._service.convertToSales(this.currentInvoiceId, (res: any) => {
+    this._service.convertToSales(this.invoiceBillConfig.invoice_id, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
         this.loader.hide();

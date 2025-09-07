@@ -72,8 +72,8 @@ export class BillingService extends BaseService {
   createEstimate(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createEstimate'], callback)
   }
-  updateEstimate(estimate_id:any,params: any, callback: any) {
-    return this.putData(params, this.httpUrls['updateEstimate'] + "/" + estimate_id, callback)
+  updateEstimate(invoice_id:any,params: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateEstimate'] + "/" + invoice_id, callback)
   }
 
   getEstimateList(callback: any) {

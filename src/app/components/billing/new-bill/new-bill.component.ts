@@ -312,7 +312,7 @@ export class NewBillComponent {
         discount_type: this.discount_type
       }
 
-      this.billingService.updateInvoice(+this.invoiceConfig.party_id, params, (res: any) => {
+      this.billingService.updateInvoice(+this.invoiceConfig.invoice_id, params, (res: any) => {
         if (res.status == 200) {
           this.loader.hide();
           this.alert.success(res.message);
