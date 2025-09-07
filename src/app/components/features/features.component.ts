@@ -58,7 +58,7 @@ export class FeaturesComponent {
     this._adminService.getFeatureListByUserId((res: any) => {
       if (res.status == 200) {
         console.log(res.data);
-        
+
         this.loader.hide();
       } else {
         this.loader.hide();
@@ -83,9 +83,9 @@ export class FeaturesComponent {
 
   sanitizeVideoUrl() {
     this.features.forEach((card: any) => {
-      const randomVideoId = this.extractYoutubeId(card.youtube_url);
-      const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
-      card.youtube_url = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
+      const videoId = this.extractYoutubeId(card.youtube_url);
+      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`;
+      card.youtube_url = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
     });
   }
 
@@ -287,11 +287,11 @@ export class FeaturesComponent {
     return item.id;
   }
 
-  tempFeaturePrice:any='';
+  tempFeaturePrice: any = '';
 
   verifyAndApplyPromoCode() {
     this.tempFeaturePrice = this.selectedCard.price;
-    if(this.isPromoApplied){
+    if (this.isPromoApplied) {
       this.alert.error('Promo code already applied');
       return;
     }
