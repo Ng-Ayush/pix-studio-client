@@ -22,19 +22,19 @@ export class CustomerRequestComponent {
   isModalOpen: boolean = false;
   users: any = [];
   deleteModal: boolean = false;
-  id:Number=0;
-  searchTerm:any='';
-  filteredItems:any=[];
-  currentUser:any={};
+  id: Number = 0;
+  searchTerm: any = '';
+  filteredItems: any = [];
+  currentUser: any = {};
 
 
   constructor(
     private service: AdminService,
     private alert: AlertService,
-    private router:Router
+    private router: Router
   ) { }
 
-  
+
 
   ngOnInit() {
     this.getRealTime();
@@ -45,7 +45,7 @@ export class CustomerRequestComponent {
     this.service.getAllRequests((res: any) => {
       if (res.status == 200) {
         this.users = res.data;
-        this.filteredItems = [...this.users]; 
+        this.filteredItems = [...this.users];
       } else {
         this.alert.error(res.message);
       }
@@ -59,22 +59,24 @@ export class CustomerRequestComponent {
   }
 
   searchCustomers() {
-      if (!this.searchTerm) {
-        this.filteredItems = [...this.users]; 
-        return;
-      }
-      this.filteredItems = this.users.filter((item:any) =>
-        item.customer_name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+    if (!this.searchTerm) {
+      this.filteredItems = [...this.users];
+      return;
+    }
+    this.filteredItems = this.users.filter((item: any) =>
+      item.customer_name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
   viewDetails(user: any) {
     this.id = user.ticket_id;
+    console.log(user);
+    
     this.currentUser = user;
-  this.deleteModal=true;
+    this.deleteModal = true;
   }
 
   onClose() {
-    this.deleteModal=false;
+    this.deleteModal = false;
 
   }
 
@@ -84,14 +86,14 @@ export class CustomerRequestComponent {
         this.alert.success(res.message);
         this.onClose();
         this.getAllFeatures();
-      }else{
+      } else {
         this.alert.error(res.message);
       }
     })
 
-  }  
+  }
 
-  onEdit(id:any){
-    this.router.navigate(['admin/edit-customer',id])
+  onEdit(id: any) {
+    this.router.navigate(['admin/edit-customer', id])
   }
 }
