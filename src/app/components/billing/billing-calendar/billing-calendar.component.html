@@ -114,21 +114,41 @@
                                 </h3>
                                 <h2 *ngIf="selectedEvent?.events?.length == 0" class="text-gray-500">No events for this
                                     day</h2>
-                                <div class="flex flex-col gap-2">
-                                    <div *ngFor="let event of selectedEvent.events;trackBy: trackByIdx"
-                                        class="border-l-4 pl-3 py-1 flex items-center gap-2 justify-between"
-                                        [ngStyle]="{'border-color': getEventColor(event.index)}">
-                                        <div>
-                                            <p class="font-medium text-gray-800 text-sm md:text-base">{{ event.name }}
-                                            </p>
-                                            <p class="text-xs text-gray-500">{{event.location}}</p>
-                                        </div>
-                                        <p class="text-sm md:text-lg font-bold text-indigo-700">{{event.item_name}}</p>
-                                        <a href="tel:{{ event.phone }}"
-                                            class="text-xs text-gray-500 hover:underline cursor-pointer">Phone: {{
-                                            event.phone }}</a>
-                                    </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full border-collapse">
+                                        <tbody>
+                                            <tr *ngFor="let event of selectedEvent.events; trackBy: trackByIdx"
+                                                class="border-l-4"
+                                                [ngStyle]="{ 'border-color': getEventColor(event.index) }">
+                                                <!-- Left: Name + Location -->
+                                                <td class="px-3 py-2 align-middle">
+                                                    <div class="flex flex-col">
+                                                        <p class="font-medium text-gray-800 text-sm md:text-base">{{
+                                                            event.name }}</p>
+                                                        <p class="text-xs text-gray-500">{{ event.location }}</p>
+                                                    </div>
+                                                </td>
+
+                                                <!-- Center: Item name -->
+                                                <td class="text-center px-3 py-2 align-middle w-full">
+                                                    <p class="text-sm md:text-lg font-bold text-indigo-700">
+                                                        {{ event.item_name }}
+                                                    </p>
+                                                </td>
+
+                                                <!-- Right: Phone -->
+                                                <td class="px-3 py-2 text-right align-middle whitespace-nowrap">
+                                                    <a href="tel:{{ event.phone }}"
+                                                        class="text-xs text-gray-500 hover:underline cursor-pointer">
+                                                        Phone: {{ event.phone }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+
+
                             </div>
                             <div *ngIf="!selectedEvent" class="text-center py-6 text-gray-400">
                                 <img src="https://placehold.co/120x120" alt="No event selected"

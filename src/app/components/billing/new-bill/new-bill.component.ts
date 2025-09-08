@@ -245,7 +245,7 @@ export class NewBillComponent {
   }
 
   selectItem(invoiceItem: any, item: any) {
-    this.invoiceConfig.invoice_items[this.currentItemIdx] = invoiceItem;
+    this.invoiceConfig.invoice_items[this.currentItemIdx] = JSON.parse(JSON.stringify(invoiceItem));
     this.calculateAmount(invoiceItem);
     item.dropdownVisible = false;
     this.filteredInvoiceItems = [...this.invoiceItemsList];
