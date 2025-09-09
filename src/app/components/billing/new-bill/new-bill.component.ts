@@ -247,9 +247,11 @@ export class NewBillComponent {
 
   selectItem(invoiceItem: any, item: any) {
     this.invoiceConfig.invoice_items[this.currentItemIdx] = JSON.parse(JSON.stringify(invoiceItem));
-    this.calculateAmount(invoiceItem);
     item.dropdownVisible = false;
     this.filteredInvoiceItems = [...this.invoiceItemsList];
+    setTimeout(() => {
+      this.calculateAmount(invoiceItem);
+    }, 0); 
   }
 
   calculateAmount(item: any) {
@@ -363,6 +365,7 @@ export class NewBillComponent {
     };
 
     await this.fetchLastInsertedInvoiceNumber();
+    await this.updateParty();
 
     const params: any = {
       ...this.invoiceConfig,
@@ -435,6 +438,7 @@ export class NewBillComponent {
     this.dropdownOpen = false;
     this.invoiceConfig.party_id = item.id;
     this.invoiceConfig.phone_number = item.phone_number;
+    this.partyConfig.billing_address = JSON.parse(JSON.stringify(item.billing_address));
   }
 
   filterParty(): void {
