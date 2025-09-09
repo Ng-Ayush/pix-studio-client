@@ -103,7 +103,8 @@
           <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
             <div [ngSwitch]="selectedTemplateId" class="flex justify-center">
               <div *ngSwitchCase="'template1'"
-                class="flex items-center w-[800px] justify-center border-2 text-xl font-medium" [id]="selectedTemplateId">
+                class="flex items-center w-[800px] justify-center border-2 text-xl font-medium"
+                [id]="selectedTemplateId">
                 <div class="w-full mx-auto p-4 text-sm text-gray-800 font-sans">
                   <!-- Header -->
                   <div class="flex justify-between items-center mb-10">
@@ -126,7 +127,7 @@
                       <p class="font-medium">Invoice to:</p>
                       <h2 class="font-bold">{{ invoiceBillConfig.party_name }}</h2>
                       <p>{{ invoiceBillConfig.party_phone_number }}</p>
-                      <p>{{ userData?.address }}</p>
+                      <p class="max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="text-right gap-1 flex flex-col">
                       <p><span class="font-bold">INVOICE NO:</span> #{{ invoiceBillConfig?.invoice_number }}</p>
@@ -152,7 +153,8 @@
                       <tbody>
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                           <td class="border border-[#c5a86b] px-3 py-2">{{ idx + 1 }}</td>
-                          <td class="border border-[#c5a86b] px-3 py-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-start"> {{item.description}} </small></td>
+                          <td class="border border-[#c5a86b] px-3 py-2 flex flex-wrap flex-col gap-1 items-center">
+                            {{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.location }}</td>
                           <td class="border border-[#c5a86b] px-3 py-2">{{ item.quantity }}</td>
@@ -213,7 +215,8 @@
               </div>
               <!-- Template 2 Placeholder -->
               <div *ngSwitchCase="'template2'" [id]="selectedTemplateId"
-                class="flex items-center w-[800px]  justify-center border-2 text-xl font-medium" [id]="selectedTemplateId">
+                class="flex items-center w-[800px]  justify-center border-2 text-xl font-medium"
+                [id]="selectedTemplateId">
                 <div class="w-full  mx-auto p-4 font-sans text-sm">
                   <!-- Header -->
                   <div class="flex justify-between items-center mb-4">
@@ -237,6 +240,7 @@
                       <p class="font-bold">Order From</p>
                       <p class="font-bold text-sm">{{ invoiceBillConfig.party_name }}</p>
                       <p class="pt-2">Contact No: {{ invoiceBillConfig.party_phone_number }}</p>
+                      <p class="pt-2 max-w-xs">Address: {{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="order-detail flex flex-col items-end">
                       <p class="font-bold">Order From</p>
@@ -267,22 +271,13 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b">
                           <td class="py-2 px-4">{{idx+1}}</td>
-                          <td colspan="5" class="py-2 px-4 font-medium text-center">{{item.item_name}} <br> <small class="text-center"> {{item.description}} </small></td>
+                          <td colspan="5" class="py-2 px-4 font-medium text-center">{{item.item_name}} <br> <small
+                              class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-4">{{ item.booking_date | date: 'MMM d, y' }}</td>
                           <td class="py-2 px-4">{{ item.location }}</td>
                           <td class="py-2 px-4">{{ item.quantity }}</td>
                           <td class="py-2 px-4">₹{{ item.sale_price }}</td>
                           <td class="py-2 px-4">₹{{ item.quantity * item.sale_price }}</td>
-                        </tr>
-
-                        <tr class="">
-                          <td></td>
-                          <td colspan="5" class="text-center py-2 px-2 text-lg">Total Paid
-                          </td>
-                          <td class="text-center py-2 px-2 text-lg">{{ invoiceBillConfig?.total_quantity }}</td>
-                          <td></td>
-                          <td class="text-center py-2 px-2 font-extrabold text-lg">₹{{ invoiceBillConfig?.total }}
-                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -358,7 +353,7 @@
                 </div>
               </div>
               <!-- Template 3 Placeholder -->
-              <div *ngSwitchCase="'template3'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template8'" [id]="selectedTemplateId"
                 class="flex items-center w-[800px]  justify-center border-2 text-xl font-medium">
                 <div class="w-full mx-auto font-sans text-sm">
 
@@ -377,7 +372,7 @@
                       <p class="font-semibold text-gray-700">Invoice To:</p>
                       <h2 class="font-bold text-lg uppercase">{{ invoiceBillConfig.party_name }}</h2>
                       <p class="text-gray-600">{{ invoiceBillConfig.party_phone_number }}</p>
-                      <p class="text-gray-600">{{ userData?.address }}</p>
+                      <p class="text-gray-600 max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="text-right gap-2 text-gray-700">
                       <p><span class="font-bold text-[#8B1D1D]">Invoice No:</span> {{ invoiceBillConfig.invoice_number
@@ -405,7 +400,8 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b hover:bg-gray-50">
                           <td class="py-3">{{idx+1}}</td>
-                          <td class="py-3 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                          <td class="py-3 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                              class="text-center"> {{item.description}} </small></td>
                           <td class="py-3 px-4">{{ item.booking_date | date : 'MMM d, y' }}</td>
                           <td class="py-3 px-4">{{ item.location }}</td>
                           <td class="py-3 px-4">₹{{ item.sale_price }}</td>
@@ -473,7 +469,7 @@
 
               </div>
 
-              <div *ngSwitchCase="'template4'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template10'" [id]="selectedTemplateId"
                 class="flex items-center w-[800px]  justify-center border-2 text-xl font-medium">
                 <div class="w-full mx-auto border shadow-lg">
 
@@ -499,7 +495,7 @@
                       <p class="text-sm">Invoice to : <br> <span class="font-bold text-sm">{{
                           invoiceBillConfig.party_name }}</span></p>
                       <p class="text-sm">{{ invoiceBillConfig.party_phone_number }}</p>
-                      <p class="text-sm">{{ userData?.address }}</p>
+                      <p class="text-sm max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="text-right">
                       <p class="flex gap-1 text-md items-end text-sm"><span class="font-bold text-sm">Invoice No:</span>
@@ -529,7 +525,8 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items;let idx=index;"
                           class="text-center border-b">
                           <td>{{idx+1}}</td>
-                          <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                          <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                              class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="py-2 px-2">{{ item.location }}</td>
                           <td class="py-2 px-2">₹{{ item.sale_price }}</td>
@@ -605,7 +602,7 @@
 
                 </div>
               </div>
-              <div *ngSwitchCase="'template5'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template4'" [id]="selectedTemplateId"
                 class="flex items-center w-[800px]  justify-center border-2 text-xl font-medium">
                 <div class="w-full  mx-auto border shadow-lg">
 
@@ -631,7 +628,7 @@
                       <p class="text-sm">Invoice to : <br> <span class="font-bold text-sm">{{
                           invoiceBillConfig.party_name }}</span></p>
                       <p class="text-sm">{{ invoiceBillConfig.party_phone_number }}</p>
-                      <p class="text-sm">{{ userData?.address }}</p>
+                      <p class="text-sm max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="text-right">
                       <p class="flex gap-1 text-md items-end text-sm"><span class="font-bold text-sm">Invoice No:</span>
@@ -661,7 +658,8 @@
                         <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx=index;"
                           class="text-center border-b">
                           <td class="py-2 px-4">{{idx+1}}</td>
-                          <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                          <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                              class="text-center"> {{item.description}} </small></td>
                           <td class="py-2 px-4">{{ item.booking_date | date : "MMM d,y"}}</td>
                           <td class="py-2 px-4">{{ item.location }}</td>
                           <td class="py-2 px-4">₹{{ item.sale_price }}</td>
@@ -724,7 +722,7 @@
                   </div>
                 </div>
               </div>
-              <div *ngSwitchCase="'template6'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template5'" [id]="selectedTemplateId"
                 class="flex items-center w-[800px]  flex-col justify-center border-2 text-xl font-medium">
                 <div class="w-full  px-5 py-8 bg-[#0B2C5E] relative flex justify-between items-center">
                   <div class="bg-[#A51C73] text-white px-6 py-6 rounded-tr-3xl rounded-bl-3xl">
@@ -754,6 +752,8 @@
                   <div class="text-right gap-1 flex flex-col text-gray-700">
                     <p><span class="text-gray-600">Invoice to :</span><span class="font-bold">
                         {{invoiceBillConfig.party_name}}</span></p>
+                    <p class="flex w-full justify-end"><span class="font-bold max-w-xs">
+                        {{invoiceBillConfig?.party_billing_address}}</span></p>
                     <p><span class="font-bold text-[#0B2C5E]">Date :</span> {{invoiceBillConfig?.invoice_date | date :
                       'MMM d,y'}}</p>
                     <p><span class="font-bold text-[#0B2C5E]">Time :</span> {{invoiceBillConfig?.time}}</p>
@@ -778,7 +778,8 @@
                       <tr class="border-b text-gray-700"
                         *ngFor="let item of invoiceBillConfig.invoice_items;let idx = index;">
                         <td class="py-2 px-4">{{idx+1}}</td>
-                        <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                        <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                            class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-4">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-4">{{item.quantity}}</td>
                         <td class="py-2 px-4">{{item.sale_price}}</td>
@@ -827,7 +828,7 @@
                 </div>
 
               </div>
-              <div *ngSwitchCase="'template7'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template9'" [id]="selectedTemplateId"
                 class="flex flex-col w-[800px] items-center justify-center border-2 text-xl font-medium">
                 <div class="relative px-5 py-8 w-full">
                   <!-- Left design box -->
@@ -839,8 +840,8 @@
                   <!-- Content -->
                   <div class="relative z-10 flex justify-end items-center">
                     <div class="" style="position: absolute;
-    top: 25px;
-    left: 29px;">
+    top: 50px;
+    left: 37px;">
                       <h2 class="text-xl font-bold text-white">{{userData?.studio_name}}</h2>
                     </div>
                     <h1 class="text-4xl font-extrabold text-teal-900"> {{invoiceBillConfig?.invoice_type == 'sale' ?
@@ -851,10 +852,11 @@
                 <!-- Invoice Info -->
                 <div class="px-5 py-6 flex justify-between w-full text-sm z-10">
                   <!-- Left Party Info -->
-                  <div class="gap flex flex-col" style="padding-left: 177px;">
+                  <div class="gap flex flex-col gap-1" style="padding-left: 177px;">
                     <p class="text-gray-600">Invoice to :</p>
                     <p class="font-bold text-teal-900">{{invoiceBillConfig.party_name}}</p>
-                    <p class="">📞{{invoiceBillConfig.party_phone_number}}</p>
+                    <p class="">{{invoiceBillConfig.party_phone_number}}</p>
+                    <p class="max-w-xs">{{invoiceBillConfig?.party_billing_address}}</p>
                   </div>
 
                   <!-- Right Invoice Details -->
@@ -882,7 +884,8 @@
                     <tbody>
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items;let idx = index;">
                         <td class="py-2 px-2">{{idx + 1}}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                            class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{item.quantity}}</td>
                         <td class="py-2 px-2">{{item.sale_price}}</td>
@@ -933,7 +936,7 @@
                   <div class="absolute bottom-0 right-12 w-40 h-16 bg-[#12B886] transform skew-y-12"></div>
                 </div>
               </div>
-              <div *ngSwitchCase="'template8'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template6'" [id]="selectedTemplateId"
                 class="flex items-center justify-center flex-col w-[800px] border-2 text-xl font-medium">
                 <!-- HEADER -->
                 <div class="flex justify-between items-center p-4 relative w-full">
@@ -963,7 +966,7 @@
                     <p class="font-bold">INVOICE TO:</p>
                     <p class="text-red-600 font-bold text-lg">{{ invoiceBillConfig?.party_name }}</p>
                     <p>📞 {{ invoiceBillConfig?.party_phone_number }}</p>
-                    <p>{{ userData?.address }}</p>
+                    <p class="max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
                   </div>
 
                   <!-- Right Invoice Details -->
@@ -992,7 +995,8 @@
                     <tbody class="bg-gray-100">
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                         <td class="py-2 px-2">{{ idx + 1 }}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                            class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{ item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{ item.location }}</td>
                         <td class="py-2 px-2">₹{{ item.sale_price }}</td>
@@ -1053,7 +1057,7 @@
 
               </div>
 
-              <div *ngSwitchCase="'template9'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template7'" [id]="selectedTemplateId"
                 class="flex items-center flex-col w-[800px] justify-center border-2 text-xl font-medium">
                 <div class="w-full flex justify-between items-center bg-[#0d2241] text-white px-8 py-6">
                   <div>
@@ -1068,7 +1072,7 @@
 
                   </div>
                   <div class="text-right">
-                    <h2 class="text-3xl font-extrabold bg-red-600 px-6 py-2 rounded"> {{invoiceBillConfig?.invoice_type
+                    <h2 class="text-lg font-extrabold bg-red-600 px-6 py-2 rounded"> {{invoiceBillConfig?.invoice_type
                       == 'sale' ? 'SALE' : 'ESTIMATE'}} INVOICE</h2>
                     <div class="flex gap-6 mt-3 text-sm">
                       <div>
@@ -1089,9 +1093,10 @@
 
                 <!-- Invoice To -->
                 <div class="px-5 py-6 flex flex-col w-full">
-                  <p class="text-gray-600 font-semibold">INVOICE TO:</p>
-                  <p class="text-xl font-bold text-red-600">{{invoiceBillConfig?.party_name}}</p>
-                  <p>{{invoiceBillConfig?.party_phone_number}}</p>
+                  <p class="text-gray-600 font-semibold text-sm">INVOICE TO:</p>
+                  <p class="text-sm font-bold text-red-600">{{invoiceBillConfig?.party_name}}</p>
+                  <p class="text-sm font-bold">{{invoiceBillConfig?.party_phone_number}}</p>
+                  <p class="text-sm font-bold max-w-xs">{{invoiceBillConfig?.party_billing_address}}</p>
                 </div>
 
                 <!-- Table -->
@@ -1111,7 +1116,8 @@
                     <tbody>
                       <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;">
                         <td class="py-2 px-2 text-center">{{idx + 1}}</td>
-                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                        <td class="py-2 px-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                            class="text-center"> {{item.description}} </small></td>
                         <td class="py-2 px-2">{{item.booking_date | date : "MMM d,y"}}</td>
                         <td class="py-2 px-2">{{item.quantity}}</td>
                         <td class="py-2 px-2">{{item.sale_price}}</td>
@@ -1164,7 +1170,7 @@
                 </div>
               </div>
 
-              <div *ngSwitchCase="'template10'" [id]="selectedTemplateId"
+              <div *ngSwitchCase="'template3'" [id]="selectedTemplateId"
                 class="flex items-center w-[800px] justify-center border-2 text-xl font-medium">
                 <div class="w-full mx-auto bg-white shadow-lg border overflow-hidden">
 
@@ -1189,6 +1195,7 @@
                       <p class="text-sm">Invoice To:</p>
                       <h2 class="text-lg font-bold">{{invoiceBillConfig.party_name}}</h2>
                       <p class="text-sm">{{invoiceBillConfig.party_phone_number}}</p>
+                      <p class="text-sm max-w-xs">{{invoiceBillConfig?.party_billing_address}}</p>
                     </div>
                     <div class="text-right text-sm">
                       <p><span class="font-semibold">Invoice No:</span> {{invoiceBillConfig?.invoice_number}}</p>
@@ -1215,7 +1222,8 @@
                       <tbody>
                         <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
                           <td class="p-2">{{i +1}}</td>
-                          <td class="p-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small class="text-center"> {{item.description}} </small></td>
+                          <td class="p-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
+                              class="text-center"> {{item.description}} </small></td>
                           <td class="p-2">{{item.booking_date | date : "MMM d,y"}}</td>
                           <td class="p-2">{{item.quantity}}</td>
                           <td class="p-2">{{item.sale_price}}</td>

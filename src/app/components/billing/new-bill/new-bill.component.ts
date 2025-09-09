@@ -130,6 +130,7 @@ export class NewBillComponent {
           if (e.id == this.invoiceConfig.party_id) {
             this.searchQuery = e.party_name;
             this.selectedParty = e.party_name;
+            this.partyConfig.billing_address = JSON.parse(JSON.stringify(e.billing_address));
           }
         })
       }
@@ -302,6 +303,7 @@ export class NewBillComponent {
         reject(false);
         return;
       };
+      this.updateParty();
       const params: any = {
         ...this.invoiceConfig,
         total: +this.subTotal,
@@ -332,6 +334,24 @@ export class NewBillComponent {
       })
     })
 
+  }
+
+   updateParty() {
+    this.loader.show();
+    const params: any = {
+      party_name: this.partyConfig.party_name || this.selectedParty,
+      phone_number: this.partyConfig.phone_number || this.invoiceConfig.phone_number,
+      email: this.partyConfig.email || this.invoiceConfig.email,
+      billing_address: this.partyConfig.billing_address || this.invoiceConfig.billing_address,
+    }
+    this.billingService.updateParty(this.partyConfig.id || this.invoiceConfig.party_id, params, (res: any) => {
+      if (res.status == 200) {
+        this.loader.hide();
+      } else {
+        this.loader.hide();
+        this.alert.error(res.message);
+      }
+    })
   }
 
   async generateInvoice(isEinvoice?: boolean) {
