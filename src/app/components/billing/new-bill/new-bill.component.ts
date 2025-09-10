@@ -130,7 +130,7 @@ export class NewBillComponent {
           if (e.id == this.invoiceConfig.party_id) {
             this.searchQuery = e.party_name;
             this.selectedParty = e.party_name;
-            this.partyConfig.billing_address = JSON.parse(JSON.stringify(e.billing_address));
+            this.partyConfig.billing_address = JSON.parse(JSON.stringify(e.billing_address || ''));
           }
         })
       }
@@ -438,7 +438,7 @@ export class NewBillComponent {
     this.dropdownOpen = false;
     this.invoiceConfig.party_id = item.id;
     this.invoiceConfig.phone_number = item.phone_number;
-    this.partyConfig.billing_address = JSON.parse(JSON.stringify(item.billing_address));
+    this.partyConfig.billing_address = JSON.parse(JSON.stringify(item.billing_address || ''));
   }
 
   filterParty(): void {
