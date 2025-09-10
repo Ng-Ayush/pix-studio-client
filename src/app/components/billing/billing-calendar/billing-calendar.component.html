@@ -61,105 +61,106 @@
             </div>
         </div>
 
-        <div class="w-full py-4 px-2">
-            <div class="bg-white rounded-xl px-4 shadow-md overflow-hidden">
-                <div class="flex flex-col lg:flex-row gap-0 lg:gap-4">
-                    <!-- Calendar Section -->
-                    <div class="w-full lg:w-2/3 p-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Event Calendar</h1>
-                            <div class="flex gap-2">
-                                <button (click)="prevMonth()"
-                                    class="px-2 py-1 bg-gray-200 cursor-pointer rounded hover:bg-gray-300 transition">←</button>
-                                <button (click)="nextMonth()"
-                                    class="px-2 py-1 bg-gray-200 cursor-pointer rounded hover:bg-gray-300 transition">→</button>
-                            </div>
-                        </div>
+        <div class="w-full h-screen px-2 py-2">
+            <div class="bg-white rounded-xl shadow-md w-full h-full flex flex-col lg:flex-row overflow-hidden">
 
-                        <div class="text-lg font-semibold text-center mb-2 text-gray-700">{{ monthYear }}</div>
-
-                        <!-- Days of week -->
-                        <div class="grid grid-cols-7 gap-1 mb-1">
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Sun</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Mon</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Tue</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Wed</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Thu</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Fri</div>
-                            <div class="text-center font-medium text-gray-500 py-1 text-xs md:text-base">Sat</div>
-                        </div>
-
-                        <!-- Calendar days grid -->
-                        <div class="grid grid-cols-7 gap-1">
-                            <div *ngFor="let day of calendarDays;trackBy: trackByDay"
-                                class="calendar-day text-center py-2 cursor-pointer rounded hover:bg-blue-50 text-sm md:text-lg lg:text-xl"
-                                [ngClass]="{'bg-blue-100 font-medium': isToday(day)}" (click)="showEventDetails(day)">
-                                {{ day.date }}
-                                <div *ngIf="day.events.length" class="flex justify-center mt-1 gap-1">
-                                    <span *ngFor="let event of day.events" class="event-dot w-2 h-2 rounded-full block"
-                                        [ngStyle]="{'background-color': getEventColor(event.index)}"></span>
-                                </div>
-                            </div>
+                <!-- Calendar Section -->
+                <div class="flex-1 flex flex-col p-3 lg:p-6">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-3">
+                        <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Event Calendar</h1>
+                        <div class="flex gap-2">
+                            <button (click)="prevMonth()"
+                                class="px-2 sm:px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">←</button>
+                            <button (click)="nextMonth()"
+                                class="px-2 sm:px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">→</button>
                         </div>
                     </div>
 
-                    <!-- Event Details Section -->
+                    <!-- Month -->
+                    <div class="text-sm sm:text-base md:text-lg font-semibold text-center mb-3 text-gray-700">
+                        {{ monthYear }}
+                    </div>
+
+                    <!-- Weekdays -->
                     <div
-                        class="w-full lg:w-1/3 bg-gray-50 p-4 border-l border-gray-200 min-h-[300px] max-h-[600px] overflow-auto">
-                        <h2 class="text-lg md:text-xl font-semibold mb-2 text-gray-700">Event Details</h2>
-                        <div id="event-display">
-                            <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow p-3 overflow-y-auto"
-                                style="max-height:400px;">
-                                <h3 class="font-medium text-base md:text-lg mb-1 text-gray-700">{{ selectedEvent.date }}
-                                </h3>
-                                <h2 *ngIf="selectedEvent?.events?.length == 0" class="text-gray-500">No events for this
-                                    day</h2>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full border-collapse">
-                                        <tbody>
-                                            <tr *ngFor="let event of selectedEvent.events; trackBy: trackByIdx"
-                                                class="border-l-4"
-                                                [ngStyle]="{ 'border-color': getEventColor(event.index) }">
-                                                <!-- Left: Name + Location -->
-                                                <td class="px-3 py-2 align-middle">
-                                                    <div class="flex flex-col">
-                                                        <p class="font-medium text-gray-800 text-sm md:text-base">{{
-                                                            event.name }}</p>
-                                                        <p class="text-xs text-gray-500">{{ event.location }}</p>
-                                                    </div>
-                                                </td>
+                        class="grid grid-cols-7 gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm lg:text-base mb-1 sm:mb-2">
+                        <div *ngFor="let day of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']"
+                            class="text-center font-medium text-gray-500 py-1">
+                            {{ day }}
+                        </div>
+                    </div>
 
-                                                <!-- Center: Item name -->
-                                                <td class="text-center px-3 py-2 align-middle w-full">
-                                                    <p class="text-sm md:text-lg font-bold text-indigo-700">
-                                                        {{ event.item_name }}
-                                                    </p>
-                                                </td>
-
-                                                <!-- Right: Phone -->
-                                                <td class="px-3 py-2 text-right align-middle whitespace-nowrap">
-                                                    <a href="tel:{{ event.phone }}"
-                                                        class="text-xs text-gray-500 hover:underline cursor-pointer">
-                                                        Phone: {{ event.phone }}
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-
-                            </div>
-                            <div *ngIf="!selectedEvent" class="text-center py-6 text-gray-400">
-                                <img src="https://placehold.co/120x120" alt="No event selected"
-                                    class="mx-auto mb-2 rounded-lg" />
-                                <p class="text-xs">Select a date to view events</p>
+                    <!-- Calendar days -->
+                    <div class="grid grid-cols-7 gap-1 sm:gap-2 flex-1">
+                        <div *ngFor="let day of calendarDays; trackBy: trackByDay" class="calendar-day aspect-square flex flex-col justify-center items-center cursor-pointer rounded hover:bg-blue-50 
+                 text-[10px] sm:text-sm md:text-base lg:text-lg"
+                            [ngClass]="{'bg-blue-100 font-semibold': isToday(day)}" (click)="showEventDetails(day)">
+                            <span>{{ day.date }}</span>
+                            <div *ngIf="day.events.length" class="flex justify-center mt-1 gap-1 flex-wrap">
+                                <span *ngFor="let event of day.events"
+                                    class="event-dot w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full block"
+                                    [ngStyle]="{'background-color': getEventColor(event.index)}">
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Event Details Section -->
+                <div class="flex-1 bg-gray-50 p-4 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col">
+                    <h2 class="text-sm sm:text-base md:text-lg lg:text-xl font-semibold mb-3 text-gray-700">Event
+                        Details</h2>
+                    <div class="flex-1 overflow-y-auto">
+                        <div *ngIf="selectedEvent" class="bg-white rounded-lg shadow p-3 md:p-4">
+                            <h3 class="font-medium text-sm md:text-base lg:text-lg mb-2 text-gray-700">
+                                {{ selectedEvent.date }}
+                            </h3>
+                            <h2 *ngIf="selectedEvent?.events?.length == 0" class="text-gray-500 text-xs sm:text-sm">No
+                                events for this day</h2>
+                            <div class="overflow-x-auto">
+                                <table class="w-full border-collapse text-xs sm:text-sm md:text-base">
+                                    <tbody>
+                                        <tr *ngFor="let event of selectedEvent.events; trackBy: trackByIdx"
+                                            class="border-l-4"
+                                            [ngStyle]="{ 'border-color': getEventColor(event.index) }">
+                                            <!-- Left -->
+                                            <td class="px-2 sm:px-3 py-2 align-middle">
+                                                <div class="flex flex-col">
+                                                    <p class="font-medium text-gray-800">{{ event?.name }}</p>
+                                                    <p class="text-xs text-gray-500">{{ event?.location }}</p>
+                                                </div>
+                                            </td>
+                                            <!-- Center -->
+                                            <td class="text-center px-2 sm:px-3 py-2 align-middle">
+                                                <p class="font-bold text-indigo-700">{{ event?.item_name }}</p>
+                                            </td>
+                                            <!-- Right -->
+                                            <td class="px-2 sm:px-3 py-2 text-right align-middle whitespace-nowrap">
+                                                <a href="tel:{{ event?.phone }}"
+                                                    class="text-xs text-gray-500 hover:underline cursor-pointer">
+                                                    Phone: {{ event?.phone }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div *ngIf="!selectedEvent"
+                            class="flex flex-col justify-center items-center h-full text-gray-400">
+                            <img src="https://placehold.co/100x100" alt="No event selected" class="mb-2 rounded-lg" />
+                            <p class="text-xs sm:text-sm">Select a date to view events</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+
+
     </main>
 </div>
 <div *ngIf="showLogOutModal"
