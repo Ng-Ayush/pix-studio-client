@@ -43,6 +43,7 @@ export class LoginComponent {
     this.loader = true;
     if (!this.loginPin) {
       this.alert.error("Pin is required");
+      this.loader = false;
       return;
     }
     const params: any = {
