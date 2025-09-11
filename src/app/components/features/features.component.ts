@@ -35,6 +35,8 @@ export class FeaturesComponent {
   showLogOutModal: boolean = false;
   isPromoApplied: boolean = false;
   promocode: any = '';
+  viewportHeight: any = 700;
+  viewportRatio: number = 0.80;
 
   constructor(
     private router: Router,
@@ -50,7 +52,13 @@ export class FeaturesComponent {
     this.getRealTime();
     this.getFeaturesByNewArrival();
     this.getAllCategories();
+    this.setViewportHeight();
+    window.addEventListener('resize', () => this.setViewportHeight());
     // this.getFeatureListByUserId();
+  }
+
+  setViewportHeight() {
+    this.viewportHeight = window.innerHeight * this.viewportRatio;
   }
 
   getFeatureListByUserId() {
@@ -313,6 +321,11 @@ export class FeaturesComponent {
         this.alert.error(res.message);
       }
     })
+  }
+
+  
+  ngOnDestroy() {
+    window.removeEventListener('resize', () => this.setViewportHeight());
   }
 
 }
