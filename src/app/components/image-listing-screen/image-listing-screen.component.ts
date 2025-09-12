@@ -147,11 +147,13 @@ export class ImageListingScreenComponent {
   addOutsideClickListener() {
     setTimeout(() => {
       document.addEventListener('click', this.outsideClickHandler);
-    }, 0);
+    }, 100);
   }
 
   removeOutsideClickListener() {
-    document.removeEventListener('click', this.outsideClickHandler);
+    setTimeout(() => {
+     document.removeEventListener('click', this.outsideClickHandler);
+    }, 100);
   }
 
   outsideClickHandler = (event: MouseEvent) => {
@@ -165,10 +167,6 @@ export class ImageListingScreenComponent {
 
   ngAfterViewInit() {
     // this.addOutsideClickListener();
-  }
-
-  ngOnDestroy() {
-    this.removeOutsideClickListener();
   }
 
 }
