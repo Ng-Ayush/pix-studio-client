@@ -43,6 +43,10 @@ export class UploadImgBackgroundService {
   isProcessingQueue = false;
   photos: any = [];
   isImageUploadedCompleted$: any = new BehaviorSubject<boolean>(false);
+  // concurrency control
+  private concurrency = 7; // tune this (5-10 recommended)
+  private currentActive = 0;
+  currentFileName$ = new BehaviorSubject<string>('');
 
   handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any, currentFolderId: any) {
     const files: File[] = Array.from(event.target.files || []);
@@ -75,8 +79,6 @@ export class UploadImgBackgroundService {
 
     // Push into queue
     this.uploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
-    console.log(eventId, folderName, studio_name, customerName, eventName, currentFolderId);
-
     this.alert.info("Uploading In Queue");
     // Start queue if not already running
     if (!this.isProcessingQueue) {
@@ -102,22 +104,32 @@ export class UploadImgBackgroundService {
       this.progressPercentage$.next(0);
       this.isUploading$.next(true);
 
-      const batchSize = this.getBatchSize(this.totalPhotos);
+      // const batchSize = this.getBatchSize(this.totalPhotos);
+      const batchSize = 20;
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         this.batchStart$.next(i + 1);
         this.batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
 
         const batchFiles = files.slice(i, i + batchSize);
 
-        await Promise.all(
-          batchFiles.map((file: any) =>
-            this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName).then(() => {
-              this.uploadedPhotos++;
-              const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
-              this.progressPercentage$.next(percent);
-            })
-          )
-        );
+        await this.runWithConcurrency(batchFiles, async (file: File) => {
+          this.currentFileName$.next(file.name);
+          const url = await this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName); // adapt folderName param
+          this.uploadedPhotos++;
+          const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+          this.progressPercentage$.next(percent);
+
+        });
+
+        // await Promise.all(
+        //   batchFiles.map((file: any) =>
+        //     this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName).then(() => {
+        //       this.uploadedPhotos++;
+        //       const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+        //       this.progressPercentage$.next(percent);
+        //     })
+        //   )
+        // );
       }
 
       await this.storeUrlsInDatabase(currentFolderId);
@@ -127,29 +139,101 @@ export class UploadImgBackgroundService {
     this.isProcessingQueue = false;
   }
 
+  private async runWithConcurrency<T>(items: T[], workerFn: (item: T) => Promise<any>) {
+    return new Promise<void>((resolve, reject) => {
+      let idx = 0;
+      let finished = 0;
+      const total = items.length;
+      const tryNext = async () => {
+        if (finished === total) return resolve();
+        if (this.currentActive >= this.concurrency) return;
+        if (idx >= total) return;
+
+        const current = items[idx++];
+        this.currentActive++;
+        workerFn(current)
+          .then(() => {
+            finished++;
+          })
+          .catch(err => {
+            // decide whether to reject or continue on per-file failure
+            console.error('upload error for item', err);
+            finished++;
+            // you may choose to collect failed items and retry
+          })
+          .finally(() => {
+            this.currentActive--;
+            // start next immediately
+            if (finished === total) return resolve();
+            setTimeout(tryNext, 0);
+          });
+
+        // start more while capacity available
+        if (this.currentActive < this.concurrency && idx < total) {
+          tryNext();
+        }
+      };
+
+      // kick off initial workers
+      const startCount = Math.min(this.concurrency, total);
+      for (let i = 0; i < startCount; i++) tryNext();
+    });
+  }
+
+
   async compressAndUpload(file: File, eventId: string, studio_name: string, customerName: string, eventName: string, folderName: string,): Promise<string> {
     const fileName = file.name;
     const reader = new FileReader();
 
+    const compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
+
+    const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
+    const fileRef = ref(this.storage, filePath);
+
     return new Promise((resolve, reject) => {
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        let compressedImage: any = reader.result as string;
-        compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
-        console.log(this.storage, "DSKNBDJB");
+      const uploadTask = uploadBytesResumable(fileRef, compressedImage);
 
-        const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
-        const uploadTask = uploadBytesResumable(fileRef, compressedImage);
-
-        uploadTask.then(async () => {
-          const url = await getDownloadURL(fileRef);
-          const name = await getMetadata(fileRef);
-          this.uploadedUrls.push({ url: url, name });
-
-          resolve(url);
-        }).catch(reject);
-      };
+      // listen for per-file progress & states
+      uploadTask.on('state_changed',
+        (snapshot: any) => {
+          const bytesTransferred = snapshot.bytesTransferred;
+          const totalBytes = snapshot.totalBytes;
+          const filePercent = Math.round((bytesTransferred / totalBytes) * 100);
+        },
+        (error: any) => {
+          console.error('Upload failed for', file.name, error);
+          reject(error);
+        },
+        async () => {
+          try {
+            const url = await getDownloadURL(fileRef);
+            const name = await getMetadata(fileRef);
+            this.uploadedUrls.push({ url: url, name: name.name });
+            resolve(url);
+          } catch (err) {
+            reject(err);
+          }
+        }
+      );
     });
+
+    // return new Promise((resolve, reject) => {
+    //   reader.readAsDataURL(file);
+    //   reader.onload = async () => {
+    //     let compressedImage: any = reader.result as string;
+    //     compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
+    //     const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
+    //     const uploadTask = uploadBytesResumable(fileRef, compressedImage);
+
+    //     uploadTask.then(async () => {
+    //       const url = await getDownloadURL(fileRef);
+    //       const name = await getMetadata(fileRef);
+    //       this.uploadedUrls.push({ url: url, name: name.name });
+
+    //       resolve(url);
+    //     }).catch(reject);
+    //   };
+    // });
   }
 
   getBatchSize(fileCount: number): number {

@@ -9,6 +9,7 @@
     <div class="progress-text">
       <p>Uploading {{ uploadService.batchStart$ | async }}-{{ uploadService.batchEnd$ | async }} of {{
         uploadService.totalPhotos$ | async }} Photos</p>
+        <p>File Name: {{uploadService.currentFileName$| async}}</p>
     </div>
   </div>
   <div class="progress-bar">

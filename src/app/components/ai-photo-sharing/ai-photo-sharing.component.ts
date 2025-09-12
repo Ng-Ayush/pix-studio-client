@@ -378,7 +378,7 @@ export class AiPhotoSharingComponent {
         description: 'Test Transaction',
         order_id: order.data.id,
         handler: (response: any) => {
-          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature }
+          let data = { razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature, amount: this.planConfig.price }
           this._adminService.verifyPayment(data, (res: any) => {
             if (res.status == 200) {
               this.alert.success(res.message);
