@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -10,7 +10,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 @Component({
   selector: 'app-image-listing-screen',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage,ScrollingModule],
+  imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage, ScrollingModule],
   templateUrl: './image-listing-screen.component.html',
   styleUrl: './image-listing-screen.component.scss'
 })
@@ -27,13 +27,14 @@ export class ImageListingScreenComponent {
   userData: any = {};
   showModal: boolean = false;
   showImageModal: boolean = false;
-  currentImage:any={};
+  currentImage: any = {};
 
   constructor(private pservice: PhotoSelectionService,
-     private router: Router,
-       private alert: AlertService,
-         private loader:LoaderService
-    ) {
+    private router: Router,
+    private alert: AlertService,
+    private loader: LoaderService,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
@@ -133,13 +134,41 @@ export class ImageListingScreenComponent {
 
   onCancel() {
     this.showModal = false;
-    this.showImageModal=false;
+    this.showImageModal = false;
+    this.removeOutsideClickListener();
   }
 
-  viewImage(image:any) {
-    console.log(image);
+  viewImage(image: any) {
     this.currentImage = image;
     this.showImageModal = true;
+    this.addOutsideClickListener();
   }
-  
+
+  addOutsideClickListener() {
+    setTimeout(() => {
+      document.addEventListener('click', this.outsideClickHandler);
+    }, 0);
+  }
+
+  removeOutsideClickListener() {
+    document.removeEventListener('click', this.outsideClickHandler);
+  }
+
+  outsideClickHandler = (event: MouseEvent) => {
+    const modalContent: any = document.getElementById('imageModal');
+    console.log(modalContent.contains(event.target));
+    if (!modalContent.contains(event.target)) {
+      this.showImageModal = false;
+      this.removeOutsideClickListener();
+    }
+  }
+
+  ngAfterViewInit() {
+    // this.addOutsideClickListener();
+  }
+
+  ngOnDestroy() {
+    this.removeOutsideClickListener();
+  }
+
 }
