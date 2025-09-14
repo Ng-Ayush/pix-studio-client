@@ -136,7 +136,6 @@ export class PdfBillSelectionComponent {
 
   getTemplateClass(tempId: any) {
     return this.selectedColor;
-
   }
 
   printSection() {
