@@ -246,9 +246,15 @@ export class NewBillComponent {
   }
 
   selectItem(invoiceItem: any, item: any) {
+    console.log(this.invoiceConfig.invoice_items[this.currentItemIdx]);
+    
     this.invoiceConfig.invoice_items[this.currentItemIdx] = JSON.parse(JSON.stringify(invoiceItem));
+    if(!this.invoiceConfig.invoice_items[this.currentItemIdx]?.amount){
+      this.invoiceConfig.invoice_items[this.currentItemIdx].amount = +this.invoiceConfig.invoice_items[this.currentItemIdx]?.sale_price;
+    }
     item.dropdownVisible = false;
     this.filteredInvoiceItems = [...this.invoiceItemsList];
+    
     setTimeout(() => {
       this.calculateAmount(invoiceItem);
     }, 0); 
