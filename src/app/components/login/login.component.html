@@ -9,13 +9,13 @@
 
     <div class="form-group w-full max-w-sm mb-4">
         <label for="pin" class="form-label mb-2 block">Please enter your pin</label>
-        <input type="text" id="pin" autocomplete="off" [(ngModel)]="loginPin" (keyup.enter)="handlePin()"
+        <input type="text" id="pin" autocomplete="off" [(ngModel)]="loginPin" (input)="removeSpaces()" (keyup.enter)="handlePin()"
             placeholder="xxx-xxx" class="form-control w-full" />
     </div>
 
     <div class="form-group w-full max-w-sm mb-4" *ngIf="showOTPBox">
         <label for="otp" class="form-label mb-2 block">OTP</label>
-        <input type="text" id="otp" autocomplete="off" [(ngModel)]="otp" (input)="checkOtpMaxLength($event)"
+        <input type="text" id="otp" autocomplete="off" [(ngModel)]="otp" (input)="removeOtpSpaces()" (input)="checkOtpMaxLength($event)"
             (keyup.enter)="handleOTP()" placeholder="xxx-xxx" class="form-control w-full" />
 
         <div class="mt-2 text-sm flex items-center justify-end gap-5">

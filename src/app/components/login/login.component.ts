@@ -157,4 +157,12 @@ export class LoginComponent {
       }
     }, 1000);
   }
+
+  removeSpaces() {
+    this.loginPin = this.loginPin.replace(/\s+/g, '');
+  }
+
+  removeOtpSpaces(){
+    this.otp = this.otp.replace(/\s+/g, '');
+  }
 }
