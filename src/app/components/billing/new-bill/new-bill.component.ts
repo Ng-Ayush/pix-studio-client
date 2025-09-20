@@ -247,17 +247,17 @@ export class NewBillComponent {
 
   selectItem(invoiceItem: any, item: any) {
     console.log(this.invoiceConfig.invoice_items[this.currentItemIdx]);
-    
+
     this.invoiceConfig.invoice_items[this.currentItemIdx] = JSON.parse(JSON.stringify(invoiceItem));
-    if(!this.invoiceConfig.invoice_items[this.currentItemIdx]?.amount){
+    if (!this.invoiceConfig.invoice_items[this.currentItemIdx]?.amount) {
       this.invoiceConfig.invoice_items[this.currentItemIdx].amount = +this.invoiceConfig.invoice_items[this.currentItemIdx]?.sale_price;
     }
     item.dropdownVisible = false;
     this.filteredInvoiceItems = [...this.invoiceItemsList];
-    
+
     setTimeout(() => {
       this.calculateAmount(invoiceItem);
-    }, 0); 
+    }, 0);
   }
 
   calculateAmount(item: any) {
@@ -307,7 +307,6 @@ export class NewBillComponent {
 
       if (!this.checkBillFormIsValid()) {
         this.loader.hide();
-        this.alert.error('Please check mandatory fields or total value cannot be negative');
         reject(false);
         return;
       };
@@ -344,7 +343,7 @@ export class NewBillComponent {
 
   }
 
-   updateParty() {
+  updateParty() {
     this.loader.show();
     const params: any = {
       party_name: this.partyConfig.party_name || this.selectedParty,
@@ -366,7 +365,6 @@ export class NewBillComponent {
     this.loader.show();
     if (!this.checkBillFormIsValid()) {
       this.loader.hide();
-      this.alert.error('Please check mandatory fields or total value cannot be negative');
       return;
     };
 
@@ -528,8 +526,17 @@ export class NewBillComponent {
 
   checkBillFormIsValid() {
     console.log(this.invoiceConfig.invoice_items);
-    if (this.invoiceConfig.invoice_items.length == 0 || !this.invoiceConfig.party_id || this.totalAmount < 0) {
+    if (this.invoiceConfig.invoice_items[0].amount <= 0) {
       this.isBillFormValid = false;
+      this.alert.error('Please add atleast one Invoice Item');
+      return false;
+    } else if (!this.invoiceConfig.party_id) {
+      this.isBillFormValid = false;
+      this.alert.error('Please select or add new party');
+      return false;
+    } else if (this.totalAmount < 0) {
+      this.isBillFormValid = false;
+      this.alert.error('Total amount cannot be negative');
       return false;
     }
     this.isBillFormValid = true;
