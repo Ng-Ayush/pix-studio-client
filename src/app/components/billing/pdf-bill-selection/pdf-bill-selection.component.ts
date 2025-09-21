@@ -37,9 +37,9 @@ export class PdfBillSelectionComponent {
     { id: 'template5', name: 'GST Theme 5' },
     { id: 'template6', name: 'GST Theme 6' },
     { id: 'template7', name: 'GST Theme 7' },
-    { id: 'template8', name: 'GST Theme 8' },
-    { id: 'template9', name: 'GST Theme 9' },
-    { id: 'template10', name: 'GST Theme 10' },
+    // { id: 'template8', name: 'GST Theme 8' },
+    // { id: 'template9', name: 'GST Theme 9' },
+    // { id: 'template10', name: 'GST Theme 10' },
   ];
   invoiceBillConfig: any = {};
 
@@ -94,30 +94,30 @@ export class PdfBillSelectionComponent {
         this.invoiceBillConfig.tnc = res.data.terms_and_conditions || this.userData?.terms_and_condition || null;
         console.log(this.invoiceBillConfig.tnc);
         const hasPastPayment = await this.getPastPayments();
-        if(!hasPastPayment){
+        if (!hasPastPayment) {
           this.countTotalAndTotalQty();
         }
 
         console.log(this.invoiceBillConfig);
-        
+
 
       }
     })
   }
 
- async getPastPayments() {
+  async getPastPayments() {
     return new Promise((resolve, reject) => {
       this._service.getPastPayments(this.invoiceBillConfig.invoice_id, (res: any) => {
-        if (res.status == 200 && res.data.length>0) {
+        if (res.status == 200 && res.data.length > 0) {
           let total = 0;
-          res.data.forEach((item:any)=>{
+          res.data.forEach((item: any) => {
             total = total + +item.amount_paid;
           });
           this.invoiceBillConfig['advancePayment'] = total || 0;
-          
+
           this.countTotalAndTotalQty();
           resolve(true)
-        }else{
+        } else {
           resolve(false);
         }
       })
@@ -131,7 +131,9 @@ export class PdfBillSelectionComponent {
 
   selectTemplate(tempId: any) {
     this.selectedTemplateId = tempId;
-
+    setTimeout(() => {
+      this.resizeTextarea();
+    }, 0);
   }
 
   getTemplateClass(tempId: any) {
@@ -179,36 +181,145 @@ export class PdfBillSelectionComponent {
 
     try {
       await new Promise(resolve => setTimeout(resolve, 100));
-
       const data = document.getElementById(this.selectedTemplateId);
       if (!data) throw new Error("Template element not found");
 
-      const logo = document.getElementById('logo') as HTMLImageElement | null;
-      const canvas = await html2canvas(data, { scale: 3, useCORS: true });
+      const summarySection = data.querySelector('.pdf-summary-section') as HTMLElement | null;
+      if (!summarySection) throw new Error("Summary section not found");
+      summarySection.style.display = 'none';
 
-      const A4_WIDTH = 210;
-      const A4_HEIGHT = 297;
-      const MARGIN = 10;
-
-      const imgWidth = A4_WIDTH - 2 * MARGIN;
-      const ratio = imgWidth / canvas.width;
-      const imgHeight = canvas.height * ratio;
-
-      const contentY = MARGIN + 15; // space for logo
-      const availableHeight = A4_HEIGHT - contentY - MARGIN;
-      const adjustedImgHeight = Math.min(imgHeight, availableHeight);
+      const commonHeaderElem = data.querySelector('.pdf-common-header') as HTMLElement | null;
+      if (!commonHeaderElem) throw new Error("Common header element not found");
+      const commonHeaderCanvas = await html2canvas(commonHeaderElem, { scale: 3, useCORS: true });
+      const commonHeaderImg = commonHeaderCanvas.toDataURL('image/png', 1.0);
+      const commonHeaderHeight = (commonHeaderCanvas.height * 190) / commonHeaderCanvas.width;
 
       const pdf = new jsPDF.jsPDF('p', 'mm', 'a4', true);
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = pageHeight - margin * 2;
+      const fudge = 0.5;
+      const headerExtraSpace = 8;
+      const sidePadding = 3;
+      const topPadding = 3;
 
-      if (logo) {
-        pdf.addImage(logo.src, 'JPEG', MARGIN, MARGIN, 30, 10);
+      // Render the full content canvas (with items, header, everything visible except summary)
+      const contentCanvas = await html2canvas(data, { scale: 3, useCORS: true });
+      const imgWidth = usableWidth;
+      const imgHeight = (contentCanvas.height * imgWidth) / contentCanvas.width;
+
+      // If everything fits on one page (taking into account margins, header height, extra padding), skip pagination and summary page splitting
+      const fullContentNeedsOnePage = imgHeight <= usableHeight;
+
+      if (fullContentNeedsOnePage) {
+        // Add one page, no pagination
+        pdf.setDrawColor(0, 0, 0);
+
+        // Add whole image at once below margin
+        pdf.addImage(contentCanvas.toDataURL('image/jpeg', 1.0),
+          'JPEG',
+          margin,
+          margin,
+          imgWidth,
+          imgHeight);
+
+        // Show summary section below the content if also fits on same page
+        summarySection.style.display = '';
+        const sumCanvas = await html2canvas(summarySection, { scale: 3, useCORS: true });
+        const sumHeight = (sumCanvas.height * imgWidth) / sumCanvas.width;
+        if ((imgHeight + sumHeight) <= usableHeight) {
+          pdf.addImage(sumCanvas.toDataURL('image/jpeg', 1.0),
+            'JPEG',
+            margin,
+            margin + imgHeight,
+            imgWidth,
+            sumHeight);
+        } else {
+          // Summary needs separate page
+          pdf.addPage();
+          pdf.addImage(commonHeaderImg, 'PNG', margin + sidePadding, margin + topPadding, usableWidth - 2 * sidePadding, commonHeaderHeight + fudge);
+          pdf.addImage(sumCanvas.toDataURL('image/jpeg', 1.0),
+            'JPEG',
+            margin,
+            margin + commonHeaderHeight + headerExtraSpace,
+            imgWidth,
+            sumHeight);
+        }
+
+      } else {
+        // Content bigger than one page, do pagination as usual
+
+        let yPx = 0;
+        let pageIndex = 0;
+        const pageContentHeightPx = ((usableHeight - commonHeaderHeight - headerExtraSpace) * contentCanvas.width) / imgWidth;
+
+        while (yPx < contentCanvas.height) {
+          if (pageIndex > 0) {
+            pdf.addPage();
+            pdf.addImage(
+              commonHeaderImg,
+              'PNG',
+              margin + sidePadding,
+              margin + topPadding,
+              usableWidth - 2 * sidePadding,
+              commonHeaderHeight + fudge
+            );
+          }
+
+          let yOffset = margin + (pageIndex === 0 ? 0 : (commonHeaderHeight + headerExtraSpace));
+
+          const cropCanvas = document.createElement('canvas');
+          cropCanvas.width = contentCanvas.width;
+          const availablePx = pageIndex === 0
+            ? ((usableHeight) * contentCanvas.width) / imgWidth
+            : ((usableHeight - commonHeaderHeight - headerExtraSpace) * contentCanvas.width) / imgWidth;
+          cropCanvas.height = Math.min(availablePx, contentCanvas.height - yPx);
+
+          const cropCtx = cropCanvas.getContext('2d')!;
+          cropCtx.drawImage(
+            contentCanvas,
+            0, yPx,
+            contentCanvas.width, cropCanvas.height,
+            0, 0,
+            contentCanvas.width, cropCanvas.height
+          );
+
+          const imgData = cropCanvas.toDataURL('image/jpeg', 1.0);
+          pdf.addImage(
+            imgData, 'JPEG',
+            margin, yOffset,
+            imgWidth, (cropCanvas.height * imgWidth) / contentCanvas.width
+          );
+
+          yPx += availablePx;
+          pageIndex++;
+        }
+
+        // --- Render summary page after content ---
+        summarySection.style.display = '';
+        pdf.addPage();
+        pdf.addImage(commonHeaderImg, 'PNG', margin + sidePadding, margin + topPadding, usableWidth - 2 * sidePadding, commonHeaderHeight + fudge);
+
+        const sumCanvas = await html2canvas(summarySection, { scale: 3, useCORS: true });
+        const sumImgData = sumCanvas.toDataURL('image/jpeg', 1.0);
+        const sumHeight = (sumCanvas.height * imgWidth) / sumCanvas.width;
+        pdf.addImage(
+          sumImgData, 'JPEG',
+          margin,
+          margin + commonHeaderHeight + headerExtraSpace,
+          imgWidth,
+          sumHeight
+        );
       }
 
-      const contentDataURL = canvas.toDataURL('image/JPEG');
-      pdf.addImage(contentDataURL, 'JPEG', MARGIN, contentY, imgWidth, adjustedImgHeight);
-
+      // Save/export
       if (!isWhatsApp) {
-        pdf.save(`exported-file_${Date.now()}.pdf`);
+        const party = this.invoiceBillConfig.party_name.replace(/\s+/g, "_");
+        const type = this.invoiceBillConfig.invoice_type === 'sale' ? 'Sale' : 'Estimate';
+        const fileName = `${party}-${type}_${this.commonService.formatDate(new Date())}.pdf`;
+        pdf.save(fileName);
         this.alert.success('PDF downloaded successfully.');
         this.isLoading = false;
       }
@@ -218,14 +329,21 @@ export class PdfBillSelectionComponent {
     } catch (error: any) {
       console.error(error);
       this.alert.error('Error generating PDF.');
+      this.loader.hide();
+      this.isLoading = false;
     } finally {
       this.exportMode = false;
+      this.resizeTextarea();
       this.loader.hide();
+      this.isLoading = false;
     }
   }
 
+
   ngAfterViewInit() {
-    this.resizeTextarea();
+    setTimeout(() => {
+      this.resizeTextarea();
+    }, 0);
   }
 
   resizeTextarea() {

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
 .dashboard-container {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -293,7 +294,7 @@ p.small {
 }
 
 .invoice-container {
-    width: 600px;
+    // width: 600px;
     margin: 0 auto;
 }
 
@@ -341,6 +342,7 @@ table th {
     &:nth-child(2) {
         width: 300px;
     }
+
     font-size: 13px;
     /* Optional: light gray header */
 }
@@ -366,4 +368,40 @@ table th {
 .loader-image {
     width: 400px;
     height: 350px;
+}
+
+.font-headings {
+    font-family: 'Merriweather', serif;
+}
+
+.signature-section {
+    background: white;
+    color: black;
+    padding: 12px 24px;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+// @media print {
+//     @page {
+//         size: A4 portrait;
+//         margin: 20mm 15mm;
+//     }
+
+.invoice-container {
+    // width: 210mm;
+    // min-height: 297mm;
+     font-family: "Calistoga", serif;
+    box-shadow: none !important;
+    border: none !important;
+    margin: auto !important;
+    background: white !important;
+}
+
+.signature-section {
+    box-shadow: none;
+    margin-top: 0.5rem;
+    padding: 8px 16px;
 }

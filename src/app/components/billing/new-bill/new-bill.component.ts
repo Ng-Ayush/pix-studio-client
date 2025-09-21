@@ -189,6 +189,15 @@ export class NewBillComponent {
 
   addInvoiceItem() {
     this.loader.show();
+    if (!this.newItemConfig.item_name) {
+      this.loader.hide();
+      this.alert.error('Please enter item name');
+      return;
+    } else if (this.newItemConfig.sale_price == 0 || !this.newItemConfig.sale_price) {
+      this.loader.hide();
+      this.alert.error('Please enter sale price');
+      return;
+    }
     this.billingService.addInvoiceItem(this.newItemConfig, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
@@ -225,6 +234,15 @@ export class NewBillComponent {
 
   async updateInvoiceItem() {
     this.loader.show();
+    if(!this.newItemConfig.item_name){
+      this.loader.hide();
+      this.alert.error('Please enter item name');
+      return;
+    }else if(this.newItemConfig.sale_price == 0 || !this.newItemConfig.sale_price){
+      this.loader.hide();
+      this.alert.error('Please enter sale price');
+      return;
+    }
     this.billingService.updateInvoiceItem(this.newItemConfig.id, this.newItemConfig, (res: any) => {
       if (res.status == 200) {
         this.forceUpdateModal = false;
