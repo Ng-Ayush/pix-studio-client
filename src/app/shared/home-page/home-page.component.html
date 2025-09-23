@@ -1,5 +1,4 @@
-<div class="bg-gradient-to-r from-[#0b1e52] to-[#1e3a8a] text-white font-sans relative min-h-screen overflow-hidden">
-    <!-- Background Decorations -->
+<!-- <div class="bg-gradient-to-r from-[#0b1e52] to-[#1e3a8a] text-white font-sans relative min-h-screen overflow-hidden">
     <img src="../assets/1.png" alt="background waves"
         class="absolute bottom-0 left-0 max-w-[40%] w-full opacity-90 pointer-events-none select-none">
     <img src="../assets/2.png" alt="tech tree"
@@ -7,12 +6,9 @@
     <img src="../assets/3.png" alt="triangles"
         class="absolute top-0 right-0 max-w-[30%] w-full pointer-events-none select-none">
 
-    <!-- Main Container -->
     <div class="flex flex-col md:flex-row items-center justify-between px-10 relative z-10 min-h-screen">
 
-        <!-- Left Section -->
         <div class="md:w-1/2 gap-6">
-            <!-- Logo -->
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
                     <div class="w-4 h-4 border-t-2 border-r-2 border-white rounded-full rotate-45"></div>
@@ -20,19 +16,16 @@
                 <span class="text-xl font-bold">MY STUDIO</span>
             </div>
 
-            <!-- Headline -->
             <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
                 WHERE <br> CREATIVITY <br> MEETS <br> SIMPLICITY.
             </h1>
 
-            <!-- Description -->
             <p class="text-gray-200 text-lg max-w-md">
                 Effortless Photo Selection: Our intuitive mobile app allows you to effortlessly
                 select and organize your photos with just a few taps. Say goodbye to the hassle
                 of manual sorting!
             </p>
 
-            <!-- Button -->
             <a href="javascript:void(0);" routerLink="/about-us">
                 <button
                     class="bg-[#2563eb] cursor-pointer hover:bg-[#1e40af] transition px-8 py-3 rounded-md font-semibold tracking-wide mt-5">
@@ -41,7 +34,6 @@
             </a>
         </div>
 
-        <!-- Right Section (Application Buttons) -->
         <div class="md:w-1/2 relative flex flex-col items-start mt-12 md:mt-0 gap-4">
             <a href="javascript:void(0);" (click)="downloadDesktopApp()">
                 <button
@@ -64,4 +56,416 @@
             </button>
         </div>
     </div>
-</div>
+</div> -->
+
+<body
+    class="bg-gradient-to-br from-[#0b2a59] via-[#144a91] to-[#0b2a59] text-[#e0e6ff] font-inter min-h-screen flex flex-col">
+    <!-- Header -->
+    <header
+        class="sticky top-0 z-50 bg-[#0a1f46e6] backdrop-blur-sm shadow-md flex flex-wrap sm:flex-nowrap justify-between items-center px-4 sm:px-8 py-4">
+        <div class="flex items-center gap-3 flex-shrink-0 cursor-pointer" (click)="homePageConfig = {};homePageConfig.home = true;">
+            <img src="../../../assets/onlylogo.png" alt="My Studio Logo"
+                class="w-8 h-8 sm:w-10 sm:h-10 filter brightness-0 invert" />
+            <span class="text-sm sm:text-lg font-extrabold tracking-widest text-[#aebdfa] select-none">My Studio</span>
+        </div>
+
+        <nav aria-label="Primary Navigation"
+            class="w-full sm:w-auto mt-4 sm:mt-0 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-10 text-[#bdc9ff] uppercase tracking-wide font-semibold text-xs sm:text-sm">
+            <a href="javascript:void(0);" class="relative hover:text-[#4c78ff] transition duration-200"
+                (click)="homePageConfig = {};homePageConfig.home = true;">Home</a>
+            <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200"
+                (click)="homePageConfig = {};homePageConfig.about = true;">About</a>
+            <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200"
+                (click)="homePageConfig = {};homePageConfig.contact = true;">Contact</a>
+            <!-- <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200">Our Updates</a> -->
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="home" class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.home">
+        <!-- Hero Section -->
+        <section id="hero"
+            class="relative bg-center bg-cover min-h-[70vh] sm:min-h-[80vh] shadow-inner shadow-[#03132bbf] flex flex-col sm:flex-row rounded-2xl overflow-hidden">
+            <!-- Text Column -->
+            <div
+                class="bg-[#0a1632eb] items-center backdrop-blur-sm p-8 sm:p-10 w-full sm:w-1/2 flex flex-col gap-6 text-white shadow-xl drop-shadow-lg rounded-b-2xl sm:rounded-l-2xl sm:rounded-br-none justify-center">
+                <h1
+                    class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-snug tracking-[0.10em] drop-shadow-lg select-none text-center">
+                    MY STUDIO IS INDIA'S FIRST ALL-IN-ONE APP DESIGNED FOR EVERY PHOTOGRAPHER.
+                </h1>
+                <p
+                    class="text-base text-center sm:text-lg leading-relaxed bg-[#1426422e] rounded-lg p-4 sm:p-5 shadow-inner outline-0 outline-indigo-700 drop-shadow-sm">
+                    This simple yet powerful tool helps you manage your entire business in
+                    one place.<br />
+                    It makes it easy to get clients to pick photos, handles all your billing,
+                    and keeps your dates and calls organized.<br />
+                    With the My Studio app, you can stop worrying about the busy work and
+                    spend more time on what you love.<br />
+                    <span class="font-semibold text-[#4e7dfc]">It’s the only photographer app you’ll ever need.</span>
+                </p>
+                <div
+                    class="app-buttons-row glass-card flex flex-col sm:flex-row items-center gap-4 min-w-[220px] rounded-xl">
+                    <a href="javascript:void(0);" (click)="downloadDesktopApp()"
+                        class="flex items-center gap-3 bg-gradient-to-r from-[#277cf6] to-[#24e6fc] hover:from-[#156fd0] hover:to-[#24c6fc] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="5" width="18" height="12" rx="2" stroke-width="2" />
+                            <rect x="8" y="17" width="8" height="2" rx="1" stroke-width="2" />
+                        </svg>
+                        Desktop App
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=app.mystudio&pcampaignid=web_share"
+                        target="_blank"
+                        class="flex items-center gap-3 bg-gradient-to-r from-[#00c497] to-[#00e7a0] hover:from-[#009f74] hover:to-[#00c678] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="7" y="2" width="10" height="20" rx="2" stroke-width="2" />
+                            <circle cx="12" cy="18" r="1" fill="currentColor" />
+                        </svg>
+                        Mobile App
+                    </a>
+                    <a href="javascript:void(0);" routerLink="/login"
+                        class="flex items-center gap-3 bg-gradient-to-r from-[#4569ff] to-[#b673fd] hover:from-[#3451ff] hover:to-[#a24bfc] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke-width="2" />
+                            <path stroke-width="2" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+                        </svg>
+                        Web App
+                    </a>
+                </div>
+            </div>
+
+            <!-- Image Column -->
+            <div class="bg-img w-full sm:w-1/2 flex justify-center items-center p-6 sm:p-10">
+                <img src="../../../assets/21.png" alt="Hero Image"
+                    class="w-full max-w-md sm:max-w-lg md:max-w-xl object-contain rounded-r-2xl sm:rounded-r-2xl sm:rounded-tr-none sm:rounded-br-2xl drop-shadow-lg select-none" />
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="my-20 text-center max-w-6xl mx-auto">
+            <h2 class="text-[#a4b5f0] font-extrabold uppercase tracking-wide text-3xl mb-10 select-none">
+                Why Photographers Love My Studio
+            </h2>
+            <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 px-6">
+                <!-- Feature Card Sample -->
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="Effortless Selection Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        Effortless Selection
+                    </h3>
+                    <p>Smart tools to select and manage photos easily.</p>
+                </article>
+                <!-- Repeat for other feature cards -->
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="Simplified Billing Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        Simplified Billing
+                    </h3>
+                    <p>Manage finances simply and securely.</p>
+                </article>
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="Date Reminders Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        Date Reminders
+                    </h3>
+                    <p>Get alerts for your important dates and calls.</p>
+                </article>
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="Secure Calling Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        Secure Calling
+                    </h3>
+                    <p>Call clients privately with secure calling features.</p>
+                </article>
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="QR and AI face recognition Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        QR and AI face recognition
+                    </h3>
+                    <p>Utilize QR codes and AI-driven face recognition for seamless client interactions.</p>
+                </article>
+                <article
+                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
+                    <img src="../../../assets/onlylogo.png" alt="Unlimited Assets Icon"
+                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
+                    <h3 class="text-xl font-bold mb-3 text-white select-none">
+                        Unlimited Assets No Limits
+                    </h3>
+                    <p>Now you can create anything you can imagine, from cinematic teasers to beautiful documentaries
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Updates Section with 4 video cards -->
+        <section id="updates" class="my-20 max-w-7xl mx-auto px-6">
+            <h2 class="text-[#a4b5f0] font-extrabold uppercase tracking-wide text-3xl mb-8 select-none text-center">
+                Our Features
+            </h2>
+            <p class="text-[#cbd3f3] text-center max-w-3xl mx-auto mb-12 leading-relaxed">
+                Watch how My Studio changes the game for every photographer. We've packed all the tools you need—from
+                effortless photo selection to secure client calls—into one powerful app. It’s time to take back your
+                workflow.
+            </p>
+
+            <!-- <div class="slider">
+
+                <div class="slide-track gap-5">
+
+                    <div
+                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
+                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
+                            poster="../../../assets/video1-poster.jpg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div
+                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
+                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
+                            poster="../../../assets/video1-poster.jpg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div
+                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
+                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
+                            poster="../../../assets/video1-poster.jpg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div
+                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
+                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
+                            poster="../../../assets/video1-poster.jpg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div
+                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
+                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
+                            poster="../../../assets/video1-poster.jpg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="updates-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-4">
+                <div
+                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
+                    <video controls poster="images/video1-thumb.jpg"
+                        class="w-full rounded-t-2xl object-cover aspect-video">
+                        <source src="videos/update1.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
+                            Behind the Scenes – Studio Workflow
+                        </h3>
+                        <p class="text-indigo-200 text-sm leading-relaxed">
+                            Go behind the scenes as we showcase how My Studio keeps you organized and inspired.
+                            Practical tips for boosting productivity.
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
+                    <video controls poster="images/video2-thumb.jpg"
+                        class="w-full rounded-t-2xl object-cover aspect-video">
+                        <source src="videos/update2.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
+                            New Features Launch – August 2025
+                        </h3>
+                        <p class="text-indigo-200 text-sm leading-relaxed">
+                            See new workflow, improved reminders, and privacy tools in action. See live demonstrations
+                            and user feedback.
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
+                    <video controls poster="images/video3-thumb.jpg"
+                        class="w-full rounded-t-2xl object-cover aspect-video">
+                        <source src="videos/update3.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
+                            Community Spotlight – Photographers' Stories
+                        </h3>
+                        <p class="text-indigo-200 text-sm leading-relaxed">
+                            Meet talented photographers as they share their creative journeys and how My Studio helps
+                            them create.
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
+                    <video controls poster="images/video4-thumb.jpg"
+                        class="w-full rounded-t-2xl object-cover aspect-video">
+                        <source src="videos/update4.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="p-4">
+                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
+                            Upcoming Features Preview
+                        </h3>
+                        <p class="text-indigo-200 text-sm leading-relaxed">
+                            Get a sneak peek at upcoming features and improvements coming soon to My Studio.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.about">
+        <div class="max-w-4xl mx-auto px-6 py-16 text-gray-100">
+            <section class="about-container bg-[#0a1632eb] rounded-3xl p-10 shadow-lg backdrop-blur-md">
+                <h2 class="text-4xl font-extrabold mb-8 text-indigo-300 tracking-wide select-none">
+                    About My Studio
+                </h2>
+                <p class="mb-6 text-lg leading-relaxed text-indigo-100">
+                    My Studio is a platform tailored specifically for photographers. We help
+                    you manage your photos and workflow effectively, so you can focus on
+                    creativity without being bogged down by administrative tasks.
+                </p>
+                <p class="mb-6 text-lg leading-relaxed text-indigo-100">
+                    Our mission is to provide photographers with the tools they need to streamline
+                    their business processes, enhance client interactions, and ultimately,
+                    elevate their creative work.
+                </p>
+                <p class="text-lg leading-relaxed text-indigo-100">
+                    With features designed for effortless photo selection, simplified billing,
+                    and secure communication, My Studio is the only app you'll ever need to
+                    manage your photography business.
+                </p>
+            </section>
+        </div>
+
+    </main>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.contact">
+        <div id="contact" class="max-w-xl mx-auto px-6 py-16 text-gray-100">
+            <section class="contact-container bg-[#0a1632eb] rounded-3xl p-10 shadow-lg backdrop-blur-md">
+                <h2 class="text-4xl font-extrabold mb-8 text-indigo-300 tracking-wide select-none">
+                    Contact Us
+                </h2>
+
+                <form id="contactForm" aria-label="Contact form" class="flex flex-col gap-6"
+                    (ngSubmit)="handleSubmit()">
+                    <input type="text" name="name" placeholder="Your Name" [(ngModel)]="contactForm.name"
+                        aria-required="true" aria-label="Name"
+                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" />
+                    <input type="email" name="email" placeholder="Your Email" [(ngModel)]="contactForm.email"
+                        aria-required="true" aria-label="Email"
+                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" />
+                    <textarea name="message" placeholder="Your Message" rows="5" [(ngModel)]="contactForm.message"
+                        aria-required="true" aria-label="Message"
+                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-y"></textarea>
+
+                    <input type="submit" value="Request Contact"
+                        class="cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800 text-white font-semibold rounded-xl py-4 shadow-lg transition-transform duration-300 hover:-translate-y-1" />
+                </form>
+            </section>
+
+            <script>
+                function handleSubmit(event) {
+                    event.preventDefault();
+                    alert('Request accepted');
+                    // You can add form data processing here if needed
+                    event.target.reset();
+                }
+            </script>
+        </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#02184b] text-[#adb6d5] text-sm select-none py-10 px-8">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between gap-12">
+            <!-- Logo & Description -->
+            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
+                <div class="flex items-center gap-4 mb-2">
+                    <img src="../../../assets/onlylogo.png" alt="My Studio Logo"
+                        class="w-10 h-10 filter brightness-0 invert saturate-200" />
+                    <span class="text-lg font-extrabold tracking-wide text-[#a8b4dc]">My Studio</span>
+                </div>
+                <p class="text-[#bec6e5] max-w-xs leading-relaxed font-light">
+                    Delivering smart photo management solutions worldwide with dedication and innovation.
+                </p>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
+                <h3 class="uppercase font-semibold tracking-widest text-[#8fa1db] text-base mb-4 select-none">
+                    Contact
+                </h3>
+                <p>
+                    Email:
+                    <a href="mailto:support@mystudio.com"
+                        class="text-[#9aaada] hover:text-white hover:underline transition">support&#64;mystudio.com</a>
+                </p>
+                <p>Phone: <span class="font-light">+1 234 567 890</span></p>
+                <p>Address: <span class="font-light">123 Creative Street, Imageland</span></p>
+            </div>
+
+            <!-- Social Links -->
+            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
+                <h3 class="uppercase font-semibold tracking-widest text-[#8fa1db] text-base mb-4 select-none">
+                    Follow Us
+                </h3>
+                <div class="flex gap-5">
+                    <a href="#" aria-label="Facebook"
+                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path
+                                d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.69 9.13 8.5 9.88v-7H8v-3h2.5v-2.3c0-2.42 1.43-3.8 3.62-3.8 1.05 0 2.15.19 2.15.19v2.37H15c-1.19 0-1.56.74-1.56 1.5V12H17l-.5 3h-2v7C18.31 21.13 22 17 22 12z" />
+                        </svg></a>
+                    <a href="#" aria-label="Twitter"
+                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path
+                                d="M23 3a10.9 10.9 0 01-3.14.86 4.48 4.48 0 001.98-2.48 9.14 9.14 0 01-2.88 1.1A4.52 4.52 0 0016.92 2a4.48 4.48 0 00-4.47 5.5A12.77 12.77 0 013 4.87a4.52 4.52 0 001.4 6 4.42 4.42 0 01-2-.56v.06a4.47 4.47 0 003.6 4.38 4.52 4.52 0 01-2 .07 4.5 4.5 0 004.19 3.14A9 9 0 013 19.54 12.71 12.71 0 009 21c7.32 0 11.33-6.1 11.33-11.37 0-.17 0-.33-.02-.5A7.89 7.89 0 0023 3z" />
+                        </svg></a>
+                    <a href="#" aria-label="Instagram"
+                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path
+                                d="M7.5 2h9A5.52 5.52 0 0122 7.5v9a5.52 5.52 0 01-5.5 5.5h-9A5.52 5.52 0 012 16.5v-9A5.52 5.52 0 017.5 2zm0-2A7.52 7.52 0 000 7.5v9A7.52 7.52 0 007.5 24h9a7.52 7.52 0 007.5-7.5v-9A7.52 7.52 0 0016.5 0zM12 6.15a5.85 5.85 0 11-5.85 5.85A5.85 5.85 0 0112 6.15zm0 9.65a3.8 3.8 0 103.8-3.8A3.8 3.8 0 0012 15.8zm4.95-9.9a1.35 1.35 0 11-1.35-1.35 1.35 1.35 0 011.35 1.35z" />
+                        </svg></a>
+                    <a href="#" aria-label="LinkedIn"
+                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path
+                                d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2h-14a2 2 0 01-2-2V5a2 2 0 012-2zm-9.87 7.69h-2.25v5.81h2.25zm-1.14-2.16a1.35 1.35 0 110-2.7 1.35 1.35 0 010 2.7zm9.7 2.16h-2.25v-3c0-.71-.25-1.19-.87-1.19-.47 0-.75.32-.88.63-.05.13-.06.31-.06.49v3.07h-2.25v-5.81h2.25v.79c.21-.32.6-.81 1.46-.81 1.07 0 1.86.7 1.86 2.2z" />
+                        </svg></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-[#7c8bb7] mt-10 text-xs select-none border-t border-[#2e3c6c] pt-6">
+            &copy; 2025 My Studio. All rights reserved.
+        </div>
+    </footer>
+
+</body>

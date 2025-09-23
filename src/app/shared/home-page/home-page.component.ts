@@ -2,17 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,FormsModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
 
   router: any = inject(Router);
+  homePageConfig: any = { home: true };
+  contactForm:any={};
   constructor(private alert: AlertService) { }
 
   goToLogin() {
@@ -37,5 +40,14 @@ export class HomePageComponent {
   extractFileId(url: string): string | null {
     const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)\//);
     return match ? match[1] : null;
+  }
+
+  handleSubmit() {
+    if(!this.contactForm.name || !this.contactForm.email || !this.contactForm.message){
+      this.alert.error("Please fill all the fields.");
+      return;
+    }
+      this.contactForm = {};
+      this.alert.success("Submitted successfully!, We will contact you soon.");
   }
 }
