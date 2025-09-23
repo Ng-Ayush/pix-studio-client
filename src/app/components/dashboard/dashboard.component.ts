@@ -62,6 +62,15 @@ export class DashboardComponent implements OnInit {
   showUnderConstructionModal: boolean = false;
   userData: any = {};
   dynamicImages: any = [];
+  days: number = 0;
+  hours: number = 0;
+  minutes: number = 0;
+  seconds: number = 0;
+  timeUp: boolean = false;
+  timerRunning: boolean = false;
+
+  private timerInterval: any;
+
   constructor(
     private fileService: FileService,
     private router: Router,
@@ -125,7 +134,63 @@ export class DashboardComponent implements OnInit {
     }, 2000);
   }
 
-  underConstruction(){
+  underConstruction() {
     this.showUnderConstructionModal = true;
+    this.startCountdown();
   }
+
+  startCountdown() {
+    if (this.timerRunning) {
+      return; // prevent multiple starts
+    }
+
+    this.timeUp = false;
+    this.timerRunning = true;
+
+    // Set countdown target to this coming Sunday midnight (0:00)
+    const now = new Date();
+    const day = now.getDay(); // Sunday = 0
+    // Calculate days until Sunday (no check if today is Sunday)
+    const daysUntilSunday = (7 - day) % 7;
+    const countdownTarget = new Date(now);
+    countdownTarget.setDate(now.getDate() + daysUntilSunday);
+    countdownTarget.setHours(0, 0, 0, 0);
+
+    this.updateCountdown(countdownTarget);
+    this.timerInterval = setInterval(() => this.updateCountdown(countdownTarget), 1000);
+  }
+
+  private updateCountdown(target: Date) {
+    const now = new Date().getTime();
+    const targetTime = target.getTime();
+    const diff = targetTime - now;
+
+    if (diff <= 0) {
+      this.timeUp = true;
+      this.timerRunning = false;
+      clearInterval(this.timerInterval);
+
+      this.onCountdownComplete();
+
+      return;
+    }
+
+    this.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    this.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    this.minutes = Math.floor((diff / (1000 * 60)) % 60);
+    this.seconds = Math.floor((diff / 1000) % 60);
+  }
+
+  private onCountdownComplete() {
+    // Call your required methods here when countdown ends
+    console.log('Countdown reached zero! Execute your logic.');
+    // Example:
+    // this.someMethod();
+    // this.anotherMethod();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timerInterval);
+  }
+
 }
