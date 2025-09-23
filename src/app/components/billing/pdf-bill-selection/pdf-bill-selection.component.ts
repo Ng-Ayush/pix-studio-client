@@ -449,6 +449,8 @@ export class PdfBillSelectionComponent {
   }
 
   async shareViaWhatsapp() {
+    this.alert.info("This feature is on development changes");
+    return;
     this.loader.show();
     this.isLoading = true;
     const data: any = await this.downloadPDF(true);
