@@ -63,7 +63,8 @@
     <!-- Header -->
     <header
         class="sticky top-0 z-50 bg-[#0a1f46e6] backdrop-blur-sm shadow-md flex flex-wrap sm:flex-nowrap justify-between items-center px-4 sm:px-8 py-4">
-        <div class="flex items-center gap-3 flex-shrink-0 cursor-pointer" (click)="homePageConfig = {};homePageConfig.home = true;">
+        <div class="flex items-center gap-3 flex-shrink-0 cursor-pointer"
+            (click)="homePageConfig = {};homePageConfig.home = true;">
             <img src="../../../assets/onlylogo.png" alt="My Studio Logo"
                 class="w-8 h-8 sm:w-10 sm:h-10 filter brightness-0 invert" />
             <span class="text-sm sm:text-lg font-extrabold tracking-widest text-[#aebdfa] select-none">My Studio</span>
@@ -263,73 +264,16 @@
             </div> -->
 
             <div class="updates-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-4">
-                <div
+                <div *ngFor="let item of directVideoLinks"
                     class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
-                    <video controls poster="images/video1-thumb.jpg"
-                        class="w-full rounded-t-2xl object-cover aspect-video">
-                        <source src="videos/update1.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
+                    <iframe [src]="item.safeUrl" width="100%" *ngIf="item.safeUrl"
+                        height="200" allow="autoplay"></iframe>
                     <div class="p-4">
                         <h3 class="text-white text-xl font-semibold mb-2 select-none">
-                            Behind the Scenes – Studio Workflow
+                            {{item.title}}
                         </h3>
                         <p class="text-indigo-200 text-sm leading-relaxed">
-                            Go behind the scenes as we showcase how My Studio keeps you organized and inspired.
-                            Practical tips for boosting productivity.
-                        </p>
-                    </div>
-                </div>
-
-                <div
-                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
-                    <video controls poster="images/video2-thumb.jpg"
-                        class="w-full rounded-t-2xl object-cover aspect-video">
-                        <source src="videos/update2.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="p-4">
-                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
-                            New Features Launch – August 2025
-                        </h3>
-                        <p class="text-indigo-200 text-sm leading-relaxed">
-                            See new workflow, improved reminders, and privacy tools in action. See live demonstrations
-                            and user feedback.
-                        </p>
-                    </div>
-                </div>
-
-                <div
-                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
-                    <video controls poster="images/video3-thumb.jpg"
-                        class="w-full rounded-t-2xl object-cover aspect-video">
-                        <source src="videos/update3.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="p-4">
-                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
-                            Community Spotlight – Photographers' Stories
-                        </h3>
-                        <p class="text-indigo-200 text-sm leading-relaxed">
-                            Meet talented photographers as they share their creative journeys and how My Studio helps
-                            them create.
-                        </p>
-                    </div>
-                </div>
-
-                <div
-                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
-                    <video controls poster="images/video4-thumb.jpg"
-                        class="w-full rounded-t-2xl object-cover aspect-video">
-                        <source src="videos/update4.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="p-4">
-                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
-                            Upcoming Features Preview
-                        </h3>
-                        <p class="text-indigo-200 text-sm leading-relaxed">
-                            Get a sneak peek at upcoming features and improvements coming soon to My Studio.
+                            {{item.desc}}
                         </p>
                     </div>
                 </div>
@@ -425,8 +369,13 @@
                     <a href="mailto:support@mystudio.com"
                         class="text-[#9aaada] hover:text-white hover:underline transition">support&#64;mystudio.com</a>
                 </p>
-                <p>Phone: <span class="font-light">+1 234 567 890</span></p>
-                <p>Address: <span class="font-light">123 Creative Street, Imageland</span></p>
+                <p>Phone: <span class="font-light flex flex-col"> <span>Abhay Singh (Installations): 9044145555</span>
+                        <span>Akash Ahuja (Technical Support): 8004033357</span>
+                        <span>Anand Ji (Sales): 9026671367</span>
+                        <span>Rahul Ji (Sales): 930579702</span>
+                    </span>
+                </p>
+                <p>Address: <span class="font-light">DLF Cyber Greens, DLF Phase 3, Gurugram, Haryana 122002</span></p>
             </div>
 
             <!-- Social Links -->
