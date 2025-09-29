@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit {
     const now = new Date();
     const day = now.getDay(); // Sunday = 0
     // Calculate days until Sunday (no check if today is Sunday)
-    const daysUntilSunday = (8 - day) % 7;
+    const daysUntilSunday = (9 - day) % 7;
     const countdownTarget = new Date(now);
     countdownTarget.setDate(now.getDate() + daysUntilSunday);
     countdownTarget.setHours(0, 0, 0, 0);
