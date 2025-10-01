@@ -38,7 +38,7 @@ export class PhotoSelectionFolderComponent {
       if (params['event-id']) {
         this.currentEventId = params['event-id'];
         this.fetchFolderByEventId();
-        this.fetchAiGuestByEventId();
+        // this.fetchAiGuestByEventId();
       }
     })
     this.route.queryParams.subscribe(params => {
@@ -86,6 +86,11 @@ export class PhotoSelectionFolderComponent {
   }
 
   createNewFolder() {
+    if(this.isAIuploaded && this.folders.length > 0 ) {
+        this.alert.info("Please upgrade your plan to create more folders",3000);
+        return;
+    }
+    
     const params: any = {
       folder_name: `New Folder ${this.folders.length + 1}`,
       event_id: this.currentEventId

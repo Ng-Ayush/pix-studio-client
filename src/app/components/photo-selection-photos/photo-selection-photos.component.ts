@@ -62,6 +62,7 @@ export class PhotoSelectionPhotosComponent {
     private deleteImgBg: DeleteImgBackgroundService
   ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    uploadImgBg.isAIuploaded = false;
     this.route.params.subscribe(params => {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];

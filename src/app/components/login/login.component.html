@@ -9,14 +9,15 @@
 
     <div class="form-group w-full max-w-sm mb-4">
         <label for="pin" class="form-label mb-2 block">Please enter your pin</label>
-        <input type="text" id="pin" autocomplete="off" [(ngModel)]="loginPin" (input)="removeSpaces()" (keyup.enter)="handlePin()"
-            placeholder="xxx-xxx" class="form-control w-full" />
+        <input type="text" id="pin" autocomplete="off" [(ngModel)]="loginPin" (input)="removeSpaces()"
+            (keyup.enter)="handlePin()" placeholder="xxx-xxx" class="form-control w-full" />
     </div>
 
     <div class="form-group w-full max-w-sm mb-4" *ngIf="showOTPBox">
         <label for="otp" class="form-label mb-2 block">OTP</label>
-        <input type="text" id="otp" autocomplete="off" [(ngModel)]="otp" (input)="removeOtpSpaces()" (input)="checkOtpMaxLength($event)"
-            (keyup.enter)="handleOTP()" placeholder="xxx-xxx" class="form-control w-full" />
+        <input type="text" id="otp" autocomplete="off" [(ngModel)]="otp" (input)="removeOtpSpaces()"
+            (input)="checkOtpMaxLength($event)" (keyup.enter)="handleOTP()" placeholder="xxx-xxx"
+            class="form-control w-full" />
 
         <div class="mt-2 text-sm flex items-center justify-end gap-5">
             <button (click)="resendOTP()" [disabled]="resendDisabled"
@@ -41,6 +42,35 @@
         </button>
     </div>
 </div>
+
+<div *ngIf="qrCode"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': qrCode}">
+        <div class="p-6 flex flex-col items-center">
+            <div *ngIf="qrCode">
+                <h3>Scan WhatsApp QR Code</h3>
+                <img [src]="qrCode" alt="WhatsApp QR" />
+            </div>
+
+            <div *ngIf="authenticated && syncing" class="sync-container">
+                <p>Syncing your WhatsApp account, please keep the app open...</p>
+
+                <!-- Simple CSS spinner -->
+                <div class="spinner"></div>
+            </div>
+
+            <div *ngIf="ready" class="ready-message">
+                WhatsApp is ready!
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
 
 <div class="loader-overlay fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" *ngIf="loader">
     <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image w-24 h-24" />

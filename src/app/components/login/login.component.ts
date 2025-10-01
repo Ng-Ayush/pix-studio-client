@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../services/alert.service';
+import { SocketService } from '../../shared/socket.service';
 declare var window: any;
 
 @Component({
@@ -23,12 +24,25 @@ export class LoginComponent {
   countdown: number = 30;
   countdownInterval: any;
   sentOtp: any = '';
+  qrCode: any = '';
+  authenticated: any = 'e41779';
+  ready: boolean = false;
+  syncing: boolean = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private alert: AlertService
-  ) { }
+    private alert: AlertService,
+    private socketService: SocketService,
+    private activateRoute: ActivatedRoute
+  ) { 
+    this.activateRoute.queryParams.subscribe((params: any) => {
+      if (params['event_code']) {
+        this.loginPin = params['event_code'];
+        this.handlePin();
+      }
+    })
+  }
 
 
   checkOtpMaxLength(event: any) {
@@ -118,7 +132,7 @@ export class LoginComponent {
     }
     const params: any = {
       otp: this.otp || 0,
-      user_id: this.userData.user_id
+      user_id: this.userData.id
     }
     this.authService.verifyOTPAndLogin(params, (res: any) => {
       if (res.status == 200) {
@@ -126,6 +140,26 @@ export class LoginComponent {
         if (window && window?.electronAPI) {
           window.electronAPI.setLogin(true);
         }
+        const adminId = this.userData.id;
+        this.socketService.connect(adminId);
+
+        // this.socketService.onQR().subscribe(qr => {
+        //   this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
+        //   console.log("QR CODE", this.qrCode);
+
+        // });
+
+        // this.socketService.onAuthenticated().subscribe(() => {
+        //   this.authenticated = true;
+        //   this.syncing = true;  // Start syncing after auth
+        //   this.qrCode = null;
+        // });
+
+        // this.socketService.onReady().subscribe(() => {
+        //   this.ready = true;
+        //   this.syncing = false; // Sync complete
+        // });
+        
         this.router.navigate(['/dashboard']);
         this.alert.success(res.message);
       } else {
@@ -162,7 +196,7 @@ export class LoginComponent {
     this.loginPin = this.loginPin.replace(/\s+/g, '');
   }
 
-  removeOtpSpaces(){
+  removeOtpSpaces() {
     this.otp = this.otp.replace(/\s+/g, '');
   }
 }

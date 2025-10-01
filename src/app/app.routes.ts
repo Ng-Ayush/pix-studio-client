@@ -27,6 +27,10 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'ps',
+    loadComponent: () => import("./components/ai-upload/ai-upload.component").then(m => m.AiUploadComponent),
+  },
+  {
     path: 'customer',
     loadComponent: () => import("./components/customer/customer.component").then(m => m.CustomerComponent),
     canActivate: [authGuard]

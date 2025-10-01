@@ -14,7 +14,7 @@ export class ImageCompressionService {
     const imageFile = event;
 
     const options = {
-      maxSizeMB: 3,
+      maxSizeMB: 1,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
     }

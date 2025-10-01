@@ -121,3 +121,30 @@ input[type=number] {
     width: 400px;
     height: 350px;
 }
+
+.sync-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.spinner {
+  margin-top: 1rem;
+  width: 3rem;
+  height: 3rem;
+  border: 0.5rem solid #cbd5e1; /* light gray */
+  border-top: 0.5rem solid #3b82f6; /* blue */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ready-message {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: green;
+}

@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -61,7 +61,11 @@
             </div>
         </div>
         <div class="w-full text-center mt-5 mb-5 px-5">
-            <div class="add-button flex justify-end mb-10">
+            <div class="add-button flex justify-between mb-10 items-center gap-2">
+                <div class="p-4 text-sm text-blue-800 rounded bg-blue-50"
+                    role="alert">
+                    <span class="font-medium">Trail version limit: </span> You can upload a maximum of 100 photos per event.
+                </div>
                 <button (click)="openModal()"
                     class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -69,7 +73,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                   Create AI Event
+                    Create AI Event
                 </button>
             </div>
             <div class="px-5 mb-20"> <!--overflow-y-scroll h-150 relative-->
@@ -167,9 +171,18 @@
                         </div>
                         <div class="flex justify-between gap-5">
                             <div (click)="publishAiPhotos(event)"
-                                class="rounded-full  group inline-block cursor-pointer px-10 py-3 transition-all duration-200 shadow-md border border-gray-300 flex items-center gap-2 cursor-pointer"
-                                [ngClass]="{'bg-[#494CA2f5] text-white hover:bg-[#494CA2]':event.ai_guests.length> 0, 'text-black hover:text-black hover:bg-gray-100': event.ai_guests.length == 0}">
-                                {{event.ai_guests.length> 0 ? 'Publish Photos' : 'Pending / No Photos'}}
+                                class="rounded-full  group inline-block  px-10 py-3 shadow-md border border-gray-300 flex items-center gap-2"
+                                [ngClass]="{'bg-[#494CA2f5] text-white hover:bg-[#494CA2]':event.ai_guests.length> 0, 'text-black': event.ai_guests.length == 0}">
+                                <!-- {{event.ai_guests.length> 0 ? 'Publish Photos' : 'Pending / No Photos'}} -->
+                                <ng-container *ngIf="event.photo_count == 0 else face_desc">
+                                    Pending / No Photos
+                                </ng-container>
+
+                                <ng-template #face_desc>
+                                    <app-face-desc-readiness [eventId]="event.event_id"></app-face-desc-readiness>
+                                </ng-template>
+
+
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Click To Publish Photos</span> -->
                                 <!-- <span class="text-gray-700 text-xs font-semibold">Photos Published</span> -->
                                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 scale-95 
@@ -205,12 +218,24 @@
 
 <div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-col justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
     *ngIf="isModalOpen">
-    <div class="bg-white rounded-xl w-full max-w-5xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
+    <div class="bg-white rounded-xl w-full max-w-xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
         [ngClass]="{'modal-fade-in': isModalOpen}">
-        <h2 class="text-2xl font-semibold mb-6">Create Event</h2>
-        <div>
-            <!-- Top row: Name, Date, Type of Event -->
-            <div class="flex flex-wrap gap-4 mb-6">
+        <div class="inline-flex rounded-xl gap-2 mb-3">
+            <button (click)="activeTab = 'create'"
+                [ngClass]="activeTab === 'create' ? 'bg-indigo-600 text-white' : 'text-indigo-600'"
+                class="btn btn-outline-primary border-2 py-3 px-5 cursor-pointer">
+                {{isEdit ? 'Edit' : 'Create'}} Event
+            </button>
+
+            <button (click)="activeTab = 'cover'"
+                [ngClass]="activeTab === 'cover' ? 'bg-indigo-600 text-white' : 'text-indigo-600'"
+                class="btn btn-outline-primary border-2 py-3 px-5 cursor-pointer">
+                Cover Photo
+            </button>
+        </div>
+        <ng-container *ngIf="activeTab == 'create' else cover">
+
+            <div class="flex flex-col flex-wrap gap-4 mb-6">
                 <div class="relative flex-1 min-w-[220px]">
                     <input type="text" autocomplete="off"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
@@ -258,39 +283,77 @@
                     <span class="block text-xs text-gray-400 mt-1">Select the type of event</span>
                 </div> -->
             </div>
-
-            <div class="mb-6">
-                <label class="block text-gray-600 mb-1" for="event-details">Details (optional)</label>
-                <input id="event-details" type="text" placeholder="Event Details"
-                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
-            </div>
-
             <div class="py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox"  [(ngModel)]="event_config.add_branding" class="mr-2 accent-blue-600" />
-                    Add Branding to the Event
+                    <input type="checkbox" (change)="showWarning()" class="mr-2 accent-blue-600" />
+                    Pre Publish / Publish Letter
                 </label>
-                <span class="block text-xs text-gray-400 mt-1">Your brand will be visible on client gallery</span>
             </div>
-            <div class="mb-6 py-3">
+            <div class="py-3">
                 <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" [(ngModel)]="event_config.browse_all" class="mr-2 accent-blue-600" />
+                    <input type="checkbox"  (change)="showWarning()"  class="mr-2 accent-blue-600" />
+                    Watermark
+                </label>
+            </div>
+            <div class="mb-3 py-3">
+                <label class="flex items-center text-gray-700 font-medium cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="event_config.browse_all_photo_ai"
+                        class="mr-2 accent-blue-600" />
                     Browse and download photos ?
                 </label>
-                <span class="block text-xs text-gray-400 mt-1">Customer will be able to access and download all photos</span>
+                <span class="block text-sm text-gray-400 mt-1">Customer will be able to access and download all
+                    photos</span>
             </div>
+        </ng-container>
+        <ng-template #cover>
+            <div class="flex flex-col items-center justify-center bg-gray-100 p-6 mb-2">
+                <div class="w-full max-w-sm flex flex-col gap-6">
 
-            <div class="flex justify-start gap-4">
-                <button type="submit" (click)="openPriceModal()"
-                    class="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded">Create
-                    Event</button>
-                <button class="px-4 py-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
-                    (click)="onCancel()">
-                    Cancel
-                </button>
+                    <label class="block w-full">
+                        <span class="block font-semibold text-gray-700 mb-2">
+                            Cover image - 1 (ratio 1920 x 1080 only)
+                        </span>
+                        <input type="file" accept="image/*"
+                            class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
+                            (change)="onImageUpload($event, 'cover1')">
+                        <div
+                            class="border-2 border-dashed border-gray-300 rounded-md bg-white flex items-center justify-center h-44">
+                            <img *ngIf="preview.cover1" [src]="preview.cover1"
+                                class="max-h-40 max-w-full object-contain" alt="Cover preview">
+                            <span *ngIf="!preview.cover1" class="text-gray-400 text-sm">No image selected</span>
+                        </div>
+                    </label>
+
+                    <label class="block w-full">
+                        <span class="block font-semibold text-gray-700 mb-2">
+                            Cover image - 2 (ratio 1920 x 1080 only)
+                        </span>
+                        <input type="file" accept="image/*"
+                            class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
+                            (change)="onImageUpload($event, 'cover2')">
+                        <div
+                            class="border-2 border-dashed border-gray-300 rounded-md bg-white flex items-center justify-center h-44">
+                            <img *ngIf="preview.cover2" [src]="preview.cover2"
+                                class="max-h-40 max-w-full object-contain" alt="Mobile preview">
+                            <span *ngIf="!preview.cover2" class="text-gray-400 text-sm">No image selected</span>
+                        </div>
+                    </label>
+
+                </div>
             </div>
+        </ng-template>
+        <div class="flex justify-start gap-4">
+            <button type="submit" (click)="onSave()"
+                class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded">{{isEdit
+                ? 'Update' : 'Create'}}
+                Event</button>
+            <button class="px-4 py-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
+                (click)="onCancel()">
+                Cancel
+            </button>
         </div>
     </div>
+
 
 
 
@@ -500,4 +563,8 @@
             </button>
         </div>
     </div>
+</div>
+
+<div class="loader-overlay" *ngIf="isLoading">
+    <img src="../../../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>

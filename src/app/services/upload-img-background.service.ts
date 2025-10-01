@@ -46,9 +46,11 @@ export class UploadImgBackgroundService {
   // concurrency control
   private concurrency = 7; // tune this (5-10 recommended)
   private currentActive = 0;
+  currentlyUploadingCount: any = 0;
   currentFileName$ = new BehaviorSubject<string>('');
 
   handleFileInput(event: any, eventId: any, folderName: any, studio_name: any, customerName: any, eventName: any, currentFolderId: any) {
+    this.alert.info("Please Do not Refresh the page until upload is completed", 10000);
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
 
@@ -57,7 +59,7 @@ export class UploadImgBackgroundService {
     );
 
     const duplicateFiles: string[] = [];
-    const uniqueFiles = files.filter(file => {
+    let uniqueFiles: any = files.filter(file => {
       const fileName = file.name.toLowerCase();
       if (existingNameSet.has(fileName)) {
         duplicateFiles.push(file.name);
@@ -77,6 +79,29 @@ export class UploadImgBackgroundService {
       return;
     }
 
+    const alreadyUploaded = this.photos.length;
+    const queuedCount = this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
+    const ongoingCount = this.currentlyUploadingCount || 0;
+    const totalUsed = alreadyUploaded + queuedCount + ongoingCount;
+
+    const remainingSlots = 100 - totalUsed;
+
+    if (remainingSlots <= 0) {
+      this.alert.warning(
+        `Folder already has 100 photos (uploaded + in progress). Cannot upload more.`,
+        8000
+      );
+      return;
+    }
+
+    if (uniqueFiles.length > remainingSlots) {
+      this.alert.warning(
+        `Only ${remainingSlots} more photos can be uploaded. Skipped ${uniqueFiles.length - remainingSlots} photos.`,
+        8000
+      );
+      uniqueFiles = uniqueFiles.slice(0, remainingSlots);
+    }
+
     // Push into queue
     this.uploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
     this.alert.info("Uploading In Queue");
@@ -93,6 +118,8 @@ export class UploadImgBackgroundService {
     while (this.uploadQueue.length > 0) {
       const currentTask = this.uploadQueue.shift();
       if (!currentTask) continue;
+       this.currentlyUploadingCount = currentTask.files.length;
+
       const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId } = currentTask;
 
       if (!files.length) return;
@@ -106,11 +133,14 @@ export class UploadImgBackgroundService {
 
       // const batchSize = this.getBatchSize(this.totalPhotos);
       const batchSize = 20;
+      let batchUrls: any = [];
+
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         this.batchStart$.next(i + 1);
         this.batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
 
         const batchFiles = files.slice(i, i + batchSize);
+        const currentBatchUrls: any = [];
 
         await this.runWithConcurrency(batchFiles, async (file: File) => {
           this.currentFileName$.next(file.name);
@@ -118,73 +148,65 @@ export class UploadImgBackgroundService {
           this.uploadedPhotos++;
           const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
           this.progressPercentage$.next(percent);
-
+          currentBatchUrls.push({ url, name: file.name });
         });
-
-        // await Promise.all(
-        //   batchFiles.map((file: any) =>
-        //     this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName).then(() => {
-        //       this.uploadedPhotos++;
-        //       const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
-        //       this.progressPercentage$.next(percent);
-        //     })
-        //   )
-        // );
+        await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
       }
 
-      await this.storeUrlsInDatabase(currentFolderId);
+      // await this.storeUrlsInDatabase(currentFolderId, eventId);
       this.isUploading$.next(false);
       this.isImageUploadedCompleted$.next(true);
+     this.currentlyUploadingCount = 0;
     }
     this.isProcessingQueue = false;
   }
 
-  private async runWithConcurrency<T>(items: T[], workerFn: (item: T) => Promise<any>) {
-    return new Promise<void>((resolve, reject) => {
-      let idx = 0;
-      let finished = 0;
-      const total = items.length;
-      const tryNext = async () => {
-        if (finished === total) return resolve();
-        if (this.currentActive >= this.concurrency) return;
-        if (idx >= total) return;
+  // private async runWithConcurrency<T>(items: T[], workerFn: (item: T) => Promise<any>, concurrency?: number) {
+  //   return new Promise<void>((resolve, reject) => {
+  //     let idx = 0;
+  //     let finished = 0;
+  //     const total = items.length;
+  //     const limit = concurrency ?? this.concurrency;
+  //     const tryNext = async () => {
+  //       if (finished === total) return resolve();
+  //       if (this.currentActive >= limit) return;
+  //       if (idx >= total) return;
 
-        const current = items[idx++];
-        this.currentActive++;
-        workerFn(current)
-          .then(() => {
-            finished++;
-          })
-          .catch(err => {
-            // decide whether to reject or continue on per-file failure
-            console.error('upload error for item', err);
-            finished++;
-            // you may choose to collect failed items and retry
-          })
-          .finally(() => {
-            this.currentActive--;
-            // start next immediately
-            if (finished === total) return resolve();
-            setTimeout(tryNext, 0);
-          });
+  //       const current = items[idx++];
+  //       this.currentActive++;
+  //       workerFn(current)
+  //         .then(() => {
+  //           finished++;
+  //         })
+  //         .catch(err => {
+  //           // decide whether to reject or continue on per-file failure
+  //           console.error('upload error for item', err);
+  //           finished++;
+  //           // you may choose to collect failed items and retry
+  //         })
+  //         .finally(() => {
+  //           this.currentActive--;
+  //           // start next immediately
+  //           if (finished === total) return resolve();
+  //           setTimeout(tryNext, 0);
+  //         });
 
-        // start more while capacity available
-        if (this.currentActive < this.concurrency && idx < total) {
-          tryNext();
-        }
-      };
+  //       // start more while capacity available
+  //       if (this.currentActive < limit && idx < total) {
+  //         tryNext();
+  //       }
+  //     };
 
-      // kick off initial workers
-      const startCount = Math.min(this.concurrency, total);
-      for (let i = 0; i < startCount; i++) tryNext();
-    });
-  }
+  //     // kick off initial workers
+  //     const startCount = Math.min(limit, total);
+  //     for (let i = 0; i < startCount; i++) tryNext();
+  //   });
+  // }
 
 
-  async compressAndUpload(file: File, eventId: string, studio_name: string, customerName: string, eventName: string, folderName: string,): Promise<string> {
+  async compressAndUpload(file: File, eventId: string, studio_name: string, customerName: string, eventName: string, folderName: string): Promise<string> {
     const fileName = file.name;
     const reader = new FileReader();
-
     const compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
 
     const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
@@ -216,24 +238,6 @@ export class UploadImgBackgroundService {
         }
       );
     });
-
-    // return new Promise((resolve, reject) => {
-    //   reader.readAsDataURL(file);
-    //   reader.onload = async () => {
-    //     let compressedImage: any = reader.result as string;
-    //     compressedImage = this.isAIuploaded ? await this.imageCompressService.compress3MBToTarget(file) : await this.imageCompressService.compress50KBToTarget(file);
-    //     const fileRef = ref(this.storage, `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${fileName}`);
-    //     const uploadTask = uploadBytesResumable(fileRef, compressedImage);
-
-    //     uploadTask.then(async () => {
-    //       const url = await getDownloadURL(fileRef);
-    //       const name = await getMetadata(fileRef);
-    //       this.uploadedUrls.push({ url: url, name: name.name });
-
-    //       resolve(url);
-    //     }).catch(reject);
-    //   };
-    // });
   }
 
   getBatchSize(fileCount: number): number {
@@ -244,7 +248,7 @@ export class UploadImgBackgroundService {
     return 1000; // fallback for very large sets
   }
 
-  async storeUrlsInDatabase(currentFolderId: any) {
+  async storeUrlsInDatabase(currentFolderId: any, eventId = "") {
     this.loader.show();
     try {
       const batchSize = 70;
@@ -258,7 +262,9 @@ export class UploadImgBackgroundService {
             {
               uploadedUrls: batch,
               uploaded_by: this.user_id,
-              folder_id: currentFolderId
+              event_id: eventId,
+              folder_id: currentFolderId,
+              is_ai_upload: this.isAIuploaded
             },
             (res: any) => {
               if (res.status == 200) {
@@ -279,4 +285,54 @@ export class UploadImgBackgroundService {
       this.alert.error("Error saving photos: " + err);
     }
   }
+  // Utility concurrency runner with concurrency control
+  private async runWithConcurrency<T>(items: T[], workerFn: (item: T) => Promise<any>, concurrency = 5) {
+    return new Promise<void>((resolve) => {
+      let idx = 0;
+      let finished = 0;
+      const total = items.length;
+      let active = 0;
+
+      const next = () => {
+        if (finished === total) resolve();
+        if (active >= concurrency || idx >= total) return;
+
+        const item = items[idx++];
+        active++;
+
+        workerFn(item)
+          .finally(() => {
+            finished++;
+            active--;
+            next();
+          });
+
+        next();
+      };
+
+      next();
+    });
+  }
+
+  // Backend API call to save batch URLs
+  async saveBatchToBackend(batchUrls: { url: string; name: string }[], folderId: any, eventId: any) {
+    return new Promise<void>((resolve, reject) => {
+      this._pservice.uploadPhotos(
+        {
+          uploadedUrls: batchUrls,
+          uploaded_by: this.user_id,
+          event_id: eventId,
+          folder_id: folderId,
+          is_ai_upload: this.isAIuploaded
+        },
+        (res: any) => {
+          if (res.status === 200) resolve();
+          else reject(res.message);
+        }
+      );
+    });
+  }
+
 }
+
+
