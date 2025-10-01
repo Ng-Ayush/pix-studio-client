@@ -149,7 +149,10 @@ export class AiUploadComponent {
         // Extract face descriptor of captured image
         // const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/photos%2Fstudio_Production%20Testing%20Global%2Fbebo%20badmash%2FHelllo%2FNew%20Folder%201%2Fgettyimages-1718250850-612x612.jpg?alt=media&token=d6f6781d-35d8-4ab6-9fdb-20b3fb7bd3ca"
         const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
-        if (!capturedDescriptor) return alert('No face detected in captured photo');
+        if (!capturedDescriptor){
+          this.isLoading = false;
+          return this.alert.error('No face detected in captured photo');
+        }
 
         // Filter matches from photosArray
         this.matchedImages = await this.filterMatches(capturedDescriptor, this.photos);
