@@ -299,7 +299,7 @@ export class AiPhotoSharingComponent {
     ctx.font = '24px Arial';
     ctx.fillText(event.event_date || new Date().toLocaleDateString('en-US'), width / 2, 100);
 
-    const url = `${window.location.origin}/login`;
+    const url = `${window.location.origin}/login?event_code=${event.customer_unique_id}`;
     const qrDataUrl = await QRCode.toDataURL(url);
     const qrImage = new Image();
     qrImage.src = qrDataUrl;
