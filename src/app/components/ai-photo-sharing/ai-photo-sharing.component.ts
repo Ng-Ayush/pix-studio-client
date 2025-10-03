@@ -117,10 +117,11 @@ export class AiPhotoSharingComponent {
       this.alert.error("Please select customer and event name");
       return;
     }
-    if(!this.event_config.cover1 || !this.event_config.cover2) {
+    if (!this.isEdit && (!this.event_config.cover1 || !this.event_config.cover2)) {
       this.alert.error("Please select cover photos");
-      return;
+      return;   
     }
+  
 
     if (!this.isEdit) {
 
@@ -151,10 +152,14 @@ export class AiPhotoSharingComponent {
       const params = {
         event_name: this.event_config.event_name,
         is_event_submitted: this.event_config.is_event_submitted,
+        browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false, 
          ai_cover_images: [ {url:this.event_config?.cover1}, {url:this.event_config?.cover2} ]
       }
+      console.log(params);
 
       this.eventService.updateEvent(params, this.event_config.event_id, (res: any) => {
+
+        
         if (res.status == 200) {
           this.isModalOpen = false;
           this.alert.success(res.message);
