@@ -43,6 +43,7 @@ export class BaseService {
     'uploadPhotos': '/api/mystudio/photo-selection/uploadPhotos',
     'deletePhotos': '/api/mystudio/photo-selection/deletePhotos',
     'getAllPhotosByEventId': '/api/mystudio/photo-selection/getAllPhotosByEventId',
+    'checkIsBrowseAllFolderStatus': '/api/mystudio/photo-selection/checkIsBrowseAllFolderStatus',
 
 
     //Customer Photo Selection

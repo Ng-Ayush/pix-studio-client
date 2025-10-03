@@ -232,8 +232,8 @@
         <div class="row g-0">
             <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
                 <!-- Tabs -->
-                <div class="inline-flex rounded-xl bg-black/80 gap-2" *ngIf="!!userData?.browse_all_photo_ai">
-                    <button (click)="activeTab = 'browse'"
+                <div class="inline-flex rounded-xl bg-black/80 gap-2">
+                    <button (click)="activeTab = 'browse'" *ngIf="isBrowseAllFolder"
                         [ngClass]="activeTab === 'browse' ? 'bg-pink-600 text-white' : 'text-pink-600'"
                         class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
                         Browse All
@@ -246,7 +246,7 @@
                     </button>
                 </div>
             </div>
-            <ng-container *ngIf="activeTab == 'browse'">
+            <ng-container *ngIf="(activeTab == 'browse' && isBrowseAllFolder) else onlyMatched">
                 <ng-container *ngIf="photos.length>0 else noPhotos">
                     <ng-container *ngFor="let photo of photos;trackBy:trackPhotos">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
@@ -278,13 +278,13 @@
                     <div class="h-100 p-5 bg-dark d-flex align-items-center justify-content-center">
                         <div class="title mb-0 wow fadeIn" data-wow-delay="0.1s">
                             <div class="title-center">
-                                <h5>Quantity found : {{matchedImages?.length}}</h5>
+                                <h5>Photos found : {{matchedImages?.length}}</h5>
                                 <h1>Your Matches</h1>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ng-container *ngIf="photos.length>0">
+                <ng-container *ngIf="matchedImages.length>0">
                     <ng-container *ngFor="let photo of matchedImages;trackBy:trackPhotos">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
                             <div class="portfolio-item overflow-hidden">
@@ -307,6 +307,11 @@
                     </ng-container>
                 </ng-container>
             </ng-container>
+
+            <ng-template #onlyMatched>
+                <h1 class="text-center" *ngIf="matchedImages.length==0">Please add your selfie above!.</h1>
+            </ng-template>
+            
 
             <div class="col-sm-6 col-md-4 col-lg-3">
             </div>
@@ -357,9 +362,9 @@
                 <canvas #canvas id="canvas" width="320" height="240" style="display:none"></canvas>
             </div>
 
-            <div class="text-gray-800 mb-6 text-center" *ngIf="!userData?.isFaceDescriptorReady">
+            <div class="text-gray-800 text-start mt-4 w-full" *ngIf="!userData?.isFaceDescriptorReady">
                 Phone Number : <input type="text" maxlength="10" [(ngModel)]="aiGuestConfig.phone"
-                    class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    class="w-full p-2 border border-gray-100 rounded-md shadow-sm focus:ring-indigo-100 focus:border-indigo-100">
             </div>
 
         </div>

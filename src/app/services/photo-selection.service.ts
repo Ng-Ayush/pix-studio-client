@@ -80,4 +80,9 @@ export class PhotoSelectionService extends BaseService {
   getAllPhotosByEventId(event_id:any,user_id:any,callback:any){
     return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+event_id+"?user="+user_id, callback)
   }
+
+  checkIsBrowseAllFolderStatus(params:any,callback:any){
+    return this.getData({}, this.httpUrls['checkIsBrowseAllFolderStatus']+"/"+params.event_id+"?user_id="+params.user_id, callback)
+
+  }
 }

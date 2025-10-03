@@ -119,9 +119,9 @@ export class AiPhotoSharingComponent {
     }
     if (!this.isEdit && (!this.event_config.cover1 || !this.event_config.cover2)) {
       this.alert.error("Please select cover photos");
-      return;   
+      return;
     }
-  
+
 
     if (!this.isEdit) {
 
@@ -136,7 +136,7 @@ export class AiPhotoSharingComponent {
         razorpay_payment_id: this.event_config?.payment_data?.razorpay_payment_id || '',
         razorpay_order_id: this.event_config?.payment_data?.razorpay_order_id || '',
         razorpay_signature: this.event_config?.payment_data?.razorpay_signature || '',
-        ai_cover_images: JSON.stringify([ {url:this.event_config?.cover1}, {url:this.event_config?.cover2} ])
+        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 }, { url: this.event_config?.cover2 }])
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -152,14 +152,14 @@ export class AiPhotoSharingComponent {
       const params = {
         event_name: this.event_config.event_name,
         is_event_submitted: this.event_config.is_event_submitted,
-        browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false, 
-         ai_cover_images: [ {url:this.event_config?.cover1}, {url:this.event_config?.cover2} ]
+        browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false,
+        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }])
       }
       console.log(params);
 
       this.eventService.updateEvent(params, this.event_config.event_id, (res: any) => {
 
-        
+
         if (res.status == 200) {
           this.isModalOpen = false;
           this.alert.success(res.message);
@@ -176,7 +176,7 @@ export class AiPhotoSharingComponent {
     // this.event_config.customer_id = '';
     // this.event_config.event_name = '';
     console.log(this.event_config);
-    
+
 
     this.activeTab = 'create';
     this.selectedParty = '';
@@ -196,6 +196,7 @@ export class AiPhotoSharingComponent {
     this.preview['cover1'] = event.ai_cover_images[0]?.url;
     this.preview['cover2'] = event.ai_cover_images[1]?.url;
     this.selectParty({ name: this.event_config.customer_name, id: this.event_config.customer_id });
+    console.log(event);
   }
 
   goToPhotoSelection(id: any) {
@@ -453,26 +454,26 @@ export class AiPhotoSharingComponent {
     this.router.navigate(['/login']);
   }
 
-  async onImageUpload(event: Event, type:'cover1'| 'cover2') {
+  async onImageUpload(event: Event, type: 'cover1' | 'cover2') {
     console.log(323);
-    
-    const input:any = event.target as HTMLInputElement;
+
+    const input: any = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const reader = new FileReader();
     const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name}_${this.userData.id}/${type}`);
     const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
     const uploadTask = uploadBytesResumable(fileRef, blob);
-    this.isLoading  = true;
-    
+    this.isLoading = true;
+
     uploadTask.then(async () => {
       const url = await getDownloadURL(fileRef);
-      this.isLoading  = false;
+      this.isLoading = false;
       this.preview[type] = url;
       this.event_config[type] = url;
     });
   }
 
-  showWarning(){
-    this.alert.info("Please upgrade your plan to use this feature",3000);
+  showWarning() {
+    this.alert.info("Please upgrade your plan to use this feature", 3000);
   }
 }

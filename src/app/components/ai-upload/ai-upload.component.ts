@@ -62,7 +62,7 @@ export class AiUploadComponent {
     this.eventId = this.userData?.event_id;
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
     console.log("this.p", this.previewCover);
-    if (this.userData && !!this.userData?.isFaceDescriptorReady) {
+    if (this.userData && !this.userData?.isFaceDescriptorReady) {
       this.checkReadiness();
       this.intervalId = setInterval(() => {
         if (!this.isReady) {
@@ -71,7 +71,16 @@ export class AiUploadComponent {
       }, 5000);
     }
     this.getPhotosByEventId();
+    this.checkIsBrowseAllFolderStatus();
+  }
 
+  checkIsBrowseAllFolderStatus() {
+    this.eventService.checkIsBrowseAllFolderStatus({ event_id: this.userData?.event_id, user_id: this.userData?.user_id }, (res: any) => {
+      if (res.status == 200) {
+        this.isBrowseAllFolder = res.data;
+        this.userData.is_browse_all_folder = this.isBrowseAllFolder;
+      }
+    })
   }
 
 
@@ -149,7 +158,7 @@ export class AiUploadComponent {
         // Extract face descriptor of captured image
         // const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/photos%2Fstudio_Production%20Testing%20Global%2Fbebo%20badmash%2FHelllo%2FNew%20Folder%201%2Fgettyimages-1718250850-612x612.jpg?alt=media&token=d6f6781d-35d8-4ab6-9fdb-20b3fb7bd3ca"
         const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
-        if (!capturedDescriptor){
+        if (!capturedDescriptor) {
           this.isLoading = false;
           return this.alert.error('No face detected in captured photo');
         }
@@ -166,6 +175,7 @@ export class AiUploadComponent {
       } else {
         this.isLoading = false;
         this.videoModal = false;
+         this.onCancel();
         this.alert.info("Your face has been captured, please come back after sometime");
       }
     } catch (error) {
