@@ -6,15 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SocketService {
-  private socket: Socket | any;
+  socket!: Socket;
+  qrCodeString: string | null = null;
+  isReady = false;
+  userId = 'user123'; // Unique per logged-in user
 
-  connect(adminId: string) {
-    this.socket = io('http://localhost:3000');
-    // Join room after connection
-    this.socket.on('connect', () => {
-      this.socket.emit('join-room', adminId);
-      console.log(`Socket connected, joined room ${adminId}`);
-    });
+  connect(adminId: any) {
+    this.socket = io('http://localhost:3000'); // Connect to master worker port
+    console.log("CALELDHERE", adminId);
+    this.socket.emit('register', adminId);
   }
 
   onQR(): Observable<string> {
@@ -38,6 +38,14 @@ export class SocketService {
   onReady(): Observable<void> {
     return new Observable(observer => {
       this.socket.on('ready', () => {
+        observer.next();
+      });
+    });
+  }
+
+  onDisconnected(): Observable<void> {
+    return new Observable(observer => {
+      this.socket.on('disconnected', () => {
         observer.next();
       });
     });

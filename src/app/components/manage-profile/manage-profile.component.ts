@@ -9,6 +9,7 @@ import { AlertService } from '../../services/alert.service';
 import { getMetadata } from 'firebase/storage';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { ImageCompressionService } from '../../services/image-compression.service';
+import { SocketService } from '../../shared/socket.service';
 @Component({
   selector: 'app-manage-profile',
   standalone: true,
@@ -28,13 +29,22 @@ export class ManageProfileComponent {
   userData: any = {};
   showLogOutModal: boolean = false;
   iconLoader: boolean = false;
+  isConnected = false;
+
+  qrCode: any = '';
+  authenticated: any = 'e41779';
+  ready: boolean = false;
+  syncing: boolean = false;
+
+
   constructor(private fb: FormBuilder,
-     private service: AdminService,
-      private alert: AlertService,
-       private route: ActivatedRoute,
-        private router: Router,
-        private imgCompress:ImageCompressionService
-      ) {
+    private service: AdminService,
+    private alert: AlertService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private imgCompress: ImageCompressionService,
+    private socketService: SocketService
+  ) {
     this.userForm = this.fb.group({
       studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -55,10 +65,38 @@ export class ManageProfileComponent {
 
   }
 
+  connectWhatsapp() {
+    this.socketService.connect(this.userData.id);
+    this.service.connectToWhatsApp(this.userData.id,(res:any)=>{
+      if(res.status == 200){
+        this.socketService.onQR().subscribe(qr => {
+          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
+          console.log("QR CODE", this.qrCode);
+        });
+    
+        this.socketService.onAuthenticated().subscribe(() => {
+          this.authenticated = true;
+          this.syncing = true;
+          this.isConnected = !this.isConnected;
+          this.qrCode = null; // Remove QR code after successful authentication
+        });
+    
+        this.socketService.onReady().subscribe(() => {
+          this.ready = true;
+          this.syncing = false; // Sync complete
+          this.alert.success("Whatsapp is ready");
+        });
+      }
+    })
+  }
+
   getUserDataCurrentId() {
     this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
       localStorage.setItem("userData", JSON.stringify(res));
       this.userData = res;
+      if(res?.whatsapp_status == 'ready'){
+        this.isConnected = true;
+      }
       this.userForm.patchValue(res)
     })
 
@@ -101,7 +139,7 @@ export class ManageProfileComponent {
 
       uploadTask.then(async () => {
         const url = await getDownloadURL(fileRef);
-         this.iconLoader = false;
+        this.iconLoader = false;
         this.userForm.patchValue({ studio_icon: url })
       })
     }
@@ -122,7 +160,7 @@ export class ManageProfileComponent {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-    logout() {
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');

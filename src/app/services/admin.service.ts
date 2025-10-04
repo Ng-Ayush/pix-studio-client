@@ -163,4 +163,8 @@ export class AdminService extends BaseService {
   getFeatureListByUserId(callback: any) {
     return this.getData({}, this.httpUrls['getFeatureListByUserId'], callback)
   }
+
+  connectToWhatsApp(userId: any, callback: any) {
+    return this.postData({}, this.httpUrls['connectToWhatsApp'] + "/" + userId, callback)
+  }
 }

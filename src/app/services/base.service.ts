@@ -26,6 +26,7 @@ export class BaseService {
     'fetchSalesAndPendingGraphData':'/api/mystudio/dashboard/fetchSalesAndPendingGraphData',
     'getUsersByCurrentId':'/api/mystudio/manage-profile/getUsersByCurrentId',
     'updateProfile':'/api/mystudio/manage-profile/updateProfile',
+    'connectToWhatsApp':'/api/mystudio/manage-profile/connectToWhatsApp',
 
     //Event
     'createEvent': '/api/mystudio/photo-selection/createEvent',

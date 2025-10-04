@@ -12,6 +12,7 @@ import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas-pro';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-pdf-bill-selection',
   standalone: true,
@@ -448,51 +449,77 @@ export class PdfBillSelectionComponent {
     this.router.navigate(['/login']);
   }
 
+  // async shareViaWhatsapp() {
+  //   this.alert.info("This feature is on development changes");
+  //   return;
+  //   this.loader.show();
+  //   this.isLoading = true;
+  //   const data: any = await this.downloadPDF(true);
+  //   const fileRef = ref(this.storage, `invoice-pdf/${this.invoiceBillConfig.party_name.split(" ").join("_")}/${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`);
+  //   const uploadTask = uploadBytesResumable(fileRef, data.data, { contentType: 'application/pdf' });
+
+  //   uploadTask.then(async () => {
+  //     this.loader.show();
+  //     const url = await getDownloadURL(fileRef);
+  //     this.alert.success('PDF ready to share via WhatsApp.');
+  //     const message = `Hi ${this.invoiceBillConfig.party_name}, your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'
+  //       } Invoice Bill is ready to download.\n\nLink: ${url}`;
+  //     const whatsppUrl: any = `https://wa.me/+91${this.invoiceBillConfig.party_phone_number}?text=${encodeURIComponent(message)}`;
+  //     const whatsappWindow: any = window.open(whatsppUrl, '', "width=300,height=300");
+  //     setTimeout(() => {
+  //       whatsappWindow.close();
+  //     }, 2000);
+  //     this.isLoading = false;
+  //     this.loader.hide();
+
+  //     // ****below code to send pdf media via whatsapp****
+
+  //     // const params: any = {
+  //     //   url: url,
+  //     //   party_name: this.invoiceBillConfig.party_name,
+  //     //   phone_number: this.invoiceBillConfig.party_phone_number,
+  //     //   message_body: `Your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'} Invoice Bill is ready to download.`
+  //     // }
+  //     // this._service.sendPdfViaWhatsApp(params, (res: any) => {
+  //     //   if (res.status == 200) {
+  //     //     this.loader.hide();
+  //     //     this.isLoading = false;
+  //     //     this.alert.success(res.message);
+  //     //   } else {
+  //     //     this.loader.hide();
+  //     //     this.isLoading = false;
+  //     //     this.alert.error(res.message);
+  //     //   }
+  //     // });
+
+  //   })
+
+  // }
+
+
   async shareViaWhatsapp() {
-    this.alert.info("This feature is on development changes");
-    return;
-    this.loader.show();
-    this.isLoading = true;
-    const data: any = await this.downloadPDF(true);
-    const fileRef = ref(this.storage, `invoice-pdf/${this.invoiceBillConfig.party_name.split(" ").join("_")}/${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`);
-    const uploadTask = uploadBytesResumable(fileRef, data.data, { contentType: 'application/pdf' });
+    try { 
+      const { data } :any = await this.downloadPDF(true);
+      const base64 = await this.blobToBase64(data);
+      const number = `${this.invoiceBillConfig.party_phone_number}@c.us`;
+      await this.http.post(environment.apiUrl + '/api/mystudio/invoices/sendPdfViaWhatsApp', {
+        number: `91${number}`,
+        pdfBase64: base64,
+        fileName: `${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`
+      }).toPromise();
+      this.alert.success('PDF sent to WhatsApp!');
+    } catch (err) {
+      this.alert.error('Failed to send PDF to WhatsApp.');
+    }
+  }
 
-    uploadTask.then(async () => {
-      this.loader.show();
-      const url = await getDownloadURL(fileRef);
-      this.alert.success('PDF ready to share via WhatsApp.');
-      const message = `Hi ${this.invoiceBillConfig.party_name}, your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'
-        } Invoice Bill is ready to download.\n\nLink: ${url}`;
-      const whatsppUrl: any = `https://wa.me/+91${this.invoiceBillConfig.party_phone_number}?text=${encodeURIComponent(message)}`;
-      const whatsappWindow: any = window.open(whatsppUrl, '', "width=300,height=300");
-      setTimeout(() => {
-        whatsappWindow.close();
-      }, 2000);
-      this.isLoading = false;
-      this.loader.hide();
-
-      // ****below code to send pdf media via whatsapp****
-
-      // const params: any = {
-      //   url: url,
-      //   party_name: this.invoiceBillConfig.party_name,
-      //   phone_number: this.invoiceBillConfig.party_phone_number,
-      //   message_body: `Your ${this.invoiceBillConfig.invoice_type == 'sale' ? 'Sale' : 'Estimate'} Invoice Bill is ready to download.`
-      // }
-      // this._service.sendPdfViaWhatsApp(params, (res: any) => {
-      //   if (res.status == 200) {
-      //     this.loader.hide();
-      //     this.isLoading = false;
-      //     this.alert.success(res.message);
-      //   } else {
-      //     this.loader.hide();
-      //     this.isLoading = false;
-      //     this.alert.error(res.message);
-      //   }
-      // });
-
-    })
-
+  private async blobToBase64(blob: Blob): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
 }

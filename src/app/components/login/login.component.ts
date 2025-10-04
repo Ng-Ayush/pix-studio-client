@@ -24,10 +24,7 @@ export class LoginComponent {
   countdown: number = 30;
   countdownInterval: any;
   sentOtp: any = '';
-  qrCode: any = '';
-  authenticated: any = 'e41779';
-  ready: boolean = false;
-  syncing: boolean = false;
+
 
   constructor(
     private authService: AuthService,
@@ -144,22 +141,8 @@ export class LoginComponent {
         if (window && window?.electronAPI) {
           window.electronAPI.setLogin(true);
         }
-        this.socketService.onQR().subscribe(qr => {
-          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
-          console.log("QR CODE", this.qrCode);
-        });
-
-        this.socketService.onAuthenticated().subscribe(() => {
-          this.authenticated = true;
-          this.syncing = true;
-          this.qrCode = null; // Remove QR code after successful authentication
-        });
-
-        this.socketService.onReady().subscribe(() => {
-          this.ready = true;
-          this.syncing = false; // Sync complete
-        });
         this.router.navigate(['/dashboard']);
+
         this.alert.success(res.message);
       } else {
         this.loader = false;

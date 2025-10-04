@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
+            <div class="back-btn flex items-center justify-between py-3 px-10 bg-[#E3E7F1]">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
                         class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
@@ -58,6 +58,14 @@
                             </path>
                         </svg> Go back</button>
                 </a>
+                <button type="button" (click)="connectWhatsapp()" [ngClass]="{
+    'bg-emerald-700 text-white': isConnected,
+    'bg-red-800 text-white': !isConnected
+  }" class="flex cursor-pointer items-center px-4 py-2 rounded transition-colors duration-300">
+                  <i class="bi bi-whatsapp text-white"></i>
+                    <span *ngIf="!isConnected" class="ps-1 text-white">Connect to WhatsApp</span>
+                    <span *ngIf="isConnected" class="font-semibold text-white ps-1">Connected Successfully</span>
+                </button>
             </div>
         </div>
 
@@ -206,7 +214,8 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="name" class="block text-sm flex gap-2 items-center font-medium text-gray-700 mb-2">
+                                    <label for="name"
+                                        class="block text-sm flex gap-2 items-center font-medium text-gray-700 mb-2">
                                         Studio Icon
                                         <span role="status" *ngIf="iconLoader">
                                             <svg aria-hidden="true"
@@ -237,6 +246,7 @@
                                         width="50" height="50" />
                                 </div>
                             </div>
+
                             <button type="submit" [disabled]="userForm.invalid || isSubmitting || iconLoader"
                                 class="mt-5 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
                                 <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none"
@@ -286,3 +296,30 @@
         </div>
     </div>
 </div>
+
+<div *ngIf="qrCode"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': qrCode}">
+        <div class="p-6 flex flex-col items-center">
+            <div *ngIf="qrCode">
+                <h3>Scan WhatsApp QR Code</h3>
+                <img [src]="qrCode" alt="WhatsApp QR" />
+            </div>
+
+            <div *ngIf="authenticated && syncing" class="sync-container">
+                <p>Syncing your WhatsApp account, please keep the app open...</p>
+
+                <!-- Simple CSS spinner -->
+                <div class="spinner"></div>
+            </div>
+
+            <div *ngIf="ready" class="ready-message">
+                WhatsApp is ready!
+            </div>
+
+        </div>
+
+    </div>
+</div>F
