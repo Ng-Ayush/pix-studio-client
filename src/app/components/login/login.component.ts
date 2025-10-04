@@ -35,7 +35,7 @@ export class LoginComponent {
     private alert: AlertService,
     private socketService: SocketService,
     private activateRoute: ActivatedRoute
-  ) { 
+  ) {
     this.activateRoute.queryParams.subscribe((params: any) => {
       if (params['event_code']) {
         this.loginPin = params['event_code'];
@@ -76,6 +76,8 @@ export class LoginComponent {
           console.log(otpRes);
           if (otpRes.status == 200) {
             this.showOTPBox = true;
+            // this.socketService.connect(this.userData.id);
+
             this.startResendCountdown();
           }
 
@@ -130,6 +132,8 @@ export class LoginComponent {
       this.loader = false;
       return;
     }
+
+
     const params: any = {
       otp: this.otp || 0,
       user_id: this.userData.id
@@ -140,26 +144,21 @@ export class LoginComponent {
         if (window && window?.electronAPI) {
           window.electronAPI.setLogin(true);
         }
-        const adminId = this.userData.id;
-        this.socketService.connect(adminId);
+        this.socketService.onQR().subscribe(qr => {
+          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
+          console.log("QR CODE", this.qrCode);
+        });
 
-        // this.socketService.onQR().subscribe(qr => {
-        //   this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
-        //   console.log("QR CODE", this.qrCode);
+        this.socketService.onAuthenticated().subscribe(() => {
+          this.authenticated = true;
+          this.syncing = true;
+          this.qrCode = null; // Remove QR code after successful authentication
+        });
 
-        // });
-
-        // this.socketService.onAuthenticated().subscribe(() => {
-        //   this.authenticated = true;
-        //   this.syncing = true;  // Start syncing after auth
-        //   this.qrCode = null;
-        // });
-
-        // this.socketService.onReady().subscribe(() => {
-        //   this.ready = true;
-        //   this.syncing = false; // Sync complete
-        // });
-        
+        this.socketService.onReady().subscribe(() => {
+          this.ready = true;
+          this.syncing = false; // Sync complete
+        });
         this.router.navigate(['/dashboard']);
         this.alert.success(res.message);
       } else {

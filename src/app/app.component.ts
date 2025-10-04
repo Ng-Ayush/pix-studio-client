@@ -5,12 +5,13 @@ import { LoaderComponent } from './components/shared/loader/loader.component';
 import { UploadImageProgressComponent } from './shared/upload-image-progress/upload-image-progress.component';
 import { DeleteImageProcessComponent } from "./shared/delete-image-process/delete-image-process.component";
 import { CommonModule } from '@angular/common';
+import { UploadImageProgressAiComponent } from './shared/upload-image-progress-ai/upload-image-progress-ai.component';
 declare var window: any;
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoaderComponent, CommonModule, UploadImageProgressComponent, DeleteImageProcessComponent],
+  imports: [RouterOutlet, LoaderComponent, CommonModule, UploadImageProgressComponent, DeleteImageProcessComponent,UploadImageProgressAiComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

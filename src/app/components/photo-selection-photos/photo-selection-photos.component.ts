@@ -12,11 +12,12 @@ import { AlertService } from '../../services/alert.service';
 import { UploadImgBackgroundService } from '../../services/upload-img-background.service';
 import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.service';
 
 @Component({
   selector: 'app-photo-selection-photos',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage,ScrollingModule],
+  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage, ScrollingModule],
   templateUrl: './photo-selection-photos.component.html',
   styleUrl: './photo-selection-photos.component.scss'
 })
@@ -59,6 +60,7 @@ export class PhotoSelectionPhotosComponent {
     private route: ActivatedRoute,
     private alert: AlertService,
     private uploadImgBg: UploadImgBackgroundService,
+    private aiUploadService: UploadImgBackgroundAiService,
     private deleteImgBg: DeleteImgBackgroundService
   ) {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
@@ -67,6 +69,7 @@ export class PhotoSelectionPhotosComponent {
       if (params['folder-id']) {
         this.currentFolderId = params['folder-id'];
         this.uploadImgBg.currentFolderId = this.currentFolderId;
+        this.aiUploadService.currentFolderId = this.currentFolderId;
         this.getUploadedPhotosByFolderId();
       }
     });
@@ -86,9 +89,9 @@ export class PhotoSelectionPhotosComponent {
     this.deleteImgBg.isImagDeletedCompleted$.subscribe((item: any) => {
       if (item) {
         this.closeModal();
-          this.allSelected = false;
-          this.imageSelected = false;
-          this.isLoading = false;
+        this.allSelected = false;
+        this.imageSelected = false;
+        this.isLoading = false;
         this.getUploadedPhotosByFolderId();
       }
     })
@@ -103,6 +106,9 @@ export class PhotoSelectionPhotosComponent {
     this.uploadImgBg.user_id = this.user_id;
     this.uploadImgBg.studio_name = this.studio_name;
 
+    this.aiUploadService.user_id = this.user_id;
+    this.aiUploadService.studio_name = this.studio_name;
+
   }
 
   getUploadedPhotosByFolderId() {
@@ -111,6 +117,8 @@ export class PhotoSelectionPhotosComponent {
       if (res.status == 200) {
         this.photos = res.data.photos;
         this.uploadImgBg.photos = this.photos;
+
+        this.aiUploadService.photos = this.photos;
         this.eventName = res.data.event_name;
         this.customerName = res.data.customer_name;
         this.folderName = res.data.folder_name;
@@ -120,6 +128,10 @@ export class PhotoSelectionPhotosComponent {
         this.uploadImgBg.eventName = this.eventName;
         this.uploadImgBg.customerName = this.customerName;
         this.uploadImgBg.folderName = this.folderName;
+
+        this.aiUploadService.eventName = this.eventName;
+        this.aiUploadService.customerName = this.customerName;
+        this.aiUploadService.folderName = this.folderName;
 
         this.isEventSubmitted = res.data.is_event_submitted;
         setTimeout(() => this.loader.hide(), 500);
@@ -172,7 +184,11 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
-    this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
+    if(!this.isAIuploaded){
+      this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
+    }else{
+      this.aiUploadService.handleAIFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
+    }
   }
 
 
