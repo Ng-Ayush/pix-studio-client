@@ -86,6 +86,11 @@ export class PhotoSelectionPhotosComponent {
         this.getUploadedPhotosByFolderId();
       }
     });
+    this.aiUploadService.isImageUploadedCompleted$.subscribe((item: any) => {
+      if (item) {
+        this.getUploadedPhotosByFolderId();
+      }
+    });
     this.deleteImgBg.isImagDeletedCompleted$.subscribe((item: any) => {
       if (item) {
         this.closeModal();

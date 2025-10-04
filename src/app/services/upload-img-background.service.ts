@@ -193,6 +193,7 @@ export class UploadImgBackgroundService {
     }
 
     this[processingFlag] = false;
+    this.isImageUploadedCompleted$.next(true);
   }
 
   // ---------------- Compress + Upload ----------------

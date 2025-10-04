@@ -144,6 +144,7 @@ export class UploadImgBackgroundAiService {
     }
 
     this.isProcessingQueue = false;
+    this.isImageUploadedCompleted$.next(true);
   }
 
   // ---------------- Compress + Upload ----------------
