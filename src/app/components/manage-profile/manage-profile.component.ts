@@ -35,6 +35,8 @@ export class ManageProfileComponent {
   authenticated: any = 'e41779';
   ready: boolean = false;
   syncing: boolean = false;
+  isLoading: boolean = false;
+  showWhatsappModal: boolean = false;
 
 
   constructor(private fb: FormBuilder,
@@ -62,30 +64,45 @@ export class ManageProfileComponent {
   ngOnInit() {
     this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
     this.getUserDataCurrentId();
+    this.socketService.onQR().subscribe(qr => {
+      this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 3000);
+      console.log("QR CODE", this.qrCode);
+    });
+    this.socketService.onAuthenticated().subscribe(() => {
+      this.authenticated = true;
+      this.syncing = true;
+      this.isConnected = !this.isConnected;
+      this.qrCode = null;
+      this.showWhatsappModal= false;
+    });
+    this.socketService.onReady().subscribe(() => {
+      this.ready = true;
+      this.syncing = false;
+      this.alert.success("Whatsapp is ready");
+      this.showWhatsappModal= false;
+    });
+    this.socketService.onDisconnected().subscribe(reason => {
+      this.ready = false;
+      this.isConnected = false;
+      this.alert.error("Whatsapp disconnected");
+    });
 
   }
 
   connectWhatsapp() {
-    this.socketService.connect(this.userData.id);
-    this.service.connectToWhatsApp(this.userData.id,(res:any)=>{
-      if(res.status == 200){
-        this.socketService.onQR().subscribe(qr => {
-          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
-          console.log("QR CODE", this.qrCode);
-        });
-    
-        this.socketService.onAuthenticated().subscribe(() => {
-          this.authenticated = true;
-          this.syncing = true;
-          this.isConnected = !this.isConnected;
-          this.qrCode = null; // Remove QR code after successful authentication
-        });
-    
-        this.socketService.onReady().subscribe(() => {
-          this.ready = true;
-          this.syncing = false; // Sync complete
-          this.alert.success("Whatsapp is ready");
-        });
+    this.isLoading = true;
+    this.showWhatsappModal = true;
+    this.service.connectToWhatsApp(this.userData.id, (res: any) => {
+      if (res.status == 200 && !res.qr) {
+        this.isLoading = false;
+      } else if (res.status == 200 && res.qr) {
+        this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(res.qr)}`;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 3000);
       }
     })
   }
@@ -94,7 +111,7 @@ export class ManageProfileComponent {
     this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
       localStorage.setItem("userData", JSON.stringify(res));
       this.userData = res;
-      if(res?.whatsapp_status == 'ready'){
+      if (res?.whatsapp_status == 'ready') {
         this.isConnected = true;
       }
       this.userForm.patchValue(res)

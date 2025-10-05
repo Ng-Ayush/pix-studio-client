@@ -62,7 +62,7 @@
     'bg-emerald-700 text-white': isConnected,
     'bg-red-800 text-white': !isConnected
   }" class="flex cursor-pointer items-center px-4 py-2 rounded transition-colors duration-300">
-                  <i class="bi bi-whatsapp text-white"></i>
+                    <i class="bi bi-whatsapp text-white"></i>
                     <span *ngIf="!isConnected" class="ps-1 text-white">Connect to WhatsApp</span>
                     <span *ngIf="isConnected" class="font-semibold text-white ps-1">Connected Successfully</span>
                 </button>
@@ -297,12 +297,50 @@
     </div>
 </div>
 
-<div *ngIf="qrCode"
+<div *ngIf="showWhatsappModal"
     class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
     <div #modalContent
-        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
-        [ngClass]="{'modal-fade-in': qrCode}">
-        <div class="p-6 flex flex-col items-center">
+        class="rounded-lg shadow-xl w-full mx-4 max-w-3xl transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': showWhatsappModal}">
+
+        <!-- whatsapp-connect.component.html -->
+        <div class="flex items-center justify-center bg-gray-50 relative">
+            <div class="absolute p-2 cursor-pointer" style="top: 20px; right: 20px;" (click)="showWhatsappModal=false;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" (click)="showWhatsappModal=false;"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                </svg>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col sm:flex-row w-full max-w-3xl min-h-[350px]">
+                <div class="flex-1 flex flex-col justify-center">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-4">To Use WhatsApp on your Computer</h2>
+                    <ol class="list-decimal pl-4 text-lg mb-5 text-gray-800">
+                        <li>Open Whatsapp on Your Mobile</li>
+                        <li>Tap <span class="font-bold">Menu</span> or <span class="font-bold">Settings</span></li>
+                        <li>Tap on <span class="font-bold">Link A Device</span></li>
+                        <li>Scan QR Code</li>
+                    </ol>
+                    <!-- <a href="#" class="text-green-400 hover:underline text-lg mt-2">Need help to get started?</a> -->
+                </div>
+                <div class="flex items-center justify-center mt-8 sm:mt-0 sm:ml-10 w-full sm:w-auto min-w-[170px]">
+                    <ng-container *ngIf="isLoading; else qrCodeBlock">
+                        <div class="flex items-center justify-center w-[172px] h-[172px]">
+                            <svg class="animate-spin h-12 w-12 text-green-400" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                                    fill="none"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                        </div>
+                    </ng-container>
+                    <ng-template #qrCodeBlock>
+                        <img [src]="qrCode" alt="WhatsApp QR Code" class="w-[172px] h-[172px] rounded shadow-md" />
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="p-6 flex flex-col items-center">
             <div *ngIf="qrCode">
                 <h3>Scan WhatsApp QR Code</h3>
                 <img [src]="qrCode" alt="WhatsApp QR" />
@@ -311,7 +349,7 @@
             <div *ngIf="authenticated && syncing" class="sync-container">
                 <p>Syncing your WhatsApp account, please keep the app open...</p>
 
-                <!-- Simple CSS spinner -->
+               
                 <div class="spinner"></div>
             </div>
 
@@ -319,7 +357,7 @@
                 WhatsApp is ready!
             </div>
 
-        </div>
+        </div> -->
 
     </div>
-</div>F
+</div>

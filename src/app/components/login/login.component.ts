@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../services/alert.service';
 import { SocketService } from '../../shared/socket.service';
+import { AdminService } from '../../services/admin.service';
 declare var window: any;
 
 @Component({
@@ -31,7 +32,8 @@ export class LoginComponent {
     private router: Router,
     private alert: AlertService,
     private socketService: SocketService,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private adminService: AdminService
   ) {
     this.activateRoute.queryParams.subscribe((params: any) => {
       if (params['event_code']) {
@@ -135,18 +137,32 @@ export class LoginComponent {
       otp: this.otp || 0,
       user_id: this.userData.id
     }
-    this.authService.verifyOTPAndLogin(params, (res: any) => {
+    this.authService.verifyOTPAndLogin(params, async (res: any) => {
       if (res.status == 200) {
         this.loader = false;
         if (window && window?.electronAPI) {
           window.electronAPI.setLogin(true);
         }
+
+        await this.initializeWhatsAppWeb();
+
         this.router.navigate(['/dashboard']);
 
         this.alert.success(res.message);
       } else {
         this.loader = false;
         this.alert.error(res.message);
+      }
+    })
+  }
+
+  async initializeWhatsAppWeb() {
+    this.socketService.connect(this.userData.id);
+    this.alert.info("WhatsApp Web is initializing");
+    this.adminService.connectToWhatsApp(this.userData.id, (res: any) => {
+      if (res.status == 200) {
+        console.log(res);
+        this.alert.success("Go to My Accounts to connect your WhatsApp Web",5000);
       }
     })
   }

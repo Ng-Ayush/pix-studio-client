@@ -500,6 +500,7 @@ export class PdfBillSelectionComponent {
   async shareViaWhatsapp() {
     try { 
       const { data } :any = await this.downloadPDF(true);
+      this.isLoading=true;
       const base64 = await this.blobToBase64(data);
       const number = `${this.invoiceBillConfig.party_phone_number}@c.us`;
       await this.http.post(environment.apiUrl + '/api/mystudio/invoices/sendPdfViaWhatsApp', {
@@ -507,8 +508,10 @@ export class PdfBillSelectionComponent {
         pdfBase64: base64,
         fileName: `${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`
       }).toPromise();
+      this.isLoading=false;
       this.alert.success('PDF sent to WhatsApp!');
     } catch (err) {
+      this.isLoading=false;
       this.alert.error('Failed to send PDF to WhatsApp.');
     }
   }
