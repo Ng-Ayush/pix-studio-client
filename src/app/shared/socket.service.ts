@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from "socket.io-client";
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class SocketService {
   userId = 'user123'; // Unique per logged-in user
 
   connect(adminId: any) {
-    this.socket = io('http://localhost:3000'); // Connect to master worker port
+    this.socket = io(environment.apiUrl); // Connect to master worker port
     console.log("CALELDHERE", adminId);
     this.socket.emit('register', adminId);
   }
