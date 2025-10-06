@@ -107,11 +107,18 @@ export class AiUploadComponent {
   }
 
   async ngOnInit() {
-    // Load face-api.js models (adjust path to models folder)
-    const MODEL_URL = '../../../assets/models';
-    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    try {
+      
+      // Load face-api.js models (adjust path to models folder)
+      const MODEL_URL = '../../../assets/models';
+      // await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    } catch (error) {
+      console.log("Got erro loading modles",error);
+      
+    }
   }
 
 
@@ -150,13 +157,22 @@ export class AiUploadComponent {
       const video = this.videoRef.nativeElement;
       const canvas = this.canvasRef.nativeElement;
       const context = canvas.getContext('2d')!;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const capturedDataUrl = canvas.toDataURL('image/png');
+      const scaleFactor = 2;
+      const width = video.videoWidth * scaleFactor;
+      const height = video.videoHeight * scaleFactor;
 
+      // Resize canvas to higher resolution
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw video frame scaled to larger size
+      context.drawImage(video, 0, 0, width, height);
+
+      const capturedDataUrl = canvas.toDataURL('image/png');
       if (!!this.userData?.isFaceDescriptorReady) {
         this.isLoading = true;
         // Extract face descriptor of captured image
-        // const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/photos%2Fstudio_Production%20Testing%20Global%2Fbebo%20badmash%2FHelllo%2FNew%20Folder%201%2Fgettyimages-1718250850-612x612.jpg?alt=media&token=d6f6781d-35d8-4ab6-9fdb-20b3fb7bd3ca"
+        const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/DSC_4400.JPG?alt=media&token=bb2550d7-c1fd-42a6-a152-cd940acbe78c"
         const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
         if (!capturedDescriptor) {
           this.isLoading = false;
@@ -175,7 +191,7 @@ export class AiUploadComponent {
       } else {
         this.isLoading = false;
         this.videoModal = false;
-         this.onCancel();
+        this.onCancel();
         this.alert.info("Your face has been captured, please come back after sometime");
       }
     } catch (error) {
@@ -184,34 +200,35 @@ export class AiUploadComponent {
 
   }
 
+  async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
+    const img = await faceapi.fetchImage(url);
+    const detections = await faceapi.detectAllFaces(img, new faceapi.SsdMobilenetv1Options())
+      .withFaceLandmarks()
+      .withFaceDescriptors();
+    return detections.map(det => det.descriptor);
+  }
+
+  // Capture face descriptor from a single face image Data URL (still needed for capture)
   async getFaceDescriptorFromDataURL(dataUrl: string): Promise<Float32Array | null> {
     const img = await faceapi.fetchImage(dataUrl);
-    const detection = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
+    const detection = await faceapi.detectSingleFace(img, new faceapi.SsdMobilenetv1Options())
       .withFaceLandmarks()
       .withFaceDescriptor();
     return detection ? detection.descriptor : null;
   }
 
+  // Filter photos by matching captured descriptor against all stored descriptors (multiple per photo)
   async filterMatches(capturedDescriptor: Float32Array, photosArray: any[]) {
     const threshold = 0.6;
     return photosArray.filter(photo => {
       if (!photo.face_descriptor) return false;
-      const storedDescriptor = new Float32Array(JSON.parse(photo.face_descriptor));
-      const distance = faceapi.euclideanDistance(capturedDescriptor, storedDescriptor);
-      return distance < threshold;
+      const descriptors = JSON.parse(photo.face_descriptor) as number[][];
+      return descriptors.some(desc => {
+        const storedDesc = new Float32Array(desc);
+        const distance = faceapi.euclideanDistance(capturedDescriptor, storedDesc);
+        return distance < threshold;
+      });
     });
-  }
-
-  dataURLtoFile(dataurl: string, filename: string) {
-    let arr = dataurl.split(',');
-    let mime = arr[0].match(/:(.*?);/)![1];
-    let bstr = atob(arr[1]);
-    let n = bstr.length;
-    let u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
   }
 
   submitAiGuest() {
