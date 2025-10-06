@@ -79,7 +79,9 @@ export class UploadImgBackgroundAiService {
     const queued = this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
     const totalUsed = alreadyUploaded + queued;
 
-    const remaining = 100 - totalUsed;
+    const limitPhotos = this.user_id == 285 ? 1000 : 100;
+
+    const remaining =  limitPhotos - totalUsed;   //user_id = 285 , pincode = 412349 for instant purpose
     if (remaining <= 0) {
       this.alert.warning("AI folder already has 100 photos (uploaded + queued).", 8000);
       return;

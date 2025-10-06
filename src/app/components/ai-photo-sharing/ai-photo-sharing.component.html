@@ -64,7 +64,7 @@
             <div class="add-button flex justify-between mb-10 items-center gap-2">
                 <div class="p-4 text-sm text-blue-800 rounded bg-blue-50"
                     role="alert">
-                    <span class="font-medium">Trail version limit: </span> You can upload a maximum of 100 photos per event.
+                    <span class="font-medium">Trail version limit: </span> You can upload a maximum of {{this.userData?.id == 285 ? 1000 : 100}} photos per event.
                 </div>
                 <button (click)="openModal()"
                     class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
