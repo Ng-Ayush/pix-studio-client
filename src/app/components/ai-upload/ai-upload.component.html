@@ -311,7 +311,7 @@
             <ng-template #onlyMatched>
                 <h1 class="text-center" *ngIf="matchedImages.length==0">Please add your selfie above!.</h1>
             </ng-template>
-            
+
 
             <div class="col-sm-6 col-md-4 col-lg-3">
             </div>
@@ -360,6 +360,10 @@
             <div class="w-full flex flex-row gap-2 justify-center">
                 <video #video id="video" width="500" height="500" autoplay muted></video>
                 <canvas #canvas id="canvas" width="320" height="240" style="display:none"></canvas>
+            </div>
+
+            <div class="p-4 text-sm text-blue-800 rounded bg-blue-50" role="alert">
+                <span class="font-medium">Trail version limit: </span> Please upgrade to premium to get better accuracy image.
             </div>
 
             <div class="text-gray-800 text-start mt-4 w-full" *ngIf="!userData?.isFaceDescriptorReady">

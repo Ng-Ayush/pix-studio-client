@@ -111,7 +111,7 @@ export class AiUploadComponent {
       
       // Load face-api.js models (adjust path to models folder)
       const MODEL_URL = '../../../assets/models';
-      // await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
       await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
       await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
@@ -138,17 +138,19 @@ export class AiUploadComponent {
   }
 
   async openCamera() {
-    this.videoModal = true;
-    setTimeout(async () => {
-      const video = this.videoRef.nativeElement;
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = this.videoStream;
-        await video.play();
-      } else {
-        alert('Camera API not supported');
-      }
-    }, 0);
+    this.alert.info("Please upgrade your plan to use this feature", 4000);
+    return;
+    // this.videoModal = true;
+    // setTimeout(async () => {
+    //   const video = this.videoRef.nativeElement;
+    //   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    //     this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //     video.srcObject = this.videoStream;
+    //     await video.play();
+    //   } else {
+    //     alert('Camera API not supported');
+    //   }
+    // }, 0);
   }
 
   async capturePhoto() {
@@ -202,7 +204,7 @@ export class AiUploadComponent {
 
   async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
     const img = await faceapi.fetchImage(url);
-    const detections = await faceapi.detectAllFaces(img, new faceapi.SsdMobilenetv1Options())
+    const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceDescriptors();
     return detections.map(det => det.descriptor);
@@ -219,7 +221,7 @@ export class AiUploadComponent {
 
   // Filter photos by matching captured descriptor against all stored descriptors (multiple per photo)
   async filterMatches(capturedDescriptor: Float32Array, photosArray: any[]) {
-    const threshold = 0.6;
+    const threshold = 0.5;
     return photosArray.filter(photo => {
       if (!photo.face_descriptor) return false;
       const descriptors = JSON.parse(photo.face_descriptor) as number[][];
