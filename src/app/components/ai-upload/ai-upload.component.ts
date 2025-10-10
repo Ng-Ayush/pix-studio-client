@@ -138,19 +138,19 @@ export class AiUploadComponent {
   }
 
   async openCamera() {
-    this.alert.info("Please upgrade your plan to use this feature", 4000);
-    return;
-    // this.videoModal = true;
-    // setTimeout(async () => {
-    //   const video = this.videoRef.nativeElement;
-    //   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    //     this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    //     video.srcObject = this.videoStream;
-    //     await video.play();
-    //   } else {
-    //     alert('Camera API not supported');
-    //   }
-    // }, 0);
+    // this.alert.info("Please upgrade your plan to use this feature", 4000);
+    // return;
+    this.videoModal = true;
+    setTimeout(async () => {
+      const video = this.videoRef.nativeElement;
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = this.videoStream;
+        await video.play();
+      } else {
+        alert('Camera API not supported');
+      }
+    }, 0);
   }
 
   async capturePhoto() {
