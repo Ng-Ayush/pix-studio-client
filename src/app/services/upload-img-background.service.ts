@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { getMetadata } from 'firebase/storage';
 import { ImageCompressionService } from './image-compression.service';
 import { LoaderService } from '../shared/loader.service';
@@ -212,24 +212,21 @@ export class UploadImgBackgroundService {
     const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
     const fileRef = ref(this.storage, filePath);
 
-    return new Promise((resolve, reject) => {
-      const uploadTask = uploadBytesResumable(fileRef, compressedImage);
-      uploadTask.on(
-        'state_changed',
-        () => { },
-        (error: any) => reject(error),
-        async () => {
-          try {
-            const url = await getDownloadURL(fileRef);
-            const name = await getMetadata(fileRef);
-            this.uploadedUrls.push({ url, name: name.name });
-            resolve(url);
-          } catch (err) {
-            reject(err);
-          }
-        }
-      );
-    });
+    try {
+      // ⛔️ Use non-resumable upload for faster performance
+      await uploadBytes(fileRef, compressedImage);
+
+      // Get the download URL
+      const url = await getDownloadURL(fileRef);
+      const name = await getMetadata(fileRef);
+
+      // Track uploaded file
+      this.uploadedUrls.push({ url, name: name.name });
+
+      return url;
+    } catch (error) {
+      throw error;
+    }
   }
 
   // ---------------- Concurrency Handler ----------------

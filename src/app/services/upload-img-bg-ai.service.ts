@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { getMetadata } from 'firebase/storage';
 import { ImageCompressionService } from './image-compression.service';
 import { LoaderService } from '../shared/loader.service';
@@ -20,7 +20,7 @@ export class UploadImgBackgroundAiService {
     private loader: LoaderService,
     private _pservice: PhotoSelectionService,
     private alert: AlertService
-  ) {}
+  ) { }
 
   // ---------------- Observables ----------------
   isUploading$ = new BehaviorSubject<boolean>(false);
@@ -48,6 +48,11 @@ export class UploadImgBackgroundAiService {
 
   private uploadQueue: any[] = [];
   private isProcessingQueue = false;
+
+  watermarkUrl: any = '';
+  waterMarkConfig:any= {};
+
+
 
   // ---------------- Handle File Input ----------------
   handleAIFileInput(
@@ -81,7 +86,7 @@ export class UploadImgBackgroundAiService {
 
     const limitPhotos = this.user_id == 285 ? 1000 : 100;
 
-    const remaining =  limitPhotos - totalUsed;   //user_id = 285 , pincode = 412349 for instant purpose
+    const remaining = limitPhotos - totalUsed;   //user_id = 285 , pincode = 412349 for instant purpose
     if (remaining <= 0) {
       this.alert.warning("AI folder already has 100 photos (uploaded + queued).", 8000);
       return;
@@ -158,28 +163,30 @@ export class UploadImgBackgroundAiService {
     eventName: string,
     folderName: string
   ): Promise<string> {
-    const compressed = await this.imageCompressService.compress3MBToTarget(file);
+    const compressed: any = await this.imageCompressService.compress3MBToTarget(file);
+    let watermarkedBlob:any;
+    if(this.waterMarkConfig?.is_watermark){
+      watermarkedBlob = await this.addWatermarkFromBlob(compressed,this.waterMarkConfig?.transparency);
+    }
+    console.log("GOT HERE WATERM", watermarkedBlob, compressed);
     const path = `ai_photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
     const fileRef = ref(this.storage, path);
 
-    return new Promise((resolve, reject) => {
-      const task = uploadBytesResumable(fileRef, compressed);
-      task.on(
-        'state_changed',
-        () => {},
-        err => reject(err),
-        async () => {
-          try {
-            const url = await getDownloadURL(fileRef);
-            const meta = await getMetadata(fileRef);
-            this.uploadedUrls.push({ url, name: meta.name });
-            resolve(url);
-          } catch (err) {
-            reject(err);
-          }
-        }
-      );
-    });
+    try {
+      // ⛔️ Use non-resumable upload for faster performance
+      await uploadBytes(fileRef, watermarkedBlob ?? compressed);
+
+      // Get the download URL
+      const url = await getDownloadURL(fileRef);
+      const name = await getMetadata(fileRef);
+
+      // Track uploaded file
+      this.uploadedUrls.push({ url, name: name.name });
+
+      return url;
+    } catch (error) {
+      throw error;
+    }
   }
 
   // ---------------- Concurrency Runner ----------------
@@ -223,7 +230,7 @@ export class UploadImgBackgroundAiService {
           uploadedUrls: batchUrls,
           uploaded_by: this.user_id,
           event_id: eventId,
-          folder_id: folderId,
+          folder_id: +folderId,
           is_ai_upload: true
         },
         (res: any) => {
@@ -231,6 +238,58 @@ export class UploadImgBackgroundAiService {
           else reject(res.message);
         }
       );
+    });
+  }
+
+  async addWatermarkFromBlob(blob: Blob,transparencyValue:any): Promise<Blob | null> {
+    return new Promise(async (resolve) => {
+      const originalImage = await this.blobToImage(blob);
+      const watermarkImage = new Image();
+      watermarkImage.crossOrigin = 'anonymous';
+      watermarkImage.src = this.watermarkUrl;
+
+      watermarkImage.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(null);
+
+        // Draw original image
+        ctx.drawImage(originalImage, 0, 0);
+
+        const baseScale = 0.1;
+        let watermarkWidth = originalImage.width * baseScale;
+        let watermarkHeight = (watermarkWidth / watermarkImage.width) * watermarkImage.height;
+
+        // Clamp watermark size
+        watermarkWidth = Math.max(50, Math.min(watermarkWidth, 90));
+        watermarkHeight = Math.max(50, Math.min(watermarkHeight, 90));
+
+        const x = originalImage.width - watermarkWidth - 10;
+        const y = originalImage.height - watermarkHeight - 10;
+
+        ctx.globalAlpha = transparencyValue || 0.8; // Default to 0.8 if not provided
+        ctx.drawImage(watermarkImage, x, y, watermarkWidth, watermarkHeight);
+
+        console.log("GOHERE TRANSPARNY VALUE",transparencyValue);
+        
+
+
+        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.95);
+      };
+
+      watermarkImage.onerror = () => resolve(null);
+    });
+  }
+
+  private blobToImage(blob: Blob): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.onload = () => resolve(img);
+      img.onerror = err => reject(err);
     });
   }
 }

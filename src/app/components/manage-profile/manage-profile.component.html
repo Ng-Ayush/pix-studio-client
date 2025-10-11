@@ -306,8 +306,8 @@
         <!-- whatsapp-connect.component.html -->
         <div class="flex items-center justify-center bg-gray-50 relative">
             <div class="absolute p-2 cursor-pointer" style="top: 20px; right: 20px;" (click)="showWhatsappModal=false;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" (click)="showWhatsappModal=false;"
-                    viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg"
+                    (click)="showWhatsappModal=false;" viewBox="0 0 16 16">
                     <path
                         d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
                 </svg>
@@ -334,7 +334,8 @@
                         </div>
                     </ng-container>
                     <ng-template #qrCodeBlock>
-                        <img [src]="qrCode" alt="WhatsApp QR Code" class="w-[172px] h-[172px] rounded shadow-md" />
+                        <img [src]="qrCode" alt="WA: QR Code, close and repoen modal"
+                            class="w-[172px] h-[172px] rounded shadow-md" />
                     </ng-template>
                 </div>
             </div>
@@ -359,5 +360,34 @@
 
         </div> -->
 
+    </div>
+</div>
+
+<div *ngIf="disconnectModal"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent
+        class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': disconnectModal}">
+        <div class="p-6 flex flex-col items-center">
+            <div class="w-full max-w-[200px] mb-4">
+                <img src="../../../assets/disconnect.jpg" alt="Delete illustration" class="w-full h-auto" />
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Are you sure you want to disconnect?
+            </h2>
+
+        </div>
+
+        <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
+            <button (click)="this.disconnectModal= false;"
+                class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+                Cancel
+            </button>
+            <button (click)="disconnectWhatsApp()"
+                class="cursor-pointer px-8 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700 transition-colors duration-200">
+                Disconnect
+            </button>
+        </div>
     </div>
 </div>

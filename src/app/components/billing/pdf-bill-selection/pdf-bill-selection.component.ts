@@ -498,8 +498,8 @@ export class PdfBillSelectionComponent {
 
 
   async shareViaWhatsapp() {
-      this.alert.info("This feature is on development changes");
-    return;
+      // this.alert.info("This feature is on development changes");
+    // return;
     try { 
       const { data } :any = await this.downloadPDF(true);
       this.isLoading=true;
@@ -514,7 +514,7 @@ export class PdfBillSelectionComponent {
       this.alert.success('PDF sent to WhatsApp!');
     } catch (err) {
       this.isLoading=false;
-      this.alert.error('Failed to send PDF to WhatsApp.');
+      this.alert.error('Failed to send PDF to WhatsApp, please check your WhatsApp connection.',3000);
     }
   }
 

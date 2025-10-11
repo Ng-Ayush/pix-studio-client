@@ -37,6 +37,7 @@ export class ManageProfileComponent {
   syncing: boolean = false;
   isLoading: boolean = false;
   showWhatsappModal: boolean = false;
+  disconnectModal: boolean = false;
 
 
   constructor(private fb: FormBuilder,
@@ -68,7 +69,7 @@ export class ManageProfileComponent {
       this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
       setTimeout(() => {
         this.isLoading = false;
-      }, 3000);
+      }, 1000);
       console.log("QR CODE", this.qrCode);
     });
     this.socketService.onAuthenticated().subscribe(() => {
@@ -76,13 +77,13 @@ export class ManageProfileComponent {
       this.syncing = true;
       this.isConnected = !this.isConnected;
       this.qrCode = null;
-      this.showWhatsappModal= false;
+      this.showWhatsappModal = false;
     });
     this.socketService.onReady().subscribe(() => {
       this.ready = true;
       this.syncing = false;
       this.alert.success("Whatsapp is ready");
-      this.showWhatsappModal= false;
+      this.showWhatsappModal = false;
     });
     this.socketService.onDisconnected().subscribe(reason => {
       this.ready = false;
@@ -93,18 +94,28 @@ export class ManageProfileComponent {
   }
 
   connectWhatsapp() {
-    this.isLoading = true;
-    this.showWhatsappModal = true;
-    this.service.connectToWhatsApp(this.userData.id, (res: any) => {
-      if (res.status == 200 && !res.qr) {
-        this.isLoading = false;
-      } else if (res.status == 200 && res.qr) {
-        this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(res.qr)}`;
-        setTimeout(() => {
+    if (!this.isConnected) {
+      this.isLoading = true;
+      this.showWhatsappModal = true;
+      this.socketService.connect(this.userData.id);
+      this.service.connectToWhatsApp(this.userData.id, (res: any) => {
+        if (res.status == 200 && !res.qr) {
           this.isLoading = false;
-        }, 3000);
-      }
-    })
+        } else if (res.status == 200 && res.qr) {
+          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(res.qr)}`;
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 3000);
+        }
+      })
+    } else {
+      this.disconnectWhatsappModal();
+    }
+
+  }
+
+  disconnectWhatsappModal() {
+    this.disconnectModal = true;
   }
 
   getUserDataCurrentId() {
@@ -184,5 +195,20 @@ export class ManageProfileComponent {
     this.router.navigate(['/login']);
   }
 
+  disconnectWhatsApp() {
+    this.isLoading = true;
+    this.service.disconnectWhatsApp(this.userData.id, (res: any) => {
+      this.isLoading = false;
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.isConnected = false;
+        this.ready = false;
+        this.authenticated = false;
+        this.disconnectModal = false;
+      } else {
+        this.alert.error(res.message);
+      }
+    })
+  }
 
 }

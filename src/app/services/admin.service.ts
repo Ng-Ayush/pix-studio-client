@@ -167,4 +167,8 @@ export class AdminService extends BaseService {
   connectToWhatsApp(userId: any, callback: any) {
     return this.postData({}, this.httpUrls['connectToWhatsApp'] + "/" + userId, callback)
   }
+  
+  disconnectWhatsApp(userId: any, callback: any) {
+    return this.postData({}, this.httpUrls['disconnectWhatsApp']+ "/" + userId, callback);    
+  }
 }

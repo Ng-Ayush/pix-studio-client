@@ -50,6 +50,8 @@ export class AiPhotoSharingComponent {
   isLoading: boolean = false;
   activeTab: any = 'create';
   preview = { cover1: '', cover2: '' };
+  transparencyValue: any = null;
+  toggleWaterMark: boolean = false;
   constructor(
     private alert: AlertService,
     private router: Router,
@@ -136,7 +138,8 @@ export class AiPhotoSharingComponent {
         razorpay_payment_id: this.event_config?.payment_data?.razorpay_payment_id || '',
         razorpay_order_id: this.event_config?.payment_data?.razorpay_order_id || '',
         razorpay_signature: this.event_config?.payment_data?.razorpay_signature || '',
-        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 }, { url: this.event_config?.cover2 }])
+        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 }, { url: this.event_config?.cover2 }]),
+        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue })
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -153,7 +156,8 @@ export class AiPhotoSharingComponent {
         event_name: this.event_config.event_name,
         is_event_submitted: this.event_config.is_event_submitted,
         browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false,
-        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }])
+        ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }]),
+        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue })
       }
       console.log(params);
 
@@ -475,5 +479,16 @@ export class AiPhotoSharingComponent {
 
   showWarning() {
     this.alert.info("Please upgrade your plan to use this feature", 3000);
+  }
+
+  setWatermarkTransparency(value: any) {
+    this.transparencyValue = value;
+    this.event_config.watermark.transparency = value;
+  }
+
+  toggleWaterMarkEvent(event: any) {
+    this.toggleWaterMark = event.target.checked;
+    this.event_config.watermark.is_watermark = event.target.checked
+    if (!event.target.checked) this.transparencyValue = null;
   }
 }

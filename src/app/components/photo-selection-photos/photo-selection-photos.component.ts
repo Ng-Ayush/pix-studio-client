@@ -50,11 +50,11 @@ export class PhotoSelectionPhotosComponent {
   isLoading: boolean = false;
   userData: any = {};
   showLogOutModal: boolean = false;
+  waterMarkConfig:any={};
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
     private router: Router,
-    private imageCompress: NgxImageCompressService,
     private _service: CustomerService,
     private _pservice: PhotoSelectionService,
     private route: ActivatedRoute,
@@ -114,6 +114,8 @@ export class PhotoSelectionPhotosComponent {
     this.aiUploadService.user_id = this.user_id;
     this.aiUploadService.studio_name = this.studio_name;
 
+    this.aiUploadService.watermarkUrl = this.userData?.studio_icon;
+
   }
 
   getUploadedPhotosByFolderId() {
@@ -137,6 +139,9 @@ export class PhotoSelectionPhotosComponent {
         this.aiUploadService.eventName = this.eventName;
         this.aiUploadService.customerName = this.customerName;
         this.aiUploadService.folderName = this.folderName;
+
+        this.waterMarkConfig = res.data?.watermark ? JSON.parse(res.data?.watermark) : { is_watermark: false, transparency: null };
+        this.aiUploadService.waterMarkConfig = this.waterMarkConfig;
 
         this.isEventSubmitted = res.data.is_event_submitted;
         setTimeout(() => this.loader.hide(), 500);

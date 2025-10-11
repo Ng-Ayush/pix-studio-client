@@ -27,6 +27,7 @@ export class BaseService {
     'getUsersByCurrentId':'/api/mystudio/manage-profile/getUsersByCurrentId',
     'updateProfile':'/api/mystudio/manage-profile/updateProfile',
     'connectToWhatsApp':'/api/mystudio/manage-profile/connectToWhatsApp',
+     'disconnectWhatsApp':'/api/mystudio/manage-profile/disconnectWhatsApp',
 
     //Event
     'createEvent': '/api/mystudio/photo-selection/createEvent',

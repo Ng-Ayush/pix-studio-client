@@ -10,12 +10,33 @@ export class SocketService {
   socket!: Socket;
   qrCodeString: string | null = null;
   isReady = false;
-  userId = 'user123'; // Unique per logged-in user
 
   connect(adminId: any) {
-    this.socket = io(environment.apiUrl); // Connect to master worker port
-    console.log("CALELDHERE", adminId);
+    // enable reconnection
+    this.socket = io(environment.apiUrl, {
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 2000,
+      transports: ['websocket']
+    });
+
+    console.log("CALLED HERE", adminId);
+
+    // Register user on first connect
     this.socket.emit('register', adminId);
+
+    // Handle reconnect automatically
+    this.socket.on('connect', () => {
+      console.log("✅ Socket connected again:", this.socket.id);
+      if (adminId) {
+        this.socket.emit('register', adminId);
+        console.log("📡 Re-registered after reconnect:", adminId);
+      }
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.warn("⚠️ Socket disconnected:", reason);
+    });
   }
 
   onQR(): Observable<string> {
@@ -31,6 +52,7 @@ export class SocketService {
   onAuthenticated(): Observable<void> {
     return new Observable(observer => {
       this.socket.on('authenticated', () => {
+        console.log("GOTEHRE authenticated ",);
         observer.next();
       });
     });
@@ -39,6 +61,7 @@ export class SocketService {
   onReady(): Observable<void> {
     return new Observable(observer => {
       this.socket.on('ready', () => {
+        console.log("GOTEHRE ready ",);
         observer.next();
       });
     });
@@ -47,6 +70,7 @@ export class SocketService {
   onDisconnected(): Observable<void> {
     return new Observable(observer => {
       this.socket.on('disconnected', () => {
+        console.log("GOTEHRE disconnected ");
         observer.next();
       });
     });
