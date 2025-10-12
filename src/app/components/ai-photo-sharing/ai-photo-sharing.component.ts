@@ -30,7 +30,7 @@ export class AiPhotoSharingComponent {
   photoQualities = ['Basic', 'Standard', 'High'];
   selectedQuality = 'Basic';
   isModalOpen: boolean = false;
-  event_config: any = {};
+  event_config: any = { watermark: {} };
   eventList: any = [];
   isEdit: boolean = false;
   deleteModal: boolean = false;
@@ -460,6 +460,7 @@ export class AiPhotoSharingComponent {
 
   async onImageUpload(event: Event, type: 'cover1' | 'cover2') {
     console.log(323);
+    this.isLoading = true;
 
     const input: any = event.target as HTMLInputElement;
     if (!input.files?.length) return;
@@ -467,7 +468,6 @@ export class AiPhotoSharingComponent {
     const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name}_${this.userData.id}/${type}`);
     const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
     const uploadTask = uploadBytesResumable(fileRef, blob);
-    this.isLoading = true;
 
     uploadTask.then(async () => {
       const url = await getDownloadURL(fileRef);
@@ -489,6 +489,9 @@ export class AiPhotoSharingComponent {
   toggleWaterMarkEvent(event: any) {
     this.toggleWaterMark = event.target.checked;
     this.event_config.watermark.is_watermark = event.target.checked
-    if (!event.target.checked) this.transparencyValue = null;
+    if (!event.target.checked) {
+      this.transparencyValue = null;
+      this.event_config.watermark.transparency = null;
+    }
   }
 }
