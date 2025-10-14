@@ -515,10 +515,15 @@ export class NewBillComponent {
 
   togglePaymentModal() {
     this.showAdvancePaymentModal = true;
+    this.advancePaymentConfig = {};
   }
 
   saveAdvancePayment() {
     console.log(this.invoiceConfig);
+    if(+this.advancePaymentConfig.amount <= 0 || isNaN(+this.advancePaymentConfig.amount)){
+      this.alert.error('Please enter valid amount');
+      return;
+    }
 
     const params: any = {
       invoice_id: this.invoiceConfig.invoice_id,
@@ -628,6 +633,12 @@ export class NewBillComponent {
     this.getAllInvoiceItems();
     console.log(2323);
 
+  }
+
+  getAmountInWords(amount: any) {
+    if(!amount || amount <= 0) return '';
+    const words = this.commonService.convertToRupeesInWords(+amount);
+    return words;
   }
 
 }

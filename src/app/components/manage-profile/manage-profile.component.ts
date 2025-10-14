@@ -38,7 +38,7 @@ export class ManageProfileComponent {
   isLoading: boolean = false;
   showWhatsappModal: boolean = false;
   disconnectModal: boolean = false;
-
+  modalTimeoutId: any = '';
 
   constructor(private fb: FormBuilder,
     private service: AdminService,
@@ -97,6 +97,14 @@ export class ManageProfileComponent {
     if (!this.isConnected) {
       this.isLoading = true;
       this.showWhatsappModal = true;
+      if (this.modalTimeoutId) {
+        clearTimeout(this.modalTimeoutId);
+      }
+      this.modalTimeoutId = setTimeout(() => {
+        this.isLoading = false;
+        this.showWhatsappModal = false;
+        this.modalTimeoutId = null;
+      }, 20000);
       this.socketService.connect(this.userData.id);
       this.service.connectToWhatsApp(this.userData.id, (res: any) => {
         if (res.status == 200 && !res.qr) {

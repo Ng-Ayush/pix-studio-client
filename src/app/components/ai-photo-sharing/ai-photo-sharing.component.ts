@@ -49,7 +49,7 @@ export class AiPhotoSharingComponent {
   showLogOutModal: boolean = false;
   isLoading: boolean = false;
   activeTab: any = 'create';
-  preview = { cover1: '', cover2: '' };
+  preview:any = { cover1: '', cover2: '' };
   transparencyValue: any = null;
   toggleWaterMark: boolean = false;
   constructor(
@@ -139,7 +139,8 @@ export class AiPhotoSharingComponent {
         razorpay_order_id: this.event_config?.payment_data?.razorpay_order_id || '',
         razorpay_signature: this.event_config?.payment_data?.razorpay_signature || '',
         ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 }, { url: this.event_config?.cover2 }]),
-        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue })
+        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
+        youtube_cover_url: this.event_config?.youtube_cover_url || '',
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -157,7 +158,8 @@ export class AiPhotoSharingComponent {
         is_event_submitted: this.event_config.is_event_submitted,
         browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false,
         ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }]),
-        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue })
+        watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
+        youtube_cover_url: this.event_config?.youtube_cover_url || '',
       }
       console.log(params);
 
@@ -177,15 +179,14 @@ export class AiPhotoSharingComponent {
 
   openModal() {
     this.isModalOpen = true;
-    // this.event_config.customer_id = '';
-    // this.event_config.event_name = '';
     console.log(this.event_config);
-
-
     this.activeTab = 'create';
     this.selectedParty = '';
     this.searchQuery = '';
     this.isEdit = false;
+    this.event_config.watermark = { is_watermark: false, transparency: null };
+    this.customerConfig = {};
+    this.preview = {};
   }
 
   selectQuality(quality: string) {
@@ -353,7 +354,7 @@ export class AiPhotoSharingComponent {
     const query = this.searchQuery.toLowerCase();
     this.filteredCustomer = this.customers.filter((item: any) =>
       item.name
-        .toLowerCase().includes(query)
+        .toLowerCase().includes(query) && this.filteredEvents.every((event: any) => event.customer_id != item.id)
     );
   }
 
@@ -466,7 +467,7 @@ export class AiPhotoSharingComponent {
     const input: any = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const reader = new FileReader();
-    const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name}_${this.userData.id}/${type}`);
+    const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name || 'event'}_${this.userData.id}/${type}`);
     const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
     const uploadTask = uploadBytes(fileRef, blob);
 

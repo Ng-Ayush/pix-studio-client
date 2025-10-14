@@ -235,7 +235,7 @@
         </div>
         <ng-container *ngIf="activeTab == 'create' else cover">
 
-            <div class="flex flex-col flex-wrap gap-4 mb-6">
+            <div class="flex flex-col flex-wrap gap-4 mb-3">
                 <div class="relative flex-1 min-w-[220px]">
                     <input type="text" autocomplete="off"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
@@ -283,9 +283,8 @@
                     <span class="block text-xs text-gray-400 mt-1">Select the type of event</span>
                 </div> -->
             </div>
-            <div class="py-3">
+            <!-- <div class="py-3">
                 <span class="status-pill flex items-center gap-2">
-                    <!-- From Uiverse.io by Galahhad -->
                     <label class="switch">
                         <input (change)="showWarning()" type="checkbox">
                         <div class="slider">
@@ -314,16 +313,13 @@
                         </div>
                     </label> <span class="inline-block text-sm text-gray-700">Pre Publish / Publish Letter</span>
                 </span>
-                <!-- <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" (change)="showWarning()" class="mr-2 accent-blue-600" />
-                    Pre Publish / Publish Letter
-                </label> -->
-            </div>
+            </div> -->
             <div class="py-3">
                 <span class="status-pill flex items-center mb-2 gap-2">
                     <!-- From Uiverse.io by Galahhad -->
                     <label class="switch">
-                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark" type="checkbox">
+                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark"
+                            type="checkbox">
                         <div class="slider">
                             <div class="circle">
                                 <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
@@ -355,17 +351,26 @@
                     <span class="font-medium mr-2">Transparency:</span>
                     <div class="flex gap-4">
                         <label class="inline-flex items-center">
-                            <input type="radio" name="transparency" [checked]="event_config?.watermark?.transparency == 1" [disabled]="!event_config?.watermark?.is_watermark" (change)="setWatermarkTransparency(1)"
+                            <input type="radio" name="transparency"
+                                [checked]="event_config?.watermark?.transparency == 1"
+                                [disabled]="!event_config?.watermark?.is_watermark"
+                                (change)="setWatermarkTransparency(1)"
                                 class="m-1 accent-blue-600 focus:ring focus:ring-blue-300" />
                             <span class="ml-1">100%</span>
                         </label>
                         <label class="inline-flex items-center">
-                            <input type="radio" name="transparency" [checked]="event_config?.watermark?.transparency == 0.8" [disabled]="!event_config?.watermark?.is_watermark"  (change)="setWatermarkTransparency(0.8)"
+                            <input type="radio" name="transparency"
+                                [checked]="event_config?.watermark?.transparency == 0.8"
+                                [disabled]="!event_config?.watermark?.is_watermark"
+                                (change)="setWatermarkTransparency(0.8)"
                                 class="m-1 accent-blue-600 focus:ring focus:ring-blue-300" />
                             <span class="ml-1">80%</span>
                         </label>
                         <label class="inline-flex items-center">
-                            <input type="radio" name="transparency" [checked]="event_config?.watermark?.transparency == 0.5" [disabled]="!event_config?.watermark?.is_watermark"  (change)="setWatermarkTransparency(0.5)"
+                            <input type="radio" name="transparency"
+                                [checked]="event_config?.watermark?.transparency == 0.5"
+                                [disabled]="!event_config?.watermark?.is_watermark"
+                                (change)="setWatermarkTransparency(0.5)"
                                 class="m-1 accent-blue-600 focus:ring focus:ring-blue-300" />
                             <span class="ml-1">50%</span>
                         </label>
@@ -373,7 +378,7 @@
                 </label>
 
             </div>
-            <div class="mb-3 py-3">
+            <div class="py-3">
                 <span class="status-pill flex items-center gap-2">
                     <!-- From Uiverse.io by Galahhad -->
                     <label class="switch">
@@ -405,13 +410,13 @@
                         </div>
                     </label> <span class="inline-block text-sm text-gray-700">Browse and download photos ?</span>
                 </span>
-                <!-- <label class="flex items-center text-gray-700 font-medium cursor-pointer">
-                    <input type="checkbox" [(ngModel)]="event_config.browse_all_photo_ai"
-                        class="mr-2 accent-blue-600" />
-                    Browse and download photos ?
-                </label> -->
                 <span class="block text-sm text-gray-400 mt-1">Customer will be able to access and download all
                     photos</span>
+            </div>
+            <div class="flex-1 min-w-[220px] mb-3">
+                <input id="event-name" type="text" placeholder="Enter youtube url" [(ngModel)]="event_config.youtube_cover_url"
+                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                <span class="block text-xs text-gray-400 mt-1">Optional. This video will be played at customer cover image.</span>
             </div>
         </ng-container>
         <ng-template #cover>
@@ -425,10 +430,9 @@
                         <input type="file" accept="image/*"
                             class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
                             (change)="onImageUpload($event, 'cover1')">
-                        <div
-                            class="border-2 border-dashed border-gray-300 rounded-md bg-white flex items-center justify-center h-44">
-                            <img *ngIf="preview.cover1" [src]="preview.cover1"
-                                class="max-h-40 max-w-full object-contain" alt="Cover preview">
+                        <div class="rounded-md bg-white flex items-center justify-center h-48">
+                            <img *ngIf="preview.cover1" [src]="preview.cover1" class="max-h-48" alt="Cover preview"
+                                style="flex:1 1 0;">
                             <span *ngIf="!preview.cover1" class="text-gray-400 text-sm">No image selected</span>
                         </div>
                     </label>
@@ -440,10 +444,9 @@
                         <input type="file" accept="image/*"
                             class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
                             (change)="onImageUpload($event, 'cover2')">
-                        <div
-                            class="border-2 border-dashed border-gray-300 rounded-md bg-white flex items-center justify-center h-44">
-                            <img *ngIf="preview.cover2" [src]="preview.cover2"
-                                class="max-h-40 max-w-full object-contain" alt="Mobile preview">
+                        <div class="rounded-md bg-white flex items-center justify-center h-48">
+                            <img *ngIf="preview.cover2" [src]="preview.cover2" class="max-h-48" alt="Mobile preview"
+                                style="flex:1 1 0;">
                             <span *ngIf="!preview.cover2" class="text-gray-400 text-sm">No image selected</span>
                         </div>
                     </label>

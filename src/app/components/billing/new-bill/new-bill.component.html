@@ -630,6 +630,9 @@
                 <span *ngIf="advancePaymentConfig.amount>invoiceConfig?.balance_left"
                     class="text-red-500 text-sm">Cannot pay more than balance left</span>
             </div>
+            <div class="text-xs text-indigo-800" *ngIf="advancePaymentConfig.amount">
+                ({{getAmountInWords(advancePaymentConfig.amount)}})
+            </div>
             <div>
                 <label for="paymentType" class="block text-xs font-medium text-gray-700 mb-1">Payment
                     Type</label>
