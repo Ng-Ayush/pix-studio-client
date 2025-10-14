@@ -175,7 +175,8 @@
             <img [src]="userData?.studio_icon" alt="Logo" class="img-fluid rounded"
                 style="max-width: 120px; height: 106px;">
             <span class="d-flex flex-column gap-1 max-w-md text-wrap">
-                <span class="text-primary font-semibold text-lg sm:text-xl  text-uppercase" style=" font-family: 'Viga', sans-serif;">{{userData?.studio_name}}</span>
+                <span class="text-primary font-semibold text-lg sm:text-xl  text-uppercase"
+                    style=" font-family: 'Viga', sans-serif;">{{userData?.studio_name}}</span>
                 <span class="text-primary font-semibold text-sm">{{userData?.address}}</span>
                 <span class="text-primary font-semibold text-sm">{{userData?.phone_number}}</span>
             </span>
@@ -211,8 +212,9 @@
                         </div>
                     </div>
                     <!-- <p class="fs-5 mb-5 slideInDown">You text here</p> -->
-                    <a href="javascript:void(0);"   (click)="openCamera()"
-                        class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown flex items-center"><i class="fa fa-camera" style="font-size:24px"></i>Open Camera</a>
+                    <a href="javascript:void(0);" (click)="openCamera()"
+                        class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown flex items-center"><i
+                            class="fa fa-camera" style="font-size:24px"></i>Open Camera</a>
                 </div>
             </div>
         </div>
@@ -336,11 +338,15 @@
             </h1>
         </a>
         <div class="d-flex justify-content-center mb-2 flex-wrap gap-2">
-            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.instagram_url"><i class="fab fa-instagram"></i></a>
-            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.facebook_url"><i class="fab fa-facebook-f"></i></a>
-            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.youtube_url"><i class="fab fa-youtube"></i></a>
+            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.instagram_url"><i
+                    class="fab fa-instagram"></i></a>
+            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.facebook_url"><i
+                    class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-lg-square btn-outline-primary border-2 m-1" [href]="userData?.youtube_url"><i
+                    class="fab fa-youtube"></i></a>
         </div>
-        <p class="mb-0">&copy; <a class="border-bottom" href="javascript:void(0);">{{userData?.studio_name}}</a>, All Right Reserved.</p>
+        <p class="mb-0">&copy; <a class="border-bottom" href="javascript:void(0);">{{userData?.studio_name}}</a>, All
+            Right Reserved.</p>
     </div>
 </div>
 <a href="javascript:void(0);" (click)="scrollTop()" class="btn btn-outline-primary border-2 btn-lg-square back-to-top">
@@ -358,12 +364,21 @@
         [ngClass]="{'modal-fade-in': videoModal}">
         <div class="p-6 flex flex-col items-center">
             <div class="w-full flex flex-row gap-2 justify-center">
-                <video #video id="video" width="500" height="500" autoplay muted></video>
-                <canvas #canvas id="canvas" width="320" height="240" style="display:none"></canvas>
+                <div *ngIf="isMobile; else desktopUI">
+                    <input #mobileCamInput type="file" accept="image/*" capture hidden
+                        (change)="onMobilePhotoCapture($event)" />
+                </div>
+                <ng-template #desktopUI>
+                    <video #video width="500" height="500" autoplay muted></video>
+                    <br />
+                    <canvas #canvas width="320" height="240" style="display: none"></canvas>
+                </ng-template>
+
             </div>
 
-            <div class="p-4 text-sm text-blue-800 rounded bg-blue-50" role="alert">
-                <span class="font-medium">Trail version limit: </span> Please upgrade to premium to get better accuracy image.
+            <div class="p-4 text-sm text-blue-800 rounded bg-blue-50 mt-2" role="alert">
+                <span class="font-medium">Trail version limit: </span> Please upgrade to premium to get better accuracy
+                image.
             </div>
 
             <div class="text-gray-800 text-start mt-4 w-full" *ngIf="!userData?.isFaceDescriptorReady">
@@ -374,7 +389,7 @@
         </div>
 
         <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-            <button (click)="capturePhoto()"
+            <button (click)="capturePhoto()" *ngIf="!isMobile"
                 class="cursor-pointer px-8 py-2 rounded-full bg-pink-600 text-white font-medium hover:bg-pink-700 transition-colors duration-200">Capture</button>
             <button (click)="onCancel()"
                 class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">

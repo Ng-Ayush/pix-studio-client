@@ -49,6 +49,10 @@ export class AiUploadComponent {
   intervalId?: any;
   previewCover: any = [];
 
+  @ViewChild('mobileCamInput', { static: false }) mobileCamInputRef!: ElementRef<HTMLInputElement>;
+
+  isMobile = false;
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -57,6 +61,7 @@ export class AiUploadComponent {
     private service: AuthService,
     private http: HttpClient
   ) {
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.eventId = this.userData?.event_id;
@@ -121,6 +126,16 @@ export class AiUploadComponent {
     // }
   }
 
+  onMobilePhotoCapture(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return this.alert.error('No image captured');
+    }
+
+    this.sendToServer(file); // Use same flow as desktop
+  }
 
 
   ngAfterViewInit() {
@@ -138,21 +153,27 @@ export class AiUploadComponent {
   }
 
   async openCamera() {
-    // this.alert.info("Please upgrade your plan to use this feature", 4000);
-    // return;
     this.videoModal = true;
+
     setTimeout(async () => {
-      const video = this.videoRef.nativeElement;
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = this.videoStream;
-        await video.play();
+      if (this.isMobile) {
+        // ✅ One input triggers camera with switching option
+        this.mobileCamInputRef?.nativeElement.click();
       } else {
-        alert('Camera API not supported');
+        // ✅ Desktop: start webcam stream
+        try {
+          const video = this.videoRef.nativeElement;
+          this.videoStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' } // or omit facingMode to allow default
+          });
+          video.srcObject = this.videoStream;
+          await video.play();
+        } catch (err) {
+          alert('Camera access denied or not supported.');
+        }
       }
     }, 0);
   }
-
   // async capturePhoto() {
   //   if (!this.videoStream) return alert('Camera not opened');
   //   try {
@@ -211,71 +232,56 @@ export class AiUploadComponent {
       const context = canvas.getContext('2d')!;
       const scaleFactor = 2;
 
-      // Set canvas resolution
+      // Resize canvas to match video dimensions
       const width = video.videoWidth * scaleFactor;
       const height = video.videoHeight * scaleFactor;
       canvas.width = width;
       canvas.height = height;
 
-      // Draw video frame → canvas
       context.drawImage(video, 0, 0, width, height);
 
-      // Convert canvas → Blob directly (more efficient than dataURL)
-      const blob: Blob = await new Promise((resolve: any) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+      // Convert canvas to Blob (JPEG, quality 0.9)
+      const blob: Blob = await new Promise((resolve) => {
+        canvas.toBlob((b) => resolve(b!), 'image/jpeg', 0.9);
+      });
 
       if (!blob) {
         return this.alert.error('Failed to capture image');
       }
 
-      // const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/testing_ai%2Fa.jpeg?alt=media&token=1faf9745-0ee2-42fc-965e-37fdac62d8a1"
-
-      // const response = await fetch(tempUrl);
-
-      // if (!response.ok) {
-      //   throw new Error('Failed to fetch image from URL');
-      // }
-
-      // // // Convert the image to a Blob
-      // const imageBlob = await response.blob();
-
-
-      // Build FormData
-      const formData = new FormData();
-      formData.append('input_img', blob, 'captured_image.jpeg');
-      formData.append('wedding_folder_id', this.userData?.isFaceDescriptorReady || 'unknown');
-
-      this.isLoading = true;
-
-      // POST to backend
-      this.http.post(environment.apiUrl + '/api/mystudio/photo-selection/find-person', formData)
-        .subscribe({
-          next: (res: any) => {
-            this.alert.success('Face matched successfully!');
-            this.isLoading = false;
-            this.matchedImages = res.match_list || [];
-            this.videoModal = false;
-            this.activeTab = 'matched';
-            this.scrollTo('explore');
-            this.isLoading = false;
-            this.onCancel();
-          },
-          error: (err) => {
-            this.alert.error('Failed to process face match');
-            this.isLoading = false;
-            // this.matchedImages = [
-            //   "http://3.225.210.139:8003/uploads/ayush/output_1.JPG"
-            // ];
-
-            this.videoModal = false;
-            // this.activeTab = 'matched';
-            // this.scrollTo('explore');
-            this.onCancel();
-          }
-        });
+      this.sendToServer(blob);
     } catch (error) {
-      this.isLoading = false;
       this.alert.error('Error capturing image');
+      this.isLoading = false;
     }
+  }
+
+  // ✅ Unified method to send blob/file to backend
+  sendToServer(blob: Blob) {
+    const formData = new FormData();
+    formData.append('input_img', blob, 'captured_image.jpeg');
+    formData.append('wedding_folder_id', this.userData?.isFaceDescriptorReady || 'unknown');
+
+    this.isLoading = true;
+
+    this.http.post(environment.apiUrl + '/api/mystudio/photo-selection/find-person', formData)
+      .subscribe({
+        next: (res: any) => {
+          this.alert.success('Face matched successfully!');
+          this.isLoading = false;
+          this.matchedImages = res.match_list || [];
+          this.videoModal = false;
+          this.activeTab = 'matched';
+          this.scrollTo('explore');
+          this.onCancel();
+        },
+        error: (err) => {
+          this.alert.error('Failed to process face match');
+          this.isLoading = false;
+          this.videoModal = false;
+          this.onCancel();
+        }
+      });
   }
 
   dataURLtoBlob(dataURL: string): Blob {
