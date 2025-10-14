@@ -35,7 +35,9 @@ export class FaceDescReadinessComponent {
     this.http.get(environment.apiUrl+`/api/mystudio/photo-selection/checkEventReady/${this.eventId}`)
       .subscribe(
         (res:any) => {
-          this.isReady = res.isFaceDescriptorReady;
+          this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
+          console.log("GOT VALUE HERE isFaceDescriptorReady",res.isFaceDescriptorReady);
+          
           if (this.isReady) {
             clearInterval(this.intervalId);
           }

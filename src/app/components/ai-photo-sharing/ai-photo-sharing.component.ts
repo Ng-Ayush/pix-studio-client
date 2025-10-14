@@ -10,7 +10,7 @@ import { LoaderService } from '../../shared/loader.service';
 import { AdminService } from '../../services/admin.service';
 import { environment } from '../../../environments/environment';
 import { FaceDescReadinessComponent } from '../shared/face-desc-readiness/face-desc-readiness.component';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { ImageCompressionService } from '../../services/image-compression.service';
 
 declare var Razorpay: any;
@@ -200,6 +200,7 @@ export class AiPhotoSharingComponent {
     this.preview['cover1'] = event.ai_cover_images[0]?.url;
     this.preview['cover2'] = event.ai_cover_images[1]?.url;
     this.selectParty({ name: this.event_config.customer_name, id: this.event_config.customer_id });
+    this.event_config.watermark = event.watermark ? JSON.parse(event.watermark) : { is_watermark: false, transparency: null };
     console.log(event);
   }
 
@@ -467,7 +468,7 @@ export class AiPhotoSharingComponent {
     const reader = new FileReader();
     const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name}_${this.userData.id}/${type}`);
     const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
-    const uploadTask = uploadBytesResumable(fileRef, blob);
+    const uploadTask = uploadBytes(fileRef, blob);
 
     uploadTask.then(async () => {
       const url = await getDownloadURL(fileRef);

@@ -50,7 +50,7 @@ export class UploadImgBackgroundAiService {
   private isProcessingQueue = false;
 
   watermarkUrl: any = '';
-  waterMarkConfig:any= {};
+  waterMarkConfig: any = {};
 
 
 
@@ -144,8 +144,10 @@ export class UploadImgBackgroundAiService {
           currentBatchUrls.push({ url, name: file.name });
         });
 
-        await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
       }
+
+      await this.saveAllToBackend(currentFolderId, eventId); //
 
       this.isUploading$.next(false);
     }
@@ -164,9 +166,9 @@ export class UploadImgBackgroundAiService {
     folderName: string
   ): Promise<string> {
     const compressed: any = await this.imageCompressService.compress3MBToTarget(file);
-    let watermarkedBlob:any;
-    if(this.waterMarkConfig?.is_watermark){
-      watermarkedBlob = await this.addWatermarkFromBlob(compressed,this.waterMarkConfig?.transparency);
+    let watermarkedBlob: any;
+    if (this.waterMarkConfig?.is_watermark) {
+      watermarkedBlob = await this.addWatermarkFromBlob(compressed, this.waterMarkConfig?.transparency);
     }
     console.log("GOT HERE WATERM", watermarkedBlob, compressed);
     const path = `ai_photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
@@ -241,7 +243,7 @@ export class UploadImgBackgroundAiService {
     });
   }
 
-  async addWatermarkFromBlob(blob: Blob,transparencyValue:any): Promise<Blob | null> {
+  async addWatermarkFromBlob(blob: Blob, transparencyValue: any): Promise<Blob | null> {
     return new Promise(async (resolve) => {
       const originalImage = await this.blobToImage(blob);
       const watermarkImage = new Image();
@@ -273,8 +275,8 @@ export class UploadImgBackgroundAiService {
         ctx.globalAlpha = transparencyValue || 0.8; // Default to 0.8 if not provided
         ctx.drawImage(watermarkImage, x, y, watermarkWidth, watermarkHeight);
 
-        console.log("GOHERE TRANSPARNY VALUE",transparencyValue);
-        
+        console.log("GOHERE TRANSPARNY VALUE", transparencyValue);
+
 
 
         canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.95);
@@ -292,4 +294,35 @@ export class UploadImgBackgroundAiService {
       img.onerror = err => reject(err);
     });
   }
+
+  async saveAllToBackend(folderId: any, eventId: any) {
+    if (!this.uploadedUrls.length) return;
+
+    // 👇 Optional: show loader or info message
+    this.alert.info("Finalizing upload... Sending all URLs to server.", 5000);
+
+    return new Promise<void>((resolve, reject) => {
+      this._pservice.uploadPhotos(
+        {
+          uploadedUrls: this.uploadedUrls,  // send all at once
+          uploaded_by: this.user_id,
+          event_id: eventId,
+          folder_id: +folderId,
+          is_ai_upload: true
+        },
+        (res: any) => {
+          if (res.status === 200) {
+            this.alert.success("All photos uploaded successfully!", 5000);
+
+            // ✅ Clear after successful upload
+            this.uploadedUrls = [];
+            resolve();
+          } else {
+            reject(res.message);
+          }
+        }
+      );
+    });
+  }
+  
 }

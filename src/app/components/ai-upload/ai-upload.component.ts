@@ -107,18 +107,18 @@ export class AiUploadComponent {
   }
 
   async ngOnInit() {
-    try {
-      
-      // Load face-api.js models (adjust path to models folder)
-      const MODEL_URL = '../../../assets/models';
-      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-      await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-    } catch (error) {
-      console.log("Got erro loading modles",error);
-      
-    }
+    // try {
+
+    //   // Load face-api.js models (adjust path to models folder)
+    //   const MODEL_URL = '../../../assets/models';
+    //   await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    //   await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+    //   await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+    //   await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    // } catch (error) {
+    //   console.log("Got erro loading modles", error);
+
+    // }
   }
 
 
@@ -153,53 +153,139 @@ export class AiUploadComponent {
     }, 0);
   }
 
+  // async capturePhoto() {
+  //   if (!this.videoStream) return alert('Camera not opened');
+  //   try {
+  //     const video = this.videoRef.nativeElement;
+  //     const canvas = this.canvasRef.nativeElement;
+  //     const context = canvas.getContext('2d')!;
+  //     const scaleFactor = 2;
+  //     const width = video.videoWidth * scaleFactor;
+  //     const height = video.videoHeight * scaleFactor;
+
+  //     // Resize canvas to higher resolution
+  //     canvas.width = width;
+  //     canvas.height = height;
+
+  //     // Draw video frame scaled to larger size
+  //     context.drawImage(video, 0, 0, width, height);
+
+  //     const capturedDataUrl = canvas.toDataURL('image/png');
+  //     if (!!this.userData?.isFaceDescriptorReady) {
+  //       this.isLoading = true;
+  //       // Extract face descriptor of captured image
+  //       const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/DSC_4400.JPG?alt=media&token=bb2550d7-c1fd-42a6-a152-cd940acbe78c"
+  //       const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
+  //       if (!capturedDescriptor) {
+  //         this.isLoading = false;
+  //         return this.alert.error('No face detected in captured photo');
+  //       }
+
+  //       // Filter matches from photosArray
+  //       this.matchedImages = await this.filterMatches(capturedDescriptor, this.photos);
+  //       console.log("MATCHED", this.matchedImages);
+  //       this.videoModal = false;
+  //       this.activeTab = 'matched';
+  //       this.scrollTo('explore');
+  //       this.alert.success("Successfully Found Photos");
+  //       this.isLoading = false;
+  //       this.onCancel();
+  //     } else {
+  //       this.isLoading = false;
+  //       this.videoModal = false;
+  //       this.onCancel();
+  //       this.alert.info("Your face has been captured, please come back after sometime");
+  //     }
+  //   } catch (error) {
+  //     this.isLoading = false;
+  //   }
+
+  // }
+
   async capturePhoto() {
-    if (!this.videoStream) return alert('Camera not opened');
+    if (!this.videoStream) return this.alert.error('Camera not opened');
+
     try {
-      const video = this.videoRef.nativeElement;
-      const canvas = this.canvasRef.nativeElement;
+      const video = this.videoRef.nativeElement as HTMLVideoElement;
+      const canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
       const context = canvas.getContext('2d')!;
       const scaleFactor = 2;
+
+      // Set canvas resolution
       const width = video.videoWidth * scaleFactor;
       const height = video.videoHeight * scaleFactor;
-
-      // Resize canvas to higher resolution
       canvas.width = width;
       canvas.height = height;
 
-      // Draw video frame scaled to larger size
+      // Draw video frame → canvas
       context.drawImage(video, 0, 0, width, height);
 
-      const capturedDataUrl = canvas.toDataURL('image/png');
-      if (!!this.userData?.isFaceDescriptorReady) {
-        this.isLoading = true;
-        // Extract face descriptor of captured image
-        const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/DSC_4400.JPG?alt=media&token=bb2550d7-c1fd-42a6-a152-cd940acbe78c"
-        const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
-        if (!capturedDescriptor) {
-          this.isLoading = false;
-          return this.alert.error('No face detected in captured photo');
-        }
+      // Convert canvas → Blob directly (more efficient than dataURL)
+      const blob: Blob = await new Promise((resolve: any) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
 
-        // Filter matches from photosArray
-        this.matchedImages = await this.filterMatches(capturedDescriptor, this.photos);
-        console.log("MATCHED", this.matchedImages);
-        this.videoModal = false;
-        this.activeTab = 'matched';
-        this.scrollTo('explore');
-        this.alert.success("Successfully Found Photos");
-        this.isLoading = false;
-        this.onCancel();
-      } else {
-        this.isLoading = false;
-        this.videoModal = false;
-        this.onCancel();
-        this.alert.info("Your face has been captured, please come back after sometime");
+      if (!blob) {
+        return this.alert.error('Failed to capture image');
       }
+
+      // const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/testing_ai%2Fa.jpeg?alt=media&token=1faf9745-0ee2-42fc-965e-37fdac62d8a1"
+
+      // const response = await fetch(tempUrl);
+
+      // if (!response.ok) {
+      //   throw new Error('Failed to fetch image from URL');
+      // }
+
+      // // // Convert the image to a Blob
+      // const imageBlob = await response.blob();
+
+
+      // Build FormData
+      const formData = new FormData();
+      formData.append('input_img', blob, 'captured_image.jpeg');
+      formData.append('wedding_folder_id', this.userData?.isFaceDescriptorReady || 'unknown');
+
+      this.isLoading = true;
+
+      // POST to backend
+      this.http.post(environment.apiUrl + '/api/mystudio/photo-selection/find-person', formData)
+        .subscribe({
+          next: (res: any) => {
+            this.alert.success('Face matched successfully!');
+            this.isLoading = false;
+            this.matchedImages = res.match_list || [];
+            this.videoModal = false;
+            this.activeTab = 'matched';
+            this.scrollTo('explore');
+            this.isLoading = false;
+            this.onCancel();
+          },
+          error: (err) => {
+            this.alert.error('Failed to process face match');
+            this.isLoading = false;
+            // this.matchedImages = [
+            //   "http://3.225.210.139:8003/uploads/ayush/output_1.JPG"
+            // ];
+
+            this.videoModal = false;
+            // this.activeTab = 'matched';
+            // this.scrollTo('explore');
+            this.onCancel();
+          }
+        });
     } catch (error) {
       this.isLoading = false;
+      this.alert.error('Error capturing image');
     }
+  }
 
+  dataURLtoBlob(dataURL: string): Blob {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], { type: mime });
   }
 
   async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
@@ -258,16 +344,16 @@ export class AiUploadComponent {
     }
   }
 
-  dataURLtoBlob(dataURL: string) {
-    const byteString = atob(dataURL.split(',')[1]);
-    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([arrayBuffer], { type: mimeString });
-  }
+  // dataURLtoBlob(dataURL: string) {
+  //   const byteString = atob(dataURL.split(',')[1]);
+  //   const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+  //   const arrayBuffer = new ArrayBuffer(byteString.length);
+  //   const intArray = new Uint8Array(arrayBuffer);
+  //   for (let i = 0; i < byteString.length; i++) {
+  //     intArray[i] = byteString.charCodeAt(i);
+  //   }
+  //   return new Blob([arrayBuffer], { type: mimeString });
+  // }
 
 
   sendOtp() {

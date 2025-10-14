@@ -288,7 +288,7 @@
                     <ng-container *ngFor="let photo of matchedImages;trackBy:trackPhotos">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
                             <div class="portfolio-item overflow-hidden">
-                                <img class="img-fluid m-auto" [src]="photo.photo_url" alt="">
+                                <img class="img-fluid m-auto" [src]="photo" alt="">
                                 <div class="portfolio-overlay">
                                     <div class="portfolio-btn">
                                         <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
@@ -299,7 +299,7 @@
                                                 class="fa fa-download"></i></a>
                                     </div>
                                     <div class="portfolio-name">
-                                        <h5 class="text-uppercase mb-0">{{photo.name}}</h5>
+                                        <h5 class="text-uppercase mb-0">{{photo.name || 'image'}}</h5>
                                     </div>
                                 </div>
                             </div>
