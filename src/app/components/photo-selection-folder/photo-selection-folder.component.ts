@@ -32,8 +32,9 @@ export class PhotoSelectionFolderComponent {
   userData: any = {};
   customerName: any = '';
   showLogOutModal: boolean = false;
+  aiGuestsList:any= []
 
-  constructor(private service: CustomerService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService) {
+  constructor(private service: CustomerService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService, private eventService: PhotoSelectionService) {
     this.route.params.subscribe(params => {
       if (params['event-id']) {
         this.currentEventId = params['event-id'];
@@ -49,6 +50,20 @@ export class PhotoSelectionFolderComponent {
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
+
+  ngOnInit(){
+    this.getAiGuestByEventId()
+  }
+
+
+  getAiGuestByEventId(){
+    this.eventService.getAiGuestByEventId(this.currentEventId,(res:any)=>{
+      if(res.status==200){
+        this.aiGuestsList = res.data;
+      }
+    })
+  }
+
 
   fetchFolderByEventId() {
     this._pservice.getFolderByEventId(this.currentEventId, (res: any) => {

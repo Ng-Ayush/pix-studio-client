@@ -130,11 +130,15 @@ export class AiUploadComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
-    if (!file) {
-      return this.alert.error('No image captured');
-    }
+    if ((this.userData?.isFaceDescriptorReady == 'false' || this.userData?.isFaceDescriptorReady == "0" || this.userData?.isFaceDescriptorReady == "null")) {
+      this.addAiGuest();
+    } else {
 
-    this.sendToServer(file); // Use same flow as desktop
+      if (!file) {
+        return this.alert.error('No image captured');
+      }
+      this.sendToServer(file); // Use same flow as desktop
+    }
   }
 
 
@@ -249,7 +253,11 @@ export class AiUploadComponent {
         return this.alert.error('Failed to capture image');
       }
 
-      this.sendToServer(blob);
+      if ((this.userData?.isFaceDescriptorReady == 'false' || this.userData?.isFaceDescriptorReady == "0" || this.userData?.isFaceDescriptorReady == "null")) {
+        this.addAiGuest();
+      } else {
+        this.sendToServer(blob);
+      }
     } catch (error) {
       this.alert.error('Error capturing image');
       this.isLoading = false;
@@ -388,18 +396,26 @@ export class AiUploadComponent {
   }
 
   addAiGuest() {
-    this.eventService.addAiGuest(this.aiGuestConfig, (res: any) => {
+    this.isLoading=true;
+    const payload = {
+      guest_name: this.userData?.name,
+      guest_phone: this.aiGuestConfig?.phone,
+      event_id: this.userData?.event_id,
+      created_by: this.userData?.user_id,
+    };
+    
+    this.eventService.addAiGuest(payload, (res: any) => {
+      this.isLoading=false;
       if (res.status) {
         this.alert.success(res.message);
-        this.isOtpVerified = true;
-        this.loader.hide();
+        this.onCancel();
       } else {
         this.alert.error(res.message);
-        this.loader.hide();
-        this.isFormValid = true;
       }
-    })
+      this.loader.hide();
+    });
   }
+
 
   retakeImage() {
     this.isImageCaptured = false;

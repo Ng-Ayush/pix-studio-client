@@ -69,8 +69,7 @@ export class AiPhotoSharingComponent {
 
   ngOnInit() {
     this.getAllEvents();
-    this.getAllCustomers();
-    // this
+    this.getAllCustomers();    
   }
 
 

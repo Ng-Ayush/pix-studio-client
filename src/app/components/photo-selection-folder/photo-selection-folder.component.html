@@ -98,6 +98,12 @@
                         </div>
                     </div>
                 </div> -->
+
+                <div *ngFor="let item of aiGuestsList">
+                    {{item?.guest_name}}
+                    {{item?.guest_phone}}
+                </div>
+
                 <div class="p-4 grid grid-cols-4 gap-4 col-span-2">
                     <div *ngFor="let folder of folders"
                         class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow">
