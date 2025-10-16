@@ -6,6 +6,7 @@ import { CustomerService } from '../../services/customer.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
 import { AlertService } from '../../services/alert.service';
 import { Storage, ref, uploadBytesResumable, getDownloadURL, deleteObject, listAll } from '@angular/fire/storage';
+import { LoaderService } from '../../shared/loader.service';
 
 @Component({
   selector: 'app-photo-selection-folder',
@@ -32,14 +33,14 @@ export class PhotoSelectionFolderComponent {
   userData: any = {};
   customerName: any = '';
   showLogOutModal: boolean = false;
-  aiGuestsList:any= []
+  customerUniqueId: any = '';
 
-  constructor(private service: CustomerService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService, private eventService: PhotoSelectionService) {
+  constructor(private service: CustomerService, private loader: LoaderService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService, private eventService: PhotoSelectionService) {
     this.route.params.subscribe(params => {
       if (params['event-id']) {
         this.currentEventId = params['event-id'];
         this.fetchFolderByEventId();
-        // this.fetchAiGuestByEventId();
+        this.fetchAiGuestByEventId();
       }
     })
     this.route.queryParams.subscribe(params => {
@@ -50,20 +51,6 @@ export class PhotoSelectionFolderComponent {
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
-
-  ngOnInit(){
-    this.getAiGuestByEventId()
-  }
-
-
-  getAiGuestByEventId(){
-    this.eventService.getAiGuestByEventId(this.currentEventId,(res:any)=>{
-      if(res.status==200){
-        this.aiGuestsList = res.data;
-      }
-    })
-  }
-
 
   fetchFolderByEventId() {
     this._pservice.getFolderByEventId(this.currentEventId, (res: any) => {
@@ -79,6 +66,7 @@ export class PhotoSelectionFolderComponent {
     this._pservice.getAiGuestByEventId(this.currentEventId, (res: any) => {
       if (res.status == 200) {
         this.aiGuests = res.data;
+        this.customerUniqueId = res.data[0]?.customer_unique_id || '';
       }
     })
   }
@@ -101,11 +89,11 @@ export class PhotoSelectionFolderComponent {
   }
 
   createNewFolder() {
-    if(this.isAIuploaded && this.folders.length > 0 ) {
-        this.alert.info("Please upgrade your plan to create more folders",3000);
-        return;
-    }
-    
+    // if(this.isAIuploaded && this.folders.length > 0 ) {
+    // this.alert.info("Please upgrade your plan to create more folders",3000);
+    // return;
+    // }
+
     const params: any = {
       folder_name: `New Folder ${this.folders.length + 1}`,
       event_id: this.currentEventId
@@ -159,7 +147,7 @@ export class PhotoSelectionFolderComponent {
     //   const items = await listAll(folderRef);
 
     //   console.log("items",items);
-      
+
 
     //   const deletePromises = items.items.map(item => deleteObject(item));
     //   await Promise.all(deletePromises);
@@ -178,16 +166,16 @@ export class PhotoSelectionFolderComponent {
 
   getFolderPathFromUrl(url: any) {
     const matched = url.match(/\/o\/(.*?)\?/);
-  if (!matched || matched.length < 2) return '';
+    if (!matched || matched.length < 2) return '';
 
-  const fullPath = decodeURIComponent(matched[1]); // Decode %2F etc.
-  const parts = fullPath.split('/');
+    const fullPath = decodeURIComponent(matched[1]); // Decode %2F etc.
+    const parts = fullPath.split('/');
 
-  // Remove only the filename
-  parts.pop();
+    // Remove only the filename
+    parts.pop();
 
-  
-  return parts.join('/');
+
+    return parts.join('/');
   }
 
 
@@ -205,11 +193,39 @@ export class PhotoSelectionFolderComponent {
     this.showLogOutModal = !this.showLogOutModal;
   }
 
-    logout() {
+  logout() {
     this.showLogOutModal = false;
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  sendBulkMessage() {
+    this.loader.show();
+    const params: any = {
+      numbers: [...new Set(this.aiGuests.map((guest:any)=>guest.guest_phone))],
+      // numbers: ['7704898884', '8004033357'],
+      message: `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId} `,
+    }
+    this._pservice.sendBulkMessage(params, (res: any) => {
+      this.loader.hide();
+      if (res.status == 200 && res.results.every((item: any) => item.success)) {
+        this.alert.success("Bulk Message Sent Successfully");
+
+      } else if (res.status == 200 && res.results.some((item: any) => !item.success)) {
+        const failedNumbers = res.results
+          .map((item: any, index: number) => item.success == false ? item.number : null)
+          .filter((item: any) => item !== null);
+
+        if (failedNumbers.length > 0) {
+          this.alert.error(`Failed to send bulk message. Numbers: ${failedNumbers.join(", ")}`,10000);
+        } else {
+          this.alert.error("Failed to send bulk message");
+        }
+      } else {
+        this.alert.error("Error sending bulk message");
+      }
+    })
   }
 
 

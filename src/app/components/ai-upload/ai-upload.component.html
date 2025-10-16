@@ -231,26 +231,75 @@
 
 <div class="container-fluid py-5 bg-secondary" id="explore">
     <div class="container py-5">
-        <div class="row g-0">
+        <div class="row g-0" *ngIf="youtubeCoverUrl">
+            <iframe width="500" height="500" [src]="youtubeCoverUrl">
+            </iframe>
+        </div>
+        <div class="row g-0 m-5">
+            <!-- Tab Buttons (Browse All and Matched) -->
             <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
-                <!-- Tabs -->
                 <div class="inline-flex rounded-xl bg-black/80 gap-2">
-                    <button (click)="activeTab = 'browse'" *ngIf="isBrowseAllFolder"
+                    <!-- Browse All Button -->
+                    <button (click)="activeTab = 'browse'; activeFolderTab = null;" *ngIf="isBrowseAllFolder"
                         [ngClass]="activeTab === 'browse' ? 'bg-pink-600 text-white' : 'text-pink-600'"
                         class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
                         Browse All
                     </button>
 
-                    <button (click)="activeTab = 'matched'" *ngIf="matchedImages.length>0"
+                    <!-- Matched Photos Button -->
+                    <button (click)="activeTab = 'matched'; activeFolderTab = null;" *ngIf="matchedImages.length > 0"
                         [ngClass]="activeTab === 'matched' ? 'bg-pink-600 text-white' : 'text-pink-600'"
                         class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
                         Matched Photos
                     </button>
                 </div>
             </div>
-            <ng-container *ngIf="(activeTab == 'browse' && isBrowseAllFolder) else onlyMatched">
-                <ng-container *ngIf="photos.length>0 else noPhotos">
-                    <ng-container *ngFor="let photo of photos;trackBy:trackPhotos">
+
+            <!-- Grouped Folder Tabs -->
+            <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
+                <div class="inline-flex rounded-xl bg-black/80 gap-2">
+                    <ng-container *ngFor="let folder of photos | uniqueFolderId">
+                        <button (click)="activeFolderTab = folder.folder_id; activeTab = ''"
+                            [ngClass]="activeFolderTab === folder.folder_id ? 'bg-pink-600 text-white' : 'text-pink-600'"
+                            class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
+                            {{ folder.folder_name }}
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Display Folder Photos (Grouped by Active Folder Tab) -->
+            <ng-container *ngIf="activeFolderTab && groupedPhotos?.[activeFolderTab]?.length > 0;">
+                <ng-container *ngFor="let photo of groupedPhotos[activeFolderTab]; trackBy: trackPhotos">
+                    <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="portfolio-item overflow-hidden">
+                            <img class="img-fluid m-auto" [src]="photo.photo_url" loading="lazy" alt="">
+                            <div class="portfolio-overlay">
+                                <div class="portfolio-btn">
+                                    <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
+                                        [href]="photo.photo_url" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
+                                        (click)="downloadSinglePhoto(photo)" href="javascript:void(0);"><i
+                                            class="fa fa-download"></i></a>
+                                </div>
+                                <div class="portfolio-name">
+                                    <h5 class="text-uppercase mb-0">{{photo.name}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <!-- No Photos Available for Active Folder -->
+            <!-- <ng-template #noPhotos>
+                <h1 class="text-center">No photos in this folder.</h1>
+            </ng-template> -->
+
+            <!-- Browse All Photos -->
+            <ng-container *ngIf="activeTab === 'browse' && isBrowseAllFolder">
+                <ng-container *ngIf="photos.length > 0; else noPhotosBrowseAll">
+                    <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
                             <div class="portfolio-item overflow-hidden">
                                 <img class="img-fluid m-auto" [src]="photo.photo_url" loading="lazy" alt="">
@@ -271,23 +320,25 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <ng-template #noPhotos>
-                    <h1 class="text-center">Photos hasn't been uploaded yet.</h1>
+                <ng-template #noPhotosBrowseAll>
+                    <h1 class="text-center">Photos haven't been uploaded yet.</h1>
                 </ng-template>
             </ng-container>
-            <ng-container *ngIf="activeTab == 'matched'">
+
+            <!-- Matched Photos View -->
+            <ng-container *ngIf="activeTab === 'matched'">
                 <div class="col-sm-12 col-md-8 col-lg-6">
                     <div class="h-100 p-5 bg-dark d-flex align-items-center justify-content-center">
                         <div class="title mb-0 wow fadeIn" data-wow-delay="0.1s">
                             <div class="title-center">
-                                <h5>Photos found : {{matchedImages.length}}</h5>
+                                <h5>Photos found: {{matchedImages.length}}</h5>
                                 <h1>Your Matches</h1>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ng-container *ngIf="matchedImages.length>0">
-                    <ng-container *ngFor="let photo of matchedImages;trackBy:trackPhotos">
+                <ng-container *ngIf="matchedImages.length > 0">
+                    <ng-container *ngFor="let photo of matchedImages; trackBy: trackPhotos">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
                             <div class="portfolio-item overflow-hidden">
                                 <img class="img-fluid m-auto" [src]="photo" alt="">
@@ -310,14 +361,12 @@
                 </ng-container>
             </ng-container>
 
+            <!-- No Matched Photos -->
             <ng-template #onlyMatched>
-                <h1 class="text-center" *ngIf="matchedImages.length==0">Please add your selfie above!.</h1>
+                <h1 class="text-center" *ngIf="matchedImages.length === 0">Please add your selfie above!</h1>
             </ng-template>
-
-
-            <div class="col-sm-6 col-md-4 col-lg-3">
-            </div>
         </div>
+
     </div>
 </div>
 
@@ -376,13 +425,13 @@
 
             </div>
 
-            <div class="p-4 text-sm text-blue-800 rounded bg-blue-50 mt-2" role="alert">
+            <!-- <div class="p-4 text-sm text-blue-800 rounded bg-blue-50 mt-2" role="alert">
                 <span class="font-medium">Trail version limit: </span> Please upgrade to premium to get better accuracy
                 image.
-            </div>
+            </div> -->
 
-            <div class="text-gray-800 text-start mt-4 w-full" *ngIf="!userData?.isFaceDescriptorReady">
-                Phone Number : <input type="text" maxlength="10" [(ngModel)]="aiGuestConfig.phone"
+            <div class="text-gray-800 text-start mt-4 w-full flex gap-2 items-center" *ngIf="userData?.need_customer_number">
+                <span>Contact: </span> <input type="text" maxlength="10" [(ngModel)]="aiGuestConfig.phone" placeholder="Enter your 10 digit number"
                     class="w-full p-2 border border-gray-100 rounded-md shadow-sm focus:ring-indigo-100 focus:border-indigo-100">
             </div>
 

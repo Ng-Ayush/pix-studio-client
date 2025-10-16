@@ -78,6 +78,8 @@ export class BaseService {
     'getInvoiceDetailByInvoiceNumber': '/api/mystudio/invoices/getInvoiceDetailByInvoiceNumber',
     'saveAdvancePayment': '/api/mystudio/invoices/saveAdvancePayment',
     'getPastPayments': '/api/mystudio/invoices/getPastPayments',
+    'sendBulkMessage': '/api/mystudio/invoices/sendBulkMessage',
+
 
     //estimate
     'createEstimate': '/api/mystudio/estimates/createEstimate',

@@ -143,6 +143,9 @@ export class PhotoSelectionPhotosComponent {
         this.waterMarkConfig = res.data?.watermark ? JSON.parse(res.data?.watermark) : { is_watermark: false, transparency: null };
         this.aiUploadService.waterMarkConfig = this.waterMarkConfig;
 
+        this.aiUploadService.isFaceDescriptorReady = res.data?.isFaceDescriptorReady;
+        this.aiUploadService.aiEventId = res.data?.event_id;
+
         this.isEventSubmitted = res.data.is_event_submitted;
         setTimeout(() => this.loader.hide(), 500);
       }

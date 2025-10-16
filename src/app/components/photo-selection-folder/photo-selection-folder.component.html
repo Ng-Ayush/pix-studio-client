@@ -9,7 +9,7 @@
                 </svg>
 
             </a>
-          
+
             <a href="javascript:void(0);" class="sidebar-nav-item" [routerLink]="['/billing/calendar']">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -37,11 +37,10 @@
     </aside>
     <main class="main-content">
         <div class="border-l border-white bg-[#494CA2]">
-           <div class="p-5 ps-10">
+            <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
-                        <img [src]="userData.studio_icon" alt=""
-                            class="border radius-md text-white w-[50px] h-[50px]">
+                        <img [src]="userData.studio_icon" alt="" class="border radius-md text-white w-[50px] h-[50px]">
                     </div>
                     <div class="header-title">
                         <h2 class="text-white">Hello, {{userData.studio_name}}</h2>
@@ -83,27 +82,34 @@
 
             <!-- Folder Grid -->
             <div class="grid grid-cols-3 gap-2">
-                <!-- <div class="row-span-4 bg-white mb-2 h-dvh" *ngIf="isAIuploaded">
-                    <div class="px-8 py-4 mt-0 dark:bg-transparent border border-gray-200">
+                <div class="row-span-4 bg-white mb-2 h-dvh" *ngIf="isAIuploaded && aiGuests.length>0">
+                    <div
+                        class="px-8 py-4 mt-0 flex justify-between items-center dark:bg-transparent border border-gray-200">
                         Guest Access
+                        <button (click)="sendBulkMessage()"
+                            class="bg-[#494CA2] hover:bg-[#494CA2F5] flex gap-1 cursor-pointer text-white rounded-md py-2 px-5"><svg
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                            Notify All</button>
                     </div>
                     <div class="flex flex-col gap-4 px-8 pt-4 dark:bg-transparent">
                         <div class="flex gap-4 items-center" *ngFor="let guest of aiGuests">
-                            <div class=""><img [ngSrc]="guest.image_url" width="64" height="64" loading="eager"
-                                    class="block mx-auto w-16 h-16 rounded-full object-cover" alt=""></div>
+                            <div class="">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                    {{ guest.guest_name| uppercase |slice : 0 : 2 }}
+                                </div>
+                            </div>
                             <div class="flex flex-col">
-                                <div class="col-span-2 ">{{guest.guest_name}}</div>
-                                <div class="text-sm text-gray-500">{{guest.guest_phone}}</div>
+                                <div class="col-span-2 ">{{guest?.guest_phone}}</div>
+                                <!-- <div class="text-sm text-gray-500"></div> -->
                             </div>
                         </div>
                     </div>
-                </div> -->
-
-                <div *ngFor="let item of aiGuestsList">
-                    {{item?.guest_name}}
-                    {{item?.guest_phone}}
                 </div>
-
                 <div class="p-4 grid grid-cols-4 gap-4 col-span-2">
                     <div *ngFor="let folder of folders"
                         class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow">
@@ -170,8 +176,8 @@
                                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                                 </svg>
                             </div>
-                            <input type="text" autocomplete="off" [(ngModel)]="newFolderName" class="flex-1 p-2 outline-none"
-                                placeholder="Enter folder name">
+                            <input type="text" autocomplete="off" [(ngModel)]="newFolderName"
+                                class="flex-1 p-2 outline-none" placeholder="Enter folder name">
                         </div>
                     </div>
 

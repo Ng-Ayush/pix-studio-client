@@ -10,17 +10,19 @@ import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import * as faceapi from 'face-api.js';
 import { environment } from '../../../environments/environment';
+import { UniqueFolderIdPipe } from '../../shared/unique-folder-id.pipe';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgOptimizedImage],
+  imports: [CommonModule, FormsModule, UniqueFolderIdPipe],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
 })
 export class AiUploadComponent {
   @ViewChild('video') videoRef!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
-  activeTab: 'browse' | 'matched' = 'browse';
+  activeTab: any = 'browse';
 
   videoStream: MediaStream | null = null;
   matchedImages: any[] = [];
@@ -52,6 +54,9 @@ export class AiUploadComponent {
   @ViewChild('mobileCamInput', { static: false }) mobileCamInputRef!: ElementRef<HTMLInputElement>;
 
   isMobile = false;
+  groupedPhotos: any = {};
+  activeFolderTab: any = 0;
+  youtubeCoverUrl: SafeResourceUrl | any;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,11 +64,17 @@ export class AiUploadComponent {
     private eventService: PhotoSelectionService,
     private alert: AlertService,
     private service: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
   ) {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    if (this.userData?.youtube_cover_url) {
+      const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
+      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`;
+      this.youtubeCoverUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
+    }
     this.eventId = this.userData?.event_id;
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
     console.log("this.p", this.previewCover);
@@ -79,6 +90,16 @@ export class AiUploadComponent {
     this.checkIsBrowseAllFolderStatus();
   }
 
+  extractYoutubeId(url: any) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|shorts\/|)([^#&?]+)/;
+    const match = url.match(regex);
+
+    if (match && match[1]) {
+      return match[1];
+    } else {
+      return null;
+    }
+  }
   checkIsBrowseAllFolderStatus() {
     this.eventService.checkIsBrowseAllFolderStatus({ event_id: this.userData?.event_id, user_id: this.userData?.user_id }, (res: any) => {
       if (res.status == 200) {
@@ -111,34 +132,33 @@ export class AiUploadComponent {
     }
   }
 
-  async ngOnInit() {
-    // try {
-
-    //   // Load face-api.js models (adjust path to models folder)
-    //   const MODEL_URL = '../../../assets/models';
-    //   await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-    //   await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-    //   await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-    //   await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-    // } catch (error) {
-    //   console.log("Got erro loading modles", error);
-
-    // }
-  }
-
-  onMobilePhotoCapture(event: Event) {
+  async onMobilePhotoCapture(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    const phone = this.aiGuestConfig.phone;
+    const isPhoneValid = phone && phone.length == 10;
 
-    if ((this.userData?.isFaceDescriptorReady == 'false' || this.userData?.isFaceDescriptorReady == "0" || this.userData?.isFaceDescriptorReady == "null")) {
+    if(!this.userData?.isFaceDescriptorReady){
       this.addAiGuest();
-    } else {
-
-      if (!file) {
-        return this.alert.error('No image captured');
-      }
-      this.sendToServer(file); // Use same flow as desktop
+      this.alert.info('Your smile has been captured. You will be notified once it is ready.',5000);
+      return;
     }
+
+    if (this.userData?.need_customer_number && isPhoneValid && file) {
+      await this.sendToServer(file);
+      this.addAiGuest();
+    }
+    // Scenario 2: need_customer_number is false, file exists
+    else if (!this.userData?.need_customer_number && file) {
+      this.sendToServer(file);
+    }
+    else if (!this.userData?.need_customer_number && !file) {
+      this.alert.error("File is missing or no capture found.");
+    }
+    else if (this.userData?.need_customer_number && (!phone || phone.length !== 10)) {
+      this.alert.error("Please enter a valid 10-digit phone number.");
+    }
+    return;
   }
 
 
@@ -150,14 +170,29 @@ export class AiUploadComponent {
     this.eventService.getAllPhotosByEventId(this.eventId, this.userData?.created_by, (res: any) => {
       if (res.status == 200) {
         this.photos = res.data;
+        this.groupPhotosByFolder();
+
         // this.userData = res.data;
       }
 
     })
   }
 
+  groupPhotosByFolder() {
+    this.photos.forEach((photo: any) => {
+      if (!this.groupedPhotos[photo.folder_id]) {
+        this.groupedPhotos[photo.folder_id] = [];
+      }
+      this.groupedPhotos[photo.folder_id].push(photo);
+    });
+
+    console.log(this.groupedPhotos);
+
+  }
+
   async openCamera() {
     this.videoModal = true;
+    this.aiGuestConfig = {};
 
     setTimeout(async () => {
       if (this.isMobile) {
@@ -166,7 +201,7 @@ export class AiUploadComponent {
       } else {
         // ✅ Desktop: start webcam stream
         try {
-          const video = this.videoRef.nativeElement;
+          const video = this.videoRef?.nativeElement;
           this.videoStream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: 'user' } // or omit facingMode to allow default
           });
@@ -176,56 +211,9 @@ export class AiUploadComponent {
           alert('Camera access denied or not supported.');
         }
       }
-    }, 0);
+    }, 500);
   }
-  // async capturePhoto() {
-  //   if (!this.videoStream) return alert('Camera not opened');
-  //   try {
-  //     const video = this.videoRef.nativeElement;
-  //     const canvas = this.canvasRef.nativeElement;
-  //     const context = canvas.getContext('2d')!;
-  //     const scaleFactor = 2;
-  //     const width = video.videoWidth * scaleFactor;
-  //     const height = video.videoHeight * scaleFactor;
 
-  //     // Resize canvas to higher resolution
-  //     canvas.width = width;
-  //     canvas.height = height;
-
-  //     // Draw video frame scaled to larger size
-  //     context.drawImage(video, 0, 0, width, height);
-
-  //     const capturedDataUrl = canvas.toDataURL('image/png');
-  //     if (!!this.userData?.isFaceDescriptorReady) {
-  //       this.isLoading = true;
-  //       // Extract face descriptor of captured image
-  //       const tempUrl = "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/DSC_4400.JPG?alt=media&token=bb2550d7-c1fd-42a6-a152-cd940acbe78c"
-  //       const capturedDescriptor = await this.getFaceDescriptorFromDataURL(capturedDataUrl);
-  //       if (!capturedDescriptor) {
-  //         this.isLoading = false;
-  //         return this.alert.error('No face detected in captured photo');
-  //       }
-
-  //       // Filter matches from photosArray
-  //       this.matchedImages = await this.filterMatches(capturedDescriptor, this.photos);
-  //       console.log("MATCHED", this.matchedImages);
-  //       this.videoModal = false;
-  //       this.activeTab = 'matched';
-  //       this.scrollTo('explore');
-  //       this.alert.success("Successfully Found Photos");
-  //       this.isLoading = false;
-  //       this.onCancel();
-  //     } else {
-  //       this.isLoading = false;
-  //       this.videoModal = false;
-  //       this.onCancel();
-  //       this.alert.info("Your face has been captured, please come back after sometime");
-  //     }
-  //   } catch (error) {
-  //     this.isLoading = false;
-  //   }
-
-  // }
 
   async capturePhoto() {
     if (!this.videoStream) return this.alert.error('Camera not opened');
@@ -253,22 +241,40 @@ export class AiUploadComponent {
         return this.alert.error('Failed to capture image');
       }
 
-      if ((this.userData?.isFaceDescriptorReady == 'false' || this.userData?.isFaceDescriptorReady == "0" || this.userData?.isFaceDescriptorReady == "null")) {
+      const phone = this.aiGuestConfig.phone;
+      const isPhoneValid = phone && phone.length == 10;
+
+      if(!this.userData?.isFaceDescriptorReady){
         this.addAiGuest();
-      } else {
+        this.alert.info('Your photo has been captured successfully. You will be notified once it is ready for AI sharing.',5000);
+        return;
+      }
+
+      if (this.userData?.need_customer_number && isPhoneValid && blob) {
+        await this.sendToServer(blob);
+        this.addAiGuest();
+      }
+      // Scenario 2: need_customer_number is false, file exists
+      else if (!this.userData?.need_customer_number && blob) {
         this.sendToServer(blob);
       }
+      else if (!this.userData?.need_customer_number && !blob) {
+        this.alert.error("File is missing or no capture found.");
+      }
+      else if (this.userData?.need_customer_number && (!phone || phone.length !== 10)) {
+        this.alert.error("Please enter a valid 10-digit phone number.");
+      }
     } catch (error) {
-      this.alert.error('Error capturing image');
+      
+      this.alert.error(`Error capturing image, ${error}`);
       this.isLoading = false;
     }
   }
 
-  // ✅ Unified method to send blob/file to backend
-  sendToServer(blob: Blob) {
+  async sendToServer(blob: Blob) {
     const formData = new FormData();
     formData.append('input_img', blob, 'captured_image.jpeg');
-    formData.append('wedding_folder_id', this.userData?.isFaceDescriptorReady || 'unknown');
+    formData.append('wedding_folder_id', `${this.userData?.event_name.split(" ").join("_")}_${this.userData?.event_id}` || 'unknown');
 
     this.isLoading = true;
 
@@ -292,120 +298,85 @@ export class AiUploadComponent {
       });
   }
 
-  dataURLtoBlob(dataURL: string): Blob {
-    const arr = dataURL.split(',');
-    const mime = arr[0].match(/:(.*?);/)![1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new Blob([u8arr], { type: mime });
-  }
+  // dataURLtoBlob(dataURL: string): Blob {
+  //   const arr = dataURL.split(',');
+  //   const mime = arr[0].match(/:(.*?);/)![1];
+  //   const bstr = atob(arr[1]);
+  //   let n = bstr.length;
+  //   const u8arr = new Uint8Array(n);
+  //   while (n--) u8arr[n] = bstr.charCodeAt(n);
+  //   return new Blob([u8arr], { type: mime });
+  // }
 
-  async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
-    const img = await faceapi.fetchImage(url);
-    const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
-      .withFaceLandmarks()
-      .withFaceDescriptors();
-    return detections.map(det => det.descriptor);
-  }
+  // async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
+  //   const img = await faceapi.fetchImage(url);
+  //   const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
+  //     .withFaceLandmarks()
+  //     .withFaceDescriptors();
+  //   return detections.map(det => det.descriptor);
+  // }
 
-  // Capture face descriptor from a single face image Data URL (still needed for capture)
-  async getFaceDescriptorFromDataURL(dataUrl: string): Promise<Float32Array | null> {
-    const img = await faceapi.fetchImage(dataUrl);
-    const detection = await faceapi.detectSingleFace(img, new faceapi.SsdMobilenetv1Options())
-      .withFaceLandmarks()
-      .withFaceDescriptor();
-    return detection ? detection.descriptor : null;
-  }
+  // // Capture face descriptor from a single face image Data URL (still needed for capture)
+  // async getFaceDescriptorFromDataURL(dataUrl: string): Promise<Float32Array | null> {
+  //   const img = await faceapi.fetchImage(dataUrl);
+  //   const detection = await faceapi.detectSingleFace(img, new faceapi.SsdMobilenetv1Options())
+  //     .withFaceLandmarks()
+  //     .withFaceDescriptor();
+  //   return detection ? detection.descriptor : null;
+  // }
 
-  // Filter photos by matching captured descriptor against all stored descriptors (multiple per photo)
-  async filterMatches(capturedDescriptor: Float32Array, photosArray: any[]) {
-    const threshold = 0.5;
-    return photosArray.filter(photo => {
-      if (!photo.face_descriptor) return false;
-      const descriptors = JSON.parse(photo.face_descriptor) as number[][];
-      return descriptors.some(desc => {
-        const storedDesc = new Float32Array(desc);
-        const distance = faceapi.euclideanDistance(capturedDescriptor, storedDesc);
-        return distance < threshold;
-      });
-    });
-  }
-
-  submitAiGuest() {
-    this.onImgUpload();
-  }
-
-  onImgUpload() {
-    this.loader.show();
-    this.isFormValid = false;
-    const file = this.capturedGuestImage;
-    const reader = new FileReader();
-
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      let compressedImage = reader.result as string;
-      let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `AI-Guest-Photo/${this.eventData.event_name}/${this.ai_upload_user.name}`);
-      const uploadTask = uploadBytesResumable(fileRef, blob);
-
-      uploadTask.then(async () => {
-        const url = await getDownloadURL(fileRef);
-        this.aiGuestConfig = { image_url: url, guest_name: this.ai_upload_user.name, guest_phone: this.ai_upload_user.phone, event_id: this.eventId };
-        this.addAiGuest();
-      })
-    }
-  }
-
-  // dataURLtoBlob(dataURL: string) {
-  //   const byteString = atob(dataURL.split(',')[1]);
-  //   const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-  //   const arrayBuffer = new ArrayBuffer(byteString.length);
-  //   const intArray = new Uint8Array(arrayBuffer);
-  //   for (let i = 0; i < byteString.length; i++) {
-  //     intArray[i] = byteString.charCodeAt(i);
-  //   }
-  //   return new Blob([arrayBuffer], { type: mimeString });
+  // // Filter photos by matching captured descriptor against all stored descriptors (multiple per photo)
+  // async filterMatches(capturedDescriptor: Float32Array, photosArray: any[]) {
+  //   const threshold = 0.5;
+  //   return photosArray.filter(photo => {
+  //     if (!photo.face_descriptor) return false;
+  //     const descriptors = JSON.parse(photo.face_descriptor) as number[][];
+  //     return descriptors.some(desc => {
+  //       const storedDesc = new Float32Array(desc);
+  //       const distance = faceapi.euclideanDistance(capturedDescriptor, storedDesc);
+  //       return distance < threshold;
+  //     });
+  //   });
   // }
 
 
-  sendOtp() {
-    this.service.sendOTP({ phone_number: this.ai_upload_user.phone, name: this.ai_upload_user.name, is_ai_guest: true, event_id: this.eventId }, (res: any) => {
-      if (res.status == 200) {
-        this.isOTPSent = true;
-        console.log(res);
-        this.otpcode = res.otp;
-      } else {
-        this.alert.error(res.message);
-        this.isOTPSent = true;
-        this.otpcode = res.error.otp;
-        console.log(res);
-      }
-    })
-  }
+  // sendOtp() {
+  //   this.service.sendOTP({ phone_number: this.ai_upload_user.phone, name: this.ai_upload_user.name, is_ai_guest: true, event_id: this.eventId }, (res: any) => {
+  //     if (res.status == 200) {
+  //       this.isOTPSent = true;
+  //       console.log(res);
+  //       this.otpcode = res.otp;
+  //     } else {
+  //       this.alert.error(res.message);
+  //       this.isOTPSent = true;
+  //       this.otpcode = res.error.otp;
+  //       console.log(res);
+  //     }
+  //   })
+  // }
 
-  verifyOTP() {
-    if (this.ai_upload_user.otp != this.otpcode) {
-      this.alert.error("OTP not verified");
-      this.isOtpVerified = false;
-    } else {
-      this.isFormValid = true;
-      this.alert.success("OTP Verified");
-    }
-  }
+  // verifyOTP() {
+  //   if (this.ai_upload_user.otp != this.otpcode) {
+  //     this.alert.error("OTP not verified");
+  //     this.isOtpVerified = false;
+  //   } else {
+  //     this.isFormValid = true;
+  //     this.alert.success("OTP Verified");
+  //   }
+  // }
 
-  addAiGuest() {
-    this.isLoading=true;
+  async addAiGuest() {
+    this.isLoading = true;
     const payload = {
       guest_name: this.userData?.name,
       guest_phone: this.aiGuestConfig?.phone,
       event_id: this.userData?.event_id,
       created_by: this.userData?.user_id,
+      customer_unique_id: this.userData?.customer_unique_id,
     };
-    
+
     this.eventService.addAiGuest(payload, (res: any) => {
-      this.isLoading=false;
+      this.isLoading = false;
       if (res.status) {
         this.alert.success(res.message);
         this.onCancel();

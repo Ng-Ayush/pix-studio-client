@@ -30,7 +30,7 @@ export class AiPhotoSharingComponent {
   photoQualities = ['Basic', 'Standard', 'High'];
   selectedQuality = 'Basic';
   isModalOpen: boolean = false;
-  event_config: any = { watermark: {} };
+  event_config: any = { watermark: {},need_customer_number:true };
   eventList: any = [];
   isEdit: boolean = false;
   deleteModal: boolean = false;
@@ -140,6 +140,7 @@ export class AiPhotoSharingComponent {
         ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 }, { url: this.event_config?.cover2 }]),
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
+        need_customer_number: this.event_config?.need_customer_number || false,
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -159,6 +160,7 @@ export class AiPhotoSharingComponent {
         ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }]),
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
+        need_customer_number: this.event_config?.need_customer_number || false,
       }
       console.log(params);
 
@@ -184,6 +186,7 @@ export class AiPhotoSharingComponent {
     this.searchQuery = '';
     this.isEdit = false;
     this.event_config.watermark = { is_watermark: false, transparency: null };
+    this.event_config.need_customer_number = true;  
     this.customerConfig = {};
     this.preview = {};
   }
@@ -231,9 +234,9 @@ export class AiPhotoSharingComponent {
 
 
   copyAiShareLink(event: any) {
-    console.log(event);
-
     const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id} \n\nRegards *${this.userData?.studio_name}*`;
+    console.log(message);
+    
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Unique code copied to clipboard');
     }).catch(err => {
@@ -494,5 +497,9 @@ export class AiPhotoSharingComponent {
       this.transparencyValue = null;
       this.event_config.watermark.transparency = null;
     }
+  }
+
+  toggleNeedCustomerNumber(event: any) {
+    this.event_config.need_customer_number = event.target.checked;
   }
 }

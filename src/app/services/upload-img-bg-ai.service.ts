@@ -51,6 +51,8 @@ export class UploadImgBackgroundAiService {
 
   watermarkUrl: any = '';
   waterMarkConfig: any = {};
+  isFaceDescriptorReady:any = null;
+  aiEventId:any = null;
 
 
 
@@ -308,7 +310,8 @@ export class UploadImgBackgroundAiService {
           uploaded_by: this.user_id,
           event_id: eventId,
           folder_id: +folderId,
-          is_ai_upload: true
+          is_ai_upload: true,
+          wedding_folder_id : `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
         },
         (res: any) => {
           if (res.status === 200) {

@@ -28,14 +28,15 @@ export class FaceDescReadinessComponent {
       if (!this.isReady) {
         this.checkReadiness();
       }
-    }, 10000);
+    }, 5000);
   }
 
   checkReadiness() {
     this.http.get(environment.apiUrl+`/api/mystudio/photo-selection/checkEventReady/${this.eventId}`)
       .subscribe(
         (res:any) => {
-          this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
+          // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
+          this.isReady = res.isFaceDescriptorReady;
           console.log("GOT VALUE HERE isFaceDescriptorReady",res.isFaceDescriptorReady);
           
           if (this.isReady) {
