@@ -57,6 +57,8 @@ export class AiUploadComponent {
   groupedPhotos: any = {};
   activeFolderTab: any = 0;
   youtubeCoverUrl: SafeResourceUrl | any;
+  photoCaptured: boolean = false;
+  capturedBlob: Blob | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -135,30 +137,86 @@ export class AiUploadComponent {
   async onMobilePhotoCapture(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    const phone = this.aiGuestConfig.phone;
-    const isPhoneValid = phone && phone.length == 10;
+    // const phone = this.aiGuestConfig.phone;
+    // const isPhoneValid = phone && phone.length == 10;
 
-    if(!this.userData?.isFaceDescriptorReady){
-      this.addAiGuest();
-      this.alert.info('Your smile has been captured. You will be notified once it is ready.',5000);
+    if (!file) {
+      this.alert.error("No photo captured.");
       return;
     }
 
-    if (this.userData?.need_customer_number && isPhoneValid && file) {
+    this.photoCaptured = true;
+    this.capturedBlob = file;
+
+    // If phone not required, directly send
+    if (!this.userData?.need_customer_number) {
       await this.sendToServer(file);
       this.addAiGuest();
     }
-    // Scenario 2: need_customer_number is false, file exists
-    else if (!this.userData?.need_customer_number && file) {
-      this.sendToServer(file);
+
+    // if(!this.userData?.isFaceDescriptorReady){
+    //   this.addAiGuest();
+    //   this.alert.info('Your smile has been captured. You will be notified once it is ready.',5000);
+    //   return;
+    // }
+
+    // if (this.userData?.need_customer_number && isPhoneValid && file) {
+    //   await this.sendToServer(file);
+    //   this.addAiGuest();
+    // }
+    // // Scenario 2: need_customer_number is false, file exists
+    // else if (!this.userData?.need_customer_number && file) {
+    //   this.sendToServer(file);
+    // }
+    // else if (!this.userData?.need_customer_number && !file) {
+    //   this.alert.error("File is missing or no capture found.");
+    // }
+    // else if (this.userData?.need_customer_number && (!phone || phone.length !== 10)) {
+    //   this.alert.error("Please enter a valid 10-digit phone number.");
+    // }
+    // return;
+  }
+
+  canSubmit(): boolean {
+    // Must have a captured photo
+    if (!this.photoCaptured) return false;
+
+    // If phone required → validate
+    if (this.userData?.need_customer_number) {
+      const phone = this.aiGuestConfig.phone;
+      return !!phone && phone.length == 10;
     }
-    else if (!this.userData?.need_customer_number && !file) {
-      this.alert.error("File is missing or no capture found.");
+
+    // If not required → just photo is enough
+    return true;
+  }
+  async submitPhoto() {
+    if (!this.capturedBlob) {
+      this.alert.error("No photo captured.");
+      return;
     }
-    else if (this.userData?.need_customer_number && (!phone || phone.length !== 10)) {
-      this.alert.error("Please enter a valid 10-digit phone number.");
+
+    // Validate phone if required
+    if (this.userData?.need_customer_number) {
+      const phone = this.aiGuestConfig.phone;
+      if (!phone || phone.length !== 10) {
+        this.alert.error("Please enter a valid 10-digit phone number.");
+        return;
+      }
     }
-    return;
+
+    // If userData indicates face not ready
+    if (!this.userData?.isFaceDescriptorReady) {
+      this.addAiGuest();
+      this.alert.info(
+        "Your photo has been captured successfully. You will be notified once it's ready for AI sharing.",
+        5000
+      );
+      return;
+    }
+
+    await this.sendToServer(this.capturedBlob);
+    this.addAiGuest();
   }
 
 
@@ -244,9 +302,9 @@ export class AiUploadComponent {
       const phone = this.aiGuestConfig.phone;
       const isPhoneValid = phone && phone.length == 10;
 
-      if(!this.userData?.isFaceDescriptorReady){
+      if (!this.userData?.isFaceDescriptorReady) {
         this.addAiGuest();
-        this.alert.info('Your photo has been captured successfully. You will be notified once it is ready for AI sharing.',5000);
+        this.alert.info('Your photo has been captured successfully. You will be notified once it is ready for AI sharing.', 5000);
         return;
       }
 
@@ -265,7 +323,7 @@ export class AiUploadComponent {
         this.alert.error("Please enter a valid 10-digit phone number.");
       }
     } catch (error) {
-      
+
       this.alert.error(`Error capturing image, ${error}`);
       this.isLoading = false;
     }
