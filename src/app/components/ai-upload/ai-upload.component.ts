@@ -330,6 +330,7 @@ export class AiUploadComponent {
   }
 
   async sendToServer(blob: Blob) {
+    this.matchedImages = [];
     const formData = new FormData();
     formData.append('input_img', blob, 'captured_image.jpeg');
     formData.append('wedding_folder_id', `${this.userData?.event_name.split(" ").join("_")}_${this.userData?.event_id}` || 'unknown');
@@ -341,7 +342,7 @@ export class AiUploadComponent {
         next: (res: any) => {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
-          this.matchedImages = res.match_list || [];
+          this.matchedImages = JSON.parse(JSON.stringify(res.match_list)) || [];
           this.videoModal = false;
           this.activeTab = 'matched';
           this.scrollTo('explore');
