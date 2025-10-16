@@ -253,10 +253,10 @@
                         Matched Photos
                     </button>
                 </div>
-            </div>
+            </div>  
 
             <!-- Grouped Folder Tabs -->
-            <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
+            <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5" *ngIf="isBrowseAllFolder else noBrowseAll">
                 <div class="inline-flex rounded-xl bg-black/80 gap-2">
                     <ng-container *ngFor="let folder of photos | uniqueFolderId">
                         <button (click)="activeFolderTab = folder.folder_id; activeTab = ''"
@@ -365,6 +365,12 @@
             <ng-template #onlyMatched>
                 <h1 class="text-center" *ngIf="matchedImages.length === 0">Please add your selfie above!</h1>
             </ng-template>
+            
+            <!-- No Matched Photos -->
+            <ng-template #noBrowseAll>
+                <h1 class="text-center">Please add your selfie above!</h1>
+            </ng-template>
+
         </div>
 
     </div>
