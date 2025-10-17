@@ -51,8 +51,8 @@ export class UploadImgBackgroundAiService {
 
   watermarkUrl: any = '';
   waterMarkConfig: any = {};
-  isFaceDescriptorReady:any = null;
-  aiEventId:any = null;
+  isFaceDescriptorReady: any = null;
+  aiEventId: any = null;
 
 
 
@@ -86,11 +86,17 @@ export class UploadImgBackgroundAiService {
     const queued = this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
     const totalUsed = alreadyUploaded + queued;
 
-    const limitPhotos = this.user_id == 285 ? 1000 : 100;
+    let limitPhotos = 100;
+    if (this.user_id == 285) {
+      limitPhotos = 1000;
+    } else if (this.user_id == 31) {
+      limitPhotos = 50000;
+    }
 
-    const remaining = limitPhotos - totalUsed;   //user_id = 285 , pincode = 412349 for instant purpose
+
+    const remaining = limitPhotos - totalUsed;   //user_id = 285 , pincode = 412349 for instant purpose , user_id = 31 = Suraj produciton for 50,000 photos
     if (remaining <= 0) {
-      this.alert.warning("AI folder already has 100 photos (uploaded + queued).", 8000);
+      this.alert.warning(`AI folder already has ${limitPhotos} photos (uploaded + queued).`, 8000);
       return;
     }
 
@@ -311,7 +317,7 @@ export class UploadImgBackgroundAiService {
           event_id: eventId,
           folder_id: +folderId,
           is_ai_upload: true,
-          wedding_folder_id : `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
+          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
         },
         (res: any) => {
           if (res.status === 200) {
@@ -327,5 +333,5 @@ export class UploadImgBackgroundAiService {
       );
     });
   }
-  
+
 }

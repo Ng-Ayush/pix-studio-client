@@ -36,7 +36,7 @@
         </nav>
     </aside>
     <main class="main-content">
-        <div class="border-l border-white bg-[#494CA2]">
+        <div class="border-l border-white bg-[#494CA2] sticky top-0 z-10 ">
             <div class="p-5 ps-10">
                 <div class="heading flex gap-7 items-center">
                     <div class="logo-img">
@@ -64,7 +64,7 @@
             <div class="add-button flex justify-between mb-10 items-center gap-2">
                 <div class="p-4 text-sm text-blue-800 rounded bg-blue-50" role="alert">
                     <span class="font-medium">Trail version limit: </span> You can upload a maximum of
-                    {{this.userData?.id == 285 ? 1000 : 100}} photos per event.
+                    {{this.userData?.id == 285 ? '1,000' : this.userData?.id == 28 ? '50,000' : 100}} photos per event.
                 </div>
                 <button (click)="openModal()"
                     class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
