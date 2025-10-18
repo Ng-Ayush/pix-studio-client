@@ -153,7 +153,7 @@ export class AiUploadComponent {
     // If phone not required, directly send
     if (!this.userData?.need_customer_number) {
       await this.sendToServer(file);
-      this.addAiGuest();
+      // this.addAiGuest();
     }
 
     // if(!this.userData?.isFaceDescriptorReady){
