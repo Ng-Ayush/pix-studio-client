@@ -59,6 +59,8 @@ export class AiUploadComponent {
   youtubeCoverUrl: SafeResourceUrl | any;
   photoCaptured: boolean = false;
   capturedBlob: Blob | null = null;
+  reviewModal: boolean = false;
+  showThankyouMessage: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -219,9 +221,91 @@ export class AiUploadComponent {
     this.addAiGuest();
   }
 
+  initReviewModal() {
+    setTimeout(() => {
+      const starCount = 5;
+      let selected = 0;
 
-  ngAfterViewInit() {
-    // this.startCamera();
+      const starRating: any = document.getElementById('star-rating');
+      let starTemplate: any = document.getElementById('star-template');
+      starTemplate = starTemplate?.content;
+      const textarea: any = document.getElementById('review-text');
+      const postBtn: any = document.getElementById('post-btn');
+
+      function setStars(count: any) {
+        [...starRating.querySelectorAll('svg')].forEach((svg, i) => {
+          if (i < count) {
+            svg.setAttribute('fill', '#FFD600');
+            svg.classList.add('scale-110');
+          } else {
+            svg.setAttribute('fill', 'none');
+            svg.classList.remove('scale-110');
+          }
+        });
+      }
+
+
+      for (let i = 1; i <= starCount; i++) {
+        const star = starTemplate.cloneNode(true);
+        star.querySelector('svg').addEventListener('mouseenter', () => { setStars(i); });
+        star.querySelector('svg').addEventListener('mouseleave', () => { setStars(selected); });
+        star.querySelector('svg').addEventListener('click', () => {
+          selected = i;
+          setStars(selected);
+          textarea.disabled = false;
+          textarea.focus();
+          postBtn.disabled = false;
+          console.log(selected);
+          if (selected == 5) {
+            this.openGoogleReview();
+          }
+        });
+        starRating.appendChild(star);
+      }
+
+      setStars(0);
+      textarea.addEventListener('input', () => {
+        postBtn.disabled = !(selected > 0 && textarea.value.trim().length > 0);
+      });
+
+      postBtn.addEventListener('click', () => {
+        this.showThankyouMessage = true;
+        this.alert.success("Thank you for your review!");
+        setTimeout(() => { this.reviewModal = false; }, 5000);
+      });
+
+    }, 500);
+  }
+
+  openGoogleReview() {
+
+    let reviewWindow: any = null;
+    let poll: any = null;
+    const url = this.userData?.google_review_url || '';
+    const w = 500, h = 700;
+    const left = (screen.width - w) / 2;
+    const top = (screen.height - h) / 2;
+
+    reviewWindow = window.open(url, "_blank", `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+
+    if (!reviewWindow) {
+      this.alert.error("Popup blocked! Opening in a new tab...", 4000);
+      window.open(url, "_blank");
+      return;
+    }
+
+    try { reviewWindow.opener = null; } catch (e) { }
+
+    // Poll for popup close
+    poll = setInterval(() => {
+      if (!reviewWindow || reviewWindow.closed) {
+        clearInterval(poll);
+        reviewWindow = null;
+        this.showThankyouMessage = true;
+         this.alert.success("Thank you for your review!");
+        setTimeout(() => { this.showThankyouMessage = false; this.reviewModal = false; }, 6000);
+      }
+    }, 800);
   }
 
   getPhotosByEventId() {
@@ -343,6 +427,11 @@ export class AiUploadComponent {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
           this.matchedImages = JSON.parse(JSON.stringify(res.match_list)) || [];
+          if (this.matchedImages.length > 0) {
+            setTimeout(() => {
+              this.triggerGoogleReview();
+            }, 15000);
+          }
           this.videoModal = false;
           this.activeTab = 'matched';
           this.scrollTo('explore');
@@ -539,6 +628,11 @@ export class AiUploadComponent {
       video.pause();
       video.srcObject = null;
     }
+  }
+
+  triggerGoogleReview() {
+    this.reviewModal = true;
+    this.initReviewModal();
   }
 
 }

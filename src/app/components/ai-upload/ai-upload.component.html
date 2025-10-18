@@ -253,10 +253,11 @@
                         Matched Photos
                     </button>
                 </div>
-            </div>  
+            </div>
 
             <!-- Grouped Folder Tabs -->
-            <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5" *ngIf="isBrowseAllFolder else noBrowseAll">
+            <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5"
+                *ngIf="isBrowseAllFolder else noBrowseAll">
                 <div class="inline-flex rounded-xl bg-black/80 gap-2">
                     <ng-container *ngFor="let folder of photos | uniqueFolderId">
                         <button (click)="activeFolderTab = folder.folder_id; activeTab = ''"
@@ -365,7 +366,7 @@
             <ng-template #onlyMatched>
                 <h1 class="text-center" *ngIf="matchedImages.length === 0">Please add your selfie above!</h1>
             </ng-template>
-            
+
             <!-- No Matched Photos -->
             <ng-template #noBrowseAll>
                 <h1 class="text-center">Please add your selfie above!</h1>
@@ -450,6 +451,53 @@
                 class="cursor-pointer px-8 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
                 Cancel
             </button>
+        </div>
+    </div>
+</div>
+<div *ngIf="reviewModal"
+    class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
+    <div #modalContent class=" shadow-xl w-full max-w-lg mx-4 transform transition-all duration-300 ease-in-out"
+        [ngClass]="{'modal-fade-in': reviewModal}">
+        <div class="bg-gray-800 rounded-2xl shadow-xl p-8 w-full max-w-md relative">
+            <h2 class="text-center text-white font-semibold text-lg mb-6">{{userData?.studio_name | titlecase}}</h2>
+            <ng-container *ngIf="!showThankyouMessage else thankyou">
+                <div class="flex flex-col items-center mb-5">
+                    <div class="flex items-center gap-3 mb-1">
+                        <img src="../../../assets/default_profile.jpg" class="w-9 h-9 rounded-full" alt="User" />
+                        <div>
+                            <div class="text-white text-base font-medium">Google Review</div>
+                            <div class="text-gray-400 text-xs">Posting publicly across Google</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex space-x-1" id="star-rating">
+                        <template id="star-template">
+                            <svg class="w-8 h-8 cursor-pointer transition-transform duration-100" fill="none"
+                                stroke="#FFD600" stroke-width="2" viewBox="0 0 24 24">
+                                <polygon
+                                    points="12 17.25 18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.45 13.97 5.82 21 12 17.25" />
+                            </svg>
+                        </template>
+                    </div>
+                </div>
+                <form>
+                    <div class="mb-6">
+                        <textarea id="review-text" rows="4" minlength="2"
+                            class="w-full text-base rounded-lg py-3 px-4 mt-2 bg-gray-700 text-white border border-gray-600 transition focus:border-blue-500 disabled:opacity-50 disabled:bg-gray-800 disabled:cursor-not-allowed resize-none"
+                            placeholder="Kindly click on 5 stars to start downloading your photos" disabled></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" id="post-btn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2 rounded-lg transition shadow disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled>
+                            Post
+                        </button>
+                    </div>
+                </form>
+            </ng-container>
+            <ng-template #thankyou>
+                <div class="thankyou">✅ Thank you for your review!</div>
+            </ng-template>
+
         </div>
     </div>
 </div>

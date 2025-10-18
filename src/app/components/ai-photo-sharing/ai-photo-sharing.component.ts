@@ -141,6 +141,7 @@ export class AiPhotoSharingComponent {
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
+        google_review_url: this.event_config?.google_review_url || '',
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -161,6 +162,7 @@ export class AiPhotoSharingComponent {
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
+        google_review_url: this.event_config?.google_review_url || '',
       }
       console.log(params);
 

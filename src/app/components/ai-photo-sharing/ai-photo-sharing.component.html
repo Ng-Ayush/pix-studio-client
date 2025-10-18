@@ -310,7 +310,7 @@
                 <span class="status-pill flex items-center mb-2 gap-2">
                     <!-- From Uiverse.io by Galahhad -->
                     <label class="switch">
-                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark"
+                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark" [disabled]="isEdit"
                             type="checkbox">
                         <div class="slider">
                             <div class="circle">
@@ -336,7 +336,7 @@
                                 </svg>
                             </div>
                         </div>
-                    </label> <span class="inline-block text-sm text-gray-700">Watermark</span>
+                    </label> <span class="inline-block text-sm text-gray-700">Watermark  <span class="block text-xs text-gray-400 mt-1">(Applied Once Only — Before Photo Upload)</span></span>
                 </span>
                 <label
                     class="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-gray-700 text-xs cursor-pointer p-4 rounded-md bg-gray-50 shadow">
@@ -406,9 +406,14 @@
                     photos</span>
             </div>
             <div class="flex-1 min-w-[220px] mb-3">
-                <input id="event-name" type="text" placeholder="Enter youtube url" [(ngModel)]="event_config.youtube_cover_url"
+                <input id="event-name" type="text" placeholder="Enter Youtube Url" [(ngModel)]="event_config.youtube_cover_url"
                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
                 <span class="block text-xs text-gray-400 mt-1">Optional. This video will be played at customer cover image.</span>
+            </div>
+            <div class="flex-1 min-w-[220px] mb-3">
+                <input id="event-name" type="text" placeholder="Your Google Review Url/Link" [(ngModel)]="event_config.google_review_url"
+                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                <span class="block text-xs text-gray-400 mt-1">Optional. Customer will be prompt to review you on google</span>
             </div>
         </ng-container>
         <ng-template #cover>
