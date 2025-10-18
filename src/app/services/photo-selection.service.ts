@@ -88,4 +88,8 @@ export class PhotoSelectionService extends BaseService {
   sendBulkMessage(params:any,callback:any){
     return this.postData(params, this.httpUrls['sendBulkMessage'], callback)
   }
+
+  checkHasUserAlreadyReviewed(params:any,callback:any){
+    return this.postData(params, this.httpUrls['checkHasUserAlreadyReviewed'], callback)
+  }
 }

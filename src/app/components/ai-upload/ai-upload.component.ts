@@ -302,7 +302,7 @@ export class AiUploadComponent {
         clearInterval(poll);
         reviewWindow = null;
         this.showThankyouMessage = true;
-         this.alert.success("Thank you for your review!");
+        this.alert.success("Thank you for your review!");
         setTimeout(() => { this.showThankyouMessage = false; this.reviewModal = false; }, 6000);
       }
     }, 800);
@@ -423,11 +423,11 @@ export class AiUploadComponent {
 
     this.http.post(environment.apiUrl + '/api/mystudio/photo-selection/find-person', formData)
       .subscribe({
-        next: (res: any) => {
+        next: async (res: any) => {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
           this.matchedImages = JSON.parse(JSON.stringify(res.match_list)) || [];
-          if (this.matchedImages.length > 0) {
+          if (this.matchedImages.length > 0 && this.userData?.need_customer_number && await this.checkHasUserAlreadyReviewed()) {
             setTimeout(() => {
               this.triggerGoogleReview();
             }, 15000);
@@ -635,4 +635,14 @@ export class AiUploadComponent {
     this.initReviewModal();
   }
 
+
+  async checkHasUserAlreadyReviewed() {
+    return new Promise((resolve, reject) => {
+      this.eventService.checkHasUserAlreadyReviewed({ phone: this.aiGuestConfig.phone,user_id: this.userData?.user_id }, (res: any) => {
+        if (res.status == 200) {
+            resolve(!res.data);
+        }
+      })
+    })
+  }
 }

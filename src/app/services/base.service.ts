@@ -46,6 +46,7 @@ export class BaseService {
     'deletePhotos': '/api/mystudio/photo-selection/deletePhotos',
     'getAllPhotosByEventId': '/api/mystudio/photo-selection/getAllPhotosByEventId',
     'checkIsBrowseAllFolderStatus': '/api/mystudio/photo-selection/checkIsBrowseAllFolderStatus',
+    'checkHasUserAlreadyReviewed': '/api/mystudio/photo-selection/checkHasUserAlreadyReviewed',
 
 
     //Customer Photo Selection
