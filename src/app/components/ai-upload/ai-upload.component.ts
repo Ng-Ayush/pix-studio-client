@@ -569,8 +569,8 @@ export class AiUploadComponent {
 
   }
 
-  downloadSinglePhoto(photo: any) {
-    this.downloadFile(photo.photo_url, photo.photo_name);
+  downloadSinglePhoto(photo: any, idx?: any) {
+    this.downloadFile(photo.photo_url ? photo.photo_url : photo, photo.photo_name || `image-${idx}.jpg`);
   }
 
   togglePhoto(photo: any) {
@@ -581,19 +581,25 @@ export class AiUploadComponent {
   private downloadFile(url: string, filename: string) {
     this.loader.show();
     this.isLoading = true;
+    try {
 
-    fetch(url)
-      .then(res => res.blob())
-      .then(blob => {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(link.href);
-        this.isLoading = false;
-      })
-      .catch(err => console.error('Error downloading file:', err));
-    this.loader.hide();
+      fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = filename;
+          link.click();
+          URL.revokeObjectURL(link.href);
+
+          this.isLoading = false;
+        })
+        .catch(err => console.error('Error downloading file:', err));
+      this.loader.hide();
+    }catch(err){
+      this.isLoading = false;
+      this.loader.hide();
+    }
 
   }
 
@@ -638,9 +644,9 @@ export class AiUploadComponent {
 
   async checkHasUserAlreadyReviewed() {
     return new Promise((resolve, reject) => {
-      this.eventService.checkHasUserAlreadyReviewed({ phone: this.aiGuestConfig.phone,user_id: this.userData?.user_id }, (res: any) => {
+      this.eventService.checkHasUserAlreadyReviewed({ phone: this.aiGuestConfig.phone, user_id: this.userData?.user_id }, (res: any) => {
         if (res.status == 200) {
-            resolve(!res.data);
+          resolve(!res.data);
         }
       })
     })

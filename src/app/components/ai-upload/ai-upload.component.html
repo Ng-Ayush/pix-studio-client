@@ -339,7 +339,7 @@
                     </div>
                 </div>
                 <ng-container *ngIf="matchedImages.length > 0">
-                    <ng-container *ngFor="let photo of matchedImages; trackBy: trackPhotos">
+                    <ng-container *ngFor="let photo of matchedImages;let idx = index; trackBy: trackPhotos;">
                         <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
                             <div class="portfolio-item overflow-hidden">
                                 <img class="img-fluid m-auto" [src]="photo" alt="">
@@ -349,7 +349,7 @@
                                             [href]="photo.photo_url" data-lightbox="portfolio"><i
                                                 class="fa fa-eye"></i></a>
                                         <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                            (click)="downloadSinglePhoto(photo)" href="javascript:void(0);"><i
+                                            (click)="downloadSinglePhoto(photo,idx)" href="javascript:void(0);"><i
                                                 class="fa fa-download"></i></a>
                                     </div>
                                     <div class="portfolio-name">
