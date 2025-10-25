@@ -64,7 +64,8 @@ export class UsersComponent {
       return;
     }
     this.filteredItems = this.users.filter((item: any) =>
-      item.studio_name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      item.studio_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    (item.phone_number && item.phone_number.includes(this.searchTerm))  //
     );
 
   }
