@@ -82,13 +82,13 @@ export class ManageProfileComponent {
     this.socketService.onReady().subscribe(() => {
       this.ready = true;
       this.syncing = false;
-      this.alert.success("Whatsapp is ready");
+      // this.alert.success("Whatsapp is ready");
       this.showWhatsappModal = false;
     });
     this.socketService.onDisconnected().subscribe(reason => {
       this.ready = false;
       this.isConnected = false;
-      this.alert.error("Whatsapp disconnected");
+      // this.alert.error("Whatsapp disconnected");
     });
 
   }
