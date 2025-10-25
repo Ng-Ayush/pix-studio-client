@@ -37,8 +37,6 @@ export class FaceDescReadinessComponent {
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
           this.isReady = res.isFaceDescriptorReady;
-          console.log("GOT VALUE HERE isFaceDescriptorReady",res.isFaceDescriptorReady);
-          
           if (this.isReady) {
             clearInterval(this.intervalId);
           }

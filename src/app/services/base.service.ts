@@ -47,6 +47,7 @@ export class BaseService {
     'getAllPhotosByEventId': '/api/mystudio/photo-selection/getAllPhotosByEventId',
     'checkIsBrowseAllFolderStatus': '/api/mystudio/photo-selection/checkIsBrowseAllFolderStatus',
     'checkHasUserAlreadyReviewed': '/api/mystudio/photo-selection/checkHasUserAlreadyReviewed',
+    'getTotalUploadedAiPhotosCount': '/api/mystudio/photo-selection/getTotalUploadedAiPhotosCount',
 
 
     //Customer Photo Selection

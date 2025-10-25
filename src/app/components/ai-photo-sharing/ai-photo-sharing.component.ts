@@ -30,7 +30,7 @@ export class AiPhotoSharingComponent {
   photoQualities = ['Basic', 'Standard', 'High'];
   selectedQuality = 'Basic';
   isModalOpen: boolean = false;
-  event_config: any = { watermark: {},need_customer_number:true };
+  event_config: any = { watermark: {}, need_customer_number: true };
   eventList: any = [];
   isEdit: boolean = false;
   deleteModal: boolean = false;
@@ -49,9 +49,12 @@ export class AiPhotoSharingComponent {
   showLogOutModal: boolean = false;
   isLoading: boolean = false;
   activeTab: any = 'create';
-  preview:any = { cover1: '', cover2: '' };
+  preview: any = { cover1: '', cover2: '' };
   transparencyValue: any = null;
   toggleWaterMark: boolean = false;
+  totalUploadedPhotosCount: any = 0;
+  percentage: number = 0;
+  progressClass: string = 'progress-green';
   constructor(
     private alert: AlertService,
     private router: Router,
@@ -69,7 +72,8 @@ export class AiPhotoSharingComponent {
 
   ngOnInit() {
     this.getAllEvents();
-    this.getAllCustomers();    
+    this.getAllCustomers();
+    this.getTotalUploadedAiPhotosCount();
   }
 
 
@@ -86,6 +90,19 @@ export class AiPhotoSharingComponent {
       }
     });
 
+  }
+
+  getTotalUploadedAiPhotosCount() {
+    this.eventService.getTotalUploadedAiPhotosCount((res: any) => {
+      if (res.status == 200) {
+        console.log("Total AI Uploaded Photos Count: ", res.data);
+        this.totalUploadedPhotosCount = res.data;
+        localStorage.setItem('totalAiUploadedPhotosCount', this.totalUploadedPhotosCount);
+        this.updateProgress();
+      } else {
+        this.alert.error(res.message);
+      }
+    });
   }
 
   getAllCustomers() {
@@ -188,7 +205,7 @@ export class AiPhotoSharingComponent {
     this.searchQuery = '';
     this.isEdit = false;
     this.event_config.watermark = { is_watermark: false, transparency: null };
-    this.event_config.need_customer_number = true;  
+    this.event_config.need_customer_number = true;
     this.customerConfig = {};
     this.preview = {};
   }
@@ -238,7 +255,7 @@ export class AiPhotoSharingComponent {
   copyAiShareLink(event: any) {
     const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id} \n\nRegards *${this.userData?.studio_name}*`;
     console.log(message);
-    
+
     navigator.clipboard.writeText(message).then(() => {
       this.alert.success('Unique code copied to clipboard');
     }).catch(err => {
@@ -264,7 +281,7 @@ export class AiPhotoSharingComponent {
     if (event.target.value == '') {
       this.filteredEvents = [...this.eventList];
     } else {
-      this.filteredEvents = this.eventList.filter((item: any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()));
+      this.filteredEvents = this.eventList.filter((item: any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()) || item.customer_name.toLowerCase().includes(event.target.value.toLowerCase()) || item.customer_phone.includes(event.target.value.toLowerCase()));
     }
   }
 
@@ -503,5 +520,22 @@ export class AiPhotoSharingComponent {
 
   toggleNeedCustomerNumber(event: any) {
     this.event_config.need_customer_number = event.target.checked;
+  }
+
+  updateProgress(): void {
+    if (this.userData?.allowed_photos_quantity > 0) {
+      this.percentage = (this.totalUploadedPhotosCount / this.userData?.allowed_photos_quantity) * 100;
+    } else {
+      this.percentage = 0;
+    }
+
+    // Update color based on percentage
+    if (this.percentage >= 90) {
+      this.progressClass = 'progress-red';
+    } else if (this.percentage >= 60) {
+      this.progressClass = 'progress-yellow';
+    } else {
+      this.progressClass = 'progress-green';
+    }
   }
 }

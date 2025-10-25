@@ -61,13 +61,21 @@
             </div>
         </div>
         <div class="w-full text-center mt-5 mb-5 px-5">
-            <div class="add-button flex justify-between mb-10 items-center gap-2">
+            <div class="add-button flex justify-between mb-10 items-center gap-2 flex-wrap px-5">
                 <div class="p-4 text-sm text-blue-800 rounded bg-blue-50" role="alert">
-                    <span class="font-medium">Trail version limit: </span> You can upload a maximum of
-                    {{this.userData?.id == 285 ? '1,000' : this.userData?.id == 28 ? '50,000' : 100}} photos per event.
+                    <span class="font-medium">Trial version limit: </span> You can upload a maximum of
+                    {{userData?.allowed_photos_quantity | number}}
+                    photos.
+                </div>
+                <div class="flex items-center gap-1 flex-col">
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" [ngClass]="progressClass" [style.width.%]="percentage">
+                        </div>
+                    </div>
+                    <div class="percentage-text flex w-full justify-between"> <span>{{totalUploadedPhotosCount | number}} of {{userData?.allowed_photos_quantity | number}} photos uploaded.</span> {{ percentage.toFixed(1) }}%</div>
                 </div>
                 <button (click)="openModal()"
-                    class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2">
+                    class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"

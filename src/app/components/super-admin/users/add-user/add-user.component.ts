@@ -17,7 +17,7 @@ import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fir
 })
 export class AddUserComponent {
 
-  userForm: FormGroup;
+  userForm: FormGroup|any;
   showPassword = false;
   isSubmitting = false;
   itemId: any;
@@ -37,6 +37,7 @@ export class AddUserComponent {
       facebook_url: ['', Validators.required],
       address: ['', Validators.required],
       access_expires_on: ['', Validators.required],
+      allowed_photos_quantity: [100, Validators.required],
     });
     this.itemId = this.route.snapshot.paramMap.get('id');
     if (this.itemId) {

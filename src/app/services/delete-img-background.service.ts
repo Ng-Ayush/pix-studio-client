@@ -83,6 +83,9 @@ export class DeleteImgBackgroundService {
     }
 
     this.isProcessingDeleteQueue = false;
+    this._pservice.getTotalUploadedAiPhotosCount((res:any)=>{
+      localStorage.setItem("totalAiUploadedPhotosCount",JSON.stringify(res.data));
+    });
   }
 
   async deleteFromDatabase(folderId: any, photos: any[]) {

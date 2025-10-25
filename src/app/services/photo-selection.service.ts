@@ -92,4 +92,8 @@ export class PhotoSelectionService extends BaseService {
   checkHasUserAlreadyReviewed(params:any,callback:any){
     return this.postData(params, this.httpUrls['checkHasUserAlreadyReviewed'], callback)
   }
+
+  getTotalUploadedAiPhotosCount(callback:any){
+    return this.getData({}, this.httpUrls['getTotalUploadedAiPhotosCount'], callback)
+  }
 }
