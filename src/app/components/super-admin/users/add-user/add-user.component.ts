@@ -7,6 +7,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-add-user',
@@ -25,7 +26,7 @@ export class AddUserComponent {
   searchTerm: any = '';
   storage = inject(Storage);
 
-  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder, private service: AdminService, private alert: AlertService, private route: ActivatedRoute, private router: Router,private common:CommonService) {
     this.userForm = this.fb.group({
       studio_name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -48,7 +49,8 @@ export class AddUserComponent {
 
   fetchUsersById() {
     this.service.getUsersById(this.itemId, (res: any) => {
-      this.userForm.patchValue(res);
+      const data = {...res, access_expires_on: res.access_expires_on ? this.common.formatDate(res.access_expires_on) : ''}
+      this.userForm.patchValue(data);
     })
 
   }
