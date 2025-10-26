@@ -246,7 +246,7 @@ export class PhotoSelectionPhotosComponent {
 
   async sortImages() {
     if (!this.selectedFolderHandle) {
-      alert("Please select a folder first!");
+      this.alert.error("Please select a folder first!");
       return;
     }
 
@@ -270,7 +270,7 @@ export class PhotoSelectionPhotosComponent {
         }
       }
 
-      alert("Images sorted successfully!");
+      this.alert.success("Images sorted successfully!");
       this.closeModal();
       this.loader.hide();
     } catch (error) {
