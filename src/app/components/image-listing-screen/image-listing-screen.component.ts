@@ -6,13 +6,46 @@ import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
 import { AlertService } from '../../services/alert.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  state,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-image-listing-screen',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage, ScrollingModule],
   templateUrl: './image-listing-screen.component.html',
-  styleUrl: './image-listing-screen.component.scss'
+  styleUrl: './image-listing-screen.component.scss',
+  animations: [
+    // Overlay fade in/out
+    trigger('fadeAnimation', [
+      transition(':enter', [style({ opacity: 0 }), animate('200ms ease-in', style({ opacity: 1 }))]),
+      transition(':leave', [animate('200ms ease-out', style({ opacity: 0 }))]),
+    ]),
+
+    // Modal zoom in/out
+    trigger('zoomAnimation', [
+      transition(':enter', [
+        style({ transform: 'scale(0.9)', opacity: 0 }),
+        animate('200ms ease-out', style({ transform: 'scale(1)', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ transform: 'scale(0.9)', opacity: 0 })),
+      ]),
+    ]),
+
+    // Image fade transition on change
+    trigger('imageFade', [
+      transition('* => *', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ImageListingScreenComponent {
 
@@ -28,6 +61,18 @@ export class ImageListingScreenComponent {
   showModal: boolean = false;
   showImageModal: boolean = false;
   currentImage: any = {};
+  currentIndex: number = 0;
+  imageLoading: boolean = false;
+  currentImageSrc: string = '';
+
+  zoomLevel: number = 1;
+  minZoom: number = 1;
+  maxZoom: number = 3;
+  translateX: number = 0;
+  translateY: number = 0;
+  isDragging: boolean = false;
+  lastMouseX: number = 0;
+  lastMouseY: number = 0;
 
   constructor(private pservice: PhotoSelectionService,
     private router: Router,
@@ -138,10 +183,11 @@ export class ImageListingScreenComponent {
     this.removeOutsideClickListener();
   }
 
-  viewImage(image: any) {
-    this.currentImage = image;
+  viewImage(idx: any) {
+    this.currentIndex = idx;
+    this.currentImageSrc = this.photos[this.currentIndex].photo_url;
     this.showImageModal = true;
-    this.addOutsideClickListener();
+    this.resetZoom();
   }
 
   addOutsideClickListener() {
@@ -152,21 +198,102 @@ export class ImageListingScreenComponent {
 
   removeOutsideClickListener() {
     setTimeout(() => {
-     document.removeEventListener('click', this.outsideClickHandler);
+      document.removeEventListener('click', this.outsideClickHandler);
     }, 100);
   }
 
   outsideClickHandler = (event: MouseEvent) => {
-    const modalContent: any = document.getElementById('imageModal');
-    console.log(modalContent.contains(event.target));
-    if (!modalContent.contains(event.target)) {
+    const modalContent: HTMLElement | null = document.getElementById('modalContainer');
+    if (!modalContent) return;
+
+    // Check if click target is outside the modal container
+    if (!modalContent.contains(event.target as Node)) {
       this.showImageModal = false;
       this.removeOutsideClickListener();
     }
-  }
+  };
+
 
   ngAfterViewInit() {
     // this.addOutsideClickListener();
   }
 
+  openModal(index: number) {
+    this.currentIndex = index;
+    this.showImageModal = true;
+    this.resetZoom();
+  }
+
+  closeModal() {
+    this.showImageModal = false;
+  }
+
+  nextImage(event?: MouseEvent) {
+    event?.stopPropagation();
+    this.resetZoom();
+    this.currentIndex = (this.currentIndex + 1) % this.photos.length;
+    this.imageLoading = true;
+    this.currentImageSrc = this.photos[this.currentIndex].photo_url;
+    setTimeout(() => {
+      this.imageLoading = false;
+    }, 500);
+  }
+
+  previousImage(event?: MouseEvent) {
+    event?.stopPropagation();
+    this.resetZoom();
+    this.currentIndex = (this.currentIndex - 1 + this.photos.length) % this.photos.length;
+    this.imageLoading = true;
+    this.currentImageSrc = this.photos[this.currentIndex].photo_url;
+    setTimeout(() => {
+      this.imageLoading = false;
+    }, 500);
+  }
+
+  zoomIn() {
+    if (this.zoomLevel < this.maxZoom) {
+      this.zoomLevel += 0.25;
+    }
+  }
+
+  zoomOut() {
+    if (this.zoomLevel > this.minZoom) {
+      this.zoomLevel -= 0.25;
+      if (this.zoomLevel <= 1) {
+        this.translateX = 0;
+        this.translateY = 0;
+      }
+    }
+  }
+
+  startDragging(event: MouseEvent) {
+    if (this.zoomLevel <= 1) return;
+    this.isDragging = true;
+    this.lastMouseX = event.clientX;
+    this.lastMouseY = event.clientY;
+  }
+
+  onDragging(event: MouseEvent) {
+    if (!this.isDragging) return;
+    const dx = event.clientX - this.lastMouseX;
+    const dy = event.clientY - this.lastMouseY;
+    this.translateX += dx / this.zoomLevel;
+    this.translateY += dy / this.zoomLevel;
+    this.lastMouseX = event.clientX;
+    this.lastMouseY = event.clientY;
+  }
+
+  stopDragging() {
+    this.isDragging = false;
+  }
+
+  resetZoom() {
+    this.zoomLevel = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+  }
+
+
 }
+
+

@@ -30,8 +30,11 @@
     </nav>
 
     <main class="relative z-10 flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white rounded-xl shadow-xl p-6 md:p-8">
-            <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 pb-4 border-b border-gray-200">
+        <div class="bg-white rounded-xl shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 pb-4 border-b border-gray-200 p-5" style="position: sticky;
+    top: 78px;
+    z-index: 99999999;
+    background: #ffffff;">
                 <div class="flex gap-2 items-center mb-4">
                     <button _ngcontent-ng-c1037667738="" (click)="backToFolderListing()"
                         class="cursor-pointer text-indigo-600 p-2 rounded-full hover:bg-gray-100"><svg
@@ -64,8 +67,8 @@
             </div>
 
             <!-- <cdk-virtual-scroll-viewport itemSize="30" class="viewport"> -->
-            <div class="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-                <div *ngFor="let image of photos; let idx = index;trackBy:trackPhotos" (click)="viewImage(image)"
+            <div class="grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 p-5">
+                <div *ngFor="let image of photos; let idx = index;trackBy:trackPhotos" (click)="viewImage(idx)"
                     class="relative cursor-pointer group bg-gray-100 rounded-lg overflow-hidden shadow-lg aspect-w-1 aspect-h-1">
                     <img [ngSrc]="image.photo_url" [alt]="image.photo_name" priority width="300" height="300"
                         class="w-full h-full z-50 object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
@@ -149,7 +152,9 @@
     </div>
 </div>
 
-<div *ngIf="showImageModal"
+
+
+<!-- <div *ngIf="showImageModal"
     class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
     <div class="rounded-lg shadow-xl w-full mx-4 transform transition-all duration-300 ease-in-out"
         [ngClass]="{'modal-fade-in': showImageModal}">
@@ -207,6 +212,105 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div> -->
+
+
+<div *ngIf="showImageModal" class="fixed inset-0 bg-[#000000a3] bg-opacity-70 flex items-center justify-center z-50"
+    @fadeAnimation (click)="closeModal()">
+    <div id="modalContainer"
+        class="relative bg-white rounded overflow-hidden shadow-2xl max-w-[1100px] w-full flex items-center justify-center"
+        (click)="$event.stopPropagation()" @zoomAnimation>
+        <!-- <img [src]="currentImageSrc" [alt]="photos[currentIndex]?.photo_name" decoding="async" loading="eager"
+            fetchpriority="high" height="600"
+            class="object-contain max-h-[80vh] w-full mx-auto transition-opacity duration-300 ease-in-out"
+            [@imageFade]="currentIndex" [class.opacity-50]="imageLoading" /> -->
+
+        <div class="overflow-hidden relative"
+            style="background: white; max-width: 1100px; height: 720px; display: block; margin: auto;"
+            (mousedown)="startDragging($event)" (mousemove)="onDragging($event)" (mouseup)="stopDragging()"
+            (mouseleave)="stopDragging()">
+            <img [src]="currentImageSrc"
+                [style.transform]="'scale(' + zoomLevel + ') translate(' + translateX + 'px, ' + translateY + 'px)'"
+                [style.transition]="isDragging ? 'none' : 'transform 0.2s ease'"
+                [style.cursor]="zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'"
+                class="object-contain view-img transition-all duration-300 ease-in-out"
+                style="width: 100%; height: 100%; user-select: none;" draggable="false" />
+        </div>
+
+        <div *ngIf="imageLoading" class="absolute inset-0 flex items-center justify-center">
+            <div class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <button (click)="closeModal()"
+            class="absolute cursor-pointer top-3 right-3 bg-zinc-900 text-white text-lg rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-800 z-50">
+            ✕
+        </button>
+
+        <button (click)="zoomIn()" style="    z-index: 9999;
+    right: 56px;
+    top: 11px;
+    font-size: 25px;"
+            class="absolute cursor-pointer top-2 bg-zinc-900 opacity-100 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
+            +
+        </button>
+
+        <button (click)="zoomOut()" style="    z-index: 9999;
+    right: 100px;
+    top: 12px;
+    font-size: 28px;"
+            class="absolute top-2 cursor-pointer bg-zinc-900 opacity-100 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
+            –
+        </button>
+
+        <button (click)="previousImage($event)"
+            class="absolute left-3 cursor-pointer top-1/2 transform -translate-y-1/2 bg-gray-900 bg-opacity-70 hover:bg-opacity-90 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out active:scale-90 focus:outline-none z-50"
+            aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+        </button>
+
+        <button (click)="nextImage($event)"
+            class="absolute right-3 cursor-pointer top-1/2 transform -translate-y-1/2 bg-gray-900 bg-opacity-70 hover:bg-opacity-90 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out active:scale-90 focus:outline-none z-50"
+            aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+        </button>
+
+        <div class="absolute bottom-5 inset-x-0 flex justify-center gap-8 items-center">
+            <button (click)="toggleSelect(photos[currentIndex])" [ngClass]="{
+          'bg-blue-500 hover:bg-blue-600': photos[currentIndex]?.is_selected,
+          'bg-gray-700 bg-opacity-70 hover:bg-opacity-90 hover:bg-gray-600': !photos[currentIndex]?.is_selected
+        }" class="w-14 h-14 rounded-full flex items-center justify-center text-white transition-all duration-200 ease-in-out transform active:scale-90 focus:outline-none"
+                aria-label="Select">
+                <svg *ngIf="photos[currentIndex]?.is_selected" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <svg *ngIf="!photos[currentIndex]?.is_selected" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </button>
+
+            <button (click)="toggleFavorite(photos[currentIndex])" [ngClass]="{
+          'text-red-500': photos[currentIndex]?.is_favourite,
+          'text-white hover:text-red-400': !photos[currentIndex]?.is_favourite
+        }" class="bg-gray-700 bg-opacity-70 hover:bg-opacity-90 hover:bg-gray-600 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out transform active:scale-90 focus:outline-none"
+                aria-label="Favorite">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    [attr.fill]="photos[currentIndex]?.is_favourite ? 'currentColor' : 'none'" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+            </button>
         </div>
     </div>
 </div>

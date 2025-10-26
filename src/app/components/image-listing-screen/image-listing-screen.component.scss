@@ -37,4 +37,14 @@
     height: 500px;
     object-fit: contain;
     width: -webkit-fill-available;
+  transition: opacity 0.3s ease-in-out;
+}
+
+:host {
+  display: block;
+}
+
+img {
+  user-select: none;
+  pointer-events: none;
 }
