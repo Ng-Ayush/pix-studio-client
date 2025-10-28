@@ -55,7 +55,7 @@ export class UploadImgBackgroundAiService {
   isFaceDescriptorReady: any = null;
   aiEventId: any = null;
 
-  allowed_photos_quantity: any = 100;  //min of 100 photos
+  allowed_photos_quantity: any = 0;
   allUploadQueues:any=[];
   // ---------------- Handle File Input ----------------
  handleAIFileInput(
@@ -82,9 +82,14 @@ export class UploadImgBackgroundAiService {
 
   const uniqueFiles = files.filter(f => !existingNameSet.has(f.name.toLowerCase()));
 
+  if(!this.allowed_photos_quantity){
+    this.allowed_photos_quantity = JSON.parse(<any>localStorage.getItem("userData")).allowed_photos_quantity || 100;
+  }
+
   let limitPhotos = this.allowed_photos_quantity;
   if (this.user_id == 285) limitPhotos = 1000;
   else if (this.user_id == 31) limitPhotos = 50000;
+  // else if(this.user_id == 429) limitPhotos = 40000;
 
   // ✅ NEW: Get total queued photos across ALL events
   const globalQueuedCount = this.allUploadQueues
