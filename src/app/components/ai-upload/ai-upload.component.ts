@@ -76,7 +76,7 @@ export class AiUploadComponent {
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     if (this.userData?.youtube_cover_url) {
       const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
-      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`;
+      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1&autoplay=1`;
       this.youtubeCoverUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
     }
     this.eventId = this.userData?.event_id;
