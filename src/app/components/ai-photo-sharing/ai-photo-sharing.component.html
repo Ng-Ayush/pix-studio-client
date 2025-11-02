@@ -72,7 +72,9 @@
                         <div class="progress-bar-fill" [ngClass]="progressClass" [style.width.%]="percentage">
                         </div>
                     </div>
-                    <div class="percentage-text flex w-full justify-between"> <span>{{totalUploadedPhotosCount | number}} of {{userData?.allowed_photos_quantity | number}} photos uploaded.</span> {{ percentage.toFixed(1) }}%</div>
+                    <div class="percentage-text flex w-full justify-between"> <span>{{totalUploadedPhotosCount |
+                            number}} of {{userData?.allowed_photos_quantity | number}} photos uploaded.</span> {{
+                        percentage.toFixed(1) }}%</div>
                 </div>
                 <button (click)="openModal()"
                     class="cursor-pointer bg-[#494CA2] hover:bg-[#494CA2] text-white px-4 py-3 rounded-full flex items-center transition-colors duration-200 gap-2 flex-shrink-0">
@@ -224,9 +226,11 @@
     </main>
 </div>
 
-<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-col justify-center items-center z-50  transition-opacity duration-300 ease-in-out"
+<div class="fixed inset-0 bg-[#000000a3] bg-opacity-100 flex flex-row justify-center items-center z-50 gap-6 p-6 transition-opacity duration-300 ease-in-out"
     *ngIf="isModalOpen">
-    <div class="bg-white rounded-xl w-full max-w-xl p-6 shadow-xl transform transition-all duration-300 ease-in-out"
+
+    <!-- Main Modal -->
+    <div class="bg-white rounded-xl w-full max-w-xl p-6 shadow-xl transform transition-all duration-300 ease-in-out max-h-[90vh] overflow-y-auto"
         [ngClass]="{'modal-fade-in': isModalOpen}">
         <div class="inline-flex rounded-xl gap-2 mb-3">
             <button (click)="activeTab = 'create'"
@@ -286,7 +290,8 @@
             <div class="py-3">
                 <span class="status-pill flex items-center gap-2">
                     <label class="switch">
-                        <input (change)="toggleNeedCustomerNumber($event)" [checked]="event_config?.need_customer_number" type="checkbox">
+                        <input (change)="toggleNeedCustomerNumber($event)"
+                            [checked]="event_config?.need_customer_number" type="checkbox">
                         <div class="slider">
                             <div class="circle">
                                 <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
@@ -318,8 +323,8 @@
                 <span class="status-pill flex items-center mb-2 gap-2">
                     <!-- From Uiverse.io by Galahhad -->
                     <label class="switch">
-                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark" [disabled]="isEdit"
-                            type="checkbox">
+                        <input (change)="toggleWaterMarkEvent($event)" [checked]="event_config?.watermark?.is_watermark"
+                            [disabled]="isEdit" type="checkbox">
                         <div class="slider">
                             <div class="circle">
                                 <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512"
@@ -344,7 +349,9 @@
                                 </svg>
                             </div>
                         </div>
-                    </label> <span class="inline-block text-sm text-gray-700">Watermark  <span class="block text-xs text-gray-400 mt-1">(Applied Once Only — Before Photo Upload)</span></span>
+                    </label> <span class="inline-block text-sm text-gray-700">Watermark <span
+                            class="block text-xs text-gray-400 mt-1">(Applied Once Only — Before Photo
+                            Upload)</span></span>
                 </span>
                 <label
                     class="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-gray-700 text-xs cursor-pointer p-4 rounded-md bg-gray-50 shadow">
@@ -414,19 +421,37 @@
                     photos</span>
             </div>
             <div class="flex-1 min-w-[220px] mb-3">
-                <input id="event-name" type="text" placeholder="Enter Youtube Url" [(ngModel)]="event_config.youtube_cover_url"
+                <input id="event-name" type="text" placeholder="Enter Youtube Url"
+                    [(ngModel)]="event_config.youtube_cover_url"
                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
-                <span class="block text-xs text-gray-400 mt-1">Optional. This video will be played at customer cover image.</span>
+                <span class="block text-xs text-gray-400 mt-1">Optional. This video will be played at customer cover
+                    image.</span>
             </div>
             <div class="flex-1 min-w-[220px] mb-3">
-                <input id="event-name" type="text" placeholder="Your Google Review Url/Link" [(ngModel)]="event_config.google_review_url"
+                <input id="event-name" type="text" placeholder="Your Google Review Url/Link"
+                    [(ngModel)]="event_config.google_review_url"
                     class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
-                <span class="block text-xs text-gray-400 mt-1">Optional. Customer will be prompt to review you on google</span>
+                <span class="block text-xs text-gray-400 mt-1">Optional. Customer will be prompt to review you on
+                    google</span>
             </div>
         </ng-container>
+
         <ng-template #cover>
             <div class="flex flex-col items-center justify-center bg-gray-100 p-6 mb-2">
                 <div class="w-full max-w-sm flex flex-col gap-6">
+
+                    <label class="block w-full">
+                        <span class="block font-semibold text-gray-700 mb-2">
+                            Select Template
+                        </span>
+                        <select [(ngModel)]="event_config.selected_template"
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400">
+                            <option value="">Choose a template</option>
+                            <option value="template1">Template 1</option>
+                            <option value="template2">Template 2</option>
+                            <option value="template3">Template 3</option>
+                        </select>
+                    </label>
 
                     <label class="block w-full">
                         <span class="block font-semibold text-gray-700 mb-2">
@@ -471,13 +496,54 @@
         </div>
     </div>
 
+    <!-- Preview Section - Shows Laptop and Mobile Mockups -->
+    <div *ngIf="activeTab === 'cover' && this.event_config?.selected_template"
+        class="bg-white rounded-xl p-6 shadow-xl max-h-[90vh] overflow-y-auto flex flex-col items-center">
+        <h3 class="text-lg font-semibold text-gray-800 mb-6">Template Preview</h3>
 
+        <!-- Laptop Preview -->
+        <div class="mb-8">
+            <h4 class="text-sm font-medium text-gray-600 mb-3">Desktop View</h4>
+            <div class="relative" style="width: 450px;">
+                <!-- Laptop Frame -->
+                <div class="bg-gray-800 rounded-t-xl pt-3 px-3 pb-0">
+                    <!-- Laptop Screen -->
+                    <div class="bg-white rounded-t-lg overflow-hidden relative" style="aspect-ratio: 16/9;">
+                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'laptop')" (error)="onImageError($event)" alt="Laptop preview"
+                            class="w-full h-full object-fill">
+                    </div>
+                </div>
+                <!-- Laptop Base -->
+                <div class="bg-gray-700 h-2 rounded-b-xl"></div>
+                <div class="bg-gray-600 h-1 w-3/4 mx-auto rounded-b-lg"></div>
+            </div>
+        </div>
 
-
-    <!-- Action Buttons -->
+        <!-- Mobile Preview -->
+        <div>
+            <h4 class="text-sm font-medium text-gray-600 mb-3">Mobile View</h4>
+            <div class="relative" style="width: 220px;">
+                <!-- Mobile Frame -->
+                <div class="bg-gray-900 rounded-3xl p-3 shadow-2xl">
+                    <!-- Notch -->
+                    <div
+                        class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-b-2xl z-10">
+                    </div>
+                    <!-- Screen -->
+                    <div class="bg-white rounded-2xl overflow-hidden relative" style="aspect-ratio: 9/19.5;">
+                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'mobile')" (error)="onImageError($event)" alt="Mobile preview"
+                            class="w-full h-full object-fill">
+                    </div>
+                    <!-- Home Indicator -->
+                    <div
+                        class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white rounded-full opacity-50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
-
 <div *ngIf="deleteModal"
     class="fixed inset-0 bg-[#000000a3] flex items-center justify-center z-90 transition-opacity duration-300 ease-in-out">
     <div #modalContent

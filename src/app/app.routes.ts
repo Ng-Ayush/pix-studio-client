@@ -104,6 +104,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'template-one',
+    loadComponent: () => import("./shared/ai-cover/template-one/template-one.component").then(m => m.TemplateOneComponent),
+  },
+  {
+    path: 'template-two',
+    loadComponent: () => import("./shared/ai-cover/template-two/template-two.component").then(m => m.TemplateTwoComponent),
+  },
+  {
     path: 'selection',
     loadComponent: () => import("./components/selection/selection.component").then(m => m.SelectionComponent),
     children: [

@@ -55,6 +55,8 @@ export class AiPhotoSharingComponent {
   totalUploadedPhotosCount: any = 0;
   percentage: number = 0;
   progressClass: string = 'progress-green';
+  selectedTemplate: any = '';
+
   constructor(
     private alert: AlertService,
     private router: Router,
@@ -119,6 +121,7 @@ export class AiPhotoSharingComponent {
     this.isModalOpen = false;
     this.isEdit = false;
     this.deleteModal = false;
+    this.selectedTemplate = '';
   }
 
   openPriceModal() {
@@ -140,6 +143,10 @@ export class AiPhotoSharingComponent {
       return;
     }
 
+    if(!this.event_config?.selected_template){
+      this.alert.error("Please select template");
+      return;
+    }
 
     if (!this.isEdit) {
 
@@ -159,6 +166,7 @@ export class AiPhotoSharingComponent {
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
+        selected_template: this.event_config?.selected_template || 'template1'
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -180,6 +188,7 @@ export class AiPhotoSharingComponent {
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
+        selected_template: this.event_config?.selected_template || 'template1'
       }
       console.log(params);
 
@@ -206,6 +215,7 @@ export class AiPhotoSharingComponent {
     this.isEdit = false;
     this.event_config.watermark = { is_watermark: false, transparency: null };
     this.event_config.need_customer_number = true;
+    this.event_config.selected_template = this.event_config?.selected_template ?? 'template1';
     this.customerConfig = {};
     this.preview = {};
   }
@@ -538,4 +548,27 @@ export class AiPhotoSharingComponent {
       this.progressClass = 'progress-green';
     }
   }
+  getTemplateImage(template: string, device: string): string {
+    const templates :any = {
+      template1: {
+        laptop: "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012036.png?alt=media&token=93a88de0-b435-4f4e-9652-3a49e4346c3e",
+        mobile: "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012111.png?alt=media&token=4441d9bd-ad98-44ed-aa15-5637d3227e7a"
+      },
+      template2: {
+        laptop: "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012218.png?alt=media&token=3d20ebd4-d0b1-4654-8d40-e963ba383dbf",
+        mobile: 'https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012244%20(1).png?alt=media&token=decb044a-8522-4fb6-8dc8-e931dadd0c18'
+      },
+      template3: {
+        laptop: 'https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012301.png?alt=media&token=963bd57a-8157-4691-b56c-dcf008683456',
+        mobile: 'https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012326%20(1).png?alt=media&token=8dba8c17-b24f-40d6-8a85-b0877571e57e'
+      }
+    };
+
+    return templates[template]?.[device] || '';
+  }
+
+  onImageError(event:any){
+    event.target.src = 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png';
+  }
+
 }
