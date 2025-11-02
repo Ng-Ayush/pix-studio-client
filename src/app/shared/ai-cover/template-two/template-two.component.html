@@ -1,221 +1,320 @@
 <div class="gallery-container">
-  <!-- Header -->
-  <header class="header" [class.scrolled]="isHeaderScrolled">
-    <div class="header-content">
-      <div class="logo-section">
-        <div class="logo-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
-            <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="brand-info">
-          <h1 class="brand-name">Suraj Production</h1>
-          <p class="brand-location">Raebareli, India</p>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Carousel Section -->
-  <div class="carousel-wrapper">
-    <div class="carousel">
-      <div class="carousel-track">
-        <div 
-          class="carousel-slide" 
-          *ngFor="let image of carouselImages; let i = index"
-          [class.active]="currentSlide === i">
-          <img [src]="image" alt="Carousel Image" />
-          <div class="carousel-overlay"></div>
-        </div>
-      </div>
-      
-      <button class="carousel-btn prev" (click)="prevSlide()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      
-      <button class="carousel-btn next" (click)="nextSlide()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-      
-      <div class="carousel-dots">
-        <span 
-          *ngFor="let image of carouselImages; let i = index" 
-          class="dot"
-          [class.active]="currentSlide === i"
-          (click)="goToSlide(i)">
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tabs Section -->
-  <div class="tabs-wrapper">
-    <div class="tabs">
-      <button 
-        class="tab-btn" 
-        [class.active]="activeTab === 'all'"
-        (click)="filterImages('all')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-        </svg>
-        All Photos
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeTab === 'photos'"
-        (click)="filterImages('photos')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        Photos
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeTab === 'matched'"
-        (click)="filterImages('matched')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-        Matched
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeTab === 'mehdi'"
-        (click)="filterImages('mehdi')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-        </svg>
-        Mehndi
-      </button>
-      <button 
-        class="tab-btn" 
-        [class.active]="activeTab === 'haldi'"
-        (click)="filterImages('haldi')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-        </svg>
-        Haldi
-      </button>
-    </div>
-  </div>
-
-  <!-- Gallery Grid -->
-  <div class="gallery-grid">
-    <div 
-      class="gallery-card" 
-      *ngFor="let image of filteredImages; let i = index"
-      [style.animation-delay]="i * 0.08 + 's'"
-      (click)="openModal(image)">
-      <div class="card-image-wrapper">
-        <img [src]="image.url" [alt]="image.title" />
-        <div class="card-overlay">
-          <div class="card-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="card-info">
-        <h3 class="card-title">{{ image.title }}</h3>
-        <button class="download-icon-btn" (click)="downloadImage(image.url, image.title); $event.stopPropagation()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-top">
-        <div class="footer-logo-section">
-          <div class="footer-logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
-              <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <div class="footer-brand-info">
-            <h2 class="footer-brand-name">Suraj Production</h2>
-            <p class="footer-brand-location">Raebareli, India</p>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; {{ currentYear }} Suraj Production. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Modal with Thumbnail Sidebar -->
-  <div class="modal" *ngIf="isModalOpen" (click)="closeModal()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-      <!-- Top Bar -->
-      <div class="modal-top-bar">
-        <button class="thumbnail-toggle-btn" (click)="toggleThumbnails()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          {{ showThumbnails ? 'Hide' : 'Show' }} Gallery
-        </button>
-        <button class="modal-close-btn" (click)="closeModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Main Content Area -->
-      <div class="modal-content-wrapper">
-        <!-- Thumbnail Sidebar -->
-        <div class="thumbnail-sidebar" [class.show]="showThumbnails">
-          <div class="thumbnail-list">
-            <div 
-              class="thumbnail-item" 
-              *ngFor="let img of filteredImages; let i = index"
-              [class.active]="currentImage?.id === img.id"
-              (click)="selectImage(img)">
-              <img [src]="img.url" [alt]="img.title" />
-              <div class="thumbnail-overlay">
-                <span class="thumbnail-number">{{ i + 1 }}</span>
-              </div>
+    <!-- Header -->
+    <header class="header" [class.scrolled]="isHeaderScrolled">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img [src]="userData?.studio_icon" alt="Logo">
+                </div>
+                <div class="brand-info">
+                    <h1 class="brand-name">{{userData?.studio_name}}</h1>
+                    <p class="brand-location">{{userData?.address}}</p>
+                    <p class="brand-location">{{userData?.phone_number}}</p>
+                </div>
             </div>
-          </div>
         </div>
+    </header>
 
-        <!-- Main Image Viewer -->
-        <div class="modal-viewer">
-          <button class="nav-btn prev-btn" (click)="prevImage()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          <div class="image-display">
-            <img [src]="currentImage?.url" [alt]="currentImage?.title" class="main-image" />
-            <div class="image-info-bar">
-              <span class="image-counter">{{ currentImageIndex + 1 }} / {{ filteredImages.length }}</span>
-              <span class="image-title">{{ currentImage?.title }}</span>
+    <!-- Carousel Section -->
+    <div class="carousel-wrapper">
+        <div class="carousel">
+            <div class="carousel-inner" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+                <div class="carousel-item" *ngFor="let image of carouselImages">
+                    <img [src]="image?.url" alt="Carousel Image" />
+                </div>
             </div>
-          </div>
-          
-          <button class="nav-btn next-btn" (click)="nextImage()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+
+            <button class="carousel-btn prev" (click)="prevSlide()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <button class="carousel-btn next" (click)="nextSlide()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            <div class="carousel-indicators">
+                <button *ngFor="let image of carouselImages; let i = index" [class.active]="currentSlide === i"
+                    (click)="goToSlide(i)">
+                </button>
+            </div>
         </div>
-      </div>
+        <button class="open-camera-btn" (click)="openCameraModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Open Camera
+        </button>
     </div>
-  </div>
+
+    <!-- Tabs Section -->
+    <div class="tabs-wrapper">
+        <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'browse'"
+                (click)="activeTab = 'browse'; activeFolderTab = null;">
+                Browse All Photos
+            </button>
+            <ng-container *ngFor="let folder of photos | uniqueFolderId">
+                <button class="tab-btn" [class.active]="activeFolderTab === folder.folder_id"
+                    (click)="activeFolderTab = folder.folder_id; activeTab = ''">
+                    {{ folder.folder_name }}
+                </button>
+            </ng-container>
+            <button class="tab-btn" [class.active]="activeTab === 'matched'" *ngIf="matchedImages.length > 0"
+                (click)="activeTab = 'matched'; activeFolderTab = null;">
+                Matched Photos
+            </button>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" *ngIf="activeFolderTab && groupedPhotos?.[activeFolderTab]?.length > 0;">
+        <ng-container>
+            <div class="gallery-item"
+                *ngFor="let image of groupedPhotos[activeFolderTab]; trackBy: trackPhotos; let i = index"
+                [style.animation-delay]="i * 0.05 + 's'">
+                <img [src]="image.photo_url" [alt]="image.title" />
+                <div class="overlay">
+                    <button class="action-btn view-btn" (click)="openModal(image)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View
+                    </button>
+                    <button class="action-btn download-btn" (click)="downloadSinglePhoto(image, i)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download
+                    </button>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="gallery-grid" *ngIf="activeTab === 'browse' && isBrowseAllFolder">
+        <ng-container *ngIf="photos.length > 0; else noPhotosBrowseAll">
+            <div class="gallery-item" *ngFor="let image of photos; trackBy: trackPhotos; let i = index"
+                [style.animation-delay]="i * 0.05 + 's'">
+                <img [src]="image.photo_url" [alt]="image.title" />
+                <div class="overlay">
+                    <button class="action-btn view-btn" (click)="openModal(image)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View
+                    </button>
+                    <button class="action-btn download-btn" (click)="downloadSinglePhoto(image, i)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download
+                    </button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noPhotosBrowseAll>
+            <h1 class="text-center">Photos haven't been uploaded yet.</h1>
+        </ng-template>
+    </div>
+
+    <ng-container *ngIf="activeTab === 'matched'">
+        <div class="gallery-grid" *ngIf="matchedImages.length > 0 else onlyMatched">
+            <div class="gallery-item" *ngFor="let image of matchedImages; trackBy: trackPhotos; let i = index"
+                [style.animation-delay]="i * 0.05 + 's'">
+                <img [src]="image" [alt]="image.title" />
+                <div class="overlay">
+                    <button class="action-btn view-btn" (click)="openMatchedModal(image)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View
+                    </button>
+                    <button class="action-btn download-btn" (click)="downloadSinglePhoto(image, i)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #onlyMatched>
+        <h1 class="text-center">No Faces Found !</h1>
+    </ng-template>
+    <ng-template #noBrowseAll>
+        <h1 class="text-center">Please add your selfie above!</h1>
+    </ng-template>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-logo-section">
+                    <div class="footer-logo-icon">
+                        <img [src]="userData?.studio_icon" alt="Logo">
+                    </div>
+                    <div class="footer-brand-info">
+                        <h1 class="brand-name">{{userData?.studio_name}}</h1>
+                        <p class="brand-location">{{userData?.address}}</p>
+                        <p class="brand-location">{{userData?.phone_number}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ currentYear }} {{userData?.studio_name}}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" *ngIf="isModalOpen" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <button class="modal-close" (click)="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <button class="modal-nav prev" (click)="prevImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <div class="modal-image-wrapper">
+                <img [src]="currentImage?.photo_url" [alt]="currentImage?.title" class="modal-image" />
+                <div class="modal-title">{{ currentImage?.title }}</div>
+            </div>
+
+            <button class="modal-nav next" (click)="nextImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <!-- AI MATCHED MODAL -->
+    <div class="modal" *ngIf="isMatchedModalOpen" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <button class="modal-close" (click)="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <!-- 
+            <button class="modal-nav prev" (click)="prevImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button> -->
+
+            <div class="modal-image-wrapper">
+                <img [src]="currentImage" [alt]="currentImage?.title" class="modal-image" />
+                <div class="modal-title">{{ currentImage?.title }}</div>
+            </div>
+
+            <!-- <button class="modal-nav next" (click)="nextImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button> -->
+        </div>
+    </div>
+    <div class="camera-modal" *ngIf="isCameraModalOpen">
+        <div class="camera-modal-content">
+            <div class="camera-header">
+                <h2>Camera</h2>
+                <button class="camera-close-btn" (click)="closeCameraModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="camera-viewer">
+                <div *ngIf="isMobile; else desktopUI">
+                    <input #mobileCamInput type="file" accept="image/*" capture hidden
+                        (change)="onMobilePhotoCapture($event)" />
+                </div>
+                <ng-template #desktopUI>
+                    <video id="cameraVideo" autoplay playsinline></video>
+                </ng-template>
+            </div>
+
+            <div class="camera-controls">
+                <div class="phone-input-group" *ngIf="userData?.need_customer_number">
+                    <label for="phoneNumber">Contact Number</label>
+                    <input type="tel" id="phoneNumber" [(ngModel)]="aiGuestConfig.phone"
+                        placeholder="Enter phone number" maxlength="10" pattern="[0-9]*" inputmode="numeric"
+                        class="phone-input" />
+                </div>
+                <button class="capture-btn" (click)="captureImage()" [disabled]="isLoading" *ngIf="!isMobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Capture <div role="status" *ngIf="isLoading">
+                        <svg aria-hidden="true"
+                            class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
+                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor" />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill" />
+                        </svg>
+                    </div>
+                </button>
+                 <button class="capture-btn" (click)="submitPhoto()" [disabled]="isLoading" *ngIf="isMobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Submit <div role="status" *ngIf="isLoading">
+                        <svg aria-hidden="true"
+                            class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
+                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor" />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill" />
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader-overlay" *ngIf="isLoading">
+    <img src="../../../../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>

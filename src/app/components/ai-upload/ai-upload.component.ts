@@ -12,10 +12,12 @@ import * as faceapi from 'face-api.js';
 import { environment } from '../../../environments/environment';
 import { UniqueFolderIdPipe } from '../../shared/unique-folder-id.pipe';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { TemplateThreeComponent } from '../../shared/ai-cover/template-three/template-three.component';
+import { TemplateTwoComponent } from '../../shared/ai-cover/template-two/template-two.component';
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, UniqueFolderIdPipe],
+  imports: [CommonModule, FormsModule, UniqueFolderIdPipe,TemplateTwoComponent,TemplateThreeComponent],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
 })
@@ -31,7 +33,6 @@ export class AiUploadComponent {
   isOTPSent: boolean = false;
   otpcode: number = 0;
   isOtpVerified: boolean = false;
-  storage = inject(Storage);
   eventId: any = '';
   isImageCaptured: boolean = false;
   capturedGuestImage: any = {};
@@ -150,46 +151,19 @@ export class AiUploadComponent {
     this.photoCaptured = true;
     this.capturedBlob = file;
 
-    // If phone not required, directly send
     if (!this.userData?.need_customer_number) {
       await this.sendToServer(file);
-      // this.addAiGuest();
     }
-
-    // if(!this.userData?.isFaceDescriptorReady){
-    //   this.addAiGuest();
-    //   this.alert.info('Your smile has been captured. You will be notified once it is ready.',5000);
-    //   return;
-    // }
-
-    // if (this.userData?.need_customer_number && isPhoneValid && file) {
-    //   await this.sendToServer(file);
-    //   this.addAiGuest();
-    // }
-    // // Scenario 2: need_customer_number is false, file exists
-    // else if (!this.userData?.need_customer_number && file) {
-    //   this.sendToServer(file);
-    // }
-    // else if (!this.userData?.need_customer_number && !file) {
-    //   this.alert.error("File is missing or no capture found.");
-    // }
-    // else if (this.userData?.need_customer_number && (!phone || phone.length !== 10)) {
-    //   this.alert.error("Please enter a valid 10-digit phone number.");
-    // }
-    // return;
   }
 
   canSubmit(): boolean {
-    // Must have a captured photo
     if (!this.photoCaptured) return false;
 
-    // If phone required → validate
     if (this.userData?.need_customer_number) {
       const phone = this.aiGuestConfig.phone;
       return !!phone && phone.length == 10;
     }
 
-    // If not required → just photo is enough
     return true;
   }
   async submitPhoto() {
@@ -198,7 +172,6 @@ export class AiUploadComponent {
       return;
     }
 
-    // Validate phone if required
     if (this.userData?.need_customer_number) {
       const phone = this.aiGuestConfig.phone;
       if (!phone || phone.length !== 10) {
@@ -207,7 +180,6 @@ export class AiUploadComponent {
       }
     }
 
-    // If userData indicates face not ready
     if (!this.userData?.isFaceDescriptorReady) {
       this.addAiGuest();
       this.alert.info(
@@ -313,8 +285,6 @@ export class AiUploadComponent {
       if (res.status == 200) {
         this.photos = res.data;
         this.groupPhotosByFolder();
-
-        // this.userData = res.data;
       }
 
     })
@@ -446,72 +416,6 @@ export class AiUploadComponent {
       });
   }
 
-  // dataURLtoBlob(dataURL: string): Blob {
-  //   const arr = dataURL.split(',');
-  //   const mime = arr[0].match(/:(.*?);/)![1];
-  //   const bstr = atob(arr[1]);
-  //   let n = bstr.length;
-  //   const u8arr = new Uint8Array(n);
-  //   while (n--) u8arr[n] = bstr.charCodeAt(n);
-  //   return new Blob([u8arr], { type: mime });
-  // }
-
-  // async getFaceDescriptorsFromUrl(url: string): Promise<Float32Array[]> {
-  //   const img = await faceapi.fetchImage(url);
-  //   const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
-  //     .withFaceLandmarks()
-  //     .withFaceDescriptors();
-  //   return detections.map(det => det.descriptor);
-  // }
-
-  // // Capture face descriptor from a single face image Data URL (still needed for capture)
-  // async getFaceDescriptorFromDataURL(dataUrl: string): Promise<Float32Array | null> {
-  //   const img = await faceapi.fetchImage(dataUrl);
-  //   const detection = await faceapi.detectSingleFace(img, new faceapi.SsdMobilenetv1Options())
-  //     .withFaceLandmarks()
-  //     .withFaceDescriptor();
-  //   return detection ? detection.descriptor : null;
-  // }
-
-  // // Filter photos by matching captured descriptor against all stored descriptors (multiple per photo)
-  // async filterMatches(capturedDescriptor: Float32Array, photosArray: any[]) {
-  //   const threshold = 0.5;
-  //   return photosArray.filter(photo => {
-  //     if (!photo.face_descriptor) return false;
-  //     const descriptors = JSON.parse(photo.face_descriptor) as number[][];
-  //     return descriptors.some(desc => {
-  //       const storedDesc = new Float32Array(desc);
-  //       const distance = faceapi.euclideanDistance(capturedDescriptor, storedDesc);
-  //       return distance < threshold;
-  //     });
-  //   });
-  // }
-
-
-  // sendOtp() {
-  //   this.service.sendOTP({ phone_number: this.ai_upload_user.phone, name: this.ai_upload_user.name, is_ai_guest: true, event_id: this.eventId }, (res: any) => {
-  //     if (res.status == 200) {
-  //       this.isOTPSent = true;
-  //       console.log(res);
-  //       this.otpcode = res.otp;
-  //     } else {
-  //       this.alert.error(res.message);
-  //       this.isOTPSent = true;
-  //       this.otpcode = res.error.otp;
-  //       console.log(res);
-  //     }
-  //   })
-  // }
-
-  // verifyOTP() {
-  //   if (this.ai_upload_user.otp != this.otpcode) {
-  //     this.alert.error("OTP not verified");
-  //     this.isOtpVerified = false;
-  //   } else {
-  //     this.isFormValid = true;
-  //     this.alert.success("OTP Verified");
-  //   }
-  // }
 
   async addAiGuest() {
     this.isLoading = true;

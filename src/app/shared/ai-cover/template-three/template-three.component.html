@@ -1,0 +1,221 @@
+<div class="gallery-container">
+  <!-- Header -->
+  <header class="header" [class.scrolled]="isHeaderScrolled">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
+            <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1 class="brand-name">Suraj Production</h1>
+          <p class="brand-location">Raebareli, India</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Carousel Section -->
+  <div class="carousel-wrapper">
+    <div class="carousel">
+      <div class="carousel-track">
+        <div 
+          class="carousel-slide" 
+          *ngFor="let image of carouselImages; let i = index"
+          [class.active]="currentSlide === i">
+          <img [src]="image" alt="Carousel Image" />
+          <div class="carousel-overlay"></div>
+        </div>
+      </div>
+      
+      <button class="carousel-btn prev" (click)="prevSlide()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button class="carousel-btn next" (click)="nextSlide()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <div class="carousel-dots">
+        <span 
+          *ngFor="let image of carouselImages; let i = index" 
+          class="dot"
+          [class.active]="currentSlide === i"
+          (click)="goToSlide(i)">
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Section -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'all'"
+        (click)="filterImages('all')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+        All Photos
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'photos'"
+        (click)="filterImages('photos')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Photos
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'matched'"
+        (click)="filterImages('matched')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        Matched
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'mehdi'"
+        (click)="filterImages('mehdi')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+        Mehndi
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'haldi'"
+        (click)="filterImages('haldi')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+        Haldi
+      </button>
+    </div>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-grid">
+    <div 
+      class="gallery-card" 
+      *ngFor="let image of filteredImages; let i = index"
+      [style.animation-delay]="i * 0.08 + 's'"
+      (click)="openModal(image)">
+      <div class="card-image-wrapper">
+        <img [src]="image.url" [alt]="image.title" />
+        <div class="card-overlay">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3 class="card-title">{{ image.title }}</h3>
+        <button class="download-icon-btn" (click)="downloadImage(image.url, image.title); $event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-top">
+        <div class="footer-logo-section">
+          <div class="footer-logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
+              <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="footer-brand-info">
+            <h2 class="footer-brand-name">Suraj Production</h2>
+            <p class="footer-brand-location">Raebareli, India</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ currentYear }} Suraj Production. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal with Thumbnail Sidebar -->
+  <div class="modal" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <!-- Top Bar -->
+      <div class="modal-top-bar">
+        <button class="thumbnail-toggle-btn" (click)="toggleThumbnails()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          {{ showThumbnails ? 'Hide' : 'Show' }} Gallery
+        </button>
+        <button class="modal-close-btn" (click)="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="modal-content-wrapper">
+        <!-- Thumbnail Sidebar -->
+        <div class="thumbnail-sidebar" [class.show]="showThumbnails">
+          <div class="thumbnail-list">
+            <div 
+              class="thumbnail-item" 
+              *ngFor="let img of filteredImages; let i = index"
+              [class.active]="currentImage?.id === img.id"
+              (click)="selectImage(img)">
+              <img [src]="img.url" [alt]="img.title" />
+              <div class="thumbnail-overlay">
+                <span class="thumbnail-number">{{ i + 1 }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Image Viewer -->
+        <div class="modal-viewer">
+          <button class="nav-btn prev-btn" (click)="prevImage()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <div class="image-display">
+            <img [src]="currentImage?.url" [alt]="currentImage?.title" class="main-image" />
+            <div class="image-info-bar">
+              <span class="image-counter">{{ currentImageIndex + 1 }} / {{ filteredImages.length }}</span>
+              <span class="image-title">{{ currentImage?.title }}</span>
+            </div>
+          </div>
+          
+          <button class="nav-btn next-btn" (click)="nextImage()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
