@@ -82,7 +82,7 @@ export class PhotoSelectionService extends BaseService {
   // }
 
     getAllPhotosByEventId(params:any,user_id:any,callback:any){
-    return this.getData({}, `${this.httpUrls['getAllPhotosByEventId']}/${params.event_id}?user=${+user_id}&page=${params.page}&limit=${params.limit}`, callback)
+    return this.getData({}, `${this.httpUrls['getAllPhotosByEventId']}/${params.event_id}?user=${+user_id}&page=${+params.page}&limit=${+params.limit}`, callback)
   }
 
 
