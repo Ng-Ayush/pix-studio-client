@@ -77,9 +77,14 @@ export class PhotoSelectionService extends BaseService {
     return this.postData(params, this.httpUrls['submitEvent'], callback)
   }
 
-  getAllPhotosByEventId(event_id:any,user_id:any,callback:any){
-    return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+event_id+"?user="+user_id, callback)
+  // getAllPhotosByEventId(event_id:any,user_id:any,callback:any){
+  //   return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+event_id+"?user="+user_id, callback)
+  // }
+
+    getAllPhotosByEventId(params:any,user_id:any,callback:any){
+    return this.getData({}, `${this.httpUrls['getAllPhotosByEventId']}/${params.event_id}?user=${+user_id}&page=${params.page}&limit=${params.limit}`, callback)
   }
+
 
   checkIsBrowseAllFolderStatus(params:any,callback:any){
     return this.getData({}, this.httpUrls['checkIsBrowseAllFolderStatus']+"/"+params.event_id+"?user_id="+params.user_id, callback)

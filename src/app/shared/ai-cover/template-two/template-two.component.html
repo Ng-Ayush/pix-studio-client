@@ -84,7 +84,7 @@
             <div class="gallery-item"
                 *ngFor="let image of groupedPhotos[activeFolderTab]; trackBy: trackPhotos; let i = index"
                 [style.animation-delay]="i * 0.05 + 's'">
-                <img [src]="image.photo_url" [alt]="image.title" />
+                <img [src]="image.photo_url" [alt]="image.title" loading="lazy" />
                 <div class="overlay">
                     <button class="action-btn view-btn" (click)="openModal(image)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,7 +111,7 @@
         <ng-container *ngIf="photos.length > 0; else noPhotosBrowseAll">
             <div class="gallery-item" *ngFor="let image of photos; trackBy: trackPhotos; let i = index"
                 [style.animation-delay]="i * 0.05 + 's'">
-                <img [src]="image.photo_url" [alt]="image.title" />
+                <img [src]="image.photo_url" [alt]="image.title" loading="lazy" />
                 <div class="overlay">
                     <button class="action-btn view-btn" (click)="openModal(image)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,7 +141,7 @@
         <div class="gallery-grid" *ngIf="matchedImages.length > 0 else onlyMatched">
             <div class="gallery-item" *ngFor="let image of matchedImages; trackBy: trackPhotos; let i = index"
                 [style.animation-delay]="i * 0.05 + 's'">
-                <img [src]="image" [alt]="image.title" />
+                <img [src]="image" [alt]="image.title" loading="lazy" />
                 <div class="overlay">
                     <button class="action-btn view-btn" (click)="openMatchedModal(image)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -162,6 +162,10 @@
                 </div>
             </div>
         </div>
+    </ng-container>
+
+    <ng-container *ngIf="loading">
+        <div class="flex w-full justify-center items-center">Loading......</div>
     </ng-container>
 
     <ng-template #onlyMatched>

@@ -82,6 +82,12 @@ export class TemplateTwoComponent {
   videoStream: MediaStream | null = null;
   videoElement: HTMLVideoElement | null = null;
 
+  currentPage = 1;
+  limit = 50;
+  loading = false;
+  hasMore = true;
+  private scrollTimeout: any;
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -110,7 +116,8 @@ export class TemplateTwoComponent {
         }
       }, 5000);
     }
-    this.getPhotosByEventId();
+    // this.getPhotosByEventId();
+    this.loadPhotos();
     this.checkIsBrowseAllFolderStatus();
   }
 
@@ -131,6 +138,51 @@ export class TemplateTwoComponent {
         this.userData.is_browse_all_folder = this.isBrowseAllFolder;
       }
     })
+  }
+
+  loadPhotos() {
+    if (this.loading || !this.hasMore) return;
+
+    this.loading = true;
+    const params: any = {
+      event_id: this.eventId,
+      created_by: this.userData?.created_by,
+      page: this.currentPage,
+      limit: this.limit
+    }
+    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by,
+      (res: any) => {
+        if (res.status == 200) {
+          this.photos = [...this.photos, ...res.data];
+          this.hasMore = this.currentPage < res.pagination.totalPages;
+          this.currentPage++;
+          this.groupPhotosByFolder();
+        }
+        this.loading = false;
+      }
+    );
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    // Clear previous timeout to debounce
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+
+    // Add debounce delay
+    this.scrollTimeout = setTimeout(() => {
+      // Don't trigger if already loading or no more data
+      if (this.loading || !this.hasMore) return;
+
+      const threshold = 300; // Trigger 300px before bottom
+      const position = window.pageYOffset + window.innerHeight;
+      const height = document.documentElement.scrollHeight;
+
+      if (position > height - threshold) {
+        this.loadPhotos();
+      }
+    }, 200); // 200ms debounce delay
   }
 
 
@@ -299,6 +351,7 @@ export class TemplateTwoComponent {
   }
 
   groupPhotosByFolder() {
+    this.groupedPhotos = {};
     this.photos.forEach((photo: any) => {
       if (!this.groupedPhotos[photo.folder_id]) {
         this.groupedPhotos[photo.folder_id] = [];
@@ -312,20 +365,23 @@ export class TemplateTwoComponent {
 
   ngOnInit(): void {
     this.startCarousel();
-    window.addEventListener('scroll', this.onScroll.bind(this));
+    window.addEventListener('scroll', this.onScrolls.bind(this));
   }
 
   ngOnDestroy(): void {
     if (this.carouselInterval) {
       clearInterval(this.carouselInterval);
     }
-    window.removeEventListener('scroll', this.onScroll.bind(this));
+    window.removeEventListener('scroll', this.onScrolls.bind(this));
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
   }
 
-  onScroll(): void {
+  onScrolls(): void {
     this.isHeaderScrolled = window.scrollY > 50;
   }
 
@@ -365,7 +421,7 @@ export class TemplateTwoComponent {
   closeModal(): void {
     this.isModalOpen = false;
     this.currentImage = null;
-    this.isMatchedModalOpen=false;
+    this.isMatchedModalOpen = false;
     document.body.style.overflow = 'auto';
   }
 

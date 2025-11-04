@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, ViewChild, ElementRef, inject, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ import { TemplateTwoComponent } from '../../shared/ai-cover/template-two/templat
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, UniqueFolderIdPipe,TemplateTwoComponent,TemplateThreeComponent],
+  imports: [CommonModule, FormsModule, UniqueFolderIdPipe, TemplateTwoComponent, TemplateThreeComponent],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
 })
@@ -63,6 +63,12 @@ export class AiUploadComponent {
   reviewModal: boolean = false;
   showThankyouMessage: boolean = false;
 
+  currentPage = 1;
+  limit = 50;
+  loading = false;
+  hasMore = true;
+  private scrollTimeout: any;
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -72,6 +78,7 @@ export class AiUploadComponent {
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {
+    window.scroll(0,0);
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
@@ -91,8 +98,54 @@ export class AiUploadComponent {
         }
       }, 5000);
     }
-    this.getPhotosByEventId();
+    // this.getPhotosByEventId();
+    this.loadPhotos();
     this.checkIsBrowseAllFolderStatus();
+  }
+
+  loadPhotos() {
+    if (this.loading || !this.hasMore) return;
+
+    this.loading = true;
+    const params: any = {
+      event_id: this.eventId,
+      created_by: this.userData?.created_by,
+      page: this.currentPage,
+      limit: this.limit
+    }
+    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by,
+      (res: any) => {
+        if (res.status == 200) {
+          this.photos = [...this.photos, ...res.data];
+          this.hasMore = this.currentPage < res.pagination.totalPages;
+          this.currentPage++;
+          this.groupPhotosByFolder();
+        }
+        this.loading = false;
+      }
+    );
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    // Clear previous timeout to debounce
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+
+    // Add debounce delay
+    this.scrollTimeout = setTimeout(() => {
+      // Don't trigger if already loading or no more data
+      if (this.loading || !this.hasMore) return;
+
+      const threshold = 300; // Trigger 300px before bottom
+      const position = window.pageYOffset + window.innerHeight;
+      const height = document.documentElement.scrollHeight;
+
+      if (position > height - threshold) {
+        this.loadPhotos();
+      }
+    }, 200); // 200ms debounce delay
   }
 
   extractYoutubeId(url: any) {
@@ -134,6 +187,9 @@ export class AiUploadComponent {
   ngOnDestroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
+    }
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
     }
   }
 
@@ -291,6 +347,7 @@ export class AiUploadComponent {
   }
 
   groupPhotosByFolder() {
+    this.groupedPhotos = {};
     this.photos.forEach((photo: any) => {
       if (!this.groupedPhotos[photo.folder_id]) {
         this.groupedPhotos[photo.folder_id] = [];
@@ -500,7 +557,7 @@ export class AiUploadComponent {
         })
         .catch(err => console.error('Error downloading file:', err));
       this.loader.hide();
-    }catch(err){
+    } catch (err) {
       this.isLoading = false;
       this.loader.hide();
     }
