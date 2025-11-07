@@ -73,6 +73,8 @@ export class AiUploadComponent {
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
+
+  pollInterval = 10000; // default 10s
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -95,11 +97,6 @@ export class AiUploadComponent {
     console.log("this.p", this.previewCover);
     if (this.userData && !this.userData?.isFaceDescriptorReady) {
       this.checkReadiness();
-      this.intervalId = setInterval(() => {
-        if (!this.isReady) {
-          this.checkReadiness();
-        }
-      }, 5000);
     }
     // this.getPhotosByEventId();
     // this.loadPhotos();
@@ -228,15 +225,53 @@ export class AiUploadComponent {
   }
 
 
-  checkReadiness() {
-    this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.eventId}`)
+  // checkReadiness() {
+  //   this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.eventId}`)
+  //     .subscribe(
+  //       (res: any) => {
+  //         this.isReady = res.isFaceDescriptorReady;
+  //         if (this.isReady) {
+  //           this.userData.isFaceDescriptorReady = true;
+  //           clearInterval(this.intervalId);
+  //         }
+  //       },
+  //       (err: any) => {
+  //         console.error('Failed to check event readiness', err);
+  //       }
+  //     );
+  // }
+
+   checkReadiness() {
+    this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.eventData.event_name.split(" ").join("_")}_${this.eventData.event_id}`)
       .subscribe(
         (res: any) => {
-          this.isReady = res.isFaceDescriptorReady;
+          const data = res.data;
+          const { total_images, processed_images, status } = data;
+
+          this.isReady = status === 'completed';
+
           if (this.isReady) {
-            this.userData.isFaceDescriptorReady = true;
             clearInterval(this.intervalId);
+            return;
           }
+
+          // Updated benchmark: 100 photos ≈ 32.5s → 0.325s per photo
+          const estimatedProcessingSpeed = 0.325; // seconds per image
+          const remainingImages = total_images - processed_images;
+          const estimatedRemainingTime = remainingImages * estimatedProcessingSpeed * 1000; // in ms
+
+          // Adjust next interval dynamically
+          this.pollInterval = Math.min(Math.max(estimatedRemainingTime / 5, 10000), 60000);
+
+          console.log(`✅ Progress: ${processed_images}/${total_images}`);
+          console.log(`Next check in ${Math.round(this.pollInterval / 1000)} seconds...`);
+
+          clearInterval(this.intervalId);
+          this.intervalId = setInterval(() => {
+            if (!this.isReady) {
+              this.checkReadiness();
+            }
+          }, this.pollInterval);
         },
         (err: any) => {
           console.error('Failed to check event readiness', err);

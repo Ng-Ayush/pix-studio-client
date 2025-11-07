@@ -165,10 +165,10 @@ export class UploadImgBackgroundAiService {
           currentBatchUrls.push({ url, name: file.name });
         });
 
-        await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
       }
 
-      // await this.saveAllToBackend(currentFolderId, eventId); //
+      await this.saveAllToBackend(currentFolderId, eventId); //
 
       this.isUploading$.next(false);
     }
