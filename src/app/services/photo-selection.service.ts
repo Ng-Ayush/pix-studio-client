@@ -20,60 +20,60 @@ export class PhotoSelectionService extends BaseService {
     return this.getData({}, this.httpUrls['getAllEvents'], callback)
   }
 
-  getEventById(event_id:any,callback: any) {
-    return this.getData({}, this.httpUrls['getEventById'] + "/" + event_id , callback)
+  getEventById(event_id: any, callback: any) {
+    return this.getData({}, this.httpUrls['getEventById'] + "/" + event_id, callback)
   }
 
 
-  updateEvent(params: any, id:any, callback: any) {
-    return this.putData(params, this.httpUrls['updateEvent']+"/"+ id, callback)
+  updateEvent(params: any, id: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateEvent'] + "/" + id, callback)
   }
 
-  getFolderByEventId(event_id:any,callback:any){
-    return this.getData({}, this.httpUrls['getFolderByEventId']+"/"+ event_id, callback)
+  getFolderByEventId(event_id: any, callback: any) {
+    return this.getData({}, this.httpUrls['getFolderByEventId'] + "/" + event_id, callback)
   }
 
-  createNewFolder(params:any,callback:any){
+  createNewFolder(params: any, callback: any) {
     return this.postData(params, this.httpUrls['createNewFolder'], callback)
   }
 
-  updateFolder(params:any,id:any,callback:any){
-    return this.putData(params, this.httpUrls['updateFolder']+"/"+ id, callback)
+  updateFolder(params: any, id: any, callback: any) {
+    return this.putData(params, this.httpUrls['updateFolder'] + "/" + id, callback)
   }
 
-  deleteFolder(id:any,callback:any){
-    return this.deleteData({}, this.httpUrls['deleteFolder']+"/"+ id, callback)
+  deleteFolder(id: any, callback: any) {
+    return this.deleteData({}, this.httpUrls['deleteFolder'] + "/" + id, callback)
   }
 
-  deleteEvent(id:any,callback:any){
-    return this.deleteData({}, this.httpUrls['deleteEvent']+"/"+ id, callback)
+  deleteEvent(id: any, callback: any) {
+    return this.deleteData({}, this.httpUrls['deleteEvent'] + "/" + id, callback)
   }
 
-  getAiGuestByEventId(id:any,callback:any){
-    return this.getData({}, this.httpUrls['getAiGuestByEventId']+"/"+ id, callback)
+  getAiGuestByEventId(id: any, callback: any) {
+    return this.getData({}, this.httpUrls['getAiGuestByEventId'] + "/" + id, callback)
   }
 
-  addAiGuest(params:any,callback:any){
+  addAiGuest(params: any, callback: any) {
     return this.postData(params, this.httpUrls['addAiGuest'], callback)
   }
 
-  getUploadedPhotosByFolderId(folder_id:any,callback:any){
-    return this.getData({}, this.httpUrls['getUploadedPhotosByFolderId']+"/"+ folder_id, callback)
+  getUploadedPhotosByFolderId(folder_id: any, callback: any) {
+    return this.getData({}, this.httpUrls['getUploadedPhotosByFolderId'] + "/" + folder_id, callback)
   }
 
-  uploadPhotos(params:any,callback:any){
+  uploadPhotos(params: any, callback: any) {
     return this.postData(params, this.httpUrls['uploadPhotos'], callback)
   }
 
-  deletePhotos(params:any,callback:any){
+  deletePhotos(params: any, callback: any) {
     return this.postData(params, this.httpUrls['deletePhotos'], callback)
   }
 
-  updatePhotoStatus(params:any,callback:any){
+  updatePhotoStatus(params: any, callback: any) {
     return this.postData(params, this.httpUrls['updatePhotoStatus'], callback)
   }
-  
-  submitEvent(params:any,callback:any){
+
+  submitEvent(params: any, callback: any) {
     return this.postData(params, this.httpUrls['submitEvent'], callback)
   }
 
@@ -81,28 +81,32 @@ export class PhotoSelectionService extends BaseService {
   //   return this.getData({}, this.httpUrls['getAllPhotosByEventId']+"/"+event_id+"?user="+user_id, callback)
   // }
 
-    getAllPhotosByEventId(params:any,user_id:any,callback:any){
-    return this.getData({}, `${this.httpUrls['getAllPhotosByEventId']}/${params.event_id}?user=${+user_id}&page=${+params.page}&limit=${+params.limit}`, callback)
+  getAllPhotosByEventId(params: any, user_id: any, callback: any) {
+    let url = `${this.httpUrls['getAllPhotosByEventId']}/${params.event_id}?user=${+user_id}&page=${+params.page}&limit=${+params.limit}`;
+    if (params.folder_id) {
+      url += `&folder_id=${+params.folder_id}`;
+    }
+    return this.getData({}, url, callback);
   }
 
 
-  checkIsBrowseAllFolderStatus(params:any,callback:any){
-    return this.getData({}, this.httpUrls['checkIsBrowseAllFolderStatus']+"/"+params.event_id+"?user_id="+params.user_id, callback)
+  checkIsBrowseAllFolderStatus(params: any, callback: any) {
+    return this.getData({}, this.httpUrls['checkIsBrowseAllFolderStatus'] + "/" + params.event_id + "?user_id=" + params.user_id, callback)
   }
 
-  sendBulkMessage(params:any,callback:any){
+  sendBulkMessage(params: any, callback: any) {
     return this.postData(params, this.httpUrls['sendBulkMessage'], callback)
   }
 
-  checkHasUserAlreadyReviewed(params:any,callback:any){
+  checkHasUserAlreadyReviewed(params: any, callback: any) {
     return this.postData(params, this.httpUrls['checkHasUserAlreadyReviewed'], callback)
   }
 
-  getTotalUploadedAiPhotosCount(callback:any){
+  getTotalUploadedAiPhotosCount(callback: any) {
     return this.getData({}, this.httpUrls['getTotalUploadedAiPhotosCount'], callback)
   }
 
-  getFoldersByEventId(event_id:any,user_id:any,callback:any){
-    return this.getData({}, this.httpUrls['getFoldersByEventId']+"/"+event_id+"?user="+user_id+"", callback)
+  getFoldersByEventId(event_id: any, user_id: any, callback: any) {
+    return this.getData({}, this.httpUrls['getFoldersByEventId'] + "/" + event_id + "?user=" + user_id + "", callback)
   }
 }

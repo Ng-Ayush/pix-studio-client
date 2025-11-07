@@ -69,7 +69,10 @@ export class AiUploadComponent {
   hasMore = true;
   private scrollTimeout: any;
   folders: any[] = [];
-  selectedFolderId: string = 'all'; // '
+  selectedFolderId: any = 'all'; // '
+
+  paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
+  photosByFolder: { [key: string]: any[] } = {};
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -79,9 +82,8 @@ export class AiUploadComponent {
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {
-    window.scroll(0, 0);
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
+    this.scrollTop();
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     if (this.userData?.youtube_cover_url) {
       const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
@@ -100,14 +102,15 @@ export class AiUploadComponent {
       }, 5000);
     }
     // this.getPhotosByEventId();
-    this.loadPhotos();
-    // this.loadFolders();
+    // this.loadPhotos();
+    this.loadFolders();
     this.checkIsBrowseAllFolderStatus();
+
   }
 
   loadFolders() {
     console.log("JDNSDSM");
-    
+
     this.eventService.getFoldersByEventId(
       this.eventId,
       this.userData?.created_by,
@@ -115,72 +118,94 @@ export class AiUploadComponent {
         if (res.status == 200) {
           this.folders = res.data;
           console.log(`Loaded ${this.folders.length} folders`);
+          // this.loadPhotos();
+          setTimeout(() => {
+            this.scrollTop();
 
-          // After folders load, load photos for "Browse All"
-          this.loadPhotos();
+          }, 0);
+
         }
       }
     );
   }
 
-  onFolderChange(folderId: string) {
-    if (this.selectedFolderId === folderId) return; // Already selected
+  onFolderChange(folderId: string | null) {
+    if (this.selectedFolderId === folderId) return;
 
-    console.log(`Switching to folder: ${folderId}`);
+    console.log(`Switching to folder: ${folderId || 'Browse All'}`);
 
-    // Reset state
     this.selectedFolderId = folderId;
-    this.photos = [];
-    this.currentPage = 1;
-    this.hasMore = true;
 
-    // Load photos for this folder
-    this.loadPhotos();
+    // Initialize if not exists
+    if (!this.paginationMap[folderId || 'all']) {
+      this.paginationMap[folderId || 'all'] = { page: 1, hasMore: true };
+    }
+
+    if (!this.photosByFolder[folderId || 'all']) {
+      this.photosByFolder[folderId || 'all'] = [];
+    }
+
+    // Reset UI to show relevant folder photos
+    this.photos = this.photosByFolder[folderId || 'all'];
+
+    if (this.photos.length === 0) {
+      this.loadPhotos();
+    }
   }
 
   loadPhotos() {
-    if (this.loading || !this.hasMore) return;
+    const folderKey = this.selectedFolderId || 'all';
+    const pagination = this.paginationMap[folderKey];
+
+    if (this.loading || !pagination.hasMore) return;
 
     this.loading = true;
+
     const params: any = {
       event_id: this.eventId,
       created_by: this.userData?.created_by,
-      page: this.currentPage,
-      limit: this.limit
+      page: pagination.page,
+      limit: this.limit,
+    };
+
+    if (this.selectedFolderId) {
+      params.folder_id = this.selectedFolderId;
     }
-    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by,
-      (res: any) => {
-        if (res.status == 200) {
-          this.photos = [...this.photos, ...res.data];
-          this.hasMore = this.currentPage < res.pagination.totalPages;
-          this.currentPage++;
-          this.groupPhotosByFolder();
-        }
-        this.loading = false;
+
+    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
+      if (res.status == 200) {
+        const folderPhotos = this.photosByFolder[folderKey] || [];
+        this.photosByFolder[folderKey] = [...folderPhotos, ...res.data];
+        this.photos = this.photosByFolder[folderKey];
+
+        pagination.hasMore = pagination.page < res.pagination.totalPages;
+        pagination.page++;
+
+        // this.groupPhotosByFolder();
       }
-    );
+      this.loading = false;
+    });
   }
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
-    // Clear previous timeout to debounce
-    if (this.scrollTimeout) {
-      clearTimeout(this.scrollTimeout);
-    }
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
 
-    // Add debounce delay
     this.scrollTimeout = setTimeout(() => {
-      // Don't trigger if already loading or no more data
-      if (this.loading || !this.hasMore) return;
+      const folderKey = this.selectedFolderId || 'all';
+      const pagination = this.paginationMap[folderKey];
 
-      const threshold = 300; // Trigger 300px before bottom
+      // Don’t trigger if loading or no more data for this folder/all
+      if (this.loading || !pagination?.hasMore) return;
+
+      const threshold = 300;
       const position = window.pageYOffset + window.innerHeight;
       const height = document.documentElement.scrollHeight;
 
       if (position > height - threshold) {
         this.loadPhotos();
       }
-    }, 200); // 200ms debounce delay
+    }, 200);
   }
 
   extractYoutubeId(url: any) {
@@ -497,7 +522,7 @@ export class AiUploadComponent {
           this.videoModal = false;
           this.activeTab = 'matched';
           this.activeFolderTab = null;
-          this.scrollTo('explore');
+          // this.scrollTo('explore');
           this.onCancel();
         },
         error: (err) => {
@@ -605,7 +630,7 @@ export class AiUploadComponent {
   }
 
   scrollTop() {
-    window.scroll(0, 0);
+    window.scrollTo(0, 0);
   }
 
   scrollTo(elementId: string) {
