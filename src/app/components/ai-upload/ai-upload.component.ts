@@ -68,7 +68,8 @@ export class AiUploadComponent {
   loading = false;
   hasMore = true;
   private scrollTimeout: any;
-
+  folders: any[] = [];
+  selectedFolderId: string = 'all'; // '
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -78,7 +79,7 @@ export class AiUploadComponent {
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {
-    window.scroll(0,0);
+    window.scroll(0, 0);
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
@@ -100,7 +101,41 @@ export class AiUploadComponent {
     }
     // this.getPhotosByEventId();
     this.loadPhotos();
+    // this.loadFolders();
     this.checkIsBrowseAllFolderStatus();
+  }
+
+  loadFolders() {
+    console.log("JDNSDSM");
+    
+    this.eventService.getFoldersByEventId(
+      this.eventId,
+      this.userData?.created_by,
+      (res: any) => {
+        if (res.status == 200) {
+          this.folders = res.data;
+          console.log(`Loaded ${this.folders.length} folders`);
+
+          // After folders load, load photos for "Browse All"
+          this.loadPhotos();
+        }
+      }
+    );
+  }
+
+  onFolderChange(folderId: string) {
+    if (this.selectedFolderId === folderId) return; // Already selected
+
+    console.log(`Switching to folder: ${folderId}`);
+
+    // Reset state
+    this.selectedFolderId = folderId;
+    this.photos = [];
+    this.currentPage = 1;
+    this.hasMore = true;
+
+    // Load photos for this folder
+    this.loadPhotos();
   }
 
   loadPhotos() {
@@ -461,6 +496,7 @@ export class AiUploadComponent {
           }
           this.videoModal = false;
           this.activeTab = 'matched';
+          this.activeFolderTab = null;
           this.scrollTo('explore');
           this.onCancel();
         },

@@ -147,7 +147,7 @@ export class UploadImgBackgroundAiService {
       this.progressPercentage$.next(0);
       this.isUploading$.next(true);
 
-      const batchSize = 20;
+      const batchSize = 60;
 
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         this.batchStart$.next(i + 1);
@@ -165,10 +165,10 @@ export class UploadImgBackgroundAiService {
           currentBatchUrls.push({ url, name: file.name });
         });
 
-        // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
       }
 
-      await this.saveAllToBackend(currentFolderId, eventId); //
+      // await this.saveAllToBackend(currentFolderId, eventId); //
 
       this.isUploading$.next(false);
     }
@@ -257,7 +257,8 @@ export class UploadImgBackgroundAiService {
           uploaded_by: this.user_id,
           event_id: eventId,
           folder_id: +folderId,
-          is_ai_upload: true
+          is_ai_upload: true,
+          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
         },
         (res: any) => {
           if (res.status === 200) resolve();

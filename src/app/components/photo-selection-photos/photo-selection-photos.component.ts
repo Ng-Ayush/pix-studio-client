@@ -156,10 +156,6 @@ export class PhotoSelectionPhotosComponent {
     this.location.back();
   }
 
-  uploadPhotos() {
-
-  }
-
   toggleSelectAll(): void {
     this.allSelected = !this.allSelected;
     this.photos.forEach((photo: any) => (photo.selected = this.allSelected))

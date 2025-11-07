@@ -101,4 +101,8 @@ export class PhotoSelectionService extends BaseService {
   getTotalUploadedAiPhotosCount(callback:any){
     return this.getData({}, this.httpUrls['getTotalUploadedAiPhotosCount'], callback)
   }
+
+  getFoldersByEventId(event_id:any,user_id:any,callback:any){
+    return this.getData({}, this.httpUrls['getFoldersByEventId']+"/"+event_id+"?user="+user_id+"", callback)
+  }
 }
