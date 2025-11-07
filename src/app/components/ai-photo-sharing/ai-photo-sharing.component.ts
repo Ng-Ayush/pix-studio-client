@@ -12,12 +12,13 @@ import { environment } from '../../../environments/environment';
 import { FaceDescReadinessComponent } from '../shared/face-desc-readiness/face-desc-readiness.component';
 import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { ImageCompressionService } from '../../services/image-compression.service';
+import { MemoryGameComponent } from '../../shared/memory-game/memory-game.component';
 
 declare var Razorpay: any;
 @Component({
   selector: 'app-ai-photo-sharing',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, FaceDescReadinessComponent],
+  imports: [RouterModule, CommonModule, FormsModule, FaceDescReadinessComponent,MemoryGameComponent],
   templateUrl: './ai-photo-sharing.component.html',
   styleUrl: './ai-photo-sharing.component.scss'
 })

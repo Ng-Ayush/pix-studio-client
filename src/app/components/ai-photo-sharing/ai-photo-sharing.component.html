@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="back-btn flex items-center py-3 px-10 bg-[#E3E7F1]">
+            <div class="back-btn flex items-center justify-between py-3 px-10 bg-[#E3E7F1]">
                 <a class="flex items-center cursor-pointer" [routerLink]="['/dashboard']">
                     <button
                         class="cursor-pointer rounded p-2 hover:bg-[#494CA2] hover:text-white transition-colors duration-200 inline-flex items-center gap-2 justify-center"><svg
@@ -58,6 +58,12 @@
                             </path>
                         </svg> Go back</button>
                 </a>
+                <span
+                    class="inline-flex items-center rounded-full bg-rose-500 px-3 py-1 text-sm font-semibold text-white shadow-sm">Server Under Maintenance: Please
+                    don't upload photos for now — we'll be back shortly once maintenance is one!</span>
+                   <span
+                    class="inline-flex items-center rounded-full bg-indigo-500 px-3 py-1 text-sm font-semibold text-white shadow-sm">Till then scroll down and test your memory !</span>
+
             </div>
         </div>
         <div class="w-full text-center mt-5 mb-5 px-5">
@@ -493,8 +499,8 @@
             <div class="relative" style="width: 450px;">
                 <div class="bg-gray-800 rounded-t-xl pt-3 px-3 pb-0">
                     <div class="bg-white rounded-t-lg overflow-hidden relative" style="aspect-ratio: 16/9;">
-                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'laptop')" (error)="onImageError($event)" alt="Laptop preview"
-                            class="w-full h-full object-fill">
+                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'laptop')"
+                            (error)="onImageError($event)" alt="Laptop preview" class="w-full h-full object-fill">
                     </div>
                 </div>
                 <div class="bg-gray-700 h-2 rounded-b-xl"></div>
@@ -510,8 +516,8 @@
                         class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-b-2xl z-10">
                     </div>
                     <div class="bg-white rounded-2xl overflow-hidden relative" style="aspect-ratio: 9/19.5;">
-                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'mobile')" (error)="onImageError($event)" alt="Mobile preview"
-                            class="w-full h-full object-fill">
+                        <img [src]="getTemplateImage(this.event_config?.selected_template, 'mobile')"
+                            (error)="onImageError($event)" alt="Mobile preview" class="w-full h-full object-fill">
                     </div>
                     <div
                         class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white rounded-full opacity-50">
@@ -725,3 +731,7 @@
     <img src="../../../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>
 
+<ng-container #memorygame>
+
+    <app-memory-game></app-memory-game>
+</ng-container>
