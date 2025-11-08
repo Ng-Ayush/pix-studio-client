@@ -37,7 +37,6 @@ export class AiUploadComponent {
   isImageCaptured: boolean = false;
   capturedGuestImage: any = {};
   aiGuestConfig: any = {};
-  eventData: any = {};
   userData: any = {};
   isFormValid: boolean = false;
 
@@ -229,7 +228,7 @@ export class AiUploadComponent {
 
 
   checkReadiness() {
-    this.http.get(environment.apiUrl+`/api/mystudio/photo-selection/checkEventReady/${this.eventData.event_name.split(" ").join("_")}_${this.eventData.event_id}`)
+    this.http.get(environment.apiUrl+`/api/mystudio/photo-selection/checkEventReady/${this.userData.event_name.split(" ").join("_")}_${this.userData.event_id}`)
       .subscribe(
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
