@@ -74,7 +74,7 @@ export class UploadImgBackgroundAiService {
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
 
-    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'];
+    const allowedImageTypes = ['image/jpeg','image/jpg'];
     const imageFiles = files.filter(f => allowedImageTypes.includes(f.type));
 
     // 🔥 Optional: Warn if user selected invalid files
