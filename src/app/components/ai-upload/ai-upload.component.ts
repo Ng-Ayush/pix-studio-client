@@ -233,7 +233,7 @@ export class AiUploadComponent {
       .subscribe(
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
-          this.isReady = res.data.status == 'completed';
+          this.isReady = res.data.status == 'completed' || res.data.status == 'not_found';
           if (this.isReady) {
             clearInterval(this.intervalId);
           }
