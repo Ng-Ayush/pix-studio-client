@@ -35,7 +35,7 @@ export class UploadImgBackgroundAiService {
   // ---------------- Internal State ----------------
   private totalPhotos = 0;
   private uploadedPhotos = 0;
-  private concurrency = 100;
+  private concurrency = 25;
 
   // ---------------- Variables ----------------
   studio_name: string = '';
