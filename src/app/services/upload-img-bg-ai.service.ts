@@ -58,7 +58,7 @@ export class UploadImgBackgroundAiService {
   allowed_photos_quantity: any = 0;
   allUploadQueues: any = [];
   // ---------------- Handle File Input ----------------
-  handleAIFileInput(
+ async handleAIFileInput(
     event: any,
     eventId: any,
     folderName: any,
@@ -74,30 +74,71 @@ export class UploadImgBackgroundAiService {
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
 
-    const allowedImageTypes = ['image/jpeg','image/jpg'];
-    const imageFiles = files.filter(f => allowedImageTypes.includes(f.type));
+    const allowedImageTypes = ['image/jpeg', 'image/jpg'];
+    const validImageFiles = files.filter(f => allowedImageTypes.includes(f.type) && f.size > 0);
 
-    // 🔥 Optional: Warn if user selected invalid files
-    const invalidFiles = files.filter(f => !allowedImageTypes.includes(f.type));
-    if (invalidFiles.length > 0) {
+    const invalidTypeFiles = files.filter(f => !allowedImageTypes.includes(f.type) || f.size === 0);
+    if (invalidTypeFiles.length > 0) {
       this.alert.warning(
-        `Skipped ${invalidFiles.length} invalid file(s). Only image formats (JPG, PNG, WEBP, HEIC) are allowed.`,
-        8000
+        `Skipped ${invalidTypeFiles.length} invalid or empty file(s). Only valid image formats are allowed.`,
+        6000
       );
     }
 
-    if (!imageFiles.length) {
+    if (!validImageFiles.length) {
       this.alert.warning("No valid image files selected.", 5000);
       return;
     }
 
+    // ✅ Step 2: Verify actual decodable images (to skip corrupted files)
+    const verifiedImages: any[] = [];
+    const corruptedImages: any[] = [];
+
+    await Promise.all(
+      validImageFiles.map(
+        file =>
+          new Promise<void>(resolve => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const img = new Image();
+              img.onload = () => {
+                verifiedImages.push(file); // ✅ valid
+                resolve();
+              };
+              img.onerror = () => {
+                corruptedImages.push(file.name); // ❌ corrupted
+                resolve();
+              };
+              img.src = reader.result as string;
+            };
+            reader.onerror = () => {
+              corruptedImages.push(file.name); // ❌ unreadable
+              resolve();
+            };
+            reader.readAsDataURL(file);
+          })
+      )
+    );
+
+    if (corruptedImages.length > 0) {
+      this.alert.warning(
+        `Skipped ${corruptedImages.length} corrupted image(s): ${corruptedImages.join(', ')}`,
+        8000
+      );
+    }
+
+    if (!verifiedImages.length) {
+      this.alert.warning("No valid (non-corrupted) images found.", 5000);
+      return;
+    }
+
     const existingNameSet = new Set(this.photos.map((p: any) => p.photo_name.toLowerCase()));
-    const duplicateFiles = imageFiles.filter(f => existingNameSet.has(f.name.toLowerCase()));
+    const duplicateFiles = verifiedImages.filter(f => existingNameSet.has(f.name.toLowerCase()));
     if (duplicateFiles.length) {
       duplicateFiles.forEach(f => this.alert.warning(`Skipped duplicate: ${f.name}`, 4000));
     }
 
-    const uniqueFiles = imageFiles.filter(f => !existingNameSet.has(f.name.toLowerCase()));
+    const uniqueFiles = verifiedImages.filter(f => !existingNameSet.has(f.name.toLowerCase()));
 
     if (!this.allowed_photos_quantity) {
       this.allowed_photos_quantity = JSON.parse(<any>localStorage.getItem("userData")).allowed_photos_quantity || 100;
