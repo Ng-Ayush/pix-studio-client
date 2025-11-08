@@ -35,7 +35,7 @@ export class UploadImgBackgroundAiService {
   // ---------------- Internal State ----------------
   private totalPhotos = 0;
   private uploadedPhotos = 0;
-  private concurrency = 7;
+  private concurrency = 50;
 
   // ---------------- Variables ----------------
   studio_name: string = '';
@@ -56,80 +56,97 @@ export class UploadImgBackgroundAiService {
   aiEventId: any = null;
 
   allowed_photos_quantity: any = 0;
-  allUploadQueues:any=[];
+  allUploadQueues: any = [];
   // ---------------- Handle File Input ----------------
- handleAIFileInput(
-  event: any,
-  eventId: any,
-  folderName: any,
-  studio_name: any,
-  customerName: any,
-  eventName: any,
-  currentFolderId: any
-) {
-  this.totalAiUploadedPhotosCount = JSON.parse(<any>localStorage.getItem("totalAiUploadedPhotosCount")) || 0;
+  handleAIFileInput(
+    event: any,
+    eventId: any,
+    folderName: any,
+    studio_name: any,
+    customerName: any,
+    eventName: any,
+    currentFolderId: any
+  ) {
+    this.totalAiUploadedPhotosCount = JSON.parse(<any>localStorage.getItem("totalAiUploadedPhotosCount")) || 0;
 
-  this.alert.info("Please do not refresh the page until AI upload is completed", 10000);
+    this.alert.info("Please do not refresh the page until AI upload is completed", 10000);
 
-  const files: File[] = Array.from(event.target.files || []);
-  if (!files.length) return;
+    const files: File[] = Array.from(event.target.files || []);
+    if (!files.length) return;
 
-  const existingNameSet = new Set(this.photos.map((p: any) => p.photo_name.toLowerCase()));
-  const duplicateFiles = files.filter(f => existingNameSet.has(f.name.toLowerCase()));
-  if (duplicateFiles.length) {
-    duplicateFiles.forEach(f => this.alert.warning(`Skipped duplicate: ${f.name}`, 4000));
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'];
+    const imageFiles = files.filter(f => allowedImageTypes.includes(f.type));
+
+    // 🔥 Optional: Warn if user selected invalid files
+    const invalidFiles = files.filter(f => !allowedImageTypes.includes(f.type));
+    if (invalidFiles.length > 0) {
+      this.alert.warning(
+        `Skipped ${invalidFiles.length} invalid file(s). Only image formats (JPG, PNG, WEBP, HEIC) are allowed.`,
+        8000
+      );
+    }
+
+    if (!imageFiles.length) {
+      this.alert.warning("No valid image files selected.", 5000);
+      return;
+    }
+
+    const existingNameSet = new Set(this.photos.map((p: any) => p.photo_name.toLowerCase()));
+    const duplicateFiles = imageFiles.filter(f => existingNameSet.has(f.name.toLowerCase()));
+    if (duplicateFiles.length) {
+      duplicateFiles.forEach(f => this.alert.warning(`Skipped duplicate: ${f.name}`, 4000));
+    }
+
+    const uniqueFiles = imageFiles.filter(f => !existingNameSet.has(f.name.toLowerCase()));
+
+    if (!this.allowed_photos_quantity) {
+      this.allowed_photos_quantity = JSON.parse(<any>localStorage.getItem("userData")).allowed_photos_quantity || 100;
+    }
+
+    let limitPhotos = this.allowed_photos_quantity;
+    if (this.user_id == 285) limitPhotos = 1000;
+    else if (this.user_id == 31) limitPhotos = 50000;
+    // else if(this.user_id == 429) limitPhotos = 40000;
+
+    // ✅ NEW: Get total queued photos across ALL events
+    const globalQueuedCount = this.allUploadQueues
+      ? this.allUploadQueues.reduce((sum: any, q: any) => sum + q.files.length, 0)
+      : this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
+
+    // ✅ NEW: totalUsed is now global (uploaded + all queued)
+    const totalUsed = this.totalAiUploadedPhotosCount + globalQueuedCount;
+
+    const remaining = limitPhotos - totalUsed;
+
+    if (remaining <= 0) {
+      this.alert.warning(`Upload limit of ${limitPhotos} photos reached (uploaded + in queue).`, 8000);
+      return;
+    }
+
+    if (uniqueFiles.length > remaining) {
+      const skipped = uniqueFiles.length - remaining;
+      this.alert.warning(`Only ${remaining} more photos allowed. Skipped ${skipped} extra files.`, 8000);
+      uniqueFiles.splice(remaining);
+    }
+
+    if (uniqueFiles.length > 0) {
+      this.uploadQueue.push({
+        files: uniqueFiles,
+        eventId,
+        folderName,
+        studio_name,
+        customerName,
+        eventName,
+        currentFolderId
+      });
+
+      // ✅ NEW: maintain global reference to all queues
+      if (!this.allUploadQueues) this.allUploadQueues = [];
+      this.allUploadQueues.push(...this.uploadQueue);
+    }
+
+    if (!this.isProcessingQueue) this.processQueue();
   }
-
-  const uniqueFiles = files.filter(f => !existingNameSet.has(f.name.toLowerCase()));
-
-  if(!this.allowed_photos_quantity){
-    this.allowed_photos_quantity = JSON.parse(<any>localStorage.getItem("userData")).allowed_photos_quantity || 100;
-  }
-
-  let limitPhotos = this.allowed_photos_quantity;
-  if (this.user_id == 285) limitPhotos = 1000;
-  else if (this.user_id == 31) limitPhotos = 50000;
-  // else if(this.user_id == 429) limitPhotos = 40000;
-
-  // ✅ NEW: Get total queued photos across ALL events
-  const globalQueuedCount = this.allUploadQueues
-    ? this.allUploadQueues.reduce((sum:any, q:any) => sum + q.files.length, 0)
-    : this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
-
-  // ✅ NEW: totalUsed is now global (uploaded + all queued)
-  const totalUsed = this.totalAiUploadedPhotosCount + globalQueuedCount;
-
-  const remaining = limitPhotos - totalUsed;
-
-  if (remaining <= 0) {
-    this.alert.warning(`Upload limit of ${limitPhotos} photos reached (uploaded + in queue).`, 8000);
-    return;
-  }
-
-  if (uniqueFiles.length > remaining) {
-    const skipped = uniqueFiles.length - remaining;
-    this.alert.warning(`Only ${remaining} more photos allowed. Skipped ${skipped} extra files.`, 8000);
-    uniqueFiles.splice(remaining);
-  }
-
-  if (uniqueFiles.length > 0) {
-    this.uploadQueue.push({
-      files: uniqueFiles,
-      eventId,
-      folderName,
-      studio_name,
-      customerName,
-      eventName,
-      currentFolderId
-    });
-
-    // ✅ NEW: maintain global reference to all queues
-    if (!this.allUploadQueues) this.allUploadQueues = [];
-    this.allUploadQueues.push(...this.uploadQueue);
-  }
-
-  if (!this.isProcessingQueue) this.processQueue();
-}
 
   // ---------------- Queue Processor ----------------
   private async processQueue() {
@@ -147,7 +164,7 @@ export class UploadImgBackgroundAiService {
       this.progressPercentage$.next(0);
       this.isUploading$.next(true);
 
-      const batchSize = 60;
+      const batchSize = 100;
 
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         this.batchStart$.next(i + 1);
@@ -175,9 +192,9 @@ export class UploadImgBackgroundAiService {
 
     this.isProcessingQueue = false;
     this.isImageUploadedCompleted$.next(true);
-    this._pservice.getTotalUploadedAiPhotosCount((res:any)=>{
-      this.totalAiUploadedPhotosCount=res.data;
-      localStorage.setItem("totalAiUploadedPhotosCount",JSON.stringify(this.totalAiUploadedPhotosCount));
+    this._pservice.getTotalUploadedAiPhotosCount((res: any) => {
+      this.totalAiUploadedPhotosCount = res.data;
+      localStorage.setItem("totalAiUploadedPhotosCount", JSON.stringify(this.totalAiUploadedPhotosCount));
     });
   }
 
