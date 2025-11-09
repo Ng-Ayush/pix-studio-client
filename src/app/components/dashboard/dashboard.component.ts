@@ -140,25 +140,31 @@ export class DashboardComponent implements OnInit {
   }
 
   startCountdown() {
-    if (this.timerRunning) {
-      return; // prevent multiple starts
-    }
-
-    this.timeUp = false;
-    this.timerRunning = true;
-
-    // Set countdown target to this coming Sunday midnight (0:00)
-    const now = new Date();
-    const day = now.getDay(); // Sunday = 0
-    // Calculate days until Sunday (no check if today is Sunday)
-    const daysUntilSunday = (9 - day) % 7;
-    const countdownTarget = new Date(now);
-    countdownTarget.setDate(now.getDate() + daysUntilSunday);
-    countdownTarget.setHours(0, 0, 0, 0);
-
-    this.updateCountdown(countdownTarget);
-    this.timerInterval = setInterval(() => this.updateCountdown(countdownTarget), 1000);
+  if (this.timerRunning) {
+    return; // prevent multiple starts
   }
+
+  this.timeUp = false;
+  this.timerRunning = true;
+
+  // Set countdown target to NEXT Wednesday midnight (00:00)
+  const now = new Date();
+  const day = now.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+
+  // Calculate days until NEXT Wednesday
+  let daysUntilWednesday = (3 - day + 7) % 7; // 3 = Wednesday
+  if (daysUntilWednesday === 0) {
+    // If today *is* Wednesday, move to the next one (next week)
+    daysUntilWednesday = 7;
+  }
+
+  const countdownTarget = new Date(now);
+  countdownTarget.setDate(now.getDate() + daysUntilWednesday);
+  countdownTarget.setHours(0, 0, 0, 0);
+
+  this.updateCountdown(countdownTarget);
+  this.timerInterval = setInterval(() => this.updateCountdown(countdownTarget), 1000);
+}
 
   private updateCountdown(target: Date) {
     const now = new Date().getTime();

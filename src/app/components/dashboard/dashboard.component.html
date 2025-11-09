@@ -78,8 +78,8 @@
                     </a>
                     <h3 class="dashboard-item-title text-xl">Calendar</h3>
                 </div>
-
-                <a class="dashboard-item" routerLink="/photo-sharing">
+<!-- routerLink="/photo-sharing"  -->
+                <a class="dashboard-item" (click)="underConstruction()">
                     <div class="dashboard-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-image-alt" viewBox="0 0 16 16">
@@ -231,7 +231,7 @@
             </div>
         </div>
         <div class="bg-white rounded-2xl p-8 text-center">
-            <h1 class="text-xl font-bolder mb-6 text-indigo-800 shadow-xl rounded-xl py-2 bg-gray-50">Hang tight! This feature is on its way</h1>
+            <h1 class="text-xl font-bolder mb-6 text-indigo-800 shadow-xl rounded-xl py-2 bg-gray-50">Hang tight! <br> Faster uploads and smarter AI are on the way.</h1>
             <div id="countdown" class="flex justify-center gap-4 text-gray-700 font-mono text-xl">
                 <div>
                     <div class="text-5xl font-extrabold text-indigo-600">{{ days }}</div>
