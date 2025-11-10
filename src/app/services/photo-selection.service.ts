@@ -113,4 +113,8 @@ export class PhotoSelectionService extends BaseService {
   updateFaceDescriptorEvent(event_id: any, callback: any) {
     return this.postData({}, this.httpUrls['updateFaceDescriptorEvent']+"/"+event_id, callback)
   }
+
+  reUploadFaceDescriptor(event_id: any, callback: any) {
+    return this.postData({}, this.httpUrls['reUploadFaceDescriptor']+"/"+event_id, callback)
+  }
 }

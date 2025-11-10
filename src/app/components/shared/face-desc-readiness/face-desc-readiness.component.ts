@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { PhotoSelectionService } from '../../../services/photo-selection.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-face-desc-readiness',
@@ -11,7 +12,7 @@ import { PhotoSelectionService } from '../../../services/photo-selection.service
   template: `
     <div *ngIf="isProcessing">Processing...</div>
     <div *ngIf="isReady">Ready to AI Share</div>
-    <div *ngIf="isReuploadNeeded" class="text-rose-500 font-bold flex gap-2 items-center">Re-Upload Needed <div class="relative inline-block group">
+    <button *ngIf="isReuploadNeeded" class="text-rose-400 font-bold flex gap-2 items-center cursor-pointer" (click)="reUploadFaceDescriptor()">Click To Re-Upload <div class="relative inline-block group">
   <!-- Info Icon -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -32,10 +33,10 @@ import { PhotoSelectionService } from '../../../services/photo-selection.service
   <div
     class="absolute bottom-full left-1/2 mb-2 hidden w-64 -translate-x-1/2 rounded-lg bg-gray-900 px-3 py-2 text-sm text-white shadow-lg group-hover:block z-50"
   >
-    Your face hasn't been recognized well. Please delete the photos and re-upload!
+    Your face hasn't been recognized well. Please click on this button to restart the process!
     <div class="absolute left-1/2 top-full -translate-x-1/2 border-8 border-transparent border-t-gray-900"></div>
   </div>
-</div></div>
+</div></button>
  <div *ngIf="!isProcessing && !isReady && !isReuploadNeeded"><div role="status">
     <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -54,28 +55,32 @@ export class FaceDescReadinessComponent {
   isReuploadNeeded: boolean = false;
   isProcessing: boolean = false;
 
-  constructor(private http: HttpClient,private eventService:PhotoSelectionService) { }
+  constructor(private http: HttpClient, private eventService: PhotoSelectionService,private alert:AlertService) { }
 
   ngOnInit() {
+    this.startStatusCheckProcess();
+  }
+
+  startStatusCheckProcess() {
     this.checkReadiness();
     this.intervalId = setInterval(() => {
       if (!this.isReady) {
         this.checkReadiness();
       }
     }, 10000);
+
   }
 
   checkReadiness() {
     this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.event.event_name.split(" ").join("_")}_${this.event.event_id}`)
       .subscribe(
         (res: any) => {
-          // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
           this.isReady = res.data.status == 'completed';
           this.isReuploadNeeded = res.data.status == 'not_found';
           this.isProcessing = res.data.status == 'processing';
-          if(this.isReady){
-            this.eventService.updateFaceDescriptorEvent(this.event.event_id,(res:any)=>{
-              if(res.status == 200){
+          if (this.isReady) {
+            this.eventService.updateFaceDescriptorEvent(this.event.event_id, (res: any) => {
+              if (res.status == 200) {
                 console.log("Face descriptor value updated");
               }
             })
@@ -94,5 +99,17 @@ export class FaceDescReadinessComponent {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+  }
+
+  reUploadFaceDescriptor() {
+    this.eventService.reUploadFaceDescriptor(this.event.event_id, (res: any) => {
+      if (res.status == 200) {
+        this.startStatusCheckProcess();
+        this.alert.info("AI Face Uploading Process is started");
+      }else{
+        this.alert.error(res.message);
+      }
+    })
+
   }
 }

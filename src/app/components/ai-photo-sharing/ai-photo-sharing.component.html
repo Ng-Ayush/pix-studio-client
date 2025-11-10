@@ -182,8 +182,7 @@
                         </div>
                         <div class="flex justify-between gap-5">
                             <div (click)="publishAiPhotos(event)"
-                                class="rounded-full  group inline-block  px-10 py-3 shadow-md border border-gray-300 flex items-center gap-2"
-                                [ngClass]="{'bg-[#494CA2f5] text-white hover:bg-[#494CA2]':event.ai_guests.length> 0, 'text-black': event.ai_guests.length == 0}">
+                                class="rounded-full  group inline-block  px-10 py-3 shadow-md border border-gray-300 flex items-center gap-2">
                                 <ng-container *ngIf="event.photo_count == 0 else face_desc">
                                     Pending / No Photos
                                 </ng-container>

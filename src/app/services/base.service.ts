@@ -50,6 +50,7 @@ export class BaseService {
     'getTotalUploadedAiPhotosCount': '/api/mystudio/photo-selection/getTotalUploadedAiPhotosCount',
     'getFoldersByEventId': '/api/mystudio/photo-selection/getFoldersByEventId',
     'updateFaceDescriptorEvent': '/api/mystudio/photo-selection/updateFaceDescriptorEvent',
+    'reUploadFaceDescriptor': '/api/mystudio/photo-selection/reUploadFaceDescriptor',
 
 
     //Customer Photo Selection
