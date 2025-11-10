@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { PhotoSelectionService } from '../../../services/photo-selection.service';
 
 @Component({
   selector: 'app-face-desc-readiness',
@@ -53,7 +54,7 @@ export class FaceDescReadinessComponent {
   isReuploadNeeded: boolean = false;
   isProcessing: boolean = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private eventService:PhotoSelectionService) { }
 
   ngOnInit() {
     this.checkReadiness();
@@ -72,6 +73,13 @@ export class FaceDescReadinessComponent {
           this.isReady = res.data.status == 'completed';
           this.isReuploadNeeded = res.data.status == 'not_found';
           this.isProcessing = res.data.status == 'processing';
+          if(this.isReady){
+            this.eventService.updateFaceDescriptorEvent(this.event.event_id,(res:any)=>{
+              if(res.status == 200){
+                console.log("Face descriptor value updated");
+              }
+            })
+          }
           if (this.isReady || this.isReuploadNeeded) {
             clearInterval(this.intervalId);
           }

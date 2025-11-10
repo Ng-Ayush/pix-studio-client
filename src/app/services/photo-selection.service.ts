@@ -109,4 +109,8 @@ export class PhotoSelectionService extends BaseService {
   getFoldersByEventId(event_id: any, user_id: any, callback: any) {
     return this.getData({}, this.httpUrls['getFoldersByEventId'] + "/" + event_id + "?user=" + user_id + "", callback)
   }
+
+  updateFaceDescriptorEvent(event_id: any, callback: any) {
+    return this.postData({}, this.httpUrls['updateFaceDescriptorEvent']+"/"+event_id, callback)
+  }
 }

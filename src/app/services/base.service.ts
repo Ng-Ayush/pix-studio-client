@@ -49,6 +49,7 @@ export class BaseService {
     'checkHasUserAlreadyReviewed': '/api/mystudio/photo-selection/checkHasUserAlreadyReviewed',
     'getTotalUploadedAiPhotosCount': '/api/mystudio/photo-selection/getTotalUploadedAiPhotosCount',
     'getFoldersByEventId': '/api/mystudio/photo-selection/getFoldersByEventId',
+    'updateFaceDescriptorEvent': '/api/mystudio/photo-selection/updateFaceDescriptorEvent',
 
 
     //Customer Photo Selection

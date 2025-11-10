@@ -69,6 +69,7 @@ export class AiUploadComponent {
   private scrollTimeout: any;
   folders: any[] = [];
   selectedFolderId: any = 'all'; // '
+  hasFaceDescriptorError:boolean=false;
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
@@ -91,7 +92,6 @@ export class AiUploadComponent {
     }
     this.eventId = this.userData?.event_id;
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
-    console.log("this.p", this.previewCover);
     if (this.userData && !this.userData?.isFaceDescriptorReady) {
       this.checkReadiness();
       this.intervalId = setInterval(() => {
@@ -232,8 +232,16 @@ export class AiUploadComponent {
       .subscribe(
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
-          this.isReady = res.data.status == 'completed' || res.data.status == 'not_found';
+          this.isReady = res.data.status == 'completed';
+          this.hasFaceDescriptorError = res.data.status == 'not_found';
+          if(this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
           if (this.isReady) {
+            this.hasFaceDescriptorError = false;
+            this.eventService.updateFaceDescriptorEvent(this.userData.event_id,(res:any)=>{
+              if(res.status == 200){
+                this.userData.isFaceDescriptorReady = true;
+              }
+            })
             clearInterval(this.intervalId);
           }
         },
