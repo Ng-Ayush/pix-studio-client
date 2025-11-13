@@ -189,7 +189,7 @@ export class PhotoSelectionComponent {
     if (event.target.value == '') {
       this.filteredEvents = [...this.eventList];
     } else {
-      this.filteredEvents = this.eventList.filter((item: any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()));
+      this.filteredEvents = this.eventList.filter((item: any) => item.event_name.toLowerCase().includes(event.target.value.toLowerCase()) || item.customer_name.toLowerCase().includes(event.target.value.toLowerCase()) || item.customer_phone.includes(event.target.value.toLowerCase()));
     }
   }
 
