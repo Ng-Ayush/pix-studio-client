@@ -232,10 +232,10 @@ export class AiUploadComponent {
       .subscribe(
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
-          // this.isReady = res.data.status == 'completed';
-          this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
-          // this.hasFaceDescriptorError = res.data.status == 'not_found';
-          this.hasFaceDescriptorError = res.data?.output?.body?.status == 'not_found';
+          this.isReady = res.data.status == 'completed';
+          // this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
+          this.hasFaceDescriptorError = res.data.status == 'not_found';
+          // this.hasFaceDescriptorError = res.data?.output?.body?.status == 'not_found';
           if(this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
           if (this.isReady) {
             this.hasFaceDescriptorError = false;

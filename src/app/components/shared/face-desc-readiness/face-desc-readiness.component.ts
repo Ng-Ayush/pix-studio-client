@@ -75,9 +75,9 @@ export class FaceDescReadinessComponent {
     this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.event.event_name.split(" ").join("_")}_${this.event.event_id}`)
       .subscribe(
         (res: any) => {
-          this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
-          this.isReuploadNeeded = res.data?.output?.body?.status == 'not_found';
-          this.isProcessing = res.data?.output?.body?.status == 'processing';
+          this.isReady = res.data?.status == 'completed' || res.data?.status == 'partial';
+          this.isReuploadNeeded = res.data?.status == 'not_found';
+          this.isProcessing = res.data?.status == 'processing';
           if (this.isReady) {
             this.eventService.updateFaceDescriptorEvent(this.event.event_id, (res: any) => {
               if (res.status == 200) {
