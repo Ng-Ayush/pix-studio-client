@@ -76,8 +76,8 @@ export class FaceDescReadinessComponent {
       .subscribe(
         (res: any) => {
           this.isReady = res.data?.status == 'completed' || res.data?.status == 'partial';
-          this.isReuploadNeeded = res.data?.status == 'not_found';
-          this.isProcessing = res.data?.status == 'processing';
+          // this.isReuploadNeeded = res.data?.status == 'not_found';
+          this.isProcessing = res.data?.status == 'processing' || res.data?.status == 'not_found';
           if (this.isReady) {
             this.eventService.updateFaceDescriptorEvent(this.event.event_id, (res: any) => {
               if (res.status == 200) {
@@ -85,7 +85,8 @@ export class FaceDescReadinessComponent {
               }
             })
           }
-          if (this.isReady || this.isReuploadNeeded) {
+          // if (this.isReady || this.isReuploadNeeded) {
+          if (this.isReady) {
             clearInterval(this.intervalId);
           }
         },
