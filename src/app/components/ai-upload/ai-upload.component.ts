@@ -232,8 +232,10 @@ export class AiUploadComponent {
       .subscribe(
         (res:any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
-          this.isReady = res.data.status == 'completed';
-          this.hasFaceDescriptorError = res.data.status == 'not_found';
+          // this.isReady = res.data.status == 'completed';
+          this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
+          // this.hasFaceDescriptorError = res.data.status == 'not_found';
+          this.hasFaceDescriptorError = res.data?.output?.body?.status == 'not_found';
           if(this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
           if (this.isReady) {
             this.hasFaceDescriptorError = false;
@@ -520,7 +522,7 @@ export class AiUploadComponent {
         next: async (res: any) => {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
-          this.matchedImages = JSON.parse(JSON.stringify(res.match_list)) || [];
+          this.matchedImages = JSON.parse(JSON.stringify(res.matches)) || [];
           if (this.matchedImages.length > 0 && this.userData?.need_customer_number && (this.userData?.google_review_url && this.userData?.google_review_url.startsWith('https://')) && await this.checkHasUserAlreadyReviewed()) {
             setTimeout(() => {
               this.triggerGoogleReview();
