@@ -253,6 +253,10 @@ export class PhotoSelectionComponent {
     }
   }
 
+    onEventInput() {
+    this.event_config.event_name = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+  }
+
 }
 
 

@@ -18,7 +18,7 @@ declare var Razorpay: any;
 @Component({
   selector: 'app-ai-photo-sharing',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, FaceDescReadinessComponent,MemoryGameComponent],
+  imports: [RouterModule, CommonModule, FormsModule, FaceDescReadinessComponent, MemoryGameComponent],
   templateUrl: './ai-photo-sharing.component.html',
   styleUrl: './ai-photo-sharing.component.scss'
 })
@@ -144,7 +144,7 @@ export class AiPhotoSharingComponent {
       return;
     }
 
-    if(!this.event_config?.selected_template){
+    if (!this.event_config?.selected_template) {
       this.alert.error("Please select template");
       return;
     }
@@ -550,7 +550,7 @@ export class AiPhotoSharingComponent {
     }
   }
   getTemplateImage(template: string, device: string): string {
-    const templates :any = {
+    const templates: any = {
       template1: {
         laptop: "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012036.png?alt=media&token=93a88de0-b435-4f4e-9652-3a49e4346c3e",
         mobile: "https://firebasestorage.googleapis.com/v0/b/surajproductions-3f28b.firebasestorage.app/o/AI-Event-Preview-Cover-Photo%2FScreenshot%202025-11-01%20012111.png?alt=media&token=4441d9bd-ad98-44ed-aa15-5637d3227e7a"
@@ -568,8 +568,11 @@ export class AiPhotoSharingComponent {
     return templates[template]?.[device] || '';
   }
 
-  onImageError(event:any){
+  onImageError(event: any) {
     event.target.src = 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png';
   }
 
+  onEventInput() {
+    this.event_config.event_name = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+  }
 }

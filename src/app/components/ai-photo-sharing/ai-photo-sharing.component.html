@@ -91,7 +91,7 @@
             </div>
             <div class="px-5 mb-20">
                 <div class="mb-6">
-                    <input type="text" autocomplete="off" placeholder="Search by event" (input)="search($event)"
+                    <input type="text" autocomplete="off" placeholder="Search by Event/Name/Number" (input)="search($event)"
                         class="bg-[#fff] w-full h-full px-4 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
@@ -188,7 +188,7 @@
                                 </ng-container>
 
                                 <ng-template #face_desc>
-                                    <app-face-desc-readiness [event]="event" ></app-face-desc-readiness>
+                                    <app-face-desc-readiness [event]="event"></app-face-desc-readiness>
                                 </ng-template>
 
                                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 scale-95 
@@ -272,6 +272,7 @@
                 <div class="flex-1 min-w-[220px]">
                     <input id="event-name" type="text" placeholder="Name your event"
                         [(ngModel)]="event_config.event_name"
+                          (input)="onEventInput()"
                         class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
                     <span class="block text-xs text-gray-400 mt-1">Name your event. This will displayed on the event
                         cover</span>
@@ -478,8 +479,8 @@
             </div>
         </ng-template>
         <div class="flex justify-start gap-4">
-            <button type="submit" (click)="onSave()"
-                class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded">{{isEdit
+            <button type="submit" (click)="onSave()" [disabled]="!event_config?.event_name"
+                class="cursor-pointer bg-indigo-600 disabled:bg-gray-400 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded">{{isEdit
                 ? 'Update' : 'Create'}}
                 Event</button>
             <button class="px-4 py-2 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
