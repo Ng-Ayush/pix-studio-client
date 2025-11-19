@@ -74,8 +74,7 @@
             {{ template.name }}
           </button>
         </div>
-        <ng-container
-          *ngIf="selectedTemplateId == 'template1' || selectedTemplateId == 'template10' || selectedTemplateId == 'template9'">
+        <ng-container *ngIf="selectedTemplateId == 'template1'">
           <h3 class="text-lg font-medium mt-8 mb-4 text-gray-800">Select Color</h3>
           <div class="grid grid-cols-5 gap-2">
             <div *ngFor="let color of colors" (click)="selectColor(color)"
@@ -105,133 +104,139 @@
         <div class="flex-1 flex overflow-hidden gap-6">
           <section class="flex-grow bg-white rounded-lg shadow-xl p-4 overflow-y-auto relative">
             <div [ngSwitch]="selectedTemplateId" class="flex justify-center">
-              <div *ngSwitchCase="'template8'"
-                class="flex items-center w-[900px] justify-center text-xl overflow-hidden font-medium shadow-xl rounded-md"
-                [id]="selectedTemplateId">
+              <div *ngSwitchCase="'template8'" [id]="selectedTemplateId"
+                class="invoice-paper pdf-common-header relative my-5 box-border flex min-h-[257mm] w-[900px] flex-col rounded-md rounded-sm bg-white p-8 text-xl text-[13px] leading-[1.4] font-medium text-[#231f18] shadow-[0_8px_22px_rgba(51,40,20,0.15)] shadow-md">
+                <!-- Header -->
+                <div class="flex items-start justify-between px-8 pt-9 pb-4 pdf-common-header">
+                  <div class="flex flex-col gap-1 items-start">
+                    <img [src]="userData?.studio_icon" alt="Logo" class="h-32 w-32 mb-3" />
+                    <div class="text-lg font-bold text-[#2a507a]">Bill To :</div>
+                    <div class="mt-1 text-base font-bold">{{invoiceBillConfig?.party_name}}</div>
+                    <div class="text-sm">{{invoiceBillConfig?.party_billing_address}}</div>
+                    <div class="text-sm">{{invoiceBillConfig?.party_location}}</div>
+                    <div class="text-sm">{{invoiceBillConfig?.party_email}}</div>
+                    <div class="text-sm">{{invoiceBillConfig?.party_phone}}</div>
+                  </div>
+                  <div class="flex flex-col items-end text-right gap-2">
+                    <div class="text-4xl text-[#2a507a] font-bold tracking-wider leading-none" style="
+    font-family: 'Viga', sans-serif;
+    font-size: 50px;
+    letter-spacing: 1px;
+    line-height: 1;">SALE INVOICE</div>
+                    <div class="text-[#2a507a] font-bold mt-3">Invoice Number</div>
+                    <div class="text-base font-bold text-[#2a507a]">#{{invoiceBillConfig?.invoice_number}}</div>
+                    <div class="text-sm text-[#2a507a]">{{invoiceBillConfig?.invoice_date | date:'MMM d, y'}}</div>
+                  </div>
+                </div>
 
-                <!-- Outer white box -->
-                <div class="bg-gray-800 shadow-lg rounded-lg w-full">
-                  <div class="flex h-full">
+                <!-- Main billing table -->
+                <div class="bg-blue-50 px-8 pt-2 pb-8 rounded-xl">
+                  <table class="w-full border-t border-blue-200 text-base mb-4">
+                    <thead>
+                      <tr class="text-[#2a507a] text-base font-bold border-b border-blue-200 bg-blue-100">
+                        <th class="p-2 text-left">Item Name</th>
+                        <th class="p-2 text-center">Booking Date</th>
+                        <th class="p-2 text-center">Location</th>
+                        <th class="p-2 text-center">Quantity</th>
+                        <th class="p-2 text-center">Unit Price (₹)</th>
+                        <th class="p-2 text-center">Amount (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-[#2a507a] font-medium">
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx = index;"
+                        class="border-b border-blue-100" [ngClass]="{'bg-blue-100/50':idx % 2 === 1}">
+                        <td class="p-2 text-left">{{item.item_name}}</td>
+                        <td class="p-2 text-center">{{item.booking_date | date:'yyyy-MM-dd'}}</td>
+                        <td class="p-2 text-center">{{item.location}}</td>
+                        <td class="p-2 text-center">{{item.quantity}}</td>
+                        <td class="p-2 text-center">₹{{item.sale_price}}</td>
+                        <td class="p-2 text-center">₹{{item.quantity * item.sale_price}}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="6" class="pt-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                    <!-- LEFT: BLACK PANEL all the way down -->
-                    <!-- <div
-                      class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 flex flex-col p-8 text-white w-[240px] min-h-full">
-                      <div class="mb-16 flex flex-col items-center">
-                        <div *ngIf="userData?.logoUrl"
-                          class="w-16 h-16 rounded-full bg-white mb-4 flex items-center justify-center overflow-hidden">
-                          <img [src]="userData.logoUrl" alt="Logo" class="w-full h-auto object-contain" />
-                        </div>
-                        <h1 class="text-lg font-bold mb-2">{{userData?.studioName || 'Brand Name'}}</h1>
-                        <p class="text-sm text-gray-300">{{userData?.tagline || 'Tagline Space Here'}}</p>
+                  <!-- Billing breakdown section -->
+                  <div class="flex flex-col items-end pr-4">
+                    <div class="flex justify-between w-80 mb-1 text-base">
+                      <span class="text-[#2a507a] font-semibold">Subtotal:</span>
+                      <span class="font-bold">₹{{invoiceBillConfig?.total}}</span>
+                    </div>
+                    <div class="flex justify-between w-80 mb-1 text-base">
+                      <span class="text-[#2a507a] font-semibold">Discount:</span>
+                      <span class="font-bold">₹{{invoiceBillConfig?.discount_value}}</span>
+                    </div>
+                    <div *ngIf="invoiceBillConfig?.invoice_type == 'sale'"
+                      class="flex justify-between w-80 mb-1 text-base">
+                      <span class="text-[#2a507a] font-semibold">Advance Paid:</span>
+                      <span class="font-bold">₹{{invoiceBillConfig?.advancePayment || 0}}</span>
+                    </div>
+                    <div class="border-t border-blue-500 w-80 mt-2 mb-2"></div>
+                    <div class="flex justify-between w-80 text-xl font-bold">
+                      <span class="text-[#2a507a]">Total:</span>
+                      <span>₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
+                    </div>
+                  </div>
+
+
+                  <!-- Payment + signature + QR -->
+                  <!-- <div class="grid grid-cols-3 gap-8 pt-6 pb-2">
+                    <div>
+                      <div class="text-[#2a507a] font-bold text-base mb-2">Payment Information</div>
+                      <div class="text-sm">{{userData?.bank_name}}</div>
+                      <div class="text-sm">Account Name: {{userData?.account_name}}</div>
+                      <div class="text-sm">Account No: {{userData?.account_number}}</div>
+                      <div class="text-sm">Pay by : {{invoiceBillConfig?.due_date | date:'MMM d, y'}}</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <span class="text-[#2a507a] font-bold mb-1">Payment QR</span>
+                      <img [src]="userData?.qr_code_url" alt="QR Code"
+                      class="w-24 h-24 object-contain border border-blue-300 p-1 bg-blue-50 rounded" />
+                      <span class="text-xs text-[#2a507a] mt-1">Scan to pay</span>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="pdf-summary-section">
+
+
+                  <div class="gap-2 flex mt-3">
+                    <div class="max-w-md rounded-lg overflow-hidden pr-10 py-6">
+                      <div class="p-2 text-medium font-semibold text-[#2a507a] border-b border-blue-200 bg-blue-100">
+                        TERMS AND CONDITIONS
                       </div>
-
-                      <div class="mb-10">
-                        <h2 class="font-semibold mb-2 text-sm">Invoice To</h2>
-                        <address class="not-italic text-xs leading-normal">
-                          <span>{{invoiceBillConfig?.party_name || 'Customer Name'}}</span><br />
-                          <span>{{invoiceBillConfig?.party_billing_address || 'Party Address'}}</span><br />
-                          <span>{{invoiceBillConfig?.party_phone_number || '+91xxxxxxxxxx'}}</span><br />
-                        </address>
-                      </div>
-
-                      <div class="mt-auto">
-                        <h2 class="font-semibold text-sm mb-2">Terms &amp; Conditions</h2>
-                        <p *ngIf="exportMode" class="text-xs leading-relaxed text-gray-300 white-space-pre-wrap">
+                      <div class="gap-3">
+                        <div *ngIf="exportMode" class="small p-2 w-full text-sm font-semibold resize-none"
+                          style="white-space:pre-wrap;">
                           {{ invoiceBillConfig.tnc }}
-                        </p>
+                        </div>
                         <textarea *ngIf="!exportMode" #autoTextarea
-                          class="small p-2 resize-none overflow-hidden border rounded" (input)="resizeTextarea()"
-                          rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                      </div>
-                    </div> -->
-
-                    <!-- RIGHT: WHITE PANEL all the way down -->
-                    <div class="flex-1 p-8 flex flex-col bg-white">
-
-                      <!-- HEADER (right) -->
-                      <header class="flex justify-between items-end mb-8 pdf-common-header">
-                        <h1 class="text-3xl font-bold tracking-wide "> {{invoiceBillConfig?.invoice_type == 'sale' ?
-                          'Sale': 'Estimate'}} Invoice</h1>
-                        <div class="text-xs text-gray-700 text-right">
-                          <p><strong>Invoice#</strong> {{invoiceBillConfig?.invoice_number}}</p>
-                          <p><strong>Date</strong> {{ invoiceBillConfig?.invoice_date | date: 'MM/dd/yyyy' }}</p>
-                        </div>
-                      </header>
-
-                      <div class="detail flex justify-between my-3">
-                        <div class="order-from">
-                          <p class="font-bold">Invoice To</p>
-                          <p class="font-bold text-sm">{{ invoiceBillConfig.party_name }}</p>
-                          <p class="pt-2">Contact No: {{ invoiceBillConfig.party_phone_number }}</p>
-                          <p class="pt-2 max-w-xs">Address: {{ invoiceBillConfig?.party_billing_address }}</p>
-                        </div>
-                        <div class="order-detail flex flex-col items-end">
-                          <p>Date: {{ invoiceBillConfig.invoice_date ||'12134'}}</p>
-                          <p>Time: {{ invoiceBillConfig.time ||'12134'}}</p>
-                          <!-- <p>Due Date: {{ invoiceBillConfig.due_date ||'12134'}}</p> -->
-                        </div>
-                      </div>
-
-                      <!-- Invoice ITEMS TABLE (white bg) -->
-                      <table class="w-full table-fixed text-xs border-collapse mb-6 border border-gray-300">
-                        <thead class="bg-gray-100 text-gray-700  text-[11px]">
-                          <tr>
-                            <th class="border border-gray-300 p-2 w-10">SL</th>
-                            <th class="border border-gray-300 p-2 w-40">Item</th>
-                            <th class="border border-gray-300 p-2 w-28">Booking Date</th>
-                            <th class="border border-gray-300 p-2 w-28">Location</th>
-                            <th class="border border-gray-300 p-2 w-16">Qty</th>
-                            <th class="border border-gray-300 p-2 w-28">Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let item of invoiceBillConfig?.invoice_items; let idx = index"
-                            class="border border-gray-300 text-center">
-                            <td class="border border-gray-300 p-2">{{idx + 1}}</td>
-                            <td class="border border-gray-300 p-2">{{item.item_name}} <br>{{item.description}} </td>
-                            <td class="border border-gray-300 p-2">{{item.booking_date | date: 'MMM d, y'}}</td>
-                            <td class="border border-gray-300 p-2">{{item.location}}</td>
-                            <td class="border border-gray-300 p-2">{{item.quantity}}</td>
-                            <td class="border border-gray-300 p-2 text-right">₹{{item.quantity * item.sale_price}}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-                      <div class="pdf-summary-section">
-                        <!-- Subtotal, Discounts, Totals, etc. (right, white panel) -->
-                        <div class="flex justify-end mb-8">
-                          <div class="w-1/2 text-sm">
-                            <div class="flex justify-between mb-2">
-                              <span>Sub Total:</span>
-                              <span>₹{{invoiceBillConfig?.total}}</span>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                              <span>Discount:</span>
-                              <span>₹{{invoiceBillConfig?.discount_value}}</span>
-                            </div>
-                            <div *ngIf="invoiceBillConfig?.advancePayment" class="flex justify-between mb-2">
-                              <span>Advance:</span>
-                              <span>₹{{invoiceBillConfig?.advancePayment}}</span>
-                            </div>
-                            <div class="flex justify-between border-t border-b py-2 font-bold">
-                              <span>Total:</span>
-                              <span>₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Footer (right, white panel) -->
-                        <div class="bg-gray-800 text-yellow-400 p-6 rounded-b-lg mt-auto">
-                          <div class="mt-6 text-center text-yellow-300 text-xs leading-normal space-y-1">
-                            <p>{{userData?.address}}</p>
-                            <p>{{userData?.email}}</p>
-                            <p>{{userData?.phone_number}}</p>
-                          </div>
-                        </div>
+                          class="small p-2 text-sm font-semibold resize-none overflow-hidden w-full"
+                          (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Footer area -->
+                  <div class="bg-[#2a507a] text-white w-full px-6 pt-7 pb-6 rounded-b-xl grid grid-cols-2 items-end">
+                    <div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg">☎️</span><span class="text-sm">{{userData?.phone_number}}</span>
+                      </div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg">🌐</span><span class="text-sm">{{userData?.email}}</span>
+                      </div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg">📍</span><span class="text-sm">{{userData?.address}}</span>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end justify-end">
+                      <div class="font-bold text-lg mb-2">{{userData?.studio_name}}<br>THANK YOU</div>
+                    </div>
+                  </div>
                 </div>
+
               </div>
 
               <!-- Template 2 Placeholder -->
@@ -642,16 +647,7 @@
                     </div>
 
                     <div class="pdf-summary-section">
-                      <div class="px-7 flex pb-4 text-sm items-start justify-between">
-                        <div class="px-7 pb-4 mt-6 text-sm" style="width:410px;">
-                          <p class="font-semibold">Terms and Conditions :</p>
-                          <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
-                            {{ invoiceBillConfig.tnc }}
-                          </div>
-                          <textarea *ngIf="!exportMode" #autoTextarea
-                            class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
-                            cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                        </div>
+                      <div class="px-7 flex pb-4 text-sm items-start justify-end">
                         <div class="text-right text-gray-900 font-bold" style="width:200px;">
                           <div class="text-gray-700 font-medium">
                             <div class="flex justify-between items-center">Subtotal: <span>₹{{ invoiceBillConfig?.total
@@ -666,12 +662,23 @@
                             *ngIf="invoiceBillConfig?.invoice_type === 'sale'">Balance left: <span>₹{{
                               invoiceBillConfig?.balance_left }}</span> </div>
                           <div class="bg-[#35373c] text-[#ddbe7a] px-5 py-2 rounded shadow inline-block mt-1" style="width: 200px;
-    text-align: center;
-    display: flex
-;
-    justify-content: space-between;">
+                                text-align: center;
+                                display: flex
+                            ;
+                                justify-content: space-between;">
                             Total: <span>₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }} </span>
                           </div>
+                        </div>
+                      </div>
+                      <div class="px-7 flex pb-4 text-sm items-start justify-between">
+                        <div class="pr-7 pb-4 mt-6 text-sm" style="width:410px;">
+                          <p class="font-semibold">Terms and Conditions :</p>
+                          <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
+                            {{ invoiceBillConfig.tnc }}
+                          </div>
+                          <textarea *ngIf="!exportMode" #autoTextarea
+                            class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
+                            cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                         </div>
                       </div>
 
@@ -708,135 +715,133 @@
                 </div>
               </div>
               <div *ngSwitchCase="'template10'" [id]="selectedTemplateId"
-                class="flex items-center w-[900px] justify-center shadow-md rounded-md text-xl font-medium">
-                <div class="w-full mx-auto shadow-lg rounded-md">
-
-                  <!-- Header -->
-                  <div class="flex justify-between items-center relative">
-                    <!-- Left Logo block -->
-                    <div class="text-white flex items-start justify-center w-64 h-28 relative"
-                      [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
-                      <img [src]="userData?.studio_icon" alt="logo" class="h-16 pt-3">
-                      <div class="absolute bottom-2 left-16 text-white text-md">
-                        {{ userData?.studio_name }}<br>
-                      </div>
-                    </div>
-                    <!-- Right Yellow Shape -->
-                    <div class="flex-1 pdf-common-header border-b h-28 flex items-center justify-end pr-10"
-                      [ngStyle]="{'border-color':getTemplateClass('')}">
-                      <h1 class="text-4xl font-bold" [ngStyle]="{'color':getTemplateClass('')}">{{
-                        invoiceBillConfig.invoice_type == 'sale' ? 'Sale' :
-                        'Estimate'}} Invoice</h1>
-                    </div>
-                  </div>
-
-                  <!-- Party + Invoice Info -->
-                  <div class="flex justify-between items-start px-5 py-8">
-                    <div>
-                      <p class="text-sm">Invoice to : <br> <span class="font-bold text-sm">{{
-                          invoiceBillConfig.party_name }}</span></p>
-                      <p class="text-sm">{{ invoiceBillConfig.party_phone_number }}</p>
-                      <p class="text-sm max-w-xs">{{ invoiceBillConfig?.party_billing_address }}</p>
-                    </div>
-                    <div class="text-right">
-                      <p class="flex gap-1 text-md items-end text-sm"><span class="font-bold text-sm">Invoice No:</span>
-                        #{{ invoiceBillConfig.invoice_number }}</p>
-                      <p class="flex gap-1 text-md items-end text-sm"><span class="font-bold text-sm">Date :</span> {{
-                        invoiceBillConfig.invoice_date | date : 'MMM d,y' }}</p>
-                      <p class="flex gap-1 text-md items-end text-sm"><span class="font-bold text-sm">Time :</span> {{
-                        invoiceBillConfig.time }}</p>
-                    </div>
-                  </div>
-
-                  <!-- Table -->
-                  <div class="px-5">
-                    <table class="w-full border-collapse text-sm">
-                      <thead>
-                        <tr class="text-white text-center"
-                          [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
-                          <th class="py-2 px-2">#</th>
-                          <th class="py-2 px-2">Item name</th>
-                          <th class="py-2 px-2">Booking Date</th>
-                          <th class="py-2 px-2">Location</th>
-                          <th class="py-2 px-2">Price</th>
-                          <th class="py-2 px-2">Qty</th>
-                          <th class="py-2 px-2">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of invoiceBillConfig.invoice_items; let idx=index;"
-                          class="text-center border-b">
-                          <td class="py-2 px-4">{{idx+1}}</td>
-                          <td class="py-2 px-4 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
-                              class="text-center"> {{item.description}} </small></td>
-                          <td class="py-2 px-4">{{ item.booking_date | date : "MMM d,y"}}</td>
-                          <td class="py-2 px-4">{{ item.location }}</td>
-                          <td class="py-2 px-4">₹{{ item.sale_price }}</td>
-                          <td class="py-2 px-4">{{ item.quantity }}</td>
-                          <td class="py-2 px-4">₹{{ item.quantity * item.sale_price }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div class="pdf-summary-section">
-
-
-                    <!-- Summary -->
-                    <div class="flex justify-between px-5 pt-6 pb-2 text-sm">
-                      <div class="gap-2 flex flex-col">
-                        <!-- <p><span class="font-bold">Advance :</span> ₹{{ invoiceBillConfig.advance }}</p> -->
-                        <p><span class="font-bold">Sub Total:</span> ₹{{ invoiceBillConfig?.total }}</p>
-                        <p><span class="font-bold">Discount:</span> ₹{{ invoiceBillConfig.discount_value }}</p>
-                        <div class="flex gap-1" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                          <span>Advance:</span>
-                          <span>₹{{invoiceBillConfig?.advancePayment || 0}}</span>
-                        </div>
-                      </div>
-                      <div class="text-right gap-2 flex flex-col items-end">
-                        <p *ngIf="invoiceBillConfig?.invoice_type == 'sale'"><span class="font-bold">Balance
-                            left:</span>
-                          ₹{{ invoiceBillConfig.balance_left }}</p>
-                        <p>
-                          <span class="text-white px-6 py-2 rounded block font-bold "
-                            [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">Total:
-                            ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Terms + Thank you -->
-                    <div class="flex justify-between px-5 py-6">
+                class="w-[900px] mx-auto rounded-2xl overflow-hidden shadow-2xl border border-[#333] bg-[#191919] font-sans"
+                style="background:#191919; font-family: 'Viga', 'Cabin Condensed', sans-serif;">
+                <!-- Header area -->
+                <div class="px-10 pt-10 pb-2 bg-[#222] flex flex-row items-start justify-between">
+                  <div>
+                    <div class="flex items-center gap-4 mb-3">
+                      <img [src]="userData?.studio_icon || 'https://img.icons8.com/ios-filled/60/ffffff/t-shirt.png'"
+                        class="h-32 w-32" alt="Logo" />
                       <div>
-                        <h3 class="font-bold text-sm">Terms and Conditions :</h3>
-                        <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap; width:410px;">
-                          <p class="text-sm">{{ invoiceBillConfig.tnc }}</p>
+                        <div class="text-white text-2xl tracking-wider">
+                          {{userData?.studio_name || 'Wardiere Inc.'}}
                         </div>
-                        <textarea *ngIf="!exportMode" #autoTextarea
-                          class="small p-2 resize-none text-sm overflow-hidden rounded" (input)="resizeTextarea()"
-                          rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                       </div>
                     </div>
-
-                    <!-- Footer -->
-                    <div class="px-10 pb-6 border-t">
-                      <div class="text-center py-6 font-bold text-lg">Thank you For Your Business</div>
-
-                      <div class="flex justify-around text-sm gap-5">
-                        <div class="flex items-center gap-2">
-                          <span>{{ userData?.phone_number }}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <span>{{userData?.email}}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <span class="w-1/1">{{ userData?.address }}</span>
-                        </div>
-                      </div>
+                    <div class="text-[#e6e6e6] font-medium text-[13px] mt-1" style="white-space: pre-line;">
+                      {{userData?.address || '123 Anywhere St., Any City'}}<br />
+                      {{userData?.email || 'hello@reallygreatsite.com'}}<br />
+                      {{userData?.phone_number || '+91 12345 67890'}}
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-end mt-3">
+                    <div class="text-[#fff] font-base text-right">Invoice Number</div>
+                    <div class="text-2xl  text-[#fff] ">{{invoiceBillConfig?.invoice_number}}</div>
+                    <div class=" text-right text-[#fff]  mt-3">Date</div>
+                    <div class="font-base text-[#fff]  opacity-80">{{invoiceBillConfig?.invoice_date | date:'dd MMM,
+                      yyyy'}}
                     </div>
                   </div>
                 </div>
 
+                <!-- Billed To / From -->
+                <div class="flex flex-row justify-between px-10 pt-6 pb-5 text-white">
+                  <div>
+                    <div class="text-[15px]  mb-1 uppercase leading-tight">Billed To</div>
+                    <div class="text-lg  accent">{{invoiceBillConfig?.party_name}}</div>
+                    <div class="text-sm accent">{{invoiceBillConfig?.party_billing_address}}</div>
+                    <div class="text-sm accent">{{invoiceBillConfig?.party_email}}</div>
+                    <div class="text-sm accent">{{invoiceBillConfig?.party_phone}}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[15px]  mb-1 uppercase leading-tight">Billed From</div>
+                    <div class="text-lg  accent">{{userData?.studio_name}}</div>
+                    <div class="text-sm accent">{{userData?.address}}</div>
+                    <div class="text-sm accent">{{userData?.email}}</div>
+                    <div class="text-sm accent">{{userData?.phone_number}}</div>
+                  </div>
+                </div>
+
+                <!-- Table Section -->
+                <div class="mt-4 px-10 pb-6">
+                  <table class="w-full text-base rounded-lg overflow-hidden" role="table"
+                    aria-label="Invoice line items">
+                    <thead>
+                      <tr class="table-header text-lg  text-[#222] bg-white">
+                        <th class="py-2 px-2 text-left">Item Name</th>
+                        <th class="py-2 px-2 text-left">Description</th>
+                        <th class="py-2 px-2 text-center">Qty</th>
+                        <th class="py-2 px-2 text-center">Booking Date</th>
+                        <th class="py-2 px-2 text-center">Location</th>
+                        <th class="py-2 px-2 text-center">Unit Price (₹)</th>
+                        <th class="py-2 px-2 text-right">Total (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index"
+                        [ngClass]="{'table-row-alt':i % 2 === 1}"
+                        class="table-row text-[#f6f6f6] border-b border-[#333]">
+                        <td class="py-2 px-2">{{item.item_name}}</td>
+                        <td class="py-2 px-2">{{item.description}}</td>
+                        <td class="py-2 px-2 text-center">{{item.quantity}}</td>
+                        <td class="py-2 px-2 text-center">{{item.booking_date | date:'dd MMM yyyy'}}</td>
+                        <td class="py-2 px-2 text-center">{{item.location}}</td>
+                        <td class="py-2 px-2 text-center">₹{{item.sale_price}}</td>
+                        <td class="py-2 px-2 text-right">₹{{item.quantity * item.sale_price}}</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="table-header text-[#222] bg-white">
+                        <td colspan="6" class="py-2 px-3 text-right text-base font-bold">Subtotal</td>
+                        <td class="py-2 px-3 text-right text-base font-bold">₹{{invoiceBillConfig?.total}}</td>
+                      </tr>
+                      <tr class="table-header text-[#222] bg-white">
+                        <td colspan="6" class="py-2 px-3 text-right text-base font-bold">Discount</td>
+                        <td class="py-2 px-3 text-right text-base font-bold">₹{{invoiceBillConfig.discount_value}}</td>
+                      </tr>
+                      <tr class="table-header text-[#222] bg-white">
+                        <td colspan="6" class="py-2 px-3 text-right text-base font-bold"
+                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">Advance</td>
+                        <td class="py-2 px-3 text-right text-base font-bold"
+                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">₹{{invoiceBillConfig?.advancePayment || 0}}
+                        </td>
+                      </tr>
+                      <tr class="table-header text-[#222] bg-white">
+                        <td colspan="6" class="py-2 px-3 text-right text-base font-bold"
+                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">Balance left</td>
+                        <td class="py-2 px-3 text-right text-base font-bold"
+                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">₹{{invoiceBillConfig?.balance_left}}</td>
+                      </tr>
+                      <tr class="table-header text-[#222] bg-white">
+                        <td colspan="6" class="py-4 px-3 text-right text-2xl font-extrabold">TOTAL</td>
+                        <td class="py-4 px-3 text-right text-2xl font-extrabold">₹{{invoiceBillConfig?.total -
+                          invoiceBillConfig?.discount_value}}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                <!-- Payment Details and T&C Section -->
+                <div class="flex flex-row justify-between px-10 py-6 mt-1">
+                  <div class="bg-[#232323] text-white rounded-xl px-7 py-6 w-full max-w-xl">
+                    <div class="mb-2">Terms & Conditions</div>
+                    <div class="gap-2 flex flex-col">
+                      <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap; width:410px;">
+                        {{ invoiceBillConfig.tnc }}
+                      </div>
+                      <textarea *ngIf="!exportMode" #autoTextarea class="small p-2 resize-none overflow-hidden rounded"
+                        (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <!-- Footer -->
+                <div
+                  class="bg-[#181818] border-t border-[#222] py-5 px-10 flex justify-between text-[#e6e6e6] items-center text-[15px]">
+                  <span>{{userData?.email || 'hello@reallygreatsite.com'}}</span>
+                  <span>{{userData?.phone_number || '+91 12345 67890'}}</span>
+                </div>
               </div>
               <div *ngSwitchCase="'template3'" [id]="selectedTemplateId"
                 class="flex items-center w-[900px] justify-center shadow-md rounded-md text-xl font-medium flex-col">
@@ -917,15 +922,7 @@
 
 
                   <!-- Totals & Terms -->
-                  <div class="px-5 pt-8  flex justify-between w-full text-sm">
-                    <div class="gap-2 flex flex-col text-gray-700">
-                      <p class="mt-6 font-bold">Terms and Conditions :</p>
-                      <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap; width:410px;">
-                        {{ invoiceBillConfig.tnc }}
-                      </div>
-                      <textarea *ngIf="!exportMode" #autoTextarea class="small p-2 resize-none overflow-hidden rounded"
-                        (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                    </div>
+                  <div class="px-5 pt-8  flex justify-end w-full text-sm">
                     <div class="text-right">
                       <p class="flex justify-between"><span class="font-bold">Sub Total :</span>
                         ₹{{invoiceBillConfig?.total}}</p>
@@ -941,6 +938,16 @@
                       <div class="bg-[#A51C73] text-white font-bold py-3 mt-2 px-8 inline-block rounded-lg shadow-md">
                         Total : ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}
                       </div>
+                    </div>
+                  </div>
+                  <div class="px-5 pt-8  flex justify-between w-full text-sm">
+                    <div class="gap-2 flex flex-col text-gray-700">
+                      <p class="mt-6 font-bold">Terms and Conditions :</p>
+                      <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap; width:410px;">
+                        {{ invoiceBillConfig.tnc }}
+                      </div>
+                      <textarea *ngIf="!exportMode" #autoTextarea class="small p-2 resize-none overflow-hidden rounded"
+                        (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                     </div>
                   </div>
 
@@ -1219,15 +1226,7 @@
 
                 <div class="pdf-summary-section">
                   <!-- TOTALS -->
-                  <div class="px-5 pt-10 flex justify-between text-sm gap-6 w-full">
-                    <div class="px-5 text-sm" style="width:410px;">
-                      <p class="font-bold text-[15px]">Terms and Conditions :</p>
-                      <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
-                        {{ invoiceBillConfig.tnc }}
-                      </div>
-                      <textarea *ngIf="!exportMode" #autoTextarea class="small pt-2 resize-none overflow-hidden rounded"
-                        (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                    </div>
+                  <div class="px-5 pt-10 flex justify-end text-sm gap-6 w-full">
                     <div class="text-right gap-3 flex flex-col" style="width:300px;">
                       <div class="gap-2 flex flex-col">
                         <p class="flex justify-between"><span class="font-bold">Sub Total :</span> ₹{{
@@ -1245,6 +1244,16 @@
                       <div class="bg-black text-white font-bold text-center py-3 px-8 inline-block rounded-full">
                         Total : ₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }}
                       </div>
+                    </div>
+                  </div>
+                  <div class="px-5 pt-10 flex justify-between text-sm gap-6 w-full">
+                    <div class="px-5 text-sm" style="width:410px;">
+                      <p class="font-bold text-[15px]">Terms and Conditions :</p>
+                      <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
+                        {{ invoiceBillConfig.tnc }}
+                      </div>
+                      <textarea *ngIf="!exportMode" #autoTextarea class="small pt-2 resize-none overflow-hidden rounded"
+                        (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                     </div>
                   </div>
 
@@ -1277,7 +1286,7 @@
               </div>
 
               <div *ngSwitchCase="'template6'" [id]="selectedTemplateId"
-                class="flex items-center w-[900px] justify-center text-xl font-medium flex-col">
+                class="flex items-center w-[900px] justify-center text-xl font-medium flex-col shadow-md">
                 <div class="w-full flex justify-between items-center bg-[#0d2241] text-white pdf-common-header">
                   <div>
                     <h1 class="text-xl font-bold flex items-center gap-2" style="width:490px;">
@@ -1354,19 +1363,7 @@
 
                 <div class="pdf-summary-section">
                   <!-- Totals Section -->
-                  <div class="flex justify-between items-start px-5 py-6 w-full">
-                    <!-- Left -->
-                    <div class="gap-2 flex flex-col text-sm" style="width:410px;">
-                      <div>🔴 <span class="font-bold text-[15px] uppercase">Terms & Conditions:</span><br>
-                        <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
-                          {{ invoiceBillConfig.tnc }}
-                        </div>
-                        <textarea *ngIf="!exportMode" #autoTextarea
-                          class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
-                          cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                      </div>
-                    </div>
-                    <!-- Right -->
+                  <div class="flex justify-end items-start px-5 py-6 w-full">
                     <div class="bg-[#0d2241] text-white rounded-lg p-6 w-60 text-sm">
                       <p class="flex justify-between"><span>Sub Total :</span>
                         <span>₹{{invoiceBillConfig?.total}}</span>
@@ -1390,6 +1387,19 @@
                       </p>
                     </div>
                   </div>
+                  <div class="flex justify-between items-start px-5 py-6 w-full">
+                    <!-- Left -->
+                    <div class="gap-2 flex flex-col text-sm" style="width:410px;">
+                      <div>🔴 <span class="font-bold text-[15px] uppercase">Terms & Conditions:</span><br>
+                        <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
+                          {{ invoiceBillConfig.tnc }}
+                        </div>
+                        <textarea *ngIf="!exportMode" #autoTextarea
+                          class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
+                          cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
+                      </div>
+                    </div>
+                  </div>
 
 
                   <!-- Footer -->
@@ -1403,97 +1413,250 @@
 
 
               <div *ngSwitchCase="'template9'" [id]="selectedTemplateId"
-                class="flex items-center w-[900px] justify-center shadow-md rounded-md text-xl font-medium">
-                <div class="w-full mx-auto bg-white rounded-md shadow-lg overflow-hidden">
+                class="w-[900px] min-h-[1200px] bg-white rounded-2xl shadow-xl border border-gray-200 px-0 pb-0 mx-auto mt-4 relative overflow-hidden"
+                style="background:#fff !important; font-family: 'Viga', 'Cabin Condensed', sans-serif !important">
 
-                  <!-- Header -->
-                  <div class="p-6 text-center pdf-common-header relative"
-                    [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
-                    <div class="absolute left-6 top-6 text-white text-xl font-light">{{userData?.studio_name}}</div>
-                    <div class="flex flex-col items-center justify-center">
-                      <div class="w-12 h-12 mb-2">
-                        <!-- Placeholder Logo -->
-                        <div class="w-12 h-12 bg-white/40 rounded-full flex items-center justify-center">
-                          <span><img [src]="userData?.studio_icon" class=""></span>
-                        </div>
-                      </div>
-                      <h1 class="text-3xl font-serif tracking-wide text-white"> {{invoiceBillConfig.invoice_type ==
-                        'sale' ? 'Sale' : 'Estimate'}} Invoice</h1>
+                <!-- Decorative shapes (top left and right) -->
+                <div class="absolute left-0 top-0 w-[180px] h-[70px]" style="z-index:1 !important;">
+                  <svg width="180" height="70">
+                    <polygon points="0,0 180,0 100,70 0,70" fill="#ffe08b" />
+                  </svg>
+                </div>
+                <div class="absolute right-0 top-0 w-[230px] h-[230px]" style="z-index:1 !important;">
+                  <svg width="230" height="230">
+                    <rect x="40" y="30" width="64" height="64" rx="15" fill="#ffe08b" />
+                    <rect x="110" y="110" width="110" height="110" rx="30" fill="#ffe08b" />
+                    <rect x="120" y="30" width="40" height="40" rx="9" fill="#14213d" />
+                    <rect x="178" y="108" width="28" height="28" rx="5" fill="#14213d" />
+                  </svg>
+                </div>
+
+                <!-- Header -->
+                <div class="flex flex-row justify-between items-start z-10 px-16 pt-10 relative">
+                  <div class="flex flex-col gap-0">
+                    <div class="flex items-center gap-3 mb-1">
+                      <img [src]="userData?.studio_icon || 'https://img.icons8.com/ios-filled/52/f7b62c/down-left.png'"
+                        alt="Logo" class="h-32 w-32" />
+                      <span class="font-bold text-xl tracking-wide navy"
+                        style="color:#14213d !important;font-size: 35px !important; ">
+                        {{userData?.studio_name || 'WARNER & SPENCER'}}<br class="sm:hidden" />
+                      </span>
+                    </div>
+                    <div class="mt-2 text-xs tracking-wider navy opacity-80" style="color:#14213d !important;">
+                      Invoice No : {{invoiceBillConfig?.invoice_number}}<br />
+                      {{invoiceBillConfig?.invoice_date | date:'dd MMMM, y'}}
                     </div>
                   </div>
-
-                  <!-- Invoice Info -->
-                  <div class="flex justify-between px-6 py-4">
-                    <div>
-                      <p class="text-sm">Invoice To:</p>
-                      <h2 class="text-lg font-bold">{{invoiceBillConfig.party_name}}</h2>
-                      <p class="text-sm">{{invoiceBillConfig.party_phone_number}}</p>
-                      <p class="text-sm max-w-xs">{{invoiceBillConfig?.party_billing_address}}</p>
-                    </div>
-                    <div class="text-right text-sm">
-                      <p><span class="font-semibold">Invoice No:</span> {{invoiceBillConfig?.invoice_number}}</p>
-                      <p><span class="font-semibold">Date:</span> {{invoiceBillConfig?.invoice_date | date : 'MMM d,y'}}
-                      </p>
-                      <p><span class="font-semibold">Time:</span> {{invoiceBillConfig?.time}}</p>
-                    </div>
+                  <div class="flex flex-1 flex-col justify-end items-end">
+                    <h1
+                      class="text-5xl font-extrabold tracking-tight navy pb-0 border-b-2 border-gray-300 w-full text-right uppercase"
+                      style="color:#14213d !important; padding-top:54px !important; ">INVOICE</h1>
                   </div>
+                </div>
 
-                  <!-- Table -->
-                  <div class="px-6 pb-6">
-                    <table class="w-full text-sm border-collapse">
-                      <thead>
-                        <tr class="text-white text-left"
-                          [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">
-                          <th class="p-2">#</th>
-                          <th class="p-2">Item name</th>
-                          <th class="p-2">Booking Date</th>
-                          <th class="p-2">Location</th>
-                          <th class="p-2">Price</th>
-                          <th class="p-2">Qty</th>
-                          <th class="p-2">Amount</th>
-                        </tr>
-                      </thead>
+                <!-- Invoice details and contact -->
+                <div class="px-5 pt-7 pb-4">
+                  <div class="text-2xl font-bold navy" style="color:#14213d !important;">Invoice to :</div>
+                  <div class="text-2xl font-extrabold navy mt-0.5 mb-1" style="color:#14213d !important;">
+                    {{invoiceBillConfig?.party_name}}</div>
+                  <div class="text-base text-[#344a68]">
+                    {{invoiceBillConfig?.party_phone_number}}<br />
+                  </div>
+                  <div class="text-base font-semibold navy" style="color:#14213d !important;">
+                    Location: <span class="accent"
+                      style="color:#f7b62c !important;">{{invoiceBillConfig?.party_billing_address}}</span>
+                  </div>
+                </div>
+
+                <!-- Table -->
+                <div class="mx-3 mt-7">
+                  <table class="w-full text-lg" role="table" aria-label="Invoice line items">
+                    <thead>
+                      <tr class="accent-bg uppercase text-xs navy font-bold"
+                        style="background:#ffe08b !important; color:#14213d !important;">
+                        <th class="px-4 py-3 text-left rounded-tl-lg">Item Name</th>
+                        <th class="px-4 py-3 text-left">Description</th>
+                        <th class="px-4 py-3 text-center">Qty</th>
+                        <th class="px-4 py-3 text-center">Booking Date</th>
+                        <th class="px-4 py-3 text-center">Location</th>
+                        <th class="px-4 py-3 text-center">Unit Price (₹)</th>
+                        <th class="px-4 py-3 text-right rounded-tr-lg">Row Total (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white text-gray-900 border-l border-r border-[#ffe08b] font-medium">
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index"
+                        [ngClass]="{'bg-[#fff8ea]':i % 2 === 1}" class="border-b border-[#ffe08b]">
+                        <td class="px-4 py-2">{{item.item_name}}</td>
+                        <td class="px-4 py-2">{{item.description}}</td>
+                        <td class="px-4 py-2 text-center">{{item.quantity}}</td>
+                        <td class="px-4 py-2 text-center">{{item.booking_date | date:'dd MMM yyyy'}}</td>
+                        <td class="px-4 py-2 text-center">{{item.location}}</td>
+                        <td class="px-4 py-2 text-center">₹{{item.sale_price}}</td>
+                        <td class="px-4 py-2 text-right">₹{{item.quantity * item.sale_price}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Summary -->
+                  <div class="flex justify-end mt-0 bg-white">
+                    <table class="text-lg" role="table" aria-label="Invoice totals">
                       <tbody>
-                        <tr class="border-b" *ngFor="let item of invoiceBillConfig.invoice_items; let i = index">
-                          <td class="p-2">{{i +1}}</td>
-                          <td class="p-2 flex flex-wrap flex-col gap-1 items-center">{{item.item_name}} <small
-                              class="text-center"> {{item.description}} </small></td>
-                          <td class="p-2">{{item.booking_date | date : "MMM d,y"}}</td>
-                          <td class="p-2">{{item.quantity}}</td>
-                          <td class="p-2">{{item.sale_price}}</td>
-                          <td class="p-2">{{item.quantity}}</td>
-                          <td class="p-2">{{item.quantity * item.sale_price}}</td>
+                        <tr>
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] rounded-tl-lg font-medium">Subtotal :</td>
+                          <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">₹{{invoiceBillConfig?.total}}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-medium">Discount :</td>
+                          <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">
+                            ₹{{invoiceBillConfig?.discount_value}}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-medium">Advance Paid :</td>
+                          <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">₹{{invoiceBillConfig?.advancePayment
+                            || 0}}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-bold rounded-bl-lg">Total :</td>
+                          <td class="text-right px-7 py-1 bg-[#ffe08b] font-bold rounded-br-lg">
+                            ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value -
+                            (invoiceBillConfig?.advancePayment || 0) + (invoiceBillConfig?.tax || 0)}}</td>
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                </div>
 
-                    <div class="pdf-summary-section">
-
-                      <!-- Totals -->
-                      <div class="flex justify-end mt-4">
-                        <div class="text-sm flex flex-col gap-1">
-                          <p><span class="font-semibold">Sub Total :</span> ₹ {{invoiceBillConfig?.total}}</p>
-                          <p><span class="font-semibold">Discount :</span> ₹{{invoiceBillConfig?.discount_value}}</p>
-                          <div class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                            <span>Advance:</span>
-                            <span>₹{{invoiceBillConfig?.advancePayment || 0}}</span>
-                          </div>
-                          <p><span class="font-semibold" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">Balance left
-                              :</span> ₹{{invoiceBillConfig?.balance_left}}</p>
+                <!-- Payment, Signature, Terms -->
+                <div class="flex flex-row mt-8 mx-3 mb-1 justify-between items-stretch">
+                  <div class="flex-1 max-w-[500px]">
+                    <div class="rounded-lg overflow-hidden py-6 pr-10">
+                      <div class="p-2 text-medium font-bold bg-[#ffe08b]">
+                        TERMS AND CONDITIONS
+                      </div>
+                      <div class="gap-3">
+                        <div *ngIf="exportMode" class="small p-2 w-full" style="white-space:pre-wrap !important;">
+                          {{ invoiceBillConfig.tnc }}
                         </div>
+                        <textarea *ngIf="!exportMode" #autoTextarea class="small p-2 resize-none overflow-hidden w-full"
+                          (input)="resizeTextarea()" rows="5" cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                       </div>
+                    </div>
+                  </div>
+                </div>
 
+                <!-- Footer -->
+                <div
+                  class="mt-10 flex flex-row justify-between items-center w-full px-16 pb-8 pt-7 border-t border-yellow-100 relative z-10">
+                  <div class="text-gray-600 text-md font-medium">{{userData?.phone_number || '+123-456-7890'}}</div>
+                  <div class="text-gray-600 text-md font-medium">{{userData?.email || 'hello@reallygreatsite.com'}}
+                  </div>
+                </div>
 
-                      <!-- Advance / Balance -->
-                      <div class="flex justify-end mt-4 text-sm gap--1 flex-col items-end">
-                        <p><span class="text-white px-8 py-3 rounded-md text-lg font-semibold"
-                            [ngStyle]="{'color': '#fff','background':getTemplateClass('')}">Total:
-                            ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span></p>
+                <!-- Decorative shapes bottom -->
+                <div class="absolute left-0 bottom-0 w-[200px] h-[120px]" style="z-index:1 !important">
+                  <svg width="200" height="120">
+                    <rect x="0" y="70" width="90" height="90" rx="30" fill="#ffe08b" />
+                    <rect x="40" y="10" width="74" height="74" rx="14" fill="#14213d" />
+                    <rect x="110" y="20" width="38" height="38" rx="8" fill="#ffe08b" />
+                  </svg>
+                </div>
+                <div class="absolute right-0 bottom-0 w-[230px] h-[90px]" style="z-index:1 !important">
+                  <svg width="230" height="90">
+                    <polygon points="20,55 230,0 230,90 0,90" fill="#ffe08b" />
+                  </svg>
+                </div>
+              </div>
+
+              <div *ngSwitchCase="'template11'" [id]="selectedTemplateId"
+                class="cream-bg mx-auto w-[900px] min-h-[1020px] rounded-[18px] shadow-2xl border border-[#cbbeb5] py-7 px-0"
+                style="background:#f7f4f1; font-family:'Viga', 'Cabin Condensed', sans-serif;">
+                <div class="flex flex-col gap-1">
+                  <div class="text-center tracking-wide font-light text-xl text-[#8b8684] mb-1">{{
+                    invoiceBillConfig?.invoice_type == 'sale' ? 'SALE' : 'ESTIMATE'}} INVOICE</div>
+                  <div class="text-center text-lg font-bold brown mb-4" style="color:#4a3731;">{{userData?.studio_name}}
+                  </div>
+                  <div class="flex flex-row justify-between items-center px-12 mt-2 mb-10">
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-2 mb-3">
+                        <img [src]="userData?.studio_icon || 'https://img.icons8.com/ios-filled/32/4a3731/t-shirt.png'"
+                          class="h-32 w-32" alt="Logo" />
+                        <div class="font-bold text-lg brown" style="color:#4a3731; font-size:32px;">{{userData?.studio_name}}</div>
                       </div>
-
-                      <!-- Terms -->
-                      <div class="mt-6 text-sm" style="width:410px;">
-                        <p class="font-semibold">Terms and Conditions :</p>
+                      <div class="text-[#97918d] text-[14px] leading-tight font-medium">
+                        {{invoiceBillConfig?.party_billing_address }}<br>
+                        {{invoiceBillConfig?.party_phone_number}}
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end leading-tight">
+                      <span class="tracking-[0.16em] text-2xl font-extrabold brown"
+                        style="color:#4a3731;">#{{invoiceBillConfig?.invoice_number}}</span>
+                      <span class="mt-1 font-bold text-[#a89988] text-xs">DATE. {{invoiceBillConfig?.invoice_date |
+                        date:'dd MMMM yyyy'}}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Table -->
+                <div class="mb-1 px-10 pt-4">
+                  <table class="w-full text-[16px]" role="table" aria-label="Invoice Items">
+                    <thead>
+                      <tr class="table-header text-[15px] font-bold border-b-2 border-[#ded6d2]"
+                        style="background:#f1edea;color:#6c5c56;">
+                        <th class="py-2 px-2 text-left">Item Name</th>
+                        <th class="py-2 px-2 text-left">Description</th>
+                        <th class="py-2 px-2 text-center">QT</th>
+                        <th class="py-2 px-2 text-center">Booking Date</th>
+                        <th class="py-2 px-2 text-center">Location</th>
+                        <th class="py-2 px-2 text-center">Unit Price (₹)</th>
+                        <th class="py-2 px-2 text-right">Subtotal (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of invoiceBillConfig.invoice_items; let i = index"
+                        [class.table-subtle]="i % 2 === 0" class="border-b border-[#ede4e0]">
+                        <td class="px-2 py-2">{{item.item_name}}</td>
+                        <td class="px-2 py-2">{{item.description}}</td>
+                        <td class="px-2 py-2 text-center">{{item.quantity}}</td>
+                        <td class="px-2 py-2 text-center">{{item.booking_date | date:'dd MMM yyyy'}}</td>
+                        <td class="px-2 py-2 text-center">{{item.location}}</td>
+                        <td class="px-2 py-2 text-center">₹{{item.sale_price}}</td>
+                        <td class="px-2 py-2 text-right">₹{{item.quantity * item.sale_price}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Totals -->
+                <div class="flex flex-row w-full mt-5 px-10 items-start justify-end">
+                  <table class="w-[370px] text-[16px]">
+                    <tr>
+                      <td class="px-3 py-1 text-right font-semibold">Subtotal</td>
+                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.total}}</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-1 text-right font-semibold">Discount</td>
+                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.discount_value}}</td>
+                    </tr>
+                    <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
+                      <td class="px-3 py-1 text-right font-semibold">Advance Paid</td>
+                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.advancePayment || 0}}</td>
+                    </tr>
+                    <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
+                      <td class="px-3 py-1 text-right font-semibold">Balace Left</td>
+                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.balance_left || 0}}</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-2 text-right font-bold bg-[#d7cbc2] rounded-l-lg">TOTAL</td>
+                      <td class="px-3 py-2 text-right font-bold bg-[#a18e7e] rounded-r-lg text-white">
+                        ₹{{invoiceBillConfig.total -
+                        invoiceBillConfig?.discount_value}}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="flex flex-row justify-between items-start mt-7">
+                  <div class="flex justify-between items-start px-5 py-6 w-full">
+                    <!-- Left -->
+                    <div class="gap-2 flex flex-col text-sm" style="width:410px;">
+                      <div>🔴 <span class="font-bold text-[15px] uppercase">Terms & Conditions:</span><br>
                         <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
                           {{ invoiceBillConfig.tnc }}
                         </div>
@@ -1502,20 +1665,20 @@
                           cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
                       </div>
                     </div>
-                    <p class="mt-4 tracking-wide font-light text-center">THANK YOU FOR YOUR
-                      BUSINESS</p>
-                    <!-- Footer -->
-                    <div class="bg-gray-100 py-4 px-6 flex items-center justify-around text-sm gap-3">
-                      <div class="flex items-center flex flex-col gap-2">
-                        <span>📞</span><span>{{userData?.phone_number}}</span>
-                      </div>
-                      <div class="flex items-center gap-2 flex-col"><span>✉️</span><span>{{userData?.email}}</span>
-                      </div>
-                      <div class="flex items-center gap-2 flex-col w-1/3">
-                        <span>📍</span><span>{{userData?.address}}</span>
-                      </div>
-                    </div>
                   </div>
+                </div>
+                <div class="flex flex-row justify-between px-10 mt-7 items-center">
+                  <div class="flex gap-4 text-xl brown" style="color:#4a3731;">
+                    <a *ngIf="userData?.instagram_url" [href]="userData?.instagram_url" target="_blank">⬤</a>
+                    <a *ngIf="userData?.twitter_url" [href]="userData?.twitter_url" target="_blank">⬤</a>
+                    <a *ngIf="userData?.facebook_url" [href]="userData?.facebook_url" target="_blank">⬤</a>
+                  </div>
+                </div>
+                <!-- Footer row -->
+                <div class="text-[#8b8684] text-center text-[15px] mt-6 mb-0 px-2">
+                  Address: {{userData?.address || 'Alvarado St. 125A / City / Country / State'}}<br>
+                  Phone: {{userData?.phone_number || '00 54 874715658'}}<br>
+                  Email: {{userData?.email || 'yournamezanegmail@youremail.com'}}
                 </div>
               </div>
 
@@ -1628,5 +1791,3 @@
 <div class="loader-overlay" *ngIf="isLoading">
   <img src="../assets/gif_logo.gif" alt="Loading..." class="loader-image" />
 </div>
-
-<!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, tempore pariatur iusto exercitationem dolores aperiam ex aliquid perferendis eaque quisquam cumque placeat commodi facere quae ipsa perspiciatis corrupti quod ratione provident quam consectetur. Unde veritatis accusamus facilis aperiam sequi quo sunt rerum iure minima facere, numquam, corrupti iusto autem at labore similique consectetur sapiente voluptate illo ab temporibus saepe dicta. Rem distinctio dolore quidem odit magnam repellat reprehenderit consequuntur voluptatum? Facere officiis quasi illum ad maxime corporis enim repudiandae sed! Dolorum aut quaerat voluptate ex aspernatur explicabo est fuga accusantium nam quibusdam tenetur nobis totam repellat tempore, aliquid ullam. Numquam consequatur assumenda quia similique ab accusamus cumque ducimus tenetur alias eveniet? Aliquam impedit blanditiis officia laboriosam, expedita error non ex dolorem. In aliquam cum placeat nam officia eaque maxime ratione recusandae mollitia quisquam voluptatibus facere sequi quos dignissimos ducimus veniam enim, velit molestiae ea inventore, labore perferendis quidem? Pariatur, quisquam deserunt sapiente, molestiae atque rem maiores in iure soluta quae suscipit veniam alias illo omnis recusandae ipsam, modi sed? Temporibus quam reprehenderit culpa nam corporis quis, unde ratione cum ducimus quisquam eum tempore illo. Suscipit, optio ducimus. Voluptatibus error, obcaecati dignissimos ipsa aliquid magnam culpa corporis omnis. Porro, id adipisci dolorum libero magni quas est modi aliquam voluptate? Nulla dolores porro neque repellat voluptatum quam dolor placeat iure culpa odio incidunt provident, iusto aspernatur aliquid officia eum dignissimos, illo deserunt, officiis optio error harum dolore nemo quae! Laboriosam debitis commodi odio doloremque iste repellendus aliquam fugit delectus eos quaerat nulla sequi corporis necessitatibus quo, provident, sint voluptates veniam rem. Velit ratione, veniam quia illum ad suscipit sint in praesentium commodi nulla, mollitia inventore consequatur! Cupiditate qui ducimus itaque voluptas amet, corporis minima nam a et hic labore cumque nesciunt iure incidunt, aliquid saepe reprehenderit eos architecto iste eligendi suscipit quibusdam quia repudiandae. Omnis consequatur quos, accusamus, odit recusandae et expedita error, non impedit iste quia ex? Beatae expedita nostrum veritatis suscipit similique architecto nemo fugit, distinctio maxime iure dignissimos ea. Veritatis rerum laudantium cumque ratione voluptatum provident nesciunt? Deleniti sint ipsam numquam provident, ducimus iure veniam, voluptatibus quo sequi aliquid ab hic et tenetur molestias reprehenderit odit, exercitationem repellendus? Ullam totam cupiditate, cumque nulla officiis saepe debitis pariatur tempore earum voluptates deleniti qui, perferendis aliquid vitae aperiam iure. Commodi qui officia, sapiente dolorum fugiat obcaecati et distinctio? Ex perferendis iste repellendus blanditiis id quibusdam nostrum excepturi! Modi reprehenderit pariatur nostrum fugiat saepe odio id, in nesciunt rem facilis dolor nobis debitis sunt tenetur commodi quas nam magnam distinctio deserunt quos maiores. Quam, nobis at. Temporibus consequatur possimus laborum aspernatur voluptatibus consectetur, debitis, numquam quae iusto aliquid fuga illo repellat officiis reiciendis ut voluptatem, quia quaerat quis ad quidem harum quo aliquam cupiditate sunt. Deleniti dicta error consequatur enim, natus eligendi consectetur dolores neque necessitatibus eius iste, doloremque rerum, magnam non quae. Reprehenderit sit, maxime numquam sed quia delectus! Laudantium mollitia corrupti provident. Eaque perspiciatis vero excepturi dolores? Accusamus quia ratione blanditiis id libero aliquid eveniet suscipit delectus error. Nemo, ipsa. -->

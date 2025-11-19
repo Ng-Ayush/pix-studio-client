@@ -31,16 +31,18 @@ export class PdfBillSelectionComponent {
     '#bdbdbd', '#78909c', '#4dd0e1'
   ];
   templates: any = [
-    { id: 'template1', name: 'GST Theme 1' },
-    { id: 'template2', name: 'GST Theme 2' },
-    { id: 'template3', name: 'GST Theme 3' },
-    { id: 'template4', name: 'GST Theme 4' },
-    { id: 'template5', name: 'GST Theme 5' },
-    { id: 'template6', name: 'GST Theme 6' },
-    { id: 'template7', name: 'GST Theme 7' },
-    // { id: 'template8', name: 'GST Theme 8' },
-    // { id: 'template9', name: 'GST Theme 9' },
-    // { id: 'template10', name: 'GST Theme 10' },
+    { id: 'template1', name: 'Bill Theme 1' },
+    { id: 'template2', name: 'Bill Theme 2' },
+    { id: 'template3', name: 'Bill Theme 3' },
+    { id: 'template4', name: 'Bill Theme 4' },
+    { id: 'template5', name: 'Bill Theme 5' },
+    { id: 'template6', name: 'Bill Theme 6' },
+    { id: 'template7', name: 'Bill Theme 7' },
+    { id: 'template8', name: 'Bill Theme 8' },
+    { id: 'template9', name: 'Bill Theme 9' },
+    { id: 'template10', name: 'Bill Theme 10' },
+    { id: 'template11', name: 'Bill Theme 11' },
+    // { id: 'template12', name: 'Bill Theme 12' },
   ];
   invoiceBillConfig: any = {};
 
@@ -185,156 +187,119 @@ export class PdfBillSelectionComponent {
       const data = document.getElementById(this.selectedTemplateId);
       if (!data) throw new Error("Template element not found");
 
-      const summarySection = data.querySelector('.pdf-summary-section') as HTMLElement | null;
-      if (!summarySection) throw new Error("Summary section not found");
-      summarySection.style.display = 'none';
+      let htmlContent = data.outerHTML;
 
-      const commonHeaderElem = data.querySelector('.pdf-common-header') as HTMLElement | null;
-      if (!commonHeaderElem) throw new Error("Common header element not found");
-      const commonHeaderCanvas = await html2canvas(commonHeaderElem, { scale: 3, useCORS: true });
-      const commonHeaderImg = commonHeaderCanvas.toDataURL('image/png', 1.0);
-      const commonHeaderHeight = (commonHeaderCanvas.height * 190) / commonHeaderCanvas.width;
+      // SANITIZE ANGULAR ATTRIBUTES SAFELY
+      htmlContent = htmlContent
+        .replace(/_ngcontent-[a-zA-Z0-9-]+="[^"]*"/g, "")
+        .replace(/ng-reflect-[a-zA-Z0-9-]+="[^"]*"/g, "")
+        .replace(/ng-star-inserted/g, "");
 
-      const pdf = new jsPDF.jsPDF('p', 'mm', 'a4', true);
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 10;
-      const usableWidth = pageWidth - margin * 2;
-      const usableHeight = pageHeight - margin * 2;
-      const fudge = 0.5;
-      const headerExtraSpace = 8;
-      const sidePadding = 3;
-      const topPadding = 3;
+      // FINAL FULL HTML
+      const fullHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
 
-      // Render the full content canvas (with items, header, everything visible except summary)
-      const contentCanvas = await html2canvas(data, { scale: 3, useCORS: true });
-      const imgWidth = usableWidth;
-      const imgHeight = (contentCanvas.height * imgWidth) / contentCanvas.width;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
-      // If everything fits on one page (taking into account margins, header height, extra padding), skip pagination and summary page splitting
-      const fullContentNeedsOnePage = imgHeight <= usableHeight;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet">
 
-      if (fullContentNeedsOnePage) {
-        // Add one page, no pagination
-        pdf.setDrawColor(0, 0, 0);
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin+Condensed:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
-        // Add whole image at once below margin
-        pdf.addImage(contentCanvas.toDataURL('image/jpeg', 1.0),
-          'JPEG',
-          margin,
-          margin,
-          imgWidth,
-          imgHeight);
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aclonica&display=swap" rel="stylesheet">
 
-        // Show summary section below the content if also fits on same page
-        summarySection.style.display = '';
-        const sumCanvas = await html2canvas(summarySection, { scale: 3, useCORS: true });
-        const sumHeight = (sumCanvas.height * imgWidth) / sumCanvas.width;
-        if ((imgHeight + sumHeight) <= usableHeight) {
-          pdf.addImage(sumCanvas.toDataURL('image/jpeg', 1.0),
-            'JPEG',
-            margin,
-            margin + imgHeight,
-            imgWidth,
-            sumHeight);
-        } else {
-          // Summary needs separate page
-          pdf.addPage();
-          pdf.addImage(commonHeaderImg, 'PNG', margin + sidePadding, margin + topPadding, usableWidth - 2 * sidePadding, commonHeaderHeight + fudge);
-          pdf.addImage(sumCanvas.toDataURL('image/jpeg', 1.0),
-            'JPEG',
-            margin,
-            margin + commonHeaderHeight + headerExtraSpace,
-            imgWidth,
-            sumHeight);
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;700&family=Work+Sans:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    * { -webkit-print-color-adjust: exact; }
+  .signature-section {
+    background: white;
+    color: black;
+    padding: 12px 24px;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    text-align: center;
+}
 
-      } else {
-        // Content bigger than one page, do pagination as usual
+.invoice-container {
+    // width: 210mm;
+    // min-height: 297mm;
+     font-family: "Calistoga", serif;
+    box-shadow: none !important;
+    border: none !important;
+    margin: auto !important;
+    background: white !important;
+}
 
-        let yPx = 0;
-        let pageIndex = 0;
-        const pageContentHeightPx = ((usableHeight - commonHeaderHeight - headerExtraSpace) * contentCanvas.width) / imgWidth;
+.signature-section {
+    box-shadow: none;
+    margin-top: 0.5rem;
+    padding: 8px 16px;
+}
 
-        while (yPx < contentCanvas.height) {
-          if (pageIndex > 0) {
-            pdf.addPage();
-            pdf.addImage(
-              commonHeaderImg,
-              'PNG',
-              margin + sidePadding,
-              margin + topPadding,
-              usableWidth - 2 * sidePadding,
-              commonHeaderHeight + fudge
-            );
-          }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+${htmlContent}
+</body>
+</html>
+    `;
 
-          let yOffset = margin + (pageIndex === 0 ? 0 : (commonHeaderHeight + headerExtraSpace));
+      const pdfBlob:any = await this.http.post(
+        environment.apiUrl + '/api/mystudio/invoices/generate-pdf',
+        { html: fullHtml },
+        { responseType: 'blob' }
+      ).toPromise();
 
-          const cropCanvas = document.createElement('canvas');
-          cropCanvas.width = contentCanvas.width;
-          const availablePx = pageIndex === 0
-            ? ((usableHeight) * contentCanvas.width) / imgWidth
-            : ((usableHeight - commonHeaderHeight - headerExtraSpace) * contentCanvas.width) / imgWidth;
-          cropCanvas.height = Math.min(availablePx, contentCanvas.height - yPx);
+      this.loader.hide();
+      this.exportMode = false;
+      this.isLoading = false;
 
-          const cropCtx = cropCanvas.getContext('2d')!;
-          cropCtx.drawImage(
-            contentCanvas,
-            0, yPx,
-            contentCanvas.width, cropCanvas.height,
-            0, 0,
-            contentCanvas.width, cropCanvas.height
-          );
-
-          const imgData = cropCanvas.toDataURL('image/jpeg', 1.0);
-          pdf.addImage(
-            imgData, 'JPEG',
-            margin, yOffset,
-            imgWidth, (cropCanvas.height * imgWidth) / contentCanvas.width
-          );
-
-          yPx += availablePx;
-          pageIndex++;
-        }
-
-        // --- Render summary page after content ---
-        summarySection.style.display = '';
-        pdf.addPage();
-        pdf.addImage(commonHeaderImg, 'PNG', margin + sidePadding, margin + topPadding, usableWidth - 2 * sidePadding, commonHeaderHeight + fudge);
-
-        const sumCanvas = await html2canvas(summarySection, { scale: 3, useCORS: true });
-        const sumImgData = sumCanvas.toDataURL('image/jpeg', 1.0);
-        const sumHeight = (sumCanvas.height * imgWidth) / sumCanvas.width;
-        pdf.addImage(
-          sumImgData, 'JPEG',
-          margin,
-          margin + commonHeaderHeight + headerExtraSpace,
-          imgWidth,
-          sumHeight
-        );
+      // -------------------------------------
+      // CASE 1: ON WHATSAPP SHARE → DON'T DOWNLOAD, JUST RETURN BLOB
+      // -------------------------------------
+      if (isWhatsApp) {
+        return pdfBlob;
       }
 
-      // Save/export
-      if (!isWhatsApp) {
-        const party = this.invoiceBillConfig.party_name.replace(/\s+/g, "_");
-        const type = this.invoiceBillConfig.invoice_type === 'sale' ? 'Sale' : 'Estimate';
-        const fileName = `${party}-${type}_${this.commonService.formatDate(new Date())}.pdf`;
-        pdf.save(fileName);
-        this.alert.success('PDF downloaded successfully.');
-        this.isLoading = false;
-      }
+      // -------------------------------------
+      // CASE 2: NORMAL DOWNLOAD
+      // -------------------------------------
+      const url = window.URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
 
-      return { data: pdf.output('blob') };
+      const party = this.invoiceBillConfig.party_name.replace(/\s+/g, "_");
+      const type = this.invoiceBillConfig.invoice_type === 'sale' ? 'Sale' : 'Estimate';
+      const fileName = `${party}-${type}_${this.commonService.formatDate(new Date())}.pdf`;
 
-    } catch (error: any) {
+      a.href = url;
+      a.download = fileName;
+      a.click();
+
+      this.alert.success("PDF downloaded successfully.");
+
+    }
+    catch (error: any) {
       console.error(error);
       this.alert.error('Error generating PDF.');
-      this.loader.hide();
-      this.isLoading = false;
-    } finally {
-      this.exportMode = false;
-      this.resizeTextarea();
       this.loader.hide();
       this.isLoading = false;
     }
@@ -498,11 +463,11 @@ export class PdfBillSelectionComponent {
 
 
   async shareViaWhatsapp() {
-      // this.alert.info("This feature is on development changes");
+    // this.alert.info("This feature is on development changes");
     // return;
-    try { 
-      const { data } :any = await this.downloadPDF(true);
-      this.isLoading=true;
+    try {
+      const { data }: any = await this.downloadPDF(true);
+      this.isLoading = true;
       const base64 = await this.blobToBase64(data);
       const number = `${this.invoiceBillConfig.party_phone_number}@c.us`;
       await this.http.post(environment.apiUrl + '/api/mystudio/invoices/sendPdfViaWhatsApp', {
@@ -510,11 +475,11 @@ export class PdfBillSelectionComponent {
         pdfBase64: base64,
         fileName: `${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`
       }).toPromise();
-      this.isLoading=false;
+      this.isLoading = false;
       this.alert.success('PDF sent to WhatsApp!');
     } catch (err) {
-      this.isLoading=false;
-      this.alert.error('Failed to send PDF to WhatsApp, please check your WhatsApp connection.',3000);
+      this.isLoading = false;
+      this.alert.error('Failed to send PDF to WhatsApp, please check your WhatsApp connection.', 3000);
     }
   }
 
