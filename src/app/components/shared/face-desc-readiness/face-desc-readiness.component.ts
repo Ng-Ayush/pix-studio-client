@@ -13,7 +13,7 @@ import { UploadImgBackgroundAiService } from '../../../services/upload-img-bg-ai
   template: `
    <button 
   *ngIf="isStartProcess"
-  class="text-indigo-600 font-bold flex gap-2 items-center cursor-pointer hover:bg-indigo-100 px-4 py-2 rounded-full"
+  class="text-indigo-600 font-bold flex gap-2 items-center cursor-pointer"
   (click)="startFaceDescriptorProcess()"
 >
   Start Face Processing
