@@ -85,7 +85,7 @@ export class FaceDescReadinessComponent {
     const key = `face_process_${this.event.event_id}`;
     const userStarted = localStorage.getItem(key) === 'started';
 
-    const url = `${environment.apiUrl}/api/mystudio/photo-selection/check_status/${this.event.event_name.split(' ').join('_')}_${this.event.event_id}`;
+    const url = `${environment.apiUrl}/api/mystudio/photo-selection/checkEventReady/${this.event.event_name.split(' ').join('_')}_${this.event.event_id}`;
 
     this.http.get(url).subscribe(
       (res: any) => {
