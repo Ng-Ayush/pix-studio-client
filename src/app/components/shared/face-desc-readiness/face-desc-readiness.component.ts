@@ -154,10 +154,13 @@ export class FaceDescReadinessComponent {
         }
 
         console.error('Failed to check event readiness', err);
-        this.isStartProcess = true;
-        this.isProcessing = false;
-        this.isReady = false;
-        clearInterval(this.intervalId);
+        if (userStarted) {
+          // Still processing because user clicked
+          this.isProcessing = true;
+          this.isStartProcess = false;
+          this.isReady = false;
+          return;
+        }
         return;
       }
     );
