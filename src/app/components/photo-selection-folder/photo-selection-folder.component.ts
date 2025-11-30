@@ -34,11 +34,14 @@ export class PhotoSelectionFolderComponent {
   customerName: any = '';
   showLogOutModal: boolean = false;
   customerUniqueId: any = '';
+  isFaceProcessing: boolean = false;
 
   constructor(private service: CustomerService, private loader: LoaderService, private location: LocationStrategy, private _pservice: PhotoSelectionService, private route: ActivatedRoute, private router: Router, private alert: AlertService, private eventService: PhotoSelectionService) {
     this.route.params.subscribe(params => {
       if (params['event-id']) {
         this.currentEventId = params['event-id'];
+        const key = `face_process_${this.currentEventId}`;
+        this.isFaceProcessing = localStorage.getItem(key) === 'started';
         this.fetchFolderByEventId();
         this.fetchAiGuestByEventId();
       }
@@ -203,7 +206,7 @@ export class PhotoSelectionFolderComponent {
   sendBulkMessage() {
     this.loader.show();
     const params: any = {
-      numbers: [...new Set(this.aiGuests.map((guest:any)=>guest.guest_phone))],
+      numbers: [...new Set(this.aiGuests.map((guest: any) => guest.guest_phone))],
       // numbers: ['7704898884', '8004033357'],
       message: `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId} `,
     }
@@ -218,7 +221,7 @@ export class PhotoSelectionFolderComponent {
           .filter((item: any) => item !== null);
 
         if (failedNumbers.length > 0) {
-          this.alert.error(`Failed to send bulk message. Numbers: ${failedNumbers.join(", ")}`,10000);
+          this.alert.error(`Failed to send bulk message. Numbers: ${failedNumbers.join(", ")}`, 10000);
         } else {
           this.alert.error("Failed to send bulk message");
         }

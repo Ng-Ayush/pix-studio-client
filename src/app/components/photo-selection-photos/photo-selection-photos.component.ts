@@ -50,7 +50,8 @@ export class PhotoSelectionPhotosComponent {
   isLoading: boolean = false;
   userData: any = {};
   showLogOutModal: boolean = false;
-  waterMarkConfig:any={};
+  isFaceProcessing: boolean = false;
+  waterMarkConfig: any = {};
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
@@ -132,6 +133,9 @@ export class PhotoSelectionPhotosComponent {
         this.folderName = res.data.folder_name;
         this.customerUniqueId = res.data.customer_unique_id;
         this.currentEventId = res.data.event_id;
+
+        const key = `face_process_${res.data.event_id}`;
+        this.isFaceProcessing = localStorage.getItem(key) === 'started';
 
         this.uploadImgBg.eventName = this.eventName;
         this.uploadImgBg.customerName = this.customerName;

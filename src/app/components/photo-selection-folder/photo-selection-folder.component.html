@@ -69,8 +69,8 @@
                         <p class="text-sm text-gray-500 px-4">{{ folders.length }} folders</p>
                     </div>
 
-                    <button (click)="createNewFolder()"
-                        class="bg-[#494CA2] text-white px-4 py-2 rounded-full flex items-center gap-3 hover:bg-[#494CA2] transition-colors cursor-pointer">
+                    <button [disabled]="isFaceProcessing" (click)="createNewFolder()"
+                        class="bg-[#494CA2] disabled:bg-gray-400 text-white px-4 py-2 rounded-full flex items-center gap-3 hover:bg-[#494CA2] transition-colors cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
