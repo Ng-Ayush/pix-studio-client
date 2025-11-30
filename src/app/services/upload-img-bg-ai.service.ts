@@ -149,7 +149,10 @@ export class UploadImgBackgroundAiService {
       this.allUploadQueues.push(...this.uploadQueue);
     }
 
-    if (!this.isProcessingQueue) this.processQueue();
+    if (!this.isProcessingQueue) {
+      localStorage.setItem("isUploadingGlobally", "true");
+      this.processQueue();
+    }
   }
 
   // ---------------- Queue Processor ----------------
@@ -196,6 +199,9 @@ export class UploadImgBackgroundAiService {
 
     this.isProcessingQueue = false;
     this.isImageUploadedCompleted$.next(true);
+    if (this.uploadQueue.length === 0) {
+      localStorage.removeItem("isUploadingGlobally");
+    }
     this._pservice.getTotalUploadedAiPhotosCount((res: any) => {
       this.totalAiUploadedPhotosCount = res.data;
       localStorage.setItem("totalAiUploadedPhotosCount", JSON.stringify(this.totalAiUploadedPhotosCount));

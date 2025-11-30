@@ -41,10 +41,12 @@ export class FaceDescReadinessComponent {
   isProcessing = false;
   isStartProcess = false;   // replaces old isReuploadNeeded
   private intervalId?: any;
+  globalUploading = false;
 
   constructor(private http: HttpClient, private eventService: PhotoSelectionService, private alert: AlertService, private aiService: UploadImgBackgroundAiService) { }
 
   ngOnInit() {
+    this.globalUploading = localStorage.getItem("isUploadingGlobally") === "true";
     this.startStatusCheckProcess();
   }
 
@@ -56,6 +58,11 @@ export class FaceDescReadinessComponent {
    *  NEW METHOD NAME
    * ------------------------- */
   startFaceDescriptorProcess() {
+    this.globalUploading = localStorage.getItem("isUploadingGlobally") === "true";
+    if (this.globalUploading) {
+      this.alert.warning("Photos are still uploading. Please wait until upload finishes.");
+      return;
+    }
     this.eventService.reUploadFaceDescriptor(this.event.event_id, (res: any) => {
       if (res.status === 200) {
         localStorage.setItem(`face_process_${this.event.event_id}`, 'started');
@@ -135,20 +142,20 @@ export class FaceDescReadinessComponent {
       (err) => {
         const status = err?.error?.status;
         const userStarted = localStorage.getItem(key) === 'started';
-          if (userStarted) {
-            // Still processing because user clicked
-            this.isProcessing = true;
-            this.isStartProcess = false;
-            this.isReady = false;
-            return;
-          } else {
-            // No process ever started
-            this.isStartProcess = true;
-            this.isProcessing = false;
-            this.isReady = false;
-            clearInterval(this.intervalId);
-            return;
-          }
+        if (userStarted) {
+          // Still processing because user clicked
+          this.isProcessing = true;
+          this.isStartProcess = false;
+          this.isReady = false;
+          return;
+        } else {
+          // No process ever started
+          this.isStartProcess = true;
+          this.isProcessing = false;
+          this.isReady = false;
+          clearInterval(this.intervalId);
+          return;
+        }
       }
     );
   }
