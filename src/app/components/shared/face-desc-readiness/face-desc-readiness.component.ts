@@ -135,8 +135,6 @@ export class FaceDescReadinessComponent {
       (err) => {
         const status = err?.error?.status;
         const userStarted = localStorage.getItem(key) === 'started';
-
-        if (status === 'not_found') {
           if (userStarted) {
             // Still processing because user clicked
             this.isProcessing = true;
@@ -151,17 +149,6 @@ export class FaceDescReadinessComponent {
             clearInterval(this.intervalId);
             return;
           }
-        }
-
-        console.error('Failed to check event readiness', err);
-        if (userStarted) {
-          // Still processing because user clicked
-          this.isProcessing = true;
-          this.isStartProcess = false;
-          this.isReady = false;
-          return;
-        }
-        return;
       }
     );
   }
