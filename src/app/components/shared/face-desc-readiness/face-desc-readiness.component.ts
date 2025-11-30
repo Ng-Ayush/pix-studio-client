@@ -42,7 +42,7 @@ export class FaceDescReadinessComponent {
   isStartProcess = false;   // replaces old isReuploadNeeded
   private intervalId?: any;
 
-  constructor(private http: HttpClient, private eventService: PhotoSelectionService, private alert: AlertService,private aiService:UploadImgBackgroundAiService) { }
+  constructor(private http: HttpClient, private eventService: PhotoSelectionService, private alert: AlertService, private aiService: UploadImgBackgroundAiService) { }
 
   ngOnInit() {
     this.startStatusCheckProcess();
@@ -81,7 +81,7 @@ export class FaceDescReadinessComponent {
 
   /** Your original logic – untouched */
   checkReadiness() {
-  
+
     const key = `face_process_${this.event.event_id}`;
     const userStarted = localStorage.getItem(key) === 'started';
 
@@ -142,16 +142,23 @@ export class FaceDescReadinessComponent {
             this.isProcessing = true;
             this.isStartProcess = false;
             this.isReady = false;
+            return;
           } else {
             // No process ever started
             this.isStartProcess = true;
             this.isProcessing = false;
             this.isReady = false;
             clearInterval(this.intervalId);
+            return;
           }
         }
 
         console.error('Failed to check event readiness', err);
+        this.isStartProcess = true;
+        this.isProcessing = false;
+        this.isReady = false;
+        clearInterval(this.intervalId);
+        return;
       }
     );
   }
