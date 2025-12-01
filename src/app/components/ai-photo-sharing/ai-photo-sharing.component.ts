@@ -573,6 +573,9 @@ export class AiPhotoSharingComponent {
   }
 
   onEventInput() {
-    this.event_config.event_name = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+    let value = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+    value = value.trimStart(); // remove leading spaces
+    value = value.trimEnd();
+    this.event_config.event_name = value;
   }
 }

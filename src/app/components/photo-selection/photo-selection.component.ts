@@ -71,11 +71,11 @@ export class PhotoSelectionComponent {
     this.isModalOpen = false;
     this.isEdit = false;
     this.deleteModal = false;
-    this.isCustomerModalOpen=false;
+    this.isCustomerModalOpen = false;
   }
 
-  closeCustomerModal(){
-    this.isCustomerModalOpen=false;
+  closeCustomerModal() {
+    this.isCustomerModalOpen = false;
   }
 
   onSave() {
@@ -243,7 +243,7 @@ export class PhotoSelectionComponent {
       this.service.createCustomer(params, (res: any) => {
         if (res.status == 200) {
           this.alert.success(res.message);
-         this.closeCustomerModal();
+          this.closeCustomerModal();
           this.getAllCustomers();
         } else {
           this.alert.error(res.message);
@@ -253,8 +253,11 @@ export class PhotoSelectionComponent {
     }
   }
 
-    onEventInput() {
-    this.event_config.event_name = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+  onEventInput() {
+    let value = this.event_config.event_name.replace(/[^a-zA-Z0-9 ]/g, '');
+    value = value.trimStart(); // remove leading spaces
+    value = value.trimEnd();
+    this.event_config.event_name = value;
   }
 
 }
