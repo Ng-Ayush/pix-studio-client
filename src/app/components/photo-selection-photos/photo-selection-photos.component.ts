@@ -135,7 +135,7 @@ export class PhotoSelectionPhotosComponent {
         this.currentEventId = res.data.event_id;
 
         const key = `face_process_${res.data.event_id}`;
-        this.isFaceProcessing = localStorage.getItem(key) === 'started';
+        this.isFaceProcessing = localStorage.getItem(key) === 'started' || localStorage.getItem(key) === 'completed';
 
         this.uploadImgBg.eventName = this.eventName;
         this.uploadImgBg.customerName = this.customerName;

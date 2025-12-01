@@ -89,7 +89,7 @@ export class FaceDescReadinessComponent {
   /** Your original logic – untouched */
   checkReadiness() {
 
-    const key = `face_process_${this.event.event_id}`;
+    let key = `face_process_${this.event.event_id}`;
     const userStarted = localStorage.getItem(key) === 'started';
 
     const url = `${environment.apiUrl}/api/mystudio/photo-selection/checkEventReady/${this.event.event_name.split(' ').join('_')}_${this.event.event_id}`;
@@ -104,7 +104,10 @@ export class FaceDescReadinessComponent {
           this.isProcessing = false;
           this.isStartProcess = false;
 
-          localStorage.removeItem(key);
+          // localStorage.removeItem(key);
+          localStorage.setItem(`face_process_${this.event.event_id}`,'completed');
+          
+
 
           this.eventService.updateFaceDescriptorEvent(this.event.event_id, () =>
             console.log("Face descriptor updated")

@@ -41,7 +41,7 @@ export class PhotoSelectionFolderComponent {
       if (params['event-id']) {
         this.currentEventId = params['event-id'];
         const key = `face_process_${this.currentEventId}`;
-        this.isFaceProcessing = localStorage.getItem(key) === 'started';
+        this.isFaceProcessing = localStorage.getItem(key) === 'started' || localStorage.getItem(key) === 'completed';
         this.fetchFolderByEventId();
         this.fetchAiGuestByEventId();
       }
