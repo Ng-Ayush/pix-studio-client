@@ -79,6 +79,10 @@ export class PhotoSelectionComponent {
   }
 
   onSave() {
+    if(!this.event_config.customer_id || !this.event_config.event_name){
+      this.alert.warning("Please fill all required fields");
+      return;
+    }
     if (!this.isEdit) {
 
       const params: any = {

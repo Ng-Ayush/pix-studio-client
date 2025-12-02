@@ -51,6 +51,7 @@ export class PhotoSelectionPhotosComponent {
   userData: any = {};
   showLogOutModal: boolean = false;
   isFaceProcessing: boolean = false;
+  isSorting: boolean = false;
   waterMarkConfig: any = {};
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
@@ -253,6 +254,7 @@ export class PhotoSelectionPhotosComponent {
 
     try {
       this.loader.show();
+      this.isSorting = true;
       const selectedFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Selected", { create: true });
       const favouriteFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Important", { create: true });
 
@@ -274,8 +276,12 @@ export class PhotoSelectionPhotosComponent {
       this.alert.success("Images sorted successfully!");
       this.closeModal();
       this.loader.hide();
+      this.isSorting = false;
     } catch (error) {
       console.error("Sorting failed:", error);
+      this.alert.error("Wrong folder selected");
+      this.loader.hide();
+      this.isSorting = false;
     }
   }
 
@@ -298,6 +304,8 @@ export class PhotoSelectionPhotosComponent {
     this.deleteModal = false;
     this.sortImagesModal = false;
     this.photos.forEach((photo: any) => photo.selected = false);
+    this.allSelected = false;
+    this.selectedFolderHandle = null;
   }
 
   toggleSingleDeleteModal(photo: any) {
