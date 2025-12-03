@@ -43,7 +43,7 @@ export class UploadImgBackgroundService {
   // ---------------- State ----------------
   private totalPhotos = 0;
   private uploadedPhotos = 0;
-  private concurrency = 7;
+  private concurrency = 60;
   private currentActive = 0;
 
   // ---------------- Variables ----------------
@@ -168,7 +168,7 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const batchSize = 20;
+      const batchSize = 100;
 
       for (let i = 0; i < this.totalPhotos; i += batchSize) {
         batchStart$.next(i + 1);
@@ -186,8 +186,11 @@ export class UploadImgBackgroundService {
           currentBatchUrls.push({ url, name: file.name });
         });
 
-        await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
       }
+
+      await this.saveAllToBackend(currentFolderId, eventId); //
+
 
       isUploading$.next(false);
     }
@@ -205,9 +208,7 @@ export class UploadImgBackgroundService {
     eventName: string,
     folderName: string
   ): Promise<string> {
-    const compressedImage = this.isAIuploaded
-      ? await this.imageCompressService.compress3MBToTarget(file)
-      : await this.imageCompressService.compress50KBToTarget(file);
+    const compressedImage = await this.imageCompressService.compress50KBToTarget(file);
 
     const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
     const fileRef = ref(this.storage, filePath);
@@ -271,7 +272,7 @@ export class UploadImgBackgroundService {
           uploaded_by: this.user_id,
           event_id: eventId,
           folder_id: folderId,
-          is_ai_upload: this.isAIuploaded
+          is_ai_upload: this.isAIuploaded // false
         },
         (res: any) => {
           if (res.status === 200) resolve();
@@ -280,4 +281,32 @@ export class UploadImgBackgroundService {
       );
     });
   }
+
+  async saveAllToBackend(folderId: any, eventId: any) {
+    if (!this.uploadedUrls.length) return;
+
+    return new Promise<void>((resolve, reject) => {
+      this._pservice.uploadPhotos(
+        {
+          uploadedUrls: this.uploadedUrls,  // send all at once
+          uploaded_by: this.user_id,
+          event_id: eventId,
+          folder_id: +folderId,
+          is_ai_upload: this.isAIuploaded // false
+        },
+        (res: any) => {
+          if (res.status === 200) {
+            this.alert.success("All photos uploaded successfully!", 5000);
+
+            // ✅ Clear after successful upload
+            this.uploadedUrls = [];
+            resolve();
+          } else {
+            reject(res.message);
+          }
+        }
+      );
+    });
+  }
+
 }
