@@ -526,7 +526,7 @@ export class AiUploadComponent {
           if (this.matchedImages.length > 0 && this.userData?.need_customer_number && (this.userData?.google_review_url && this.userData?.google_review_url.startsWith('https://')) && await this.checkHasUserAlreadyReviewed()) {
             setTimeout(() => {
               this.triggerGoogleReview();
-            }, 15000);
+            }, 8000);
           }
           this.videoModal = false;
           this.activeTab = 'matched';
