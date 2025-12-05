@@ -264,7 +264,7 @@ export class AiPhotoSharingComponent {
 
 
   copyAiShareLink(event: any) {
-    const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id} \n\nRegards *${this.userData?.studio_name}*`;
+    const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id}&date=${new Date().getTime()} \n\nRegards *${this.userData?.studio_name}*`;
     console.log(message);
 
     navigator.clipboard.writeText(message).then(() => {
