@@ -16,7 +16,7 @@ import { UploadImgBackgroundAiService } from '../../../services/upload-img-bg-ai
   class="text-indigo-600 font-bold flex gap-2 items-center cursor-pointer"
   (click)="startFaceDescriptorProcess()"
 >
-  Start Face Processing
+ {{this.userCompleted ? 'Re Run Face Processing' : 'Start Face Processing'}} 
 </button>
 
 <div *ngIf="isProcessing">Processing...</div>
@@ -42,6 +42,7 @@ export class FaceDescReadinessComponent {
   isStartProcess = false;   // replaces old isReuploadNeeded
   private intervalId?: any;
   globalUploading = false;
+  userCompleted:boolean = false;
 
   constructor(private http: HttpClient, private eventService: PhotoSelectionService, private alert: AlertService, private aiService: UploadImgBackgroundAiService) { }
 
@@ -58,7 +59,7 @@ export class FaceDescReadinessComponent {
    *  NEW METHOD NAME
    * ------------------------- */
   startFaceDescriptorProcess() {
-    this.globalUploading = localStorage.getItem("isUploadingGlobally") === "true";
+    this.globalUploading = localStorage.getItem("isUploadingGlobally") == "true";
     if (this.globalUploading) {
       this.alert.warning("Photos are still uploading. Please wait until upload finishes.");
       return;
@@ -70,7 +71,9 @@ export class FaceDescReadinessComponent {
         this.isStartProcess = false; // hide button until you want to show it again
         this.isReady = false;
         this.isProcessing = true;
-        this.startStatusCheckProcess();
+        setTimeout(() => {
+          this.startStatusCheckProcess();
+        }, 0);
       } else {
         this.alert.error(res.message);
       }
@@ -87,10 +90,11 @@ export class FaceDescReadinessComponent {
   }
 
   /** Your original logic – untouched */
-  checkReadiness() {
+  async checkReadiness() {
 
     let key = `face_process_${this.event.event_id}`;
     const userStarted = localStorage.getItem(key) === 'started';
+    this.userCompleted = localStorage.getItem(key) === 'completed';
 
     const url = `${environment.apiUrl}/api/mystudio/photo-selection/checkEventReady/${this.event.event_name.split(' ').join('_')}_${this.event.event_id}`;
 
@@ -98,30 +102,43 @@ export class FaceDescReadinessComponent {
       (res: any) => {
         const status = res?.data?.status;
 
+        if (this.userCompleted && !this.event.isFaceDescriptorReady) {
+          this.isStartProcess = true;
+          this.isReady = false;
+          this.isProcessing = false;
+          clearInterval(this.intervalId)
+          return;
+        }
+
         // COMPLETED / PARTIAL
-        if (status === 'completed' || status === 'partial') {
+        if ((status === 'completed' || status === 'partial') && this.event.isFaceDescriptorReady) {
           this.isReady = true;
           this.isProcessing = false;
           this.isStartProcess = false;
 
           // localStorage.removeItem(key);
-          localStorage.setItem(`face_process_${this.event.event_id}`,'completed');
-          
+          localStorage.setItem(`face_process_${this.event.event_id}`, 'completed');
 
 
-          this.eventService.updateFaceDescriptorEvent(this.event.event_id, () =>
-            console.log("Face descriptor updated")
-          );
+
+
+          // this.eventService.updateFaceDescriptorEvent(this.event.event_id, () =>
+          //   console.log("Face descriptor updated")
+          // );
 
           clearInterval(this.intervalId);
           return;
         }
 
         // PROCESSING
-        if (status === 'processing') {
+        if (status === 'processing' || userStarted) {
           this.isProcessing = true;
           this.isStartProcess = false;
           this.isReady = false;
+          this.eventService.getEventById(this.event.event_id, (res: any) => {
+            console.log(res);
+            this.event.isFaceDescriptorReady = res.data.isFaceDescriptorReady;
+          });
           return;
         }
 
