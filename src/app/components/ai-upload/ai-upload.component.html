@@ -71,7 +71,7 @@
                         allowfullscreen>
                     </iframe>
                 </div>
-                <div class="row g-0 m-5">
+                <div class="row m-0 p-0">
                     <!-- <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
                         <div class="inline-flex rounded-xl bg-black/80 gap-2">
                             <button (click)="activeTab = 'browse'; activeFolderTab = null;onFolderChange(null)"
@@ -203,12 +203,12 @@
                     <!-- 🔹 Folder Buttons -->
                     <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5"
                         *ngIf="isBrowseAllFolder; else notBrowseAll">
-                        <div class="inline-flex rounded-xl gap-2">
+                        <div class="inline-flex rounded-xl gap-3 items-center justify-center flex-wrap">
                             <ng-container *ngFor="let folder of folders">
                                 <button
                                     (click)="activeFolderTab = folder.folder_id; activeTab = ''; onFolderChange(folder.folder_id)"
                                     [ngClass]="activeFolderTab === folder.folder_id ? 'bg-pink-600 text-white' : 'text-pink-600'"
-                                    class="btn btn-outline-primary border-2 bg-black/80 py-3 px-5 animated slideInDown d-flex items-center flex-col justify-center gap-2">
+                                    class="btn btn-outline-primary border-2 bg-black/80 py-3 px-5 animated slideInDown d-flex items-center flex-col justify-center gap-2 folder-button">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -222,24 +222,24 @@
 
                     <!-- 🔹 Photo Display Grid -->
                     <ng-container *ngIf="photos && photos.length > 0 && activeTab !== 'matched'; else showFallback">
-                        <div class="row">
+                        <div class="row p-0 m-0">
                             <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
-                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
+                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn p-0" data-wow-delay="0.1s">
                                     <div class="portfolio-item overflow-hidden">
-                                        <img class="img-fluid m-auto" [src]="photo.photo_url" loading="lazy"
+                                        <img class="img-fluid m-auto mb-3" [src]="photo.photo_url" loading="lazy"
                                             alt="photo">
                                         <div class="portfolio-overlay">
                                             <div class="portfolio-btn">
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
+                                                <!-- <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
                                                     [href]="photo.photo_url" data-lightbox="portfolio"><i
-                                                        class="fa fa-eye"></i></a>
+                                                        class="fa fa-eye"></i></a> -->
                                                 <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
                                                     (click)="downloadSinglePhoto(photo)" href="javascript:void(0);">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </div>
                                             <div class="portfolio-name">
-                                                <h5 class="text-uppercase mb-0">{{ photo.photo_name || 'Photo' }}</h5>
+                                                <h6 class="text-uppercase mb-0 text-center">{{ photo.photo_name || 'Photo' }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -255,22 +255,22 @@
                                 <h3 class="text-light">AI Matched Photos ({{ matchedImages.length }})</h3>
                             </div>
                             <ng-container *ngFor="let photo of matchedImages; let i = index; trackBy: trackPhotos">
-                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-                                    <div class="portfolio-item overflow-hidden">
+                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn p-0" data-wow-delay="0.1s">
+                                    <div class="portfolio-item overflow-hidden mb-3">
                                         <img class="img-fluid m-auto" [src]="photo.photo_url || photo"
                                             alt="matched photo">
                                         <div class="portfolio-overlay">
                                             <div class="portfolio-btn">
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
+                                                <!-- <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
                                                     [href]="photo.photo_url || photo" data-lightbox="portfolio"><i
-                                                        class="fa fa-eye"></i></a>
+                                                        class="fa fa-eye"></i></a> -->
                                                 <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
                                                     (click)="downloadSinglePhoto(photo,i)" href="javascript:void(0);">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </div>
                                             <div class="portfolio-name">
-                                                <h5 class="text-uppercase mb-0">Matched {{ i + 1 }}</h5>
+                                                <h6 class="text-uppercase mb-0 text-center">Matched {{ i + 1 }}</h6>
                                             </div>
                                         </div>
                                     </div>
