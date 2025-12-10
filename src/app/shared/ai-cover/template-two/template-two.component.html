@@ -53,25 +53,38 @@
         </button>
     </div>
 
+    <div class="container-fluid mt-6 p-3 flex justify-center items-center">
+        <div class="row g-0" *ngIf="youtubeCoverUrl">
+            <iframe [src]="youtubeCoverUrl" width="350" height="220" title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>    
+            </iframe>
+        </div>
+    </div>
     <!-- Tabs Section -->
     <div class="tabs-wrapper">
         <div class="tabs">
             <ng-container *ngIf="isBrowseAllFolder else noBrowseAll">
-                <button class="tab-btn" [class.active]="activeTab === 'browse'"
-                    (click)="activeTab = 'browse'; activeFolderTab = null;">
+                <button class="tab-btn m-1" [class.active]="activeTab === 'browse'"
+                    (click)="activeTab = 'browse'; activeFolderTab = null; onFolderChange(null)">
                     Browse All Photos
                 </button>
-                <ng-container *ngFor="let folder of photos | uniqueFolderId">
-                    <button class="tab-btn" [class.active]="activeFolderTab === folder.folder_id"
-                        (click)="activeFolderTab = folder.folder_id; activeTab = ''">
-                        {{ folder.folder_name }}
-                    </button>
-                </ng-container>
             </ng-container>
-            <button class="tab-btn" [class.active]="activeTab === 'matched'" *ngIf="matchedImages.length > 0"
-                (click)="activeTab = 'matched'; activeFolderTab = null;">
+            <button class="tab-btn m-1" [class.active]="activeTab === 'matched'" *ngIf="matchedImages.length > 0"
+                (click)="activeTab = 'matched'; activeFolderTab = 'matched'; photos = matchedImages">
                 Matched Photos
             </button>
+
+            <ng-container *ngIf="isBrowseAllFolder else noBrowseAll">
+                <div class="" *ngIf="folders.length > 0">
+                    <button class="tab-btn m-1" *ngFor="let folder of folders"
+                        [class.active]="activeFolderTab == folder.folder_id"
+                        (click)="activeFolderTab = folder.folder_id; activeTab = ''; onFolderChange(folder.folder_id)">
+                        {{ folder.folder_name }}
+                    </button>
+                </div>
+            </ng-container>
+
             <ng-template #noBrowseAll>
                 <h1 class="text-center">Please add your selfie above!</h1>
             </ng-template>
@@ -79,10 +92,9 @@
     </div>
 
     <!-- Gallery Grid -->
-    <div class="gallery-grid" *ngIf="activeFolderTab && groupedPhotos?.[activeFolderTab]?.length > 0;">
+    <div class="gallery-grid" *ngIf="photos && photos.length > 0 && activeTab !== 'matched'; else showFallback">
         <ng-container>
-            <div class="gallery-item"
-                *ngFor="let image of groupedPhotos[activeFolderTab]; trackBy: trackPhotos; let i = index"
+            <div class="gallery-item" *ngFor="let image of photos; trackBy: trackPhotos;let i = index"
                 [style.animation-delay]="i * 0.05 + 's'">
                 <img [src]="image.photo_url" [alt]="image.title" loading="lazy" />
                 <div class="overlay">
@@ -105,36 +117,6 @@
                 </div>
             </div>
         </ng-container>
-    </div>
-
-    <div class="gallery-grid" *ngIf="activeTab === 'browse' && isBrowseAllFolder">
-        <ng-container *ngIf="photos.length > 0; else noPhotosBrowseAll">
-            <div class="gallery-item" *ngFor="let image of photos; trackBy: trackPhotos; let i = index"
-                [style.animation-delay]="i * 0.05 + 's'">
-                <img [src]="image.photo_url" [alt]="image.title" loading="lazy" />
-                <div class="overlay">
-                    <button class="action-btn view-btn" (click)="openModal(image)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        View
-                    </button>
-                    <button class="action-btn download-btn" (click)="downloadSinglePhoto(image, i)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Download
-                    </button>
-                </div>
-            </div>
-        </ng-container>
-        <ng-template #noPhotosBrowseAll>
-            <h1 class="text-center">Photos haven't been uploaded yet.</h1>
-        </ng-template>
     </div>
 
     <ng-container *ngIf="activeTab === 'matched'">
@@ -173,6 +155,24 @@
     </ng-template>
     <ng-template #noBrowseAll>
         <h1 class="text-center">Please add your selfie above!</h1>
+    </ng-template>
+
+    <ng-template #showFallback>
+        <!-- Case 1: isBrowseAllFolder = false -->
+        <h1 class="text-center text-light mt-3 text-lg text-white" *ngIf="!isBrowseAllFolder">
+            Capture your smile above
+        </h1>
+
+        <!-- Case 2: Browse all but no folder selected -->
+        <h1 class="text-center text-light mt-3 text-lg text-white"
+            *ngIf="isBrowseAllFolder && !activeFolderTab && activeTab !== 'matched'">
+            Please select any folder event
+        </h1>
+
+        <!-- Case 3: No photos found -->
+        <!-- <h1 class="text-center text-light" *ngIf="photos?.length === 0 && activeTab !== 'matched' && !activeFolderTab">
+                            Photos haven't been uploaded yet.
+                        </h1> -->
     </ng-template>
 
     <!-- Footer -->

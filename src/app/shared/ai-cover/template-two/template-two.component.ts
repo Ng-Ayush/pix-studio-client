@@ -88,6 +88,13 @@ export class TemplateTwoComponent {
   hasMore = true;
   private scrollTimeout: any;
 
+  folders: any[] = [];
+  selectedFolderId: any = 'all'; // '
+  hasFaceDescriptorError: boolean = false;
+
+  paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
+  photosByFolder: { [key: string]: any[] } = {};
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -98,7 +105,7 @@ export class TemplateTwoComponent {
     private sanitizer: DomSanitizer
   ) {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
+    this.scrollTop();
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     if (this.userData?.youtube_cover_url) {
       const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
@@ -114,11 +121,115 @@ export class TemplateTwoComponent {
         if (!this.isReady) {
           this.checkReadiness();
         }
-      }, 5000);
+      }, 10000);
     }
     // this.getPhotosByEventId();
-    this.loadPhotos();
+    // this.loadPhotos();
+    this.loadFolders();
     this.checkIsBrowseAllFolderStatus();
+  }
+
+  scrollTop() {
+    window.scrollTo(0, 0);
+  }
+
+  loadFolders() {
+    console.log("JDNSDSM");
+
+    this.eventService.getFoldersByEventId(
+      this.eventId,
+      this.userData?.created_by,
+      (res: any) => {
+        if (res.status == 200) {
+          this.folders = res.data;
+          console.log(`Loaded ${this.folders.length} folders`);
+          // this.loadPhotos();
+          setTimeout(() => {
+            this.scrollTop();
+          }, 0);
+
+        }
+      }
+    );
+  }
+
+  onFolderChange(folderId: string | null) {
+    if (this.selectedFolderId === folderId) return;
+
+    console.log(`Switching to folder: ${folderId || 'Browse All'}`);
+
+    this.selectedFolderId = folderId;
+
+    // Initialize if not exists
+    if (!this.paginationMap[folderId || 'all']) {
+      this.paginationMap[folderId || 'all'] = { page: 1, hasMore: true };
+    }
+
+    if (!this.photosByFolder[folderId || 'all']) {
+      this.photosByFolder[folderId || 'all'] = [];
+    }
+
+    // Reset UI to show relevant folder photos
+    this.photos = this.photosByFolder[folderId || 'all'];
+
+    if (this.photos.length === 0) {
+      this.loadPhotos();
+    }
+  }
+
+  loadPhotos() {
+    const folderKey = this.selectedFolderId || 'all';
+    const pagination = this.paginationMap[folderKey];
+
+    if (this.loading || !pagination.hasMore) return;
+
+    this.loading = true;
+
+    const params: any = {
+      event_id: this.eventId,
+      created_by: this.userData?.created_by,
+      page: pagination.page,
+      limit: this.limit,
+    };
+
+    if (this.selectedFolderId) {
+      params.folder_id = this.selectedFolderId;
+    }
+
+    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
+      if (res.status == 200) {
+        const folderPhotos = this.photosByFolder[folderKey] || [];
+        this.photosByFolder[folderKey] = [...folderPhotos, ...res.data];
+        this.photos = this.photosByFolder[folderKey];
+
+        pagination.hasMore = pagination.page < res.pagination.totalPages;
+        pagination.page++;
+
+        // this.groupPhotosByFolder();
+      }
+      this.loading = false;
+    });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+
+    this.scrollTimeout = setTimeout(() => {
+      const folderKey = this.selectedFolderId || 'all';
+      const pagination = this.paginationMap[folderKey];
+
+      // Don’t trigger if loading or no more data for this folder/all
+      if (this.loading || !pagination?.hasMore) return;
+
+      const threshold = 300;
+      const position = window.pageYOffset + window.innerHeight;
+      const height = document.documentElement.scrollHeight;
+
+      if (position > height - threshold) {
+        this.loadPhotos();
+      }
+    }, 200);
   }
 
   extractYoutubeId(url: any) {
@@ -140,59 +251,69 @@ export class TemplateTwoComponent {
     })
   }
 
-  loadPhotos() {
-    if (this.loading || !this.hasMore) return;
+  // loadPhotos() {
+  //   if (this.loading || !this.hasMore) return;
 
-    this.loading = true;
-    const params: any = {
-      event_id: this.eventId,
-      created_by: this.userData?.created_by,
-      page: this.currentPage,
-      limit: this.limit
-    }
-    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by,
-      (res: any) => {
-        if (res.status == 200) {
-          this.photos = [...this.photos, ...res.data];
-          this.hasMore = this.currentPage < res.pagination.totalPages;
-          this.currentPage++;
-          this.groupPhotosByFolder();
-        }
-        this.loading = false;
-      }
-    );
-  }
+  //   this.loading = true;
+  //   const params: any = {
+  //     event_id: this.eventId,
+  //     created_by: this.userData?.created_by,
+  //     page: this.currentPage,
+  //     limit: this.limit
+  //   }
+  //   this.eventService.getAllPhotosByEventId(params, this.userData?.created_by,
+  //     (res: any) => {
+  //       if (res.status == 200) {
+  //         this.photos = [...this.photos, ...res.data];
+  //         this.hasMore = this.currentPage < res.pagination.totalPages;
+  //         this.currentPage++;
+  //         this.groupPhotosByFolder();
+  //       }
+  //       this.loading = false;
+  //     }
+  //   );
+  // }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll() {
-    // Clear previous timeout to debounce
-    if (this.scrollTimeout) {
-      clearTimeout(this.scrollTimeout);
-    }
+  // @HostListener('window:scroll', ['$event'])
+  // onScroll() {
+  //   // Clear previous timeout to debounce
+  //   if (this.scrollTimeout) {
+  //     clearTimeout(this.scrollTimeout);
+  //   }
 
-    // Add debounce delay
-    this.scrollTimeout = setTimeout(() => {
-      // Don't trigger if already loading or no more data
-      if (this.loading || !this.hasMore) return;
+  //   // Add debounce delay
+  //   this.scrollTimeout = setTimeout(() => {
+  //     // Don't trigger if already loading or no more data
+  //     if (this.loading || !this.hasMore) return;
 
-      const threshold = 300; // Trigger 300px before bottom
-      const position = window.pageYOffset + window.innerHeight;
-      const height = document.documentElement.scrollHeight;
+  //     const threshold = 300; // Trigger 300px before bottom
+  //     const position = window.pageYOffset + window.innerHeight;
+  //     const height = document.documentElement.scrollHeight;
 
-      if (position > height - threshold) {
-        this.loadPhotos();
-      }
-    }, 200); // 200ms debounce delay
-  }
+  //     if (position > height - threshold) {
+  //       this.loadPhotos();
+  //     }
+  //   }, 200); // 200ms debounce delay
+  // }
 
 
   checkReadiness() {
-    this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.eventId}`)
+    this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.userData.event_name.split(" ").join("_")}_${this.userData.event_id}`)
       .subscribe(
         (res: any) => {
-          this.isReady = res.isFaceDescriptorReady;
+          // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
+          this.isReady = res.data.status == 'completed';
+          // this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
+          this.hasFaceDescriptorError = res.data.status == 'not_found';
+          // this.hasFaceDescriptorError = res.data?.output?.body?.status == 'not_found';
+          if (this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
           if (this.isReady) {
-            this.userData.isFaceDescriptorReady = true;
+            this.hasFaceDescriptorError = false;
+            this.eventService.updateFaceDescriptorEvent(this.userData.event_id, (res: any) => {
+              if (res.status == 200) {
+                this.userData.isFaceDescriptorReady = true;
+              }
+            })
             clearInterval(this.intervalId);
           }
         },
@@ -201,6 +322,16 @@ export class TemplateTwoComponent {
         }
       );
   }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+  }
+
   async onMobilePhotoCapture(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -368,19 +499,6 @@ export class TemplateTwoComponent {
     window.addEventListener('scroll', this.onScrolls.bind(this));
   }
 
-  ngOnDestroy(): void {
-    if (this.carouselInterval) {
-      clearInterval(this.carouselInterval);
-    }
-    window.removeEventListener('scroll', this.onScrolls.bind(this));
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    if (this.scrollTimeout) {
-      clearTimeout(this.scrollTimeout);
-    }
-  }
-
   onScrolls(): void {
     this.isHeaderScrolled = window.scrollY > 50;
   }
@@ -486,16 +604,16 @@ export class TemplateTwoComponent {
         next: async (res: any) => {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
-          this.matchedImages = JSON.parse(JSON.stringify(res.match_list)) || [];
+          this.matchedImages = res.matches?.length>0 ? JSON.parse(JSON.stringify(res.matches)) : [];
           if (this.matchedImages.length > 0 && this.userData?.need_customer_number && (this.userData?.google_review_url && this.userData?.google_review_url.startsWith('https://')) && await this.checkHasUserAlreadyReviewed()) {
             setTimeout(() => {
               this.triggerGoogleReview();
-            }, 15000);
+            }, 8000);
           }
           this.videoModal = false;
           this.activeTab = 'matched';
           this.activeFolderTab = null;
-          this.scrollTo('explore');
+          // this.scrollTo('explore');
           this.onCancel();
         },
         error: (err) => {

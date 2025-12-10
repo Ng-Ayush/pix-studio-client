@@ -67,118 +67,11 @@
                 <div class="row g-0" *ngIf="youtubeCoverUrl">
                     <iframe width="500" height="500" [src]="youtubeCoverUrl" title="YouTube video player"
                         frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen>
                     </iframe>
                 </div>
                 <div class="row m-0 p-0">
-                    <!-- <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
-                        <div class="inline-flex rounded-xl bg-black/80 gap-2">
-                            <button (click)="activeTab = 'browse'; activeFolderTab = null;onFolderChange(null)"
-                                *ngIf="isBrowseAllFolder"
-                                [ngClass]="activeTab === 'browse' ? 'bg-pink-600 text-white' : 'text-pink-600'"
-                                class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
-                                Browse All
-                            </button>
-
-                            <button (click)="activeTab = 'matched'; activeFolderTab = null;"
-                                *ngIf="matchedImages.length > 0"
-                                [ngClass]="activeTab === 'matched' ? 'bg-pink-600 text-white' : 'text-pink-600'"
-                                class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
-                                Matched Photos
-                            </button>
-                        </div>
-                    </div> -->
-
-                    <!-- <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5"
-                        *ngIf="isBrowseAllFolder else noBrowseAll">
-                        <div class="inline-flex rounded-xl bg-black/80 gap-2">
-                            <ng-container *ngFor="let folder of folders">
-                                <button
-                                    (click)="activeFolderTab = folder.folder_id; activeTab = ''; onFolderChange(folder.folder_id)"
-                                    [ngClass]="activeFolderTab === folder.folder_id ? 'bg-pink-600 text-white' : 'text-pink-600'"
-                                    class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
-                                    {{ folder.folder_name }}
-                                </button>
-                            </ng-container>
-
-                        </div>
-                    </div> -->
-                    <!-- <ng-container *ngIf="photos && photos.length > 0; else noPhotos">
-                        <div class="row">
-                            <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
-                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-                                    <div class="portfolio-item overflow-hidden">
-                                        <img class="img-fluid m-auto" [src]="photo.photo_url" loading="lazy"
-                                            alt="photo">
-                                        <div class="portfolio-overlay">
-                                            <div class="portfolio-btn">
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    [href]="photo.photo_url" data-lightbox="portfolio">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    (click)="downloadSinglePhoto(photo)" href="javascript:void(0);">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </div>
-                                            <div class="portfolio-name">
-                                                <h5 class="text-uppercase mb-0">{{ photo.photo_name || 'Photo' }}</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </ng-container> -->
-
-                    <!-- <ng-template #noPhotos>
-                        <h1 class="text-center text-light">Photos haven't been uploaded yet.</h1>
-                    </ng-template>
-
-                    <ng-container *ngIf="activeTab === 'matched'">
-                        <div class="col-sm-12 col-md-8 col-lg-6">
-                            <div class="h-100 p-5 bg-dark d-flex align-items-center justify-content-center">
-                                <div class="title mb-0 wow fadeIn" data-wow-delay="0.1s">
-                                    <div class="title-center">
-                                        <h5>Photos found: {{matchedImages.length}}</h5>
-                                        <h1>Your Matches</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <ng-container *ngIf="matchedImages.length > 0">
-                            <ng-container *ngFor="let photo of matchedImages;let idx = index; trackBy: trackPhotos;">
-                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-                                    <div class="portfolio-item overflow-hidden">
-                                        <img class="img-fluid m-auto" [src]="photo" alt="">
-                                        <div class="portfolio-overlay">
-                                            <div class="portfolio-btn">
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    [href]="photo.photo_url" data-lightbox="portfolio"><i
-                                                        class="fa fa-eye"></i></a>
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    (click)="downloadSinglePhoto(photo,idx)"
-                                                    href="javascript:void(0);"><i class="fa fa-download"></i></a>
-                                            </div>
-                                            <div class="portfolio-name">
-                                                <h5 class="text-uppercase mb-0">{{photo.name || 'image'}}</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
-
-                    <ng-template #onlyMatched>
-                        <h1 class="text-center" *ngIf="matchedImages.length === 0">Please add your selfie above!</h1>
-                    </ng-template>
-
-                    <ng-template #noBrowseAll>
-                        <h1 class="text-center">Please add your selfie above!</h1>
-                    </ng-template> -->
-
                     <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
                         <div class="inline-flex rounded-xl bg-black/80 gap-2">
 
