@@ -14,10 +14,11 @@ import { UniqueFolderIdPipe } from '../../shared/unique-folder-id.pipe';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TemplateThreeComponent } from '../../shared/ai-cover/template-three/template-three.component';
 import { TemplateTwoComponent } from '../../shared/ai-cover/template-two/template-two.component';
+import { YouTubePlayerModule } from '@angular/youtube-player';
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, UniqueFolderIdPipe, TemplateTwoComponent, TemplateThreeComponent],
+  imports: [CommonModule, FormsModule, UniqueFolderIdPipe, TemplateTwoComponent, TemplateThreeComponent, YouTubePlayerModule],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
 })
@@ -69,7 +70,7 @@ export class AiUploadComponent {
   private scrollTimeout: any;
   folders: any[] = [];
   selectedFolderId: any = 'all'; // '
-  hasFaceDescriptorError:boolean=false;
+  hasFaceDescriptorError: boolean = false;
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
@@ -85,11 +86,13 @@ export class AiUploadComponent {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.scrollTop();
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
-    if (this.userData?.youtube_cover_url) {
-      const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
-      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1&autoplay=1`;
-      this.youtubeCoverUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
-    }
+    setTimeout(() => {
+      if (this.userData?.youtube_cover_url) {
+        const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
+        // const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1&autoplay=1`;
+        this.youtubeCoverUrl = videoId;
+      }
+    }, 0);
     this.eventId = this.userData?.event_id;
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
     if (this.userData && !this.userData?.isFaceDescriptorReady) {
@@ -208,14 +211,16 @@ export class AiUploadComponent {
   }
 
   extractYoutubeId(url: any) {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|shorts\/|)([^#&?]+)/;
-    const match = url.match(regex);
+    // const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|shorts\/|)([^#&?]+)/;
+    // const match = url.match(regex);
 
-    if (match && match[1]) {
-      return match[1];
-    } else {
-      return null;
-    }
+    // if (match && match[1]) {
+    //   return match[1];
+    // } else {
+    //   return null;
+    // }
+    const match = url.match(/v=([^&]+)/);
+    return match ? match[1] : '';
   }
   checkIsBrowseAllFolderStatus() {
     this.eventService.checkIsBrowseAllFolderStatus({ event_id: this.userData?.event_id, user_id: this.userData?.user_id }, (res: any) => {
@@ -228,26 +233,26 @@ export class AiUploadComponent {
 
 
   checkReadiness() {
-    this.http.get(environment.apiUrl+`/api/mystudio/photo-selection/checkEventReady/${this.userData.event_name.split(" ").join("_")}_${this.userData.event_id}`)
+    this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.userData.event_name.split(" ").join("_")}_${this.userData.event_id}`)
       .subscribe(
-        (res:any) => {
+        (res: any) => {
           // this.isReady = res.isFaceDescriptorReady != 0 && res.isFaceDescriptorReady != '0' && res.isFaceDescriptorReady != 'false';
           this.isReady = res.data.status == 'completed';
           // this.isReady = res.data?.output?.body?.status == 'completed' || res.data?.output?.body?.status == 'partial';
           this.hasFaceDescriptorError = res.data.status == 'not_found';
           // this.hasFaceDescriptorError = res.data?.output?.body?.status == 'not_found';
-          if(this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
+          if (this.hasFaceDescriptorError) this.alert.error("Something went wrong, please contact to studio.");
           if (this.isReady) {
             this.hasFaceDescriptorError = false;
-            this.eventService.updateFaceDescriptorEvent(this.userData.event_id,(res:any)=>{
-              if(res.status == 200){
+            this.eventService.updateFaceDescriptorEvent(this.userData.event_id, (res: any) => {
+              if (res.status == 200) {
                 this.userData.isFaceDescriptorReady = true;
               }
             })
             clearInterval(this.intervalId);
           }
         },
-        (err:any) => {
+        (err: any) => {
           console.error('Failed to check event readiness', err);
         }
       );
@@ -681,5 +686,11 @@ export class AiUploadComponent {
         }
       })
     })
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 200);
   }
 }

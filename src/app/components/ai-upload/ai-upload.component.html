@@ -64,13 +64,15 @@
 
         <div class="container-fluid py-5 bg-secondary" id="explore">
             <div class="container py-5">
-                <div class="row g-0" *ngIf="youtubeCoverUrl">
+                <!-- <div class="row g-0 df" *ngIf="youtubeCoverUrl">
                     <iframe width="500" height="500" [src]="youtubeCoverUrl" title="YouTube video player"
                         frameborder="0"
                         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen>
                     </iframe>
-                </div>
+                    <youtube-player [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 0 }" suggestedQuality="highres" [height]="350" [width]="600">
+                    </youtube-player>
+                </div> -->
                 <div class="row m-0 p-0">
                     <div class="w-full max-w-2xl mx-auto mt-10 justify-center flex mb-5">
                         <div class="inline-flex rounded-xl bg-black/80 gap-2">
@@ -132,7 +134,8 @@
                                                 </a>
                                             </div>
                                             <div class="portfolio-name">
-                                                <h6 class="text-uppercase mb-0 text-center">{{ photo.photo_name || 'Photo' }}</h6>
+                                                <h6 class="text-uppercase mb-0 text-center">{{ photo.photo_name ||
+                                                    'Photo' }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -177,6 +180,11 @@
                         </ng-template>
                     </ng-container>
 
+                    <div class="video-container my-3" *ngIf="youtubeCoverUrl">
+                        <youtube-player [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 0 }"
+                            suggestedQuality="highres" [height]="350" [width]="">
+                        </youtube-player>
+                    </div>
                     <!-- 🔹 Fallback States -->
                     <ng-template #showFallback>
                         <!-- Case 1: isBrowseAllFolder = false -->

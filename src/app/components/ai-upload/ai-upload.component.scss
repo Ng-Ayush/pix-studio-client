@@ -137,8 +137,27 @@ video {
     font-size: 20px;
 }
 
-.folder-button{
+.folder-button {
     // width: 100px;
     font-size: 12px;
     height: auto;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+
+    // Fix: allow clicking/touching inside iframe
+    iframe,
+    youtube-player {
+        width: 100% !important;
+        height: 100% !important;
+        pointer-events: auto !important;
+        display: flex;
+        justify-content: center;
+    }
 }
