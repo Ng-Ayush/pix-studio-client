@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, inject, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, inject, HostListener, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,8 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
   standalone: true,
   imports: [CommonModule, FormsModule, TemplateTwoComponent, TemplateThreeComponent, YouTubePlayerModule],
   templateUrl: './ai-upload.component.html',
-  styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
+  styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"],
+  encapsulation:ViewEncapsulation.None
 })
 export class AiUploadComponent {
   @ViewChild('video') videoRef!: ElementRef<HTMLVideoElement>;

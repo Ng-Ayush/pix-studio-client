@@ -150,12 +150,14 @@ video {
     margin: 0 auto;
     border-radius: 12px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 
     // Fix: allow clicking/touching inside iframe
     iframe,
     youtube-player {
-        width: 100% !important;
-        height: 100% !important;
+        width: 350px !important;
+        height: 200px !important;
         pointer-events: auto !important;
         display: flex;
         justify-content: center;
