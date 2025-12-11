@@ -181,7 +181,7 @@
                     </ng-container>
 
                     <div class="video-container my-3" *ngIf="youtubeCoverUrl">
-                        <youtube-player [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 0 }"
+                        <youtube-player [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 1 }"
                             suggestedQuality="highres" [height]="350" [width]="">
                         </youtube-player>
                     </div>
