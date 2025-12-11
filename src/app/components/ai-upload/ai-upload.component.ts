@@ -18,7 +18,7 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
 @Component({
   selector: 'app-ai-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, UniqueFolderIdPipe, TemplateTwoComponent, TemplateThreeComponent, YouTubePlayerModule],
+  imports: [CommonModule, FormsModule, TemplateTwoComponent, TemplateThreeComponent, YouTubePlayerModule],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"]
 })
