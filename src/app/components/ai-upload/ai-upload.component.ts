@@ -75,7 +75,7 @@ export class AiUploadComponent {
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
-  @ViewChild('youtubePlayer') youtubePlayer!: ElementRef;
+  @ViewChild('youtubePlayer') youtubePlayer!: ElementRef|any;
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -94,7 +94,7 @@ export class AiUploadComponent {
         // const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1&autoplay=1`;
         this.youtubeCoverUrl = videoId;
       }
-    }, 0);
+    }, 100);
     this.eventId = this.userData?.event_id;
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
     if (this.userData && !this.userData?.isFaceDescriptorReady) {
@@ -698,7 +698,10 @@ export class AiUploadComponent {
 
   onPlayerReady(event: any) {
     console.log(event.target);
-    event.target.unMute()
-    event.target.playVideo();
+    event.target.unMute();
+    event.target.setVolume(100);
+    setTimeout(() => {
+      event.target.playVideo();
+    }, 1000);
   }
 }
