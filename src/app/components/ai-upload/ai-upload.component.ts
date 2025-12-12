@@ -21,7 +21,7 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
   imports: [CommonModule, FormsModule, TemplateTwoComponent, TemplateThreeComponent, YouTubePlayerModule],
   templateUrl: './ai-upload.component.html',
   styleUrls: ["./ai-upload.component.scss", "../../../assets/css/style.css", "../../../assets/css/bootstrap.min.css"],
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class AiUploadComponent {
   @ViewChild('video') videoRef!: ElementRef<HTMLVideoElement>;
@@ -75,6 +75,7 @@ export class AiUploadComponent {
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
+  @ViewChild('youtubePlayer') youtubePlayer!: ElementRef;
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -693,5 +694,13 @@ export class AiUploadComponent {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 200);
+  }
+
+  onPlayerReady(event: any) {
+    setTimeout(() => {
+      if (event && event.target) {
+        event.target.unMute()
+      }
+    }, 0);
   }
 }

@@ -181,8 +181,8 @@
                     </ng-container>
 
                     <div class="video-container my-3" *ngIf="youtubeCoverUrl">
-                        <youtube-player [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 1 }"
-                            suggestedQuality="highres" [height]="350" [width]="">
+                        <youtube-player #youtubePlayer [videoId]="youtubeCoverUrl" [playerVars]="{ autoplay: 1, mute: 1 }"
+                            suggestedQuality="highres" [height]="350" [width]="" (ready)="onPlayerReady($event)">
                         </youtube-player>
                     </div>
                     <!-- 🔹 Fallback States -->
