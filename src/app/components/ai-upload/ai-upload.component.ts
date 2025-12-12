@@ -698,12 +698,7 @@ export class AiUploadComponent {
 
   onPlayerReady(event: any) {
     console.log(event.target);
-    
-    setTimeout(() => {
-      if (event && event.target) {
-        event.target.unMute()
-        event.target.playVideo();
-      }
-    }, 0);
+    event.target.unMute()
+    event.target.playVideo();
   }
 }
