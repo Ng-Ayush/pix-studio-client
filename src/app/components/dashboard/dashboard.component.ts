@@ -136,7 +136,7 @@ export class DashboardComponent implements OnInit {
 
   underConstruction() {
     this.showUnderConstructionModal = true;
-    this.startCountdown();
+    // this.startCountdown();
   }
 
   startCountdown() {

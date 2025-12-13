@@ -154,6 +154,8 @@ export class PhotoSelectionPhotosComponent {
         this.aiUploadService.aiEventId = res.data?.event_id;
 
         this.isEventSubmitted = res.data.is_event_submitted;
+
+        this.aiUploadService.photo_quality = res.data?.photo_quality ? res.data?.photo_quality : 'basic';
         setTimeout(() => this.loader.hide(), 500);
       }
     })

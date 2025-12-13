@@ -76,7 +76,7 @@
 
                         </div>
                     </a>
-                    <h3 class="dashboard-item-title text-xl">Calendar</h3>
+                    <h3 class="dashboard-item-title text-xl">Reminder</h3>
                 </div>
 
   <!-- (click)="underConstruction()" -->
@@ -138,8 +138,8 @@
             </div>
 
             <div class="grid mb-4 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-5 relative">
-
-                <div class="dashboard-item" routerLink="/calling">
+ <!-- routerLink="/calling" -->
+                <div class="dashboard-item" (click)="underConstruction()">
                     <div class="dashboard-item-icon block m-auto mb-3">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-24">
@@ -232,8 +232,8 @@
             </div>
         </div>
         <div class="bg-white rounded-2xl p-8 text-center">
-            <h1 class="text-xl font-bolder mb-6 text-indigo-800 shadow-xl rounded-xl py-2 bg-gray-50">Hang tight! <br> Faster uploads and smarter AI are on the way.</h1>
-            <div id="countdown" class="flex justify-center gap-4 text-gray-700 font-mono text-xl">
+            <h1 class="text-xl font-bolder mb-6 text-indigo-800  rounded-xl py-2 bg-gray-50">Hang tight! <br> This feature is under development</h1>
+            <!-- <div id="countdown" class="flex justify-center gap-4 text-gray-700 font-mono text-xl">
                 <div>
                     <div class="text-5xl font-extrabold text-indigo-600">{{ days }}</div>
                     <div class="uppercase text-sm tracking-widest">Days</div>
@@ -250,7 +250,7 @@
                     <div class="text-5xl font-extrabold text-indigo-600">{{ seconds | number:'2.0' }}</div>
                     <div class="uppercase text-sm tracking-widest">Seconds</div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="bg-gray-50 pb-4 flex justify-center gap-5 rounded-b-lg">

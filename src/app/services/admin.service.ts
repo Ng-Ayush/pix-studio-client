@@ -171,4 +171,8 @@ export class AdminService extends BaseService {
   disconnectWhatsApp(userId: any, callback: any) {
     return this.postData({}, this.httpUrls['disconnectWhatsApp']+ "/" + userId, callback);    
   }
+
+  resetDeleteAiPhotoCount(params:any,callback:any){
+    return this.postData(params, this.httpUrls['resetDeleteAiPhotoCount'], callback);
+  }
 }

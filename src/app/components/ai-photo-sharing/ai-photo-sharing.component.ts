@@ -76,7 +76,7 @@ export class AiPhotoSharingComponent {
   ngOnInit() {
     this.getAllEvents();
     this.getAllCustomers();
-    this.getTotalUploadedAiPhotosCount();
+    // this.getTotalUploadedAiPhotosCount();
   }
 
 
@@ -87,6 +87,7 @@ export class AiPhotoSharingComponent {
         this.eventList = res.data.filter((item: any) => item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
         this.loader.hide();
+        this.getTotalUploadedAiPhotosCount();
       } else {
         this.alert.error(res.message);
         this.loader.hide();
@@ -100,7 +101,7 @@ export class AiPhotoSharingComponent {
       if (res.status == 200) {
         console.log("Total AI Uploaded Photos Count: ", res.data);
         this.totalUploadedPhotosCount = res.data;
-        localStorage.setItem('totalAiUploadedPhotosCount', this.totalUploadedPhotosCount);
+        localStorage.setItem('totalAiUploadedPhotosCount', res.data);
         this.updateProgress();
       } else {
         this.alert.error(res.message);
@@ -113,6 +114,8 @@ export class AiPhotoSharingComponent {
       if (res.status == 200) {
         this.customers = res.data.filter((item: any) => item.is_ai_customer);
         this.filteredCustomer = [...this.customers];
+      }else{
+        this.alert.error(res.message);
       }
     })
   }
@@ -167,7 +170,8 @@ export class AiPhotoSharingComponent {
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
-        selected_template: this.event_config?.selected_template || 'template1'
+        selected_template: this.event_config?.selected_template || 'template1',
+        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic'
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -189,7 +193,8 @@ export class AiPhotoSharingComponent {
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
-        selected_template: this.event_config?.selected_template || 'template1'
+        selected_template: this.event_config?.selected_template || 'template1',
+        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic'
       }
       console.log(params);
 
@@ -217,6 +222,7 @@ export class AiPhotoSharingComponent {
     this.event_config.watermark = { is_watermark: false, transparency: null };
     this.event_config.need_customer_number = true;
     this.event_config.selected_template = this.event_config?.selected_template ?? 'template1';
+    this.event_config.photo_quality_enabled = false;
     this.customerConfig = {};
     this.preview = {};
   }
@@ -233,7 +239,8 @@ export class AiPhotoSharingComponent {
     this.preview['cover1'] = event.ai_cover_images[0]?.url;
     this.preview['cover2'] = event.ai_cover_images[1]?.url;
     this.selectParty({ name: this.event_config.customer_name, id: this.event_config.customer_id });
-    this.event_config.watermark = event.watermark ? JSON.parse(event.watermark) : { is_watermark: false, transparency: null };
+    this.event_config.watermark = event.watermark && typeof (event.watermark) == 'string' ? JSON.parse(event.watermark) : { is_watermark: false, transparency: null };
+    this.event_config.photo_quality_enabled = event.photo_quality != 'basic' ? true : false;
     console.log(event);
   }
 
@@ -578,4 +585,17 @@ export class AiPhotoSharingComponent {
     value = value.trimEnd();
     this.event_config.event_name = value;
   }
+
+  togglePhotoQuality(event: any) {
+    this.event_config.photo_quality_enabled = event.target.checked;
+
+    if (!event.target.checked) {
+      this.event_config.photo_quality = 'basic'; // default fallback
+    }
+  }
+
+  setPhotoQuality(level: 'basic' | 'standard' | 'high') {
+    this.event_config.photo_quality = level;
+  }
+
 }

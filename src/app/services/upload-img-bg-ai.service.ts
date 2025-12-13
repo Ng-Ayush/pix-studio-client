@@ -57,6 +57,9 @@ export class UploadImgBackgroundAiService {
 
   allowed_photos_quantity: any = 0;
   allUploadQueues: any = [];
+  photo_quality: any = '';
+
+  filteredEvents: any[] = [];
   // ---------------- Handle File Input ----------------
   async handleAIFileInput(
     event: any,
@@ -67,6 +70,10 @@ export class UploadImgBackgroundAiService {
     eventName: any,
     currentFolderId: any
   ) {
+    if (localStorage.getItem("isUploadingGlobally") === "true") {
+      this.alert.warning("Another upload is in progress. Please wait until it completes.", 8000);
+      return;
+    }
     this.totalAiUploadedPhotosCount = JSON.parse(<any>localStorage.getItem("totalAiUploadedPhotosCount")) || 0;
 
     this.alert.info("Please do not refresh the page until AI upload is completed", 10000);
@@ -110,29 +117,57 @@ export class UploadImgBackgroundAiService {
     let limitPhotos = this.allowed_photos_quantity;
     if (this.user_id == 285) limitPhotos = 1000;
     else if (this.user_id == 31) limitPhotos = 50000;
-    // else if(this.user_id == 429) limitPhotos = 40000;
 
     // ✅ NEW: Get total queued photos across ALL events
     const globalQueuedCount = this.allUploadQueues
       ? this.allUploadQueues.reduce((sum: any, q: any) => sum + q.files.length, 0)
       : this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
 
-    // ✅ NEW: totalUsed is now global (uploaded + all queued)
-    const totalUsed = this.totalAiUploadedPhotosCount + globalQueuedCount;
+    // ---------------- QUALITY WEIGHT ----------------
+    let weight = 1;
+    if (this.photo_quality === "standard") weight = 3;
+    else if (this.photo_quality === "high") weight = 10;
 
-    const remaining = limitPhotos - totalUsed;
+    // ---------------- REMAINING WEIGHT ----------------
+    const remaining = limitPhotos - this.totalAiUploadedPhotosCount;
 
     if (remaining <= 0) {
-      this.alert.warning(`Upload limit of ${limitPhotos} photos reached (uploaded + in queue).`, 8000);
+      this.alert.warning(
+        `Upload limit of ${limitPhotos} photos reached (uploaded + in queue).`,
+        8000
+      );
       return;
     }
 
-    if (uniqueFiles.length > remaining) {
-      const skipped = uniqueFiles.length - remaining;
-      this.alert.warning(`Only ${remaining} more photos allowed. Skipped ${skipped} extra files.`, 8000);
-      uniqueFiles.splice(remaining);
+    // ---------------- MAX FILES ALLOWED BASED ON QUALITY ----------------
+    const maxFilesAllowed = Math.floor(remaining / weight);
+
+    if (maxFilesAllowed <= 0) {
+      this.alert.warning(
+        `No more photos allowed for selected quality.`,
+        8000
+      );
+      return;
     }
 
+    // ---------------- SKIP EXTRA FILES ----------------
+    if (uniqueFiles.length > maxFilesAllowed) {
+      const skipped = uniqueFiles.length - maxFilesAllowed;
+      this.alert.warning(
+        `Only ${maxFilesAllowed} more photos allowed. Skipped ${skipped} extra files.`,
+        8000
+      );
+      uniqueFiles.splice(maxFilesAllowed);
+    }
+
+    // ---------------- UPDATE COUNTER CORRECTLY ----------------
+    // this.totalAiUploadedPhotosCount += uniqueFiles.length * weight;
+    // localStorage.setItem(
+    //   "totalAiUploadedPhotosCount",
+    //   JSON.stringify(this.totalAiUploadedPhotosCount)
+    // );
+
+    // ---------------- ADD TO QUEUE ----------------
     if (uniqueFiles.length > 0) {
       this.uploadQueue.push({
         files: uniqueFiles,
@@ -141,19 +176,20 @@ export class UploadImgBackgroundAiService {
         studio_name,
         customerName,
         eventName,
-        currentFolderId
+        currentFolderId,
       });
 
-      // ✅ NEW: maintain global reference to all queues
       if (!this.allUploadQueues) this.allUploadQueues = [];
       this.allUploadQueues.push(...this.uploadQueue);
     }
 
+    // ---------------- PROCESS QUEUE ----------------
     if (!this.isProcessingQueue) {
       localStorage.setItem("isUploadingGlobally", "true");
       this.processQueue();
     }
   }
+
 
   // ---------------- Queue Processor ----------------
   private async processQueue() {
@@ -201,11 +237,8 @@ export class UploadImgBackgroundAiService {
     this.isImageUploadedCompleted$.next(true);
     if (this.uploadQueue.length === 0) {
       localStorage.removeItem("isUploadingGlobally");
+      this.getAllEvents();
     }
-    this._pservice.getTotalUploadedAiPhotosCount((res: any) => {
-      this.totalAiUploadedPhotosCount = res.data;
-      localStorage.setItem("totalAiUploadedPhotosCount", JSON.stringify(this.totalAiUploadedPhotosCount));
-    });
   }
 
   // ---------------- Compress + Upload ----------------
@@ -217,7 +250,7 @@ export class UploadImgBackgroundAiService {
     eventName: string,
     folderName: string
   ): Promise<string> {
-    const compressed: any = await this.imageCompressService.compress3MBToTarget(file);
+    const compressed: any = await this.imageCompressService.compress3MBToTarget(file, this.photo_quality);
     let watermarkedBlob: any;
     if (this.waterMarkConfig?.is_watermark) {
       watermarkedBlob = await this.addWatermarkFromBlob(compressed, this.waterMarkConfig?.transparency);
@@ -285,7 +318,8 @@ export class UploadImgBackgroundAiService {
           event_id: eventId,
           folder_id: +folderId,
           is_ai_upload: true,
-          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
+          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`,
+          photo_quality: this.photo_quality
         },
         (res: any) => {
           if (res.status === 200) resolve();
@@ -354,7 +388,8 @@ export class UploadImgBackgroundAiService {
           event_id: eventId,
           folder_id: +folderId,
           is_ai_upload: true,
-          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`
+          wedding_folder_id: `${this.eventName.split(" ").join("_")}_${this.aiEventId}`,
+          photo_quality: this.photo_quality
         },
         (res: any) => {
           if (res.status === 200) {
@@ -371,4 +406,29 @@ export class UploadImgBackgroundAiService {
     });
   }
 
+  getAllEvents() {
+    this.loader.show();
+    this._pservice.getAllEvents((res: any) => {
+      if (res.status == 200) {
+        this.filteredEvents = res.data.filter((item: any) => item.is_ai_upload);
+        this.getTotalUploadedAiPhotosCount();
+      } else {
+        console.error(res.message);
+      }
+    });
+
+  }
+
+  getTotalUploadedAiPhotosCount() {
+    this.totalAiUploadedPhotosCount = 0;
+    this._pservice.getTotalUploadedAiPhotosCount((res: any) => {
+      if (res.status == 200) {
+        console.log("Total AI Uploaded Photos Count: ", res.data);
+        this.totalAiUploadedPhotosCount = res.data;
+        localStorage.setItem('totalAiUploadedPhotosCount', this.totalAiUploadedPhotosCount);
+      } else {
+        this.alert.error(res.message);
+      }
+    });
+  }
 }

@@ -94,39 +94,45 @@ export class AddUserComponent {
       this.todayDate = new Date();
     })
   }
-   onImgUpload(event: any) {
-     const file = event.target.files[0];
-     const reader = new FileReader();
- 
-     reader.readAsDataURL(file);
-     reader.onload = async () => {
-       let compressedImage = reader.result as string;
-       let blob = this.dataURLtoBlob(compressedImage);
-       console.log(file);
-       
-       const fileRef = ref(this.storage, `studio-icon/${file.name}`);
-       const uploadTask = uploadBytesResumable(fileRef, blob);
-       
-       uploadTask.then(async () => {
-         const url = await getDownloadURL(fileRef);
-         console.log(url,"dsadad");
-         this.userForm.patchValue({ studio_icon: url })
-       })
-     }
-   }
- 
-   dataURLtoBlob(dataURL: string) {
-     const byteString = atob(dataURL.split(',')[1]);
-     const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-     const arrayBuffer = new ArrayBuffer(byteString.length);
-     const intArray = new Uint8Array(arrayBuffer);
-     for (let i = 0; i < byteString.length; i++) {
-       intArray[i] = byteString.charCodeAt(i);
-     }
-     return new Blob([arrayBuffer], { type: mimeString });
-   }
- 
+  onImgUpload(event: any) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
 
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      let compressedImage = reader.result as string;
+      let blob = this.dataURLtoBlob(compressedImage);
+      console.log(file);
 
+      const fileRef = ref(this.storage, `studio-icon/${file.name}`);
+      const uploadTask = uploadBytesResumable(fileRef, blob);
+
+      uploadTask.then(async () => {
+        const url = await getDownloadURL(fileRef);
+        this.userForm.patchValue({ studio_icon: url })
+      })
+    }
+  }
+
+  dataURLtoBlob(dataURL: string) {
+    const byteString = atob(dataURL.split(',')[1]);
+    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([arrayBuffer], { type: mimeString });
+  }
+  
+  resetDeleteAiPhotoCount() {
+    this.service.resetDeleteAiPhotoCount({ user_id: this.itemId }, (res: any) => {
+      if (res.status == 200) {
+        this.alert.success(res.message);
+      } else {
+        this.alert.error(res.message);
+      }
+    })
+  }
 
 }

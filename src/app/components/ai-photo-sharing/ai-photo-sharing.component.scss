@@ -403,6 +403,11 @@
     -o-transition: var(--switch-transition);
     transition: var(--switch-transition);
     cursor: pointer;
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 }
 
 .circle {

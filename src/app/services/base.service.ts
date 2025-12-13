@@ -23,11 +23,12 @@ export class BaseService {
     'deleteCustomer': '/api/mystudio/customers/deleteCustomer',
     'fetchCustomerFilesById': '/api/mystudio/customers/fetchCustomerFilesById',
     'searchCustomer': '/api/mystudio/customers/searchCustomer',
-    'fetchSalesAndPendingGraphData':'/api/mystudio/dashboard/fetchSalesAndPendingGraphData',
-    'getUsersByCurrentId':'/api/mystudio/manage-profile/getUsersByCurrentId',
-    'updateProfile':'/api/mystudio/manage-profile/updateProfile',
-    'connectToWhatsApp':'/api/mystudio/manage-profile/connectToWhatsApp',
-     'disconnectWhatsApp':'/api/mystudio/manage-profile/disconnectWhatsApp',
+    'fetchSalesAndPendingGraphData': '/api/mystudio/dashboard/fetchSalesAndPendingGraphData',
+    'getUsersByCurrentId': '/api/mystudio/manage-profile/getUsersByCurrentId',
+    'updateProfile': '/api/mystudio/manage-profile/updateProfile',
+    'connectToWhatsApp': '/api/mystudio/manage-profile/connectToWhatsApp',
+    'disconnectWhatsApp': '/api/mystudio/manage-profile/disconnectWhatsApp',
+    'resetDeleteAiPhotoCount' :'/api/mystudio/manage-profile/resetDeleteAiPhotoCount',
 
     //Event
     'createEvent': '/api/mystudio/photo-selection/createEvent',
@@ -148,22 +149,22 @@ export class BaseService {
 
 
   getData(d: any, url: any, callback: any) {
-    
+
     return this.http.get(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
   }
 
   postData(d: any, url: any, callback: any) {
-    
+
     return this.http.post(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
   }
 
   putData(d: any, url: any, callback: any) {
-    
+
     return this.http.put(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
   }
 
   deleteData(d: any, url: any, callback: any) {
-    
+
     return this.http.delete(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
   }
 

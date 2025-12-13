@@ -10,11 +10,12 @@ import { AlertService } from '../../services/alert.service';
 import { FormsModule } from '@angular/forms';
 import { LoaderService } from '../../shared/loader.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { YouTubePlayerModule } from '@angular/youtube-player';
 declare var Razorpay: any;
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ScrollingModule],
+  imports: [CommonModule, RouterModule, FormsModule, ScrollingModule, YouTubePlayerModule],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
 })
@@ -25,7 +26,7 @@ export class FeaturesComponent {
   showDriveLink: boolean = false;
   showVideoModal = false
   selectedCard: any | null = null
-  currentVideoUrl: SafeResourceUrl = "";
+  currentVideoUrl: any = "";
   features: any = [];
   currentDriveLink: any = '';
   categoryList: any[] = [];
@@ -90,11 +91,11 @@ export class FeaturesComponent {
   }
 
   sanitizeVideoUrl() {
-    this.features.forEach((card: any) => {
-      const videoId = this.extractYoutubeId(card.youtube_url);
-      const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`;
-      card.youtube_url = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
-    });
+    // this.features.forEach((card: any) => {
+    //   const videoId = this.extractYoutubeId(card.youtube_url);
+    //   const videoUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`;
+    //   card.youtube_url = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
+    // });
   }
 
   getAllCategories() {
@@ -119,10 +120,10 @@ export class FeaturesComponent {
     this.selectedCard = card;
     console.log(card);
 
-    // const randomVideoId = this.extractYoutubeId(card.youtube_url);
+    const randomVideoId = this.extractYoutubeId(card.youtube_url.trim());
     // const videoUrl = `https://www.youtube.com/embed/${randomVideoId}?autoplay=1&rel=0&modestbranding=1&controls=1`
     // this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl)
-    this.currentVideoUrl = card.youtube_url;
+    this.currentVideoUrl = randomVideoId;
     this.showVideoModal = true;
     this.currentDriveLink = card.drive_url;
   }
@@ -136,6 +137,7 @@ export class FeaturesComponent {
     } else {
       return null;
     }
+
   }
 
   payNow() {
@@ -323,7 +325,7 @@ export class FeaturesComponent {
     })
   }
 
-  
+
   ngOnDestroy() {
     window.removeEventListener('resize', () => this.setViewportHeight());
   }

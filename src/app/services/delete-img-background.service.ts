@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Storage,ref,deleteObject } from '@angular/fire/storage';
+import { Storage, ref, deleteObject } from '@angular/fire/storage';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { PhotoSelectionService } from './photo-selection.service';
 import { AlertService } from './alert.service';
@@ -83,9 +83,6 @@ export class DeleteImgBackgroundService {
     }
 
     this.isProcessingDeleteQueue = false;
-    this._pservice.getTotalUploadedAiPhotosCount((res:any)=>{
-      localStorage.setItem("totalAiUploadedPhotosCount",JSON.stringify(res.data));
-    });
   }
 
   async deleteFromDatabase(folderId: any, photos: any[]) {

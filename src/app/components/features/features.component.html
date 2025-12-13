@@ -95,7 +95,7 @@
         <cdk-virtual-scroll-viewport itemSize="50" class="viewport" [style.height.px]="viewportHeight">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <div *cdkVirtualFor="let card of features; let i = index; trackBy: trackByCdkFn"
-              class="w-full max-w-sm h-auto shadow-lg hover:bg-indigo-50 cursor-pointer rounded-lg">
+              class="w-full max-w-sm h-auto shadow-lg hover:bg-indigo-50 cursor-pointer rounded-lg transition-all duration-300 ease-out hover:-translate-y-[5px]">
 
               <div class="shadow-lg mb-4" [ngClass]="{'relative overflow-hidden':!!card.is_feature_purchased}">
                 <div class="relative cursor-pointer group" (click)="playVideo(card)">
@@ -139,11 +139,13 @@
           </div>
 
           <div class="relative w-full" style="padding-bottom: 56.25%; height: 0;">
-            <iframe [src]="currentVideoUrl" class="absolute top-0 left-0 w-full h-full rounded-lg"
+            <!-- <iframe [src]="currentVideoUrl" class="absolute top-0 left-0 w-full h-full rounded-lg"
               title="YouTube video player" frameborder="0"
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
-            </iframe>
+            </iframe> -->
+            <youtube-player [videoId]="currentVideoUrl" suggestedQuality="highres" [height]="460" [width]="829">
+            </youtube-player>
           </div>
 
           <div class="mt-6 p-6 bg-white rounded-xl shadow-md border border-gray-200">
