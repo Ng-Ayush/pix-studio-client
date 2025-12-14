@@ -63,7 +63,7 @@
         </div>
 
         <div class="container-fluid py-5 bg-secondary" id="explore">
-            <div class="container py-5">
+            <div class="container">
                 <!-- <div class="row g-0 df" *ngIf="youtubeCoverUrl">
                     <iframe width="500" height="500" [src]="youtubeCoverUrl" title="YouTube video player"
                         frameborder="0"
@@ -78,12 +78,12 @@
                         <div class="inline-flex rounded-xl bg-black/80 gap-2">
 
                             <!-- Browse All -->
-                            <button (click)="activeTab = 'browse'; activeFolderTab = null; onFolderChange(null)"
+                            <!-- <button (click)="activeTab = 'browse'; activeFolderTab = null; onFolderChange(null)"
                                 *ngIf="isBrowseAllFolder"
                                 [ngClass]="activeTab === 'browse' ? 'bg-pink-600 text-white' : 'text-pink-600'"
-                                class="btn btn-outline-primary border-2 py-3 px-5 animated slideInDown">
+                                class="btn-ai border-2 py-3 px-5 animated slideInDown">
                                 Browse All
-                            </button>
+                            </button> -->
 
                             <!-- Matched Photos -->
                             <button *ngIf="matchedImages.length > 0"
@@ -105,7 +105,7 @@
                                     [ngClass]="activeFolderTab === folder.folder_id ? 'bg-pink-600 text-white' : 'text-pink-600'"
                                     class="btn btn-outline-primary border-2 bg-black/80 py-3 px-5 animated slideInDown d-flex items-center flex-col justify-center gap-2 folder-button">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        stroke-width="1.5" stroke="currentColor" class="size-12">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
                                     </svg>
@@ -121,7 +121,7 @@
                             <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
                                 <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn p-0" data-wow-delay="0.1s">
                                     <div class="portfolio-item overflow-hidden">
-                                        <img class="img-fluid m-auto mb-3" [src]="photo.photo_url" loading="lazy"
+                                        <img class="img-fluid m-2" [src]="photo.photo_url" loading="lazy"
                                             alt="photo">
                                         <div class="portfolio-overlay">
                                             <div class="portfolio-btn">
@@ -153,7 +153,7 @@
                             <ng-container *ngFor="let photo of matchedImages; let i = index; trackBy: trackPhotos">
                                 <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn p-0" data-wow-delay="0.1s">
                                     <div class="portfolio-item overflow-hidden mb-3">
-                                        <img class="img-fluid m-auto" [src]="photo.photo_url || photo"
+                                        <img class="img-fluid m-2" [src]="photo.photo_url || photo"
                                             alt="matched photo">
                                         <div class="portfolio-overlay">
                                             <div class="portfolio-btn">
@@ -195,7 +195,7 @@
                         <!-- Case 2: Browse all but no folder selected -->
                         <h1 class="text-center text-light"
                             *ngIf="isBrowseAllFolder && !activeFolderTab && activeTab !== 'matched'">
-                            Please select any folder event
+                            Please select any folder to view/download photos.
                         </h1>
 
                         <!-- Case 3: No photos found -->
