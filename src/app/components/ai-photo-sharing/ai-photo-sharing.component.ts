@@ -171,7 +171,8 @@ export class AiPhotoSharingComponent {
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
         selected_template: this.event_config?.selected_template || 'template1',
-        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic'
+        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic',
+        event_date: this.event_config?.event_date ? this.event_config?.event_date : null
       };
 
       this.eventService.createEvent(params, (res: any) => {
@@ -194,7 +195,8 @@ export class AiPhotoSharingComponent {
         need_customer_number: this.event_config?.need_customer_number || false,
         google_review_url: this.event_config?.google_review_url || '',
         selected_template: this.event_config?.selected_template || 'template1',
-        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic'
+        photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic',
+        event_date: this.event_config?.event_date ? this.event_config?.event_date : null
       }
       console.log(params);
 
