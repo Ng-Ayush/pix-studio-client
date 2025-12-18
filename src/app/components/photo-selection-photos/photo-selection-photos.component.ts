@@ -224,27 +224,43 @@ export class PhotoSelectionPhotosComponent {
 
   async selectFolder() {
     try {
-      // Open folder selection prompt
       this.selectedFolderHandle = await (window as any).showDirectoryPicker();
-      this.originalDirectoryName = await this.selectedFolderHandle.name;
+      this.originalDirectoryName = this.selectedFolderHandle.name;
 
-      // Attach fileHandle to images in the existing array
-      for await (const entry of this.selectedFolderHandle.values()) {
-        if (entry.kind === "file" && this.isImage(entry.name)) {
-          // Find the matching file in imageArray
-          const matchingImage = this.filteredPhotos.find((img: any) => img.photo_name == entry.name);
-          if (matchingImage) {
-            console.log(matchingImage, "3213123123");
+      const fileMap = new Map<string, FileSystemFileHandle>();
+      await this.scanDirectoryRecursive(this.selectedFolderHandle, fileMap);
 
-            matchingImage.fileHandle = entry; // Attach file handle to the image
-          }
-        }
+      for (const img of this.filteredPhotos) {
+        img.fileHandle = fileMap.get(img.photo_name) || null;
       }
+
+      const missing = this.filteredPhotos.filter(p => !p.fileHandle);
+      if (missing.length) {
+        console.warn(
+          'Files not found on disk:',
+          missing.map(m => m.photo_name)
+        );
+      }
+
     } catch (error) {
       console.error("Folder selection failed:", error);
     }
   }
 
+  async scanDirectoryRecursive(
+    dirHandle: FileSystemDirectoryHandle | any,
+    map: Map<string, FileSystemFileHandle>
+  ) {
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind == 'file' && this.isImage(entry.name)) {
+        map.set(entry.name, entry); // name-based identity
+      }
+
+      if (entry.kind == 'directory') {
+        await this.scanDirectoryRecursive(entry, map);
+      }
+    }
+  }
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|gif)$/i.test(fileName);
   }
@@ -262,7 +278,14 @@ export class PhotoSelectionPhotosComponent {
       const favouriteFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Important", { create: true });
 
       for (const image of this.filteredPhotos) {
-        if (!image.is_selected && !image.is_favourite) continue;
+        if (!image.is_selected && !image.is_favourite) {
+          continue;
+        };
+
+        if(!image.fileHandle) {
+          this.alert.error(`File missing or renamed: ${image.photo_name}`,5000);
+          continue;
+        }
 
         const sourceFile = await image.fileHandle.getFile();
         const fileBuffer = await sourceFile.arrayBuffer();
