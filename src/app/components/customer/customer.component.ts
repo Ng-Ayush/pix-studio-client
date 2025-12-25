@@ -72,7 +72,7 @@ export class CustomerComponent {
   getAllCustomers() {
     this.service.getAllCustomers((res: any) => {
       if (res.status == 200) {
-        this.customers = res.data;
+        this.customers = res.data.filter((item: any) => !item.is_ai_customer);
       } else {
 
       }

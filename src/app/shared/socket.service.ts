@@ -12,6 +12,10 @@ export class SocketService {
   isReady = false;
 
   connect(adminId: any) {
+    if (this.socket && this.socket.connected) {
+      console.log('🔁 Socket already connected:', this.socket.id);
+      return;
+    }
     // enable reconnection
     this.socket = io(environment.apiUrl, {
       reconnection: true,

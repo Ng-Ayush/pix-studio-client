@@ -95,7 +95,6 @@ export class PdfBillSelectionComponent {
         this.invoiceBillConfig = res.data;
         this.invoiceBillConfig['priceInWords'] = this.commonService.convertToRupeesInWords(+this.invoiceBillConfig.total);
         this.invoiceBillConfig.tnc = res.data.terms_and_conditions || this.userData?.terms_and_condition || null;
-        console.log(this.invoiceBillConfig.tnc);
         const hasPastPayment = await this.getPastPayments();
         if (!hasPastPayment) {
           this.countTotalAndTotalQty();
@@ -466,7 +465,7 @@ ${htmlContent}
     // this.alert.info("This feature is on development changes");
     // return;
     try {
-      const { data }: any = await this.downloadPDF(true);
+      const data:any = await this.downloadPDF(true);
       this.isLoading = true;
       const base64 = await this.blobToBase64(data);
       const number = `${this.invoiceBillConfig.party_phone_number}@c.us`;
