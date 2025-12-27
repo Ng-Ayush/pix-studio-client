@@ -95,6 +95,7 @@ export class ImageListingScreenComponent {
       if (res.status == 200) {
         console.log(res);
         this.photos = res.data.photos;
+        this.photos.sort((a: any, b: any) => a.photo_name.localeCompare(b.photo_name));
         this.eventName = res.data.event_name;
         this.customerName = res.data.customer_name;
         this.customerUniqueCode = res.data.customer_unique_id;
@@ -151,7 +152,7 @@ export class ImageListingScreenComponent {
   }
 
   trackPhotos(index: number, photo: any) {
-    return photo.id;
+    return photo.photo_id;
   }
 
   backToFolderListing() {

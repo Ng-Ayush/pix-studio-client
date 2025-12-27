@@ -34,7 +34,7 @@ export class PhotoSelectionPhotosComponent {
   customerUniqueId: number = -1;
 
   allSelected: boolean = false;
-  filterMode: "all" | "completed" = "all";
+  filterMode: "all" | "selected" = "all";
   imageSelected: boolean = false;
   deleteModal: boolean = false;
 
@@ -175,15 +175,15 @@ export class PhotoSelectionPhotosComponent {
     this.imageSelected = this.photos.some((photo: any) => photo.selected)
   }
 
-  setFilter(mode: "all" | "completed"): void {
+  setFilter(mode: "all" | "selected"): void {
     this.filterMode = mode;
   }
 
   get filteredPhotos(): any[] {
     if (this.filterMode === "all") {
-      return this.photos;
+      return this.photos.sort((a: any, b: any) => a.photo_name.localeCompare(b.photo_name));
     } else {
-      return this.photos.filter((photo: any) => photo.selected)
+      return this.photos.filter((photo: any) => photo.is_selected).sort((a: any, b: any) => a.photo_name.localeCompare(b.photo_name));
     }
   }
 

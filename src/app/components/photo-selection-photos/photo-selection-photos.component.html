@@ -109,10 +109,10 @@
                     [ngClass]="filterMode === 'all' ? 'bg-[#494CA2] text-white' : 'bg-white text-gray-700 border border-gray-300'">
                     All
                   </button>
-                  <button *ngIf="!imageSelected" (click)="setFilter('completed')"
+                  <button *ngIf="!imageSelected" (click)="setFilter('selected')"
                     class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer"
-                    [ngClass]="filterMode === 'completed' ? 'bg-white text-gray-700 border border-gray-300' : 'bg-white text-gray-700 border border-gray-300'">
-                    Completed
+                    [ngClass]="filterMode === 'selected' ? 'bg-[#494CA2] text-white' : 'bg-white text-gray-700 border border-gray-300'">
+                    Selected
                   </button>
                 </ng-container>
                 <button *ngIf="imageSelected" (click)="toggleDeleteModal()"
