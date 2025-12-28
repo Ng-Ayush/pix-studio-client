@@ -144,7 +144,7 @@ export class LoginComponent {
           window.electronAPI.setLogin(true);
         }
 
-        await this.initializeWhatsAppWeb();
+        // await this.initializeWhatsAppWeb();
 
         this.router.navigate(['/dashboard']);
 
