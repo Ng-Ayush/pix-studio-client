@@ -207,7 +207,7 @@ export class PhotoSelectionFolderComponent {
   sendBulkMessage() {
     this.loader.show();
     const params: any = {
-      numbers: [...new Set(this.aiGuests.map((guest: any) => guest.guest_phone))],
+      numbers: [...new Set(this.aiGuests.map((guest: any) => `91${guest.guest_phone}`))],
       // numbers: ['7704898884', '8004033357'],
       message: `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId} `,
     }

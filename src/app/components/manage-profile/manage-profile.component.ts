@@ -1,15 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
-import { interval } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+
 import { AdminService } from '../../services/admin.service';
 import { AlertService } from '../../services/alert.service';
-import { getMetadata } from 'firebase/storage';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { ImageCompressionService } from '../../services/image-compression.service';
 import { SocketService } from '../../shared/socket.service';
+
 @Component({
   selector: 'app-manage-profile',
   standalone: true,
@@ -18,29 +17,33 @@ import { SocketService } from '../../shared/socket.service';
   styleUrl: './manage-profile.component.scss'
 })
 export class ManageProfileComponent {
+
   userForm: FormGroup;
+
   showPassword = false;
   isSubmitting = false;
-  todayDate: any = new Date();
-  searchTerm: any = ''
+
   currentUserId: any = 0;
-  storage = inject(Storage);
-  tempStudioIcon: any = '';
   userData: any = {};
-  showLogOutModal: boolean = false;
-  iconLoader: boolean = false;
+
+  storage = inject(Storage);
+  iconLoader = false;
+
+  // 🔌 WhatsApp states
   isConnected = false;
+  isLoading = false;
+  ready = false;
+  authenticated = false;
+  syncing = false;
 
-  qrCode: any = '';
-  authenticated: any = 'e41779';
-  ready: boolean = false;
-  syncing: boolean = false;
-  isLoading: boolean = false;
-  showWhatsappModal: boolean = false;
-  disconnectModal: boolean = false;
-  modalTimeoutId: any = '';
+  qrCode: string | null = null;
+  showWhatsappModal = false;
+  disconnectModal = false;
 
-  constructor(private fb: FormBuilder,
+  private modalTimeoutId: any = null;
+
+  constructor(
+    private fb: FormBuilder,
     private service: AdminService,
     private alert: AlertService,
     private route: ActivatedRoute,
@@ -49,148 +52,220 @@ export class ManageProfileComponent {
     private socketService: SocketService
   ) {
     this.userForm = this.fb.group({
-      studio_name: ['', [Validators.required]],
+      studio_name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone_number: ['', [Validators.required]],
-      address: ['', [Validators.required]],
-      terms_and_condition: ['', [Validators.required]],
+      phone_number: ['', Validators.required],
+      address: ['', Validators.required],
+      terms_and_condition: ['', Validators.required],
       studio_icon: ['', Validators.required],
       youtube_url: ['', Validators.required],
       instagram_url: ['', Validators.required],
       facebook_url: ['', Validators.required],
     });
-    // this.userData = JSON.parse(<any>localStorage.getItem("userData"));
   }
 
+  // -------------------- INIT --------------------
   ngOnInit() {
-    this.currentUserId = JSON.parse(<any>localStorage.getItem("currentUserId"));
+    this.currentUserId = JSON.parse(localStorage.getItem('currentUserId') as any);
     this.getUserDataCurrentId();
-    this.socketService.onQR().subscribe(qr => {
-      this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qr)}`;
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 1000);
-      console.log("QR CODE", this.qrCode);
-    });
-    this.socketService.onAuthenticated().subscribe(() => {
-      this.authenticated = true;
-      this.syncing = true;
-      this.isConnected = !this.isConnected;
-      this.qrCode = null;
-      this.showWhatsappModal = false;
-    });
-    this.socketService.onReady().subscribe(() => {
-      this.ready = true;
-      this.syncing = false;
-      // this.alert.success("Whatsapp is ready");
-      this.showWhatsappModal = false;
-    });
-    this.socketService.onDisconnected().subscribe(reason => {
-      this.ready = false;
-      this.isConnected = false;
-      // this.alert.error("Whatsapp disconnected");
+
+    // 🔌 connect socket once
+    this.socketService.connect(this.currentUserId);
+
+    // 📲 QR
+    // this.socketService.onQR().subscribe(qr => {
+    //   this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qr)}`;
+    //   this.isLoading = false;
+    //   this.showWhatsappModal = true;
+    // });
+
+    // // 🔐 Authenticated
+    // this.socketService.onAuthenticated().subscribe(() => {
+    //   this.authenticated = true;
+    //   this.syncing = true;
+    //   this.qrCode = null;
+    //   this.showWhatsappModal = false;
+    // });
+
+    // // ✅ Ready
+    // this.socketService.onReady().subscribe(() => {
+    //   this.ready = true;
+    //   this.isConnected = true;
+    //   this.syncing = false;
+    //   this.isLoading = false;
+    //   this.showWhatsappModal = false;
+    //   this.alert.success('WhatsApp is ready');
+    // });
+
+    // // ❌ WA disconnected
+    // this.socketService.onDisconnected().subscribe(() => {
+    //   this.ready = false;
+    //   this.isConnected = false;
+    //   this.authenticated = false;
+    //   this.syncing = false;
+    //   this.alert.error('WhatsApp disconnected');
+    // });
+
+    this.socketService.Qr().subscribe(qr => {
+      this.qrCode = qr;
+      // this.connected = false;
     });
 
+    this.socketService.Authen().subscribe(() => {
+      this.qrCode = null;
+      this.isLoading = false;
+      this.showWhatsappModal = false;
+      this.isConnected = true;
+    });
+    
+    this.socketService.eroor().subscribe((msg: string) => {
+      this.alert.error(`WhatsApp Error: ${msg}`);
+      this.isLoading = false;
+      this.showWhatsappModal = false;
+    });
   }
 
+  // -------------------- CONNECT / DISCONNECT --------------------
   connectWhatsapp() {
-    if (!this.isConnected) {
-      this.isLoading = true;
-      this.showWhatsappModal = true;
-      if (this.modalTimeoutId) {
-        clearTimeout(this.modalTimeoutId);
-      }
-      this.modalTimeoutId = setTimeout(() => {
-        this.isLoading = false;
-        this.showWhatsappModal = false;
-        this.modalTimeoutId = null;
-      }, 20000);
-      this.socketService.connect(this.userData.id);
-      this.service.connectToWhatsApp(this.userData.id, (res: any) => {
-        if (res.status == 200 && !res.qr) {
-          this.isLoading = false;
-        } else if (res.status == 200 && res.qr) {
-          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(res.qr)}`;
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 3000);
-        }
-      })
-    } else {
-      this.disconnectWhatsappModal();
+    if (this.isConnected) {
+      this.openDisconnectModal();
+      return;
     }
 
+    this.isLoading = true;
+    this.showWhatsappModal = true;
+
+    if (this.modalTimeoutId) clearTimeout(this.modalTimeoutId);
+
+    this.modalTimeoutId = setTimeout(() => {
+      this.isLoading = false;
+      this.showWhatsappModal = false;
+      this.modalTimeoutId = null;
+    }, 2000000);
+
+    this.service.connectToWhatsApp(this.currentUserId, (res: any) => {
+      if (res?.status === 200) {
+        if (res.qr) {
+          this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(res.qr)}`;
+        } else {
+          this.isLoading = false;
+        }
+      } else {
+        this.isLoading = false;
+        this.alert.error(res?.message || 'Failed to connect WhatsApp');
+      }
+    });
   }
 
-  disconnectWhatsappModal() {
+  openDisconnectModal() {
     this.disconnectModal = true;
   }
 
+  disconnectWhatsApp() {
+    if (this.isLoading) return;
+
+    this.isLoading = true;
+
+    this.service.disconnectWhatsApp(this.currentUserId, (res: any) => {
+      this.isLoading = false;
+      if (res?.status === 200) {
+        this.alert.success(res.message);
+        this.isConnected = false;
+        this.ready = false;
+        this.authenticated = false;
+        this.syncing = false;
+        this.disconnectModal = false;
+      } else {
+        this.alert.error(res?.message || 'Failed to disconnect');
+      }
+    });
+  }
+
+  // -------------------- USER DATA --------------------
   getUserDataCurrentId() {
     this.service.getUsersByCurrentId(this.currentUserId, (res: any) => {
-      localStorage.setItem("userData", JSON.stringify(res));
+      localStorage.setItem('userData', JSON.stringify(res));
       this.userData = res;
-      if (res?.whatsapp_status == 'ready') {
-        this.isConnected = true;
-      }
-      this.userForm.patchValue(res)
-    })
 
+      if (res?.whatsapp_status === 'ready') {
+        this.isConnected = true;
+        this.ready = true;
+      }
+
+      this.userForm.patchValue(res);
+    });
   }
-  togglePassword(): void {
+
+  // -------------------- PROFILE --------------------
+  togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    if (this.userForm.valid) {
-      this.service.updateProfile({ ...this.userForm.value, id: this.currentUserId }, (res: any) => {
-        if (res.status == 200) {
+  onSubmit() {
+    if (!this.userForm.valid) {
+      Object.keys(this.userForm.controls).forEach(key => {
+        this.userForm.get(key)?.markAsTouched();
+      });
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    this.service.updateProfile(
+      { ...this.userForm.value, id: this.currentUserId },
+      (res: any) => {
+        this.isSubmitting = false;
+        if (res?.status === 200) {
           this.alert.success(res.message);
           this.getUserDataCurrentId();
           this.router.navigate(['dashboard']);
         } else {
-          this.alert.error(res.message);
+          this.alert.error(res?.message || 'Update failed');
         }
-      })
-      this.isSubmitting = false;
-      this.userForm.reset();
-    } else {
-      Object.keys(this.userForm.controls).forEach(key => {
-        this.userForm.get(key)?.markAsTouched();
-      });
-    }
+      }
+    );
   }
 
+  // -------------------- IMAGE UPLOAD --------------------
   onImgUpload(event: any) {
     this.iconLoader = true;
+
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.readAsDataURL(file);
     reader.onload = async () => {
-      let compressedImage = reader.result as string;
-      let blob = this.dataURLtoBlob(compressedImage);
-      const fileRef = ref(this.storage, `studio-icon/${this.userForm.value.studio_name.split(" ").join("_")}/${this.userData.id}`);
+      const compressedImage = reader.result as string;
+      const blob = this.dataURLtoBlob(compressedImage);
+
+      const fileRef = ref(
+        this.storage,
+        `studio-icon/${this.userForm.value.studio_name.split(' ').join('_')}/${this.currentUserId}`
+      );
+
       const uploadTask = uploadBytesResumable(fileRef, blob);
 
       uploadTask.then(async () => {
         const url = await getDownloadURL(fileRef);
         this.iconLoader = false;
-        this.userForm.patchValue({ studio_icon: url })
-      })
-    }
+        this.userForm.patchValue({ studio_icon: url });
+      });
+    };
   }
 
   dataURLtoBlob(dataURL: string) {
     const byteString = atob(dataURL.split(',')[1]);
     const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
     for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i);
     }
-    return new Blob([arrayBuffer], { type: mimeString });
+    return new Blob([ab], { type: mimeString });
   }
+
+  // -------------------- LOGOUT --------------------
+  showLogOutModal = false;
 
   toggleLogoutModal() {
     this.showLogOutModal = !this.showLogOutModal;
@@ -203,20 +278,6 @@ export class ManageProfileComponent {
     this.router.navigate(['/login']);
   }
 
-  disconnectWhatsApp() {
-    this.isLoading = true;
-    this.service.disconnectWhatsApp(this.userData.id, (res: any) => {
-      this.isLoading = false;
-      if (res.status == 200) {
-        this.alert.success(res.message);
-        this.isConnected = false;
-        this.ready = false;
-        this.authenticated = false;
-        this.disconnectModal = false;
-      } else {
-        this.alert.error(res.message);
-      }
-    })
+  ngOnDestroy() {
   }
-
 }
