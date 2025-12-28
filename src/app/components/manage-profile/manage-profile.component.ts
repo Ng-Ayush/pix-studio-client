@@ -108,6 +108,7 @@ export class ManageProfileComponent {
 
     this.socketService.Qr().subscribe(qr => {
       this.qrCode = qr;
+      this.isLoading = false;
       // this.connected = false;
     });
 
@@ -147,8 +148,6 @@ export class ManageProfileComponent {
       if (res?.status === 200) {
         if (res.qr) {
           this.qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(res.qr)}`;
-        } else {
-          this.isLoading = false;
         }
       } else {
         this.isLoading = false;
