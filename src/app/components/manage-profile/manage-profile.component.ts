@@ -141,7 +141,7 @@ export class ManageProfileComponent {
       this.isLoading = false;
       this.showWhatsappModal = false;
       this.modalTimeoutId = null;
-    }, 2000000);
+    }, 100000);
 
     this.service.connectToWhatsApp(this.currentUserId, (res: any) => {
       if (res?.status === 200) {
