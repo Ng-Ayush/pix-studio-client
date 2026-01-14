@@ -13,6 +13,7 @@ import { UploadImgBackgroundService } from '../../services/upload-img-background
 import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -53,6 +54,8 @@ export class PhotoSelectionPhotosComponent {
   isFaceProcessing: boolean = false;
   isSorting: boolean = false;
   waterMarkConfig: any = {};
+  baseImageUrl:any = environment.apiUrl;
+
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
@@ -353,6 +356,12 @@ export class PhotoSelectionPhotosComponent {
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+   getFileUrl(path: string): string {
+    const normalizedPath = path.replace(/\\/g, '/');
+    const url = (window as any).location.hostname.includes('localhost') ? 'http://localhost:3000' : 'https://demoapi.mystudioitsolutions.com';
+    return `${url}${normalizedPath}`;
   }
 
 }

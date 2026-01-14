@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { getMetadata } from 'firebase/storage';
 import { ImageCompressionService } from './image-compression.service';
 import { LoaderService } from '../shared/loader.service';
 import { PhotoSelectionService } from './photo-selection.service';
 import { AlertService } from './alert.service';
+import imageCompression from 'browser-image-compression';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -168,35 +170,82 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const batchSize = 100;
+      const BATCH_SIZE = 100;
+      const COMPRESSION_CONCURRENCY = 10; // Compress 10 images in parallel
+      const options = {
+        maxSizeMB: 0.1, // 100KB
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        maxIteration: 5 // Limit iterations for speed
+      };
 
-      for (let i = 0; i < this.totalPhotos; i += batchSize) {
-        batchStart$.next(i + 1);
-        batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
+      try {
+        // Process files in batches for upload
+        for (let i = 0; i < this.totalPhotos; i += BATCH_SIZE) {
+          const batchFiles = files.slice(i, i + BATCH_SIZE);
+          const formData = new FormData();
 
-        const batchFiles = files.slice(i, i + batchSize);
-        const currentBatchUrls: any = [];
+          const compressedBatch: File[] = [];
 
-        await this.runWithConcurrency(batchFiles, async (file: File) => {
-          currentFileName$.next(file.name);
-          const url = await this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName);
-          this.uploadedPhotos++;
-          const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
-          progressPercentage$.next(percent);
-          currentBatchUrls.push({ url, name: file.name });
-        });
+          for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
+            const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
+            const promises = chunk.map((file: any) => this.compressFile(file, options));
 
-        // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+            batchStart$.next(i + j + 1);
+            batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
+            
+            const results = await Promise.all(promises);
+            compressedBatch.push(...results);
+            this.uploadedPhotos += results.length;
+            const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+            progressPercentage$.next(percent);
+          }
+
+          formData.append('user_id', this.user_id.toString());
+          formData.append('studio_name', studio_name);
+          formData.append('customer_name', customerName);
+          formData.append('customer_id', '28');
+          formData.append('event_name', eventName);
+          formData.append('event_id', eventId);
+          formData.append('folder_name', folderName);
+          formData.append('folder_id', currentFolderId.toString());
+          compressedBatch.forEach(file => formData.append('files', file, file.name));
+
+          await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/api/mystudio/photos/uploads`, formData));
+
+
+        }
+
+        // for (let i = 0; i < this.totalPhotos; i += batchSize) {
+        //   batchStart$.next(i + 1);
+        //   batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
+
+        //   const batchFiles = files.slice(i, i + batchSize);
+        //   const currentBatchUrls: any = [];
+
+        //   await this.runWithConcurrency(batchFiles, async (file: File) => {
+        //     currentFileName$.next(file.name);
+        //     const url = await this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName);
+        //     this.uploadedPhotos++;
+        //     const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+        //     progressPercentage$.next(percent);
+        //     currentBatchUrls.push({ url, name: file.name });
+        //   });
+
+        //   // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        // }
+
+        // await this.saveAllToBackend(currentFolderId, eventId); //
+
+
+        isUploading$.next(false);
+      } catch (error: any) {
+        console.error(error);
       }
 
-      await this.saveAllToBackend(currentFolderId, eventId); //
-
-
-      isUploading$.next(false);
+      this[processingFlag] = false;
+      this.isImageUploadedCompleted$.next(true);
     }
-
-    this[processingFlag] = false;
-    this.isImageUploadedCompleted$.next(true);
   }
 
   // ---------------- Compress + Upload ----------------
@@ -309,4 +358,13 @@ export class UploadImgBackgroundService {
     });
   }
 
+  async compressFile(file: File, options: any): Promise<File> {
+    try {
+      const compressedBlob = await imageCompression(file, options);
+      return new File([compressedBlob], file.name, { type: compressedBlob.type });
+    } catch (error) {
+      console.warn('Compression failed for', file.name, 'using original.', error);
+      return file;
+    }
+  }
 }

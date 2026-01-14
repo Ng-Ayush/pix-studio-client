@@ -30,8 +30,9 @@ export class ImageCompressionService {
       maxSizeMB,
       maxWidthOrHeight,
       useWebWorker: true,
+      maxIteration: 5 // Limit iterations for speed
     };
-    
+
     try {
       const compressedFile = await imageCompression(imageFile, options);
       return compressedFile;
@@ -43,9 +44,10 @@ export class ImageCompressionService {
   async compress50KBToTarget(event: any) {
     const imageFile = event;
     const options = {
-      maxSizeMB: 0.1,
+      maxSizeMB: 0.1, // 100KB
       maxWidthOrHeight: 1920,
       useWebWorker: true,
+      maxIteration: 5 // Limit iterations for speed
     }
     try {
       const compressedFile = await imageCompression(imageFile, options);
