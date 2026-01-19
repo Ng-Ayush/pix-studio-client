@@ -360,8 +360,7 @@ export class PhotoSelectionPhotosComponent {
 
    getFileUrl(path: string): string {
     const normalizedPath = path.replace(/\\/g, '/');
-    const url = (window as any).location.hostname.includes('localhost') ? 'http://localhost:3000' : 'https://demoapi.mystudioitsolutions.com';
-    return `${url}${normalizedPath}`;
+    return `${environment.apiUrl}${normalizedPath}`;
   }
 
 }
