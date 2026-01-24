@@ -170,8 +170,8 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const BATCH_SIZE = 100;
-      const COMPRESSION_CONCURRENCY = 10; // Compress 10 images in parallel
+      const BATCH_SIZE = 50;
+      const COMPRESSION_CONCURRENCY = 6; // Compress 10 images in parallel
       const options = {
         maxSizeMB: 0.1, // 100KB
         maxWidthOrHeight: 1920,
@@ -249,114 +249,114 @@ export class UploadImgBackgroundService {
   }
 
   // ---------------- Compress + Upload ----------------
-  async compressAndUpload(
-    file: File,
-    eventId: string,
-    studio_name: string,
-    customerName: string,
-    eventName: string,
-    folderName: string
-  ): Promise<string> {
-    const compressedImage = await this.imageCompressService.compress50KBToTarget(file);
+  // async compressAndUpload(
+  //   file: File,
+  //   eventId: string,
+  //   studio_name: string,
+  //   customerName: string,
+  //   eventName: string,
+  //   folderName: string
+  // ): Promise<string> {
+  //   const compressedImage = await this.imageCompressService.compress50KBToTarget(file);
 
-    const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
-    const fileRef = ref(this.storage, filePath);
+  //   const filePath = `photos/studio_${studio_name}/${customerName}/${eventName}/${folderName}/${file.name}`;
+  //   const fileRef = ref(this.storage, filePath);
 
-    try {
-      // ⛔️ Use non-resumable upload for faster performance
-      await uploadBytes(fileRef, compressedImage);
+  //   try {
+  //     // ⛔️ Use non-resumable upload for faster performance
+  //     await uploadBytes(fileRef, compressedImage);
 
-      // Get the download URL
-      const url = await getDownloadURL(fileRef);
-      const name = await getMetadata(fileRef);
+  //     // Get the download URL
+  //     const url = await getDownloadURL(fileRef);
+  //     const name = await getMetadata(fileRef);
 
-      // Track uploaded file
-      this.uploadedUrls.push({ url, name: name.name });
+  //     // Track uploaded file
+  //     this.uploadedUrls.push({ url, name: name.name });
 
-      return url;
-    } catch (error) {
-      throw error;
-    }
-  }
+  //     return url;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-  // ---------------- Concurrency Handler ----------------
-  private async runWithConcurrency<T>(
-    items: T[],
-    workerFn: (item: T) => Promise<any>,
-    concurrency = this.concurrency
-  ) {
-    return new Promise<void>((resolve) => {
-      let idx = 0;
-      let finished = 0;
-      let active = 0;
-      const total = items.length;
+  // // ---------------- Concurrency Handler ----------------
+  // private async runWithConcurrency<T>(
+  //   items: T[],
+  //   workerFn: (item: T) => Promise<any>,
+  //   concurrency = this.concurrency
+  // ) {
+  //   return new Promise<void>((resolve) => {
+  //     let idx = 0;
+  //     let finished = 0;
+  //     let active = 0;
+  //     const total = items.length;
 
-      const next = () => {
-        if (finished === total) resolve();
-        if (active >= concurrency || idx >= total) return;
+  //     const next = () => {
+  //       if (finished === total) resolve();
+  //       if (active >= concurrency || idx >= total) return;
 
-        const item = items[idx++];
-        active++;
+  //       const item = items[idx++];
+  //       active++;
 
-        workerFn(item)
-          .finally(() => {
-            finished++;
-            active--;
-            next();
-          });
+  //       workerFn(item)
+  //         .finally(() => {
+  //           finished++;
+  //           active--;
+  //           next();
+  //         });
 
-        next();
-      };
+  //       next();
+  //     };
 
-      next();
-    });
-  }
+  //     next();
+  //   });
+  // }
 
   // ---------------- Backend Batch Save ----------------
-  async saveBatchToBackend(batchUrls: { url: string; name: string }[], folderId: any, eventId: any) {
-    return new Promise<void>((resolve, reject) => {
-      this._pservice.uploadPhotos(
-        {
-          uploadedUrls: batchUrls,
-          uploaded_by: this.user_id,
-          event_id: eventId,
-          folder_id: folderId,
-          is_ai_upload: this.isAIuploaded // false
-        },
-        (res: any) => {
-          if (res.status === 200) resolve();
-          else reject(res.message);
-        }
-      );
-    });
-  }
+  // async saveBatchToBackend(batchUrls: { url: string; name: string }[], folderId: any, eventId: any) {
+  //   return new Promise<void>((resolve, reject) => {
+  //     this._pservice.uploadPhotos(
+  //       {
+  //         uploadedUrls: batchUrls,
+  //         uploaded_by: this.user_id,
+  //         event_id: eventId,
+  //         folder_id: folderId,
+  //         is_ai_upload: this.isAIuploaded // false
+  //       },
+  //       (res: any) => {
+  //         if (res.status === 200) resolve();
+  //         else reject(res.message);
+  //       }
+  //     );
+  //   });
+  // }
 
-  async saveAllToBackend(folderId: any, eventId: any) {
-    if (!this.uploadedUrls.length) return;
+  // async saveAllToBackend(folderId: any, eventId: any) {
+  //   if (!this.uploadedUrls.length) return;
 
-    return new Promise<void>((resolve, reject) => {
-      this._pservice.uploadPhotos(
-        {
-          uploadedUrls: this.uploadedUrls,  // send all at once
-          uploaded_by: this.user_id,
-          event_id: eventId,
-          folder_id: +folderId,
-          is_ai_upload: this.isAIuploaded // false
-        },
-        (res: any) => {
-          if (res.status === 200) {
-            this.alert.success("All photos uploaded successfully!", 5000);
+  //   return new Promise<void>((resolve, reject) => {
+  //     this._pservice.uploadPhotos(
+  //       {
+  //         uploadedUrls: this.uploadedUrls,  // send all at once
+  //         uploaded_by: this.user_id,
+  //         event_id: eventId,
+  //         folder_id: +folderId,
+  //         is_ai_upload: this.isAIuploaded // false
+  //       },
+  //       (res: any) => {
+  //         if (res.status === 200) {
+  //           this.alert.success("All photos uploaded successfully!", 5000);
 
-            // ✅ Clear after successful upload
-            this.uploadedUrls = [];
-            resolve();
-          } else {
-            reject(res.message);
-          }
-        }
-      );
-    });
-  }
+  //           // ✅ Clear after successful upload
+  //           this.uploadedUrls = [];
+  //           resolve();
+  //         } else {
+  //           reject(res.message);
+  //         }
+  //       }
+  //     );
+  //   });
+  // }
 
   async compressFile(file: File, options: any): Promise<File> {
     try {
