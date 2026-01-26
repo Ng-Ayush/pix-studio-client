@@ -36,6 +36,7 @@
     "@angular/router": "^17.3.0",
     "@angular/service-worker": "^17.3.12",
     "@angular/ssr": "^17.3.12",
+    "@angular/youtube-player": "^21.0.3",
     "@tailwindcss/postcss": "^4.1.4",
     "apexcharts": "^4.7.0",
     "browser-image-compression": "^2.0.2",
@@ -57,8 +58,10 @@
     "ngx-qrcode": "^0.1.0-rc.1",
     "ngx-toastr": "^19.0.0",
     "postcss": "^8.5.3",
+    "puppeteer": "^24.26.1",
     "qrcode": "^1.5.4",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.1.4",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
