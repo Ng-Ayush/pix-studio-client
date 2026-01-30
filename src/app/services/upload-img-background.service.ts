@@ -170,7 +170,7 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const BATCH_SIZE = 50;
+      const BATCH_SIZE = 10;
       const COMPRESSION_CONCURRENCY = 6; // Compress 10 images in parallel
       const options = {
         maxSizeMB: 0.1, // 100KB
