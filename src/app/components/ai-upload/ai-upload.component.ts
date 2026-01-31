@@ -621,7 +621,7 @@ export class AiUploadComponent {
     this.isLoading = true;
     try {
 
-      fetch(url)
+      fetch(this.getFileUrl(url))
         .then(res => res.blob())
         .then(blob => {
           const link = document.createElement('a');
@@ -703,5 +703,10 @@ export class AiUploadComponent {
     setTimeout(() => {
       event.target.playVideo();
     }, 1000);
+  }
+
+  getFileUrl(path: string): string {
+    const normalizedPath = path.replace(/\\/g, '/');
+    return `${environment.apiUrl}${normalizedPath}`;
   }
 }
