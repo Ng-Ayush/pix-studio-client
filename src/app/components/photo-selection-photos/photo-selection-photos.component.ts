@@ -1,5 +1,5 @@
 import { CommonModule, LocationStrategy, NgOptimizedImage } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
@@ -23,6 +23,10 @@ import { environment } from '../../../environments/environment';
   styleUrl: './photo-selection-photos.component.scss'
 })
 export class PhotoSelectionPhotosComponent {
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.closeMenu();
+  }
 
   todayDate: any = new Date();
   customerName: any = '';
@@ -54,7 +58,9 @@ export class PhotoSelectionPhotosComponent {
   isFaceProcessing: boolean = false;
   isSorting: boolean = false;
   waterMarkConfig: any = {};
-  baseImageUrl:any = environment.apiUrl;
+  baseImageUrl: any = environment.apiUrl;
+  customerId: any = '';
+  activePhoto: any = null;
 
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
@@ -137,6 +143,7 @@ export class PhotoSelectionPhotosComponent {
         this.folderName = res.data.folder_name;
         this.customerUniqueId = res.data.customer_unique_id;
         this.currentEventId = res.data.event_id;
+        this.customerId = res.data.customer_id;
 
         const key = `face_process_${res.data.event_id}`;
         // this.isFaceProcessing = localStorage.getItem(key) === 'started' || localStorage.getItem(key) === 'completed';
@@ -205,10 +212,10 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
-    if(!this.isAIuploaded){
-      this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
-    }else{
-      this.aiUploadService.handleAIFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
+    if (!this.isAIuploaded) {
+      this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.customerId, this.eventName, this.currentFolderId);
+    } else {
+      this.aiUploadService.handleAIFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.customerId, this.eventName, this.currentFolderId);
     }
   }
 
@@ -285,8 +292,8 @@ export class PhotoSelectionPhotosComponent {
           continue;
         };
 
-        if(!image.fileHandle) {
-          this.alert.error(`File missing or renamed: ${image.photo_name}`,5000);
+        if (!image.fileHandle) {
+          this.alert.error(`File missing or renamed: ${image.photo_name}`, 5000);
           continue;
         }
 
@@ -358,9 +365,36 @@ export class PhotoSelectionPhotosComponent {
     this.router.navigate(['/login']);
   }
 
-   getFileUrl(path: string): string {
+  getFileUrl(path: string): string {
     const normalizedPath = path.replace(/\\/g, '/');
     return `${environment.apiUrl}${normalizedPath}`;
+  }
+
+  openMenu(event: MouseEvent, photo: any) {
+    event.preventDefault(); // stops browser right-click menu
+    event.stopPropagation();
+    this.activePhoto = photo;
+  }
+
+  closeMenu() {
+    this.activePhoto = null;
+  }
+
+  downloadPhoto(photo: any) {
+   const url = this.getFileUrl(photo.photo_url);
+
+  fetch(url)
+    .then(res => res.blob())
+    .then(blob => {
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.target = '_blank';
+      a.download = photo.photo_name || 'photo';
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+    });
+    this.closeMenu();
   }
 
 }

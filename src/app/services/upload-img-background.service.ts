@@ -77,6 +77,7 @@ export class UploadImgBackgroundService {
     folderName: any,
     studio_name: any,
     customerName: any,
+    customerId: any,
     eventName: any,
     currentFolderId: any
   ) {
@@ -129,11 +130,11 @@ export class UploadImgBackgroundService {
         uniqueFiles = uniqueFiles.slice(0, remainingSlots);
       }
 
-      this.aiUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+      this.aiUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId, customerId });
       if (!this.isProcessingAI) this.processQueue(true);
     } else {
       // Normal upload – no limit
-      this.normalUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+      this.normalUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId, customerId });
       if (!this.isProcessingNormal) this.processQueue(false);
     }
 
@@ -161,7 +162,7 @@ export class UploadImgBackgroundService {
       if (!currentTask) continue;
       this[uploadCounter] = currentTask.files.length;
 
-      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId } = currentTask;
+      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId, customerId } = currentTask;
 
       this.totalPhotos = files.length;
       this.uploadedPhotos = 0;
@@ -203,8 +204,8 @@ export class UploadImgBackgroundService {
 
           formData.append('user_id', this.user_id.toString());
           formData.append('studio_name', studio_name);
-          formData.append('customer_name', customerName);
-          formData.append('customer_id', '28');
+          formData.append('customer_name', customerName.split(' ').join('_'));
+          formData.append('customer_id', customerId.toString());
           formData.append('event_name', eventName);
           formData.append('event_id', eventId);
           formData.append('folder_name', folderName);

@@ -69,6 +69,7 @@ export class UploadImgBackgroundAiService {
     folderName: any,
     studio_name: any,
     customerName: any,
+    customerId: any,
     eventName: any,
     currentFolderId: any
   ) {
@@ -177,6 +178,7 @@ export class UploadImgBackgroundAiService {
         folderName,
         studio_name,
         customerName,
+        customerId,
         eventName,
         currentFolderId,
       });
@@ -200,7 +202,7 @@ export class UploadImgBackgroundAiService {
 
     while (this.uploadQueue.length > 0) {
       const task = this.uploadQueue.shift();
-      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId } = task;
+      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId,customerId } = task;
 
       this.totalPhotos = files.length;
       this.uploadedPhotos = 0;
@@ -243,8 +245,8 @@ export class UploadImgBackgroundAiService {
 
           formData.append('user_id', this.user_id.toString());
           formData.append('studio_name', studio_name);
-          formData.append('customer_name', customerName);
-          formData.append('customer_id', '28');
+          formData.append('customer_name', customerName.split(' ').join('_'));
+          formData.append('customer_id', customerId.toString());
           formData.append('event_name', eventName);
           formData.append('event_id', eventId);
           formData.append('folder_name', folderName);
