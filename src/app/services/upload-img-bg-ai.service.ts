@@ -211,8 +211,8 @@ export class UploadImgBackgroundAiService {
       this.progressPercentage$.next(0);
       this.isUploading$.next(true);
 
-      const BATCH_SIZE = 500;
-      const COMPRESSION_CONCURRENCY = 50; // Compress 10 images in parallel
+      const BATCH_SIZE = 10;
+      const COMPRESSION_CONCURRENCY = 20; // Compress 10 images in parallel
 
 
       try {
