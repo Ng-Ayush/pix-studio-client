@@ -171,10 +171,10 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const BATCH_SIZE = 10
-      const COMPRESSION_CONCURRENCY = 6; // Compress 10 images in parallel
+      const BATCH_SIZE = 100
+      const COMPRESSION_CONCURRENCY = 1; // Compress 10 images in parallel
       const options = {
-        maxSizeMB: 0.1, // 100KB
+        maxSizeMB: 3,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
         maxIteration: 5 // Limit iterations for speed
@@ -194,7 +194,7 @@ export class UploadImgBackgroundService {
 
             batchStart$.next(i + j + 1);
             batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
-            
+
             const results = await Promise.all(promises);
             compressedBatch.push(...results);
             this.uploadedPhotos += results.length;
