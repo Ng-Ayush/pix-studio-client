@@ -142,6 +142,7 @@ export class UploadImgBackgroundService {
   }
 
   // ---------------- Queue Processor ----------------
+  // ✅ OPTIMIZED: Parallel batch uploads for maximum speed
   async processQueue(isAI: boolean) {
     const queue = isAI ? this.aiUploadQueue : this.normalUploadQueue;
     const processingFlag = isAI ? 'isProcessingAI' : 'isProcessingNormal';
@@ -171,8 +172,10 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const BATCH_SIZE = 100
-      const COMPRESSION_CONCURRENCY = 1; // Compress 10 images in parallel
+      // ✅ OPTIMIZED: Smaller batches for faster network transfer
+      const BATCH_SIZE = 20; // Files per upload request
+      const COMPRESSION_CONCURRENCY = 5; // Compress 5 images in parallel
+      const UPLOAD_CONCURRENCY = 3; // Upload 3 batches simultaneously
       const options = {
         maxSizeMB: 3,
         maxWidthOrHeight: 1920,
@@ -181,40 +184,56 @@ export class UploadImgBackgroundService {
       };
 
       try {
-        // Process files in batches for upload
+        // Step 1: Split files into batches
+        const batches: File[][] = [];
         for (let i = 0; i < this.totalPhotos; i += BATCH_SIZE) {
-          const batchFiles = files.slice(i, i + BATCH_SIZE);
-          const formData = new FormData();
+          batches.push(files.slice(i, i + BATCH_SIZE));
+        }
 
-          const compressedBatch: File[] = [];
+        // Step 2: Process batches with parallel uploads
+        for (let batchIdx = 0; batchIdx < batches.length; batchIdx += UPLOAD_CONCURRENCY) {
+          const currentBatches = batches.slice(batchIdx, batchIdx + UPLOAD_CONCURRENCY);
+          
+          // Process multiple batches in parallel
+          const uploadPromises = currentBatches.map(async (batchFiles, idx) => {
+            const compressedBatch: File[] = [];
 
-          for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
-            const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
-            const promises = chunk.map((file: any) => this.compressFile(file, options));
+            // Compress files in this batch (with parallelism)
+            for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
+              const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
+              const promises = chunk.map((file: any) => this.compressFile(file, options));
+              const results = await Promise.all(promises);
+              compressedBatch.push(...results);
+            }
 
-            batchStart$.next(i + j + 1);
-            batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
+            // Build FormData for this batch
+            const formData = new FormData();
+            formData.append('user_id', this.user_id.toString());
+            formData.append('studio_name', studio_name);
+            formData.append('customer_name', customerName.split(' ').join('_'));
+            formData.append('customer_id', customerId.toString());
+            formData.append('event_name', eventName);
+            formData.append('event_id', eventId);
+            formData.append('folder_name', folderName);
+            formData.append('folder_id', currentFolderId.toString());
+            compressedBatch.forEach(file => formData.append('files', file, file.name));
 
-            const results = await Promise.all(promises);
-            compressedBatch.push(...results);
-            this.uploadedPhotos += results.length;
-            const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
-            progressPercentage$.next(percent);
-          }
+            // Upload this batch
+            await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/api/mystudio/photos/uploads`, formData));
+            
+            return compressedBatch.length;
+          });
 
-          formData.append('user_id', this.user_id.toString());
-          formData.append('studio_name', studio_name);
-          formData.append('customer_name', customerName.split(' ').join('_'));
-          formData.append('customer_id', customerId.toString());
-          formData.append('event_name', eventName);
-          formData.append('event_id', eventId);
-          formData.append('folder_name', folderName);
-          formData.append('folder_id', currentFolderId.toString());
-          compressedBatch.forEach(file => formData.append('files', file, file.name));
-
-          await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/api/mystudio/photos/uploads`, formData));
-
-
+          // Wait for all parallel uploads to complete
+          const results = await Promise.all(uploadPromises);
+          
+          // Update progress
+          const totalUploaded = results.reduce((sum, count) => sum + count, 0);
+          this.uploadedPhotos += totalUploaded;
+          const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+          progressPercentage$.next(percent);
+          batchStart$.next(this.uploadedPhotos);
+          batchEnd$.next(this.totalPhotos);
         }
 
         // for (let i = 0; i < this.totalPhotos; i += batchSize) {
