@@ -70,6 +70,9 @@ export class UploadImgBackgroundService {
   isProcessingAI = false;
   isProcessingNormal = false;
 
+  // ✅ SET TO TRUE TO SKIP COMPRESSION (faster for fast servers with good bandwidth)
+  skipCompression = true;
+
   // ---------------- Handle File Input ----------------
   handleFileInput(
     event: any,
@@ -142,7 +145,7 @@ export class UploadImgBackgroundService {
   }
 
   // ---------------- Queue Processor ----------------
-  // ✅ OPTIMIZED: Two-phase approach - compress first, then upload
+  // ✅ OPTIMIZED: Skip compression for fast servers
   async processQueue(isAI: boolean) {
     const queue = isAI ? this.aiUploadQueue : this.normalUploadQueue;
     const processingFlag = isAI ? 'isProcessingAI' : 'isProcessingNormal';
@@ -172,57 +175,62 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      // ✅ TUNED FOR SPEED
-      const COMPRESSION_CONCURRENCY = 10; // Compress 10 images in parallel
-      const UPLOAD_BATCH_SIZE = 25; // Files per upload request
-      const UPLOAD_CONCURRENCY = 4; // 4 parallel upload requests
+      // ✅ TUNED FOR MAXIMUM SPEED
+      const UPLOAD_BATCH_SIZE = 30; // Files per upload request
+      const UPLOAD_CONCURRENCY = 6; // 6 parallel upload requests
       const options = {
         maxSizeMB: 3,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
-        maxIteration: 2, // ✅ FASTER: Reduced iterations
+        maxIteration: 2,
         initialQuality: 0.8
       };
 
       try {
-        // ═══════════════════════════════════════════════════════
-        // PHASE 1: COMPRESS ALL FILES FIRST (with high parallelism)
-        // ═══════════════════════════════════════════════════════
-        console.log(`[Compress] Starting compression of ${files.length} files...`);
-        const compressionStart = Date.now();
-        
-        const compressedFiles: File[] = [];
-        
-        for (let i = 0; i < files.length; i += COMPRESSION_CONCURRENCY) {
-          const chunk = files.slice(i, i + COMPRESSION_CONCURRENCY);
-          const promises = chunk.map((file: any) => this.compressFile(file, options));
-          const results = await Promise.all(promises);
-          compressedFiles.push(...results);
-          
-          // Update compression progress (0-50%)
-          const compressPercent = Math.round((compressedFiles.length / this.totalPhotos) * 50);
-          progressPercentage$.next(compressPercent);
-          batchStart$.next(compressedFiles.length);
-          batchEnd$.next(this.totalPhotos);
-        }
-        
-        console.log(`[Compress] All ${compressedFiles.length} files compressed in ${Date.now() - compressionStart}ms`);
+        const processStart = Date.now();
+        let filesToUpload: File[] = [];
 
         // ═══════════════════════════════════════════════════════
-        // PHASE 2: UPLOAD ALL COMPRESSED FILES (parallel batches)
+        // PHASE 1: PROCESS FILES (skip compression if enabled)
         // ═══════════════════════════════════════════════════════
-        console.log(`[Upload] Starting upload of ${compressedFiles.length} compressed files...`);
+        if (this.skipCompression) {
+          // 🚀 FAST MODE: Skip compression - upload original files directly
+          console.log(`[FAST MODE] Skipping compression, preparing ${files.length} original files...`);
+          filesToUpload = files;
+        } else {
+          // Standard mode with compression
+          console.log(`[Compress] Starting compression of ${files.length} files...`);
+          const COMPRESSION_CONCURRENCY = 15;
+          
+          for (let i = 0; i < files.length; i += COMPRESSION_CONCURRENCY) {
+            const chunk = files.slice(i, i + COMPRESSION_CONCURRENCY);
+            const promises = chunk.map((file: any) => this.compressFile(file, options));
+            const results = await Promise.all(promises);
+            filesToUpload.push(...results);
+            
+            // Update progress (0-30%)
+            const percent = Math.round((filesToUpload.length / this.totalPhotos) * 30);
+            progressPercentage$.next(percent);
+          }
+          
+          console.log(`[Compress] Done in ${Date.now() - processStart}ms`);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // PHASE 2: UPLOAD FILES (parallel batches)
+        // ═══════════════════════════════════════════════════════
+        console.log(`[Upload] Starting parallel upload of ${filesToUpload.length} files...`);
         const uploadStart = Date.now();
         
-        // Split compressed files into upload batches
+        // Split files into upload batches
         const uploadBatches: File[][] = [];
-        for (let i = 0; i < compressedFiles.length; i += UPLOAD_BATCH_SIZE) {
-          uploadBatches.push(compressedFiles.slice(i, i + UPLOAD_BATCH_SIZE));
+        for (let i = 0; i < filesToUpload.length; i += UPLOAD_BATCH_SIZE) {
+          uploadBatches.push(filesToUpload.slice(i, i + UPLOAD_BATCH_SIZE));
         }
 
         let uploadedCount = 0;
 
-        // Upload batches with parallelism
+        // Upload ALL batches with high parallelism
         for (let batchIdx = 0; batchIdx < uploadBatches.length; batchIdx += UPLOAD_CONCURRENCY) {
           const currentBatches = uploadBatches.slice(batchIdx, batchIdx + UPLOAD_CONCURRENCY);
           
@@ -246,14 +254,17 @@ export class UploadImgBackgroundService {
           const results = await Promise.all(uploadPromises);
           uploadedCount += results.reduce((sum, count) => sum + count, 0);
           
-          // Update upload progress (50-100%)
-          const uploadPercent = 50 + Math.round((uploadedCount / this.totalPhotos) * 50);
+          // Update progress
+          const basePercent = this.skipCompression ? 0 : 30;
+          const uploadPercent = basePercent + Math.round((uploadedCount / this.totalPhotos) * (100 - basePercent));
           progressPercentage$.next(uploadPercent);
           this.uploadedPhotos = uploadedCount;
+          batchStart$.next(uploadedCount);
+          batchEnd$.next(this.totalPhotos);
         }
 
         console.log(`[Upload] All files uploaded in ${Date.now() - uploadStart}ms`);
-        console.log(`[Total] Complete process took ${Date.now() - compressionStart}ms`);
+        console.log(`[Total] Complete process took ${Date.now() - processStart}ms`);
 
         // for (let i = 0; i < this.totalPhotos; i += batchSize) {
         //   batchStart$.next(i + 1);
