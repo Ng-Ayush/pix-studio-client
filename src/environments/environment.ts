@@ -1,7 +1,10 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000',
-  razorpay_key:"rzp_live_R6S9KpHqJSUEdA",
+  previewUrl:"https://tn3.mieuxcloud.com:9443/api/v1/buckets/akash/objects/download?preview=true&prefix=",
+  downloadUrl:"https://tn3.mieuxcloud.com:9443/api/v1/buckets/akash/objects/download?prefix=",
+  // razorpay_key:"rzp_test_jODMqQ414J8DOi", // test : rzp_test_jODMqQ414J8DOi
+  razorpay_key:"rzp_live_R6S9KpHqJSUEdA", // test : rzp_test_jODMqQ414J8DOi
   firebaseConfig : {
     apiKey: "AIzaSyBH-L41Eu4UImmKAnBu-L3db30p_fwNfEs",
     authDomain: "surajproductions-3f28b.firebaseapp.com",

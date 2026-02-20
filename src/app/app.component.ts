@@ -27,6 +27,7 @@ export class AppComponent {
     setTimeout(() => {
       this.showLoader = false;
     }, 1500);
+    localStorage.setItem('isUploadingGlobally', 'false');
   }
 
   updateDesktopApp() {

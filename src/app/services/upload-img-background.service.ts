@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { Storage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from '@angular/fire/storage';
 import { getMetadata } from 'firebase/storage';
 import { ImageCompressionService } from './image-compression.service';
 import { LoaderService } from '../shared/loader.service';
 import { PhotoSelectionService } from './photo-selection.service';
 import { AlertService } from './alert.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +76,7 @@ export class UploadImgBackgroundService {
     folderName: any,
     studio_name: any,
     customerName: any,
+    customerId: any,
     eventName: any,
     currentFolderId: any
   ) {
@@ -127,11 +129,11 @@ export class UploadImgBackgroundService {
         uniqueFiles = uniqueFiles.slice(0, remainingSlots);
       }
 
-      this.aiUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+      this.aiUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName,customerId, eventName, currentFolderId });
       if (!this.isProcessingAI) this.processQueue(true);
     } else {
       // Normal upload – no limit
-      this.normalUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName, eventName, currentFolderId });
+      this.normalUploadQueue.push({ files: uniqueFiles, eventId, folderName, studio_name, customerName,customerId, eventName, currentFolderId });
       if (!this.isProcessingNormal) this.processQueue(false);
     }
 
@@ -159,7 +161,7 @@ export class UploadImgBackgroundService {
       if (!currentTask) continue;
       this[uploadCounter] = currentTask.files.length;
 
-      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId } = currentTask;
+      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId,customerId } = currentTask;
 
       this.totalPhotos = files.length;
       this.uploadedPhotos = 0;
@@ -168,31 +170,62 @@ export class UploadImgBackgroundService {
       progressPercentage$.next(0);
       isUploading$.next(true);
 
-      const batchSize = 100;
+      const BATCH_SIZE = 20;
+      const COMPRESSION_CONCURRENCY = 10; // Compress 10 images in parallel
 
-      for (let i = 0; i < this.totalPhotos; i += batchSize) {
-        batchStart$.next(i + 1);
-        batchEnd$.next(Math.min(i + batchSize, this.totalPhotos));
+      try {
+        // Process files in batches for upload
+        for (let i = 0; i < this.totalPhotos; i += BATCH_SIZE) {
+          const batchFiles = files.slice(i, i + BATCH_SIZE);
+          const formData = new FormData();
 
-        const batchFiles = files.slice(i, i + batchSize);
-        const currentBatchUrls: any = [];
+          const compressedBatch: File[] = [];
 
-        await this.runWithConcurrency(batchFiles, async (file: File) => {
-          currentFileName$.next(file.name);
-          const url = await this.compressAndUpload(file, eventId, studio_name, customerName, eventName, folderName);
-          this.uploadedPhotos++;
-          const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
-          progressPercentage$.next(percent);
-          currentBatchUrls.push({ url, name: file.name });
-        });
+          for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
+            const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
+            const promises = chunk.map(async (file: any) => this.imageCompressService.compress50KBToTarget(file))
+
+            this.batchStart$.next(i + j + 1);
+            this.batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
+
+            const results = await Promise.all(promises);
+            compressedBatch.push(...results);
+            this.uploadedPhotos += results.length;
+            const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+            this.progressPercentage$.next(percent);
+          }
+
+          formData.append('user_id', this.user_id.toString());
+          formData.append('studio_name', studio_name);
+          formData.append('customer_name', customerName.split(' ').join('_'));
+          formData.append('customer_id', customerId.toString());
+          formData.append('event_name', eventName);
+          formData.append('event_id', eventId);
+          formData.append('folder_name', folderName);
+          formData.append('folder_id', currentFolderId.toString());
+          compressedBatch.forEach(file => formData.append('files', file, file.name));
+
+          await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/api/mystudio/photos/uploads`, formData));
+        }
+
+
+        // await this.runWithConcurrency(batchFiles, async (file: File) => {
+        //   this.currentFileName$.next(file.name);
+        //   const url = await this.compressAndUploadAI(file, eventId, studio_name, customerName, eventName, folderName);
+        //   this.uploadedPhotos++;
+        //   const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
+        //   this.progressPercentage$.next(percent);
+        //   currentBatchUrls.push({ url, name: file.name });
+        // });
 
         // await this.saveBatchToBackend(currentBatchUrls, currentFolderId, eventId);
+        this.isUploading$.next(false);
+      } catch (error: any) {
+        console.error(error);
       }
 
-      await this.saveAllToBackend(currentFolderId, eventId); //
+      // await this.saveAllToBackend(currentFolderId, eventId); //
 
-
-      isUploading$.next(false);
     }
 
     this[processingFlag] = false;

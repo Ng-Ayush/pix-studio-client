@@ -61,9 +61,8 @@ export class DeleteImgBackgroundService {
         await Promise.all(
           batchFiles.map(async (photo: any) => {
             if (!photo.url) return;
-            const fileRef = ref(this.storage, photo.url);
             try {
-              await deleteObject(fileRef);
+              // await deleteObject(fileRef);
               this.deletedPhotos++;
               const percent = Math.round((this.deletedPhotos / this.totalPhotos) * 100);
               this.deleteProgressPercentage$.next(percent);

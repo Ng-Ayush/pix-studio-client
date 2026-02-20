@@ -1,5 +1,5 @@
 import { CommonModule, LocationStrategy, NgOptimizedImage } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
@@ -13,6 +13,7 @@ import { UploadImgBackgroundService } from '../../services/upload-img-background
 import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -22,6 +23,11 @@ import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.se
   styleUrl: './photo-selection-photos.component.scss'
 })
 export class PhotoSelectionPhotosComponent {
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.closeMenu();
+  }
 
   todayDate: any = new Date();
   customerName: any = '';
@@ -53,6 +59,8 @@ export class PhotoSelectionPhotosComponent {
   isFaceProcessing: boolean = false;
   isSorting: boolean = false;
   waterMarkConfig: any = {};
+  activePhoto: any = null;
+  customerId: any = null;
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
@@ -131,6 +139,7 @@ export class PhotoSelectionPhotosComponent {
         this.aiUploadService.photos = this.photos;
         this.eventName = res.data.event_name;
         this.customerName = res.data.customer_name;
+        this.customerId = res.data.customer_id;
         this.folderName = res.data.folder_name;
         this.customerUniqueId = res.data.customer_unique_id;
         this.currentEventId = res.data.event_id;
@@ -202,10 +211,10 @@ export class PhotoSelectionPhotosComponent {
   }
 
   async handleFileInput(event: any) {
-    if(!this.isAIuploaded){
-      this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
-    }else{
-      this.aiUploadService.handleAIFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.eventName, this.currentFolderId);
+    if (!this.isAIuploaded) {
+      this.uploadImgBg.handleFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.customerId, this.eventName, this.currentFolderId);
+    } else {
+      this.aiUploadService.handleAIFileInput(event, this.currentEventId, this.folderName, this.studio_name, this.customerName, this.customerId, this.eventName, this.currentFolderId);
     }
   }
 
@@ -282,8 +291,8 @@ export class PhotoSelectionPhotosComponent {
           continue;
         };
 
-        if(!image.fileHandle) {
-          this.alert.error(`File missing or renamed: ${image.photo_name}`,5000);
+        if (!image.fileHandle) {
+          this.alert.error(`File missing or renamed: ${image.photo_name}`, 5000);
           continue;
         }
 
@@ -353,6 +362,49 @@ export class PhotoSelectionPhotosComponent {
     localStorage.clear();
     this.alert.success('Logout Successfully');
     this.router.navigate(['/login']);
+  }
+
+  // getFileUrl(path: string): string {
+  //   const normalizedPath = path.replace(/\\/g, '/');
+  //   return `${environment.previewUrl}${normalizedPath}`;
+  // }
+
+  // getDownloadFileUrl(path: string): string {
+  //   const normalizedPath = path.replace(/\\/g, '/');
+  //   return `${environment.downloadUrl}${normalizedPath}`;
+  // }
+
+  openMenu(event: MouseEvent, photo: any) {
+    event.preventDefault(); // stops browser right-click menu
+    event.stopPropagation();
+    this.activePhoto = photo;
+  }
+
+  closeMenu() {
+    this.activePhoto = null;
+  }
+
+  downloadPhoto(photo: any) {
+    const url = photo.photo_url;
+    if (url.includes('firebasestorage.googleapis.com')) {
+      fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.target = '_blank';
+          a.download = photo.photo_name || 'photo';
+          a.click();
+          window.URL.revokeObjectURL(blobUrl);
+        });
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.download = photo.photo_name || 'photo';
+      a.click();
+    }
   }
 
 }

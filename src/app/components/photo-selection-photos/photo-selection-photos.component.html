@@ -137,24 +137,55 @@
                 <div *cdkVirtualFor="let photo of filteredPhotos; trackBy: trackPhotos"
                   class="bg-white rounded-lg shadow overflow-hidden">
 
-                  <div class="relative flex flex-col cursor-pointer z-10 px-2 pb-2 pt-6 group">
+                  <div class="relative flex flex-col cursor-pointer z-10 px-2 pb-2 pt-6 group" (contextmenu)="openMenu($event, photo)">
                     <div class="flex items-center justify-center h-56 sm:h-44 w-auto m-auto">
                       <img [ngSrc]="photo.photo_url" [alt]="photo.photo_name" width="100" height="150"
                         class="object-contain w-full h-full rounded" priority />
                     </div>
-
-                    <button (click)="toggleSingleDeleteModal(photo)"
-                      class="px-2 absolute top-2 right-2 py-2 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-medium bg-red-700 text-white cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-trash-2 text-white-500 cursor-pointer">
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        <line x1="10" x2="10" y1="11" y2="17" />
-                        <line x1="14" x2="14" y1="11" y2="17" />
+                  
+                    <button (click)="openMenu($event, photo)" class="absolute top-2 right-2 p-2 rounded-full 
+                             bg-black/60 hover:bg-black/80 
+                             text-white transition-all duration-200
+                             opacity-0 group-hover:opacity-100">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="5" r="2" />
+                        <circle cx="12" cy="12" r="2" />
+                        <circle cx="12" cy="19" r="2" />
                       </svg>
                     </button>
+                  
+                    <!-- Dropdown -->
+                    <div *ngIf="activePhoto?.photo_url === photo.photo_url" class="absolute top-12 right-2 w-44 
+                             bg-white rounded-xl shadow-xl border 
+                             z-50 overflow-hidden animate-fade-in">
+                      <!-- Download -->
+                      <button (click)="downloadPhoto(photo)" class="w-full flex items-center gap-3 cursor-pointer
+                               px-4 py-2.5 text-sm 
+                               hover:bg-gray-100 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 16 16">
+                          <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                          <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                        </svg>
+                        <span>Download</span>
+                      </button>
+                    
+                      <div class="h-px bg-gray-200"></div>
+                    
+                      <!-- Delete -->
+                      <button (click)="toggleSingleDeleteModal(photo)" class="w-full flex items-center gap-3 cursor-pointer
+                               px-4 py-2.5 text-sm 
+                               text-red-600 hover:bg-red-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                          viewBox="0 0 24 24">
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                          <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div class="p-2">

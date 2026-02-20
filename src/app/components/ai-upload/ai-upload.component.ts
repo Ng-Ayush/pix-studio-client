@@ -75,7 +75,7 @@ export class AiUploadComponent {
 
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
-  @ViewChild('youtubePlayer') youtubePlayer!: ElementRef|any;
+  @ViewChild('youtubePlayer') youtubePlayer!: ElementRef | any;
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -619,22 +619,26 @@ export class AiUploadComponent {
   private downloadFile(url: string, filename: string) {
     this.loader.show();
     this.isLoading = true;
-    try {
-
+    if (url.includes('firebasestorage.googleapis.com')) {
       fetch(url)
         .then(res => res.blob())
         .then(blob => {
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = filename;
-          link.click();
-          URL.revokeObjectURL(link.href);
-
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.target = '_blank';
+          a.download = filename || 'photo';
+          a.click();
+          window.URL.revokeObjectURL(blobUrl);
           this.isLoading = false;
-        })
-        .catch(err => console.error('Error downloading file:', err));
-      this.loader.hide();
-    } catch (err) {
+          this.loader.hide();
+        });
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.download = filename || 'photo';
+      a.click();
       this.isLoading = false;
       this.loader.hide();
     }
