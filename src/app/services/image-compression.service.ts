@@ -13,12 +13,12 @@ export class ImageCompressionService {
 
     const imageFile = event;
 
-    let maxWidthOrHeight = 1280;
+    let maxWidthOrHeight = 1920;
     let maxSizeMB = 1;
 
     if (quality === 'standard') {
       maxSizeMB = 3;
-      maxWidthOrHeight = 1920;
+      maxWidthOrHeight = 3500;
     }
 
     if (quality === 'high') {
