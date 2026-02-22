@@ -221,6 +221,7 @@ export class AiPhotoSharingComponent {
     this.selectedParty = '';
     this.searchQuery = '';
     this.isEdit = false;
+    this.event_config = {};
     this.event_config.watermark = { is_watermark: false, transparency: null };
     this.event_config.need_customer_number = true;
     this.event_config.selected_template = this.event_config?.selected_template ?? 'template1';
@@ -241,7 +242,8 @@ export class AiPhotoSharingComponent {
     this.preview['cover1'] = event.ai_cover_images[0]?.url;
     this.preview['cover2'] = event.ai_cover_images[1]?.url;
     this.selectParty({ name: this.event_config.customer_name, id: this.event_config.customer_id });
-    this.event_config.watermark = event.watermark && typeof (event.watermark) == 'string' ? JSON.parse(event.watermark) : { is_watermark: false, transparency: null };
+    // this.event_config.watermark = event.watermark && typeof (event.watermark) == 'string' ? JSON.parse(event.watermark) : { is_watermark: false, transparency: null };
+    this.event_config.watermark = event.watermark;
     this.event_config.photo_quality_enabled = event.photo_quality != 'basic' ? true : false;
     console.log(event);
   }

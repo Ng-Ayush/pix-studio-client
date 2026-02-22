@@ -139,8 +139,8 @@
 
                   <div class="relative flex flex-col cursor-pointer z-10 px-2 pb-2 pt-6 group" (contextmenu)="openMenu($event, photo)">
                     <div class="flex items-center justify-center h-56 sm:h-44 w-auto m-auto">
-                      <img [ngSrc]="photo.photo_url" [alt]="photo.photo_name" width="100" height="150"
-                        class="object-contain w-full h-full rounded" priority />
+                      <img [src]="photo.photo_url" [alt]="photo.photo_name" width="100" height="150" loading="lazy"
+                        class="object-contain w-full h-full rounded" />
                     </div>
                   
                     <button (click)="openMenu($event, photo)" class="absolute top-2 right-2 p-2 rounded-full 

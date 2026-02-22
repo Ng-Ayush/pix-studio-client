@@ -224,13 +224,13 @@ export class UploadImgBackgroundAiService {
           for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
             const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
             const promises = chunk.map(async (file: any) => {
-              const compressed :any = this.imageCompressService.compress3MBToTarget(file, this.photo_quality);
+              const compressed: any = await this.imageCompressService.compress3MBToTarget(file, this.photo_quality);
               let watermarkedBlob: any;
               if (this.waterMarkConfig?.is_watermark) {
                 watermarkedBlob = await this.addWatermarkFromBlob(compressed, this.waterMarkConfig?.transparency);
               }
               return watermarkedBlob ?? compressed;
-            }); 
+            });
 
             this.batchStart$.next(i + j + 1);
             this.batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
@@ -273,7 +273,7 @@ export class UploadImgBackgroundAiService {
         console.error(error);
       }
 
-        // await this.saveAllToBackend(currentFolderId, eventId); //
+      // await this.saveAllToBackend(currentFolderId, eventId); //
 
     }
 
@@ -405,7 +405,22 @@ export class UploadImgBackgroundAiService {
         ctx.globalAlpha = transparencyValue || 0.8; // Default to 0.8 if not provided
         ctx.drawImage(watermarkImage, x, y, watermarkWidth, watermarkHeight);
 
-        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.95);
+        canvas.toBlob((newBlob) => {
+          if (!newBlob) return resolve(null);
+
+          const originalName = (blob as any).name || `watermarked_${Date.now()}.jpg`;
+
+          // Force jpg extension
+          const finalName = originalName.replace(/\.[^/.]+$/, '') + '.jpg';
+
+          const watermarkedFile = new File(
+            [newBlob],
+            finalName,
+            { type: 'image/jpeg' }
+          );
+
+          resolve(watermarkedFile);
+        }, 'image/jpeg', 0.95);
       };
 
       watermarkImage.onerror = () => resolve(null);

@@ -18,7 +18,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-photo-selection-photos',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, NgOptimizedImage, ScrollingModule],
+  imports: [RouterModule, CommonModule, FormsModule, ScrollingModule],
   templateUrl: './photo-selection-photos.component.html',
   styleUrl: './photo-selection-photos.component.scss'
 })
