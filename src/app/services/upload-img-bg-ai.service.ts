@@ -73,12 +73,10 @@ export class UploadImgBackgroundAiService {
     currentFolderId: any
   ) {
     if (localStorage.getItem("isUploadingGlobally") === "true") {
-      this.alert.warning("Another upload is in progress. Please wait until it completes.", 8000);
-      return;
+      this.alert.info("Photos added in queue, please do not refresh the page.", 3000);
     }
     this.totalAiUploadedPhotosCount = JSON.parse(<any>localStorage.getItem("totalAiUploadedPhotosCount")) || 0;
 
-    this.alert.info("Please do not refresh the page until AI upload is completed", 10000);
 
     const files: File[] = Array.from(event.target.files || []);
     if (!files.length) return;
@@ -117,21 +115,22 @@ export class UploadImgBackgroundAiService {
     }
 
     let limitPhotos = this.allowed_photos_quantity;
-    if (this.user_id == 285) limitPhotos = 1000;
-    else if (this.user_id == 31) limitPhotos = 50000;
-
-    // ✅ NEW: Get total queued photos across ALL events
-    const globalQueuedCount = this.allUploadQueues
-      ? this.allUploadQueues.reduce((sum: any, q: any) => sum + q.files.length, 0)
-      : this.uploadQueue.reduce((sum, q) => sum + q.files.length, 0);
+    // if (this.user_id == 285) limitPhotos = 1000;
+    // else if (this.user_id == 31) limitPhotos = 50000;
 
     // ---------------- QUALITY WEIGHT ----------------
     let weight = 1;
     if (this.photo_quality === "standard") weight = 3;
     else if (this.photo_quality === "high") weight = 10;
 
+    const queuedWeight = this.uploadQueue
+      ? this.uploadQueue.reduce((sum: number, q: any) => {
+        return sum + (q.files.length * q.weight);
+      }, 0)
+      : 0;
+
     // ---------------- REMAINING WEIGHT ----------------
-    const remaining = limitPhotos - this.totalAiUploadedPhotosCount;
+    const remaining = limitPhotos - this.totalAiUploadedPhotosCount - queuedWeight;
 
     if (remaining <= 0) {
       this.alert.warning(
@@ -163,11 +162,11 @@ export class UploadImgBackgroundAiService {
     }
 
     // ---------------- UPDATE COUNTER CORRECTLY ----------------
-    // this.totalAiUploadedPhotosCount += uniqueFiles.length * weight;
-    // localStorage.setItem(
-    //   "totalAiUploadedPhotosCount",
-    //   JSON.stringify(this.totalAiUploadedPhotosCount)
-    // );
+    this.totalAiUploadedPhotosCount += uniqueFiles.length * weight;
+    localStorage.setItem(
+      "totalAiUploadedPhotosCount",
+      JSON.stringify(this.totalAiUploadedPhotosCount)
+    );
 
     // ---------------- ADD TO QUEUE ----------------
     if (uniqueFiles.length > 0) {
@@ -180,15 +179,14 @@ export class UploadImgBackgroundAiService {
         customerId,
         eventName,
         currentFolderId,
+        weight
       });
-
-      if (!this.allUploadQueues) this.allUploadQueues = [];
-      this.allUploadQueues.push(...this.uploadQueue);
     }
 
     // ---------------- PROCESS QUEUE ----------------
     if (!this.isProcessingQueue) {
       localStorage.setItem("isUploadingGlobally", "true");
+      this.alert.info("Please do not refresh the page until AI upload is completed", 10000);
       this.processQueue();
     }
   }
@@ -201,7 +199,7 @@ export class UploadImgBackgroundAiService {
 
     while (this.uploadQueue.length > 0) {
       const task = this.uploadQueue.shift();
-      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId,customerId } = task;
+      const { files, eventId, folderName, studio_name, customerName, eventName, currentFolderId, customerId } = task;
 
       this.totalPhotos = files.length;
       this.uploadedPhotos = 0;
