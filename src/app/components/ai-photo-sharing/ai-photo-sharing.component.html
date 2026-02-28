@@ -659,7 +659,7 @@
                     <span class="text-red-500">*</span>
                     <br>
                 </label>
-                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.firstName" id="partyName"
+                <input type="text" (input)="onBrideNameInput()" autocomplete="off" [(ngModel)]="customerConfig.firstName" id="partyName"
                     name="partyName"
                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
@@ -668,7 +668,7 @@
                     <span class="text-red-500">*</span>
                     <br>
                 </label>
-                <input type="text" autocomplete="off" [(ngModel)]="customerConfig.lastName" id="partyName"
+                <input type="text" (input)="onBrideGroomNameInput()" autocomplete="off" [(ngModel)]="customerConfig.lastName" id="partyName"
                     name="partyName"
                     class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>

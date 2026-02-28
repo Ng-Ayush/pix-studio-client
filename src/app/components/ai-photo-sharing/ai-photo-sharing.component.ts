@@ -590,6 +590,20 @@ export class AiPhotoSharingComponent {
     this.event_config.event_name = value;
   }
 
+  onBrideNameInput(){
+    let value = this.customerConfig.firstName.replace(/[^a-zA-Z ]/g, '');
+    value = value.trimStart(); // remove leading spaces
+    value = value.trimEnd();
+    this.customerConfig.firstName = value;
+  }
+
+  onBrideGroomNameInput(){
+    let value = this.customerConfig.lastName.replace(/[^a-zA-Z ]/g, '');
+    value = value.trimStart(); // remove leading spaces
+    value = value.trimEnd();
+    this.customerConfig.lastName = value;
+  }
+
   togglePhotoQuality(event: any) {
     this.event_config.photo_quality_enabled = event.target.checked;
 
