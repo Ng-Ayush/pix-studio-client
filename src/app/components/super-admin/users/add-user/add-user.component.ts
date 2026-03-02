@@ -104,7 +104,7 @@ export class AddUserComponent {
       let blob = this.dataURLtoBlob(compressedImage);
       console.log(file);
 
-      const fileRef = ref(this.storage, `studio-icon/${file.name}`);
+      const fileRef = ref(this.storage, `studio-icon/temp-${crypto.randomUUID()}/${file.name}`);
       const uploadTask = uploadBytesResumable(fileRef, blob);
 
       uploadTask.then(async () => {
