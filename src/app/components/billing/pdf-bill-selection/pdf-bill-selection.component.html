@@ -173,10 +173,16 @@
                       <span class="text-[#2a507a] font-semibold">Advance Paid:</span>
                       <span class="font-bold">₹{{invoiceBillConfig?.advancePayment || 0}}</span>
                     </div>
+                    <div *ngIf="invoiceBillConfig?.invoice_type == 'sale'"
+                      class="flex justify-between w-80 mb-1 text-base">
+                      <span class="text-[#2a507a] font-semibold">Total:</span>
+                      <span class="font-bold">₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
+                    </div>
                     <div class="border-t border-blue-500 w-80 mt-2 mb-2"></div>
                     <div class="flex justify-between w-80 text-xl font-bold">
-                      <span class="text-[#2a507a]">Total:</span>
-                      <span>₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
+                      <span class="text-[#2a507a]">Balance:</span>
+                      <span>₹{{invoiceBillConfig?.balance_left || 0}}</span>
+                      
                     </div>
                   </div>
 
@@ -269,7 +275,6 @@
                       <p class="pt-2 max-w-xs">Address: {{ invoiceBillConfig?.party_billing_address }}</p>
                     </div>
                     <div class="order-detail flex flex-col items-end">
-                      <p class="font-bold">Order From</p>
                       <p>Order No: {{ invoiceBillConfig.invoice_number ||'12134'}}</p>
                       <p>Date: {{ invoiceBillConfig.invoice_date ||'12134'}}</p>
                       <p>Time: {{ invoiceBillConfig.time ||'12134'}}</p>
@@ -366,13 +371,13 @@
                             </div>
                             <div class="flex justify-between font-bold"
                               *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                              <span>Balance left</span>
-                              <span>₹{{invoiceBillConfig.balance_left}}</span>
+                              <span>Total</span>
+                              <span>₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
                             </div>
                             <hr class="my-2 border-gray-300">
                             <div class="flex justify-between font-bold text-lg">
-                              <span>Total</span>
-                              <span>₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</span>
+                              <span>Balance left</span>
+                              <span>₹{{invoiceBillConfig.balance_left}}</span>
                             </div>
                           </div>
                         </div>
@@ -386,7 +391,7 @@
               <div *ngSwitchCase="'template7'" [id]="selectedTemplateId"
                 class="flex items-center w-[900px] justify-center shadow-md rounded-md text-xl font-medium">
                 <main
-                  class="mx-auto bg-white rounded-lg shadow-[0_0_18px_rgba(33,34,37,0.08)] overflow-hidden relative">
+                  class="bg-white rounded-lg w-full overflow-hidden relative">
 
                   <!-- Top Bar -->
                   <section class="bg-[#38383d] min-h-[130px] text-white pt-8 px-8 pb-2 relative z-20 pdf-common-header">
@@ -462,8 +467,8 @@
                           <td class="px-3 py-2 text-center">{{item.booking_date | date}}</td>
                           <td class="px-3 py-2 text-center">{{item.location}}</td>
                           <td class="px-3 py-2 text-center">{{item.quantity}}</td>
-                          <td class="px-3 py-2 text-center">{{item.amount}}</td>
-                          <td class="px-3 py-2 text-center">{{item.quantity* item.amount}}</td>
+                          <td class="px-3 py-2 text-center">{{item.sale_price}}</td>
+                          <td class="px-3 py-2 text-center">{{item.quantity* item.sale_price}}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -487,13 +492,13 @@
                             </td>
                           </tr>
                           <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                            <td class="first font-bold text-[#444] py-1 px-2 border-b border-[#eee]">Balance</td>
-                            <td class="py-1 px-2 border-b border-[#eee]">₹{{invoiceBillConfig?.balance_left || 0}}</td>
+                            <td class="first font-bold text-[#444] py-1 px-2 border-b border-[#eee]">Total</td>
+                            <td class="py-1 px-2 border-b border-[#eee]">₹{{ invoiceBillConfig?.total -
+                              invoiceBillConfig?.discount_value }}</td>
                           </tr>
                           <tr class="last-row font-bold bg-[#fff3b3] text-black rounded-lg">
-                            <td class="py-1 px-2 rounded-lg">Total</td>
-                            <td class="py-1 px-2 rounded-lg">₹{{ invoiceBillConfig?.total -
-                              invoiceBillConfig?.discount_value }}</td>
+                            <td class="py-1 px-2 ">Balance</td>
+                            <td class="py-1 px-2 ">₹{{invoiceBillConfig?.balance_left || 0}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -659,14 +664,17 @@
                                 invoiceBillConfig?.advancePayment || 0 }}</span> </div>
                           </div>
                           <div class="flex justify-between items-center"
-                            *ngIf="invoiceBillConfig?.invoice_type === 'sale'">Balance left: <span>₹{{
-                              invoiceBillConfig?.balance_left }}</span> </div>
+                            *ngIf="invoiceBillConfig?.invoice_type === 'sale'">Total: 
+                            <span>₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }} </span>
+                              </div>
                           <div class="bg-[#35373c] text-[#ddbe7a] px-5 py-2 rounded shadow inline-block mt-1" style="width: 200px;
                                 text-align: center;
                                 display: flex
                             ;
                                 justify-content: space-between;">
-                            Total: <span>₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }} </span>
+                             Balance left: 
+                            <span>₹{{
+                              invoiceBillConfig?.balance_left }}</span> 
                           </div>
                         </div>
                       </div>
@@ -739,8 +747,7 @@
                     <div class="text-[#fff] font-base text-right">Invoice Number</div>
                     <div class="text-2xl  text-[#fff] ">{{invoiceBillConfig?.invoice_number}}</div>
                     <div class=" text-right text-[#fff]  mt-3">Date</div>
-                    <div class="font-base text-[#fff]  opacity-80">{{invoiceBillConfig?.invoice_date | date:'dd MMM,
-                      yyyy'}}
+                    <div class="font-base text-[#fff]  opacity-80">{{invoiceBillConfig?.invoice_date | date:'dd MMM,yyyy'}}
                     </div>
                   </div>
                 </div>
@@ -807,16 +814,18 @@
                           *ngIf="invoiceBillConfig?.invoice_type == 'sale'">₹{{invoiceBillConfig?.advancePayment || 0}}
                         </td>
                       </tr>
-                      <tr class="table-header text-[#222] bg-white">
+                      <tr class="table-header text-[#222] bg-white" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                         <td colspan="6" class="py-2 px-3 text-right text-base font-bold"
-                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">Balance left</td>
+                          >Total</td>
                         <td class="py-2 px-3 text-right text-base font-bold"
-                          *ngIf="invoiceBillConfig?.invoice_type == 'sale'">₹{{invoiceBillConfig?.balance_left}}</td>
+                          >₹{{invoiceBillConfig?.total -
+                          invoiceBillConfig?.discount_value}}</td>
                       </tr>
                       <tr class="table-header text-[#222] bg-white">
-                        <td colspan="6" class="py-4 px-3 text-right text-2xl font-extrabold">TOTAL</td>
-                        <td class="py-4 px-3 text-right text-2xl font-extrabold">₹{{invoiceBillConfig?.total -
-                          invoiceBillConfig?.discount_value}}
+                        <td colspan="6" class="py-4 px-3 text-right text-2xl font-extrabold">Balance left</td>
+                        <td class="py-4 px-3 text-right text-2xl font-extrabold">
+                          ₹{{invoiceBillConfig?.balance_left}}
+                          
                         </td>
                       </tr>
                     </tfoot>
@@ -933,10 +942,12 @@
                         <span>₹{{invoiceBillConfig?.advancePayment || 0}}</span>
                       </div>
                       <p class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'"><span
-                          class="flex justify-between">Balance left :</span>
-                        ₹{{invoiceBillConfig?.balance_left}}</p>
-                      <div class="bg-[#A51C73] text-white font-bold py-3 mt-2 px-8 inline-block rounded-lg shadow-md">
-                        Total : ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}
+                          class="flex justify-between">Total :</span>
+                          ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}
+                        </p>
+                        <div class="bg-[#A51C73] text-white font-bold py-3 mt-2 px-8 inline-block rounded-lg shadow-md">
+                          Balance left :
+                          ₹{{invoiceBillConfig?.balance_left}}
                       </div>
                     </div>
                   </div>
@@ -1098,17 +1109,17 @@
                     <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                       <td colspan="5"
                         class="black-bar bg-[#23201c] text-[#e4d5b7] font-bold border-t-2 border-[#8c7a57] text-right px-3 py-2 whitespace-nowrap">
-                        Balance left
+                        Total
                       </td>
                       <td
                         class="black-bar bg-[#23201c] text-[#e4d5b7] font-bold border-t-2 border-[#8c7a57] text-center px-3 py-2 whitespace-nowrap">
-                        ₹{{invoiceBillConfig?.balance_left}}
+                        ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}
                       </td>
                     </tr>
                     <tr>
                       <td colspan="6"
-                        class="amount-box bg-[#23201c] text-[#e4d5b7] text-end pr-5 text-[18px] py-2.5 rounded-sm mt-1 font-[PT Serif] font-bold tracking-[1px] break-after-page">
-                        Total ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}
+                      class="amount-box bg-[#23201c] text-[#e4d5b7] text-end pr-5 text-[18px] py-2.5 rounded-sm mt-1 font-[PT Serif] font-bold tracking-[1px] break-after-page">
+                      Balance left ₹{{invoiceBillConfig?.balance_left}}
                       </td>
                     </tr>
                   </tfoot>
@@ -1239,10 +1250,11 @@
                         </div>
                       </div>
                       <p class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'"><span
-                          class="font-bold">Balance left :</span>
-                        ₹{{ invoiceBillConfig?.balance_left }}</p>
-                      <div class="bg-black text-white font-bold text-center py-3 px-8 inline-block rounded-full">
-                        Total : ₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }}
+                          class="font-bold">Total :</span>
+                          ₹{{ invoiceBillConfig?.total - invoiceBillConfig?.discount_value }}
+                        </p>
+                        <div class="bg-black text-white font-bold text-center py-3 px-8 inline-block rounded-full">
+                           Balance left : ₹{{ invoiceBillConfig?.balance_left }}
                       </div>
                     </div>
                   </div>
@@ -1360,11 +1372,24 @@
                     </tbody>
                   </table>
                 </div>
-
-                <div class="pdf-summary-section">
+                
+                <div class="pdf-summary-section w-full">
                   <!-- Totals Section -->
-                  <div class="flex justify-end items-start px-5 py-6 w-full">
-                    <div class="bg-[#0d2241] text-white rounded-lg p-6 w-60 text-sm">
+                  <div class="flex justify-between items-start px-5 py-6 w-full">
+                    <div class="flex justify-between items-start px-5 py-6 w-full">
+                      <!-- Left -->
+                      <div class="gap-2 flex flex-col text-sm" style="width:410px;">
+                        <div>🔴 <span class="font-bold text-[15px] uppercase">Terms & Conditions:</span><br>
+                          <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
+                            {{ invoiceBillConfig.tnc }}
+                          </div>
+                          <textarea *ngIf="!exportMode" #autoTextarea
+                            class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
+                            cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bg-[#0d2241] text-white rounded-lg p-6 w-64 text-sm">
                       <p class="flex justify-between"><span>Sub Total :</span>
                         <span>₹{{invoiceBillConfig?.total}}</span>
                       </p>
@@ -1375,29 +1400,16 @@
                         <span>Advance:</span>
                         <span>₹{{invoiceBillConfig?.advancePayment || 0}}</span>
                       </div>
-                      <p *ngIf="invoiceBillConfig?.invoice_type == 'sale'" class="flex justify-between"><span>Balance
-                          left
-                          :</span>
+                      <p *ngIf="invoiceBillConfig?.invoice_type == 'sale'" class="flex justify-between"><span>
+                          Total:</span>
                         <span>₹{{invoiceBillConfig?.balance_left}}</span>
                       </p>
 
-                      <p class="flex justify-between font-bold text-lg bg-red-600 px-2 py-1 mt-3 rounded">
-                        <span>Total :</span> <span>₹{{invoiceBillConfig.total -
+                      <p class="flex justify-between font-bold text-sm bg-red-600 px-2 py-1 mt-3 rounded">
+                        <span>Balance
+                          left :</span> <span>₹{{invoiceBillConfig.total -
                           invoiceBillConfig?.discount_value}}</span>
                       </p>
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-start px-5 py-6 w-full">
-                    <!-- Left -->
-                    <div class="gap-2 flex flex-col text-sm" style="width:410px;">
-                      <div>🔴 <span class="font-bold text-[15px] uppercase">Terms & Conditions:</span><br>
-                        <div *ngIf="exportMode" class="small p-2" style="white-space:pre-wrap;">
-                          {{ invoiceBillConfig.tnc }}
-                        </div>
-                        <textarea *ngIf="!exportMode" #autoTextarea
-                          class="small p-2 resize-none overflow-hidden rounded" (input)="resizeTextarea()" rows="5"
-                          cols="50" [(ngModel)]="invoiceBillConfig.tnc"></textarea>
-                      </div>
                     </div>
                   </div>
 
@@ -1510,16 +1522,19 @@
                           <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">
                             ₹{{invoiceBillConfig?.discount_value}}</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                           <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-medium">Advance Paid :</td>
                           <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">₹{{invoiceBillConfig?.advancePayment
                             || 0}}</td>
                         </tr>
+                        <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-medium">Total :</td>
+                          <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value}}</td>
+                        </tr>
                         <tr>
-                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-bold rounded-bl-lg">Total :</td>
+                          <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-bold rounded-bl-lg">Balance :</td>
                           <td class="text-right px-7 py-1 bg-[#ffe08b] font-bold rounded-br-lg">
-                            ₹{{invoiceBillConfig?.total - invoiceBillConfig?.discount_value -
-                            (invoiceBillConfig?.advancePayment || 0) + (invoiceBillConfig?.tax || 0)}}</td>
+                            ₹{{invoiceBillConfig?.balance_left || 0}}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -1640,14 +1655,14 @@
                       <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.advancePayment || 0}}</td>
                     </tr>
                     <tr *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
-                      <td class="px-3 py-1 text-right font-semibold">Balace Left</td>
-                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.balance_left || 0}}</td>
+                      <td class="px-3 py-1 text-right font-semibold">Total</td>
+                      <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig.total -
+                        invoiceBillConfig?.discount_value}}</td>
                     </tr>
                     <tr>
-                      <td class="px-3 py-2 text-right font-bold bg-[#d7cbc2] rounded-l-lg">TOTAL</td>
+                      <td class="px-3 py-2 text-right font-bold bg-[#d7cbc2] rounded-l-lg">Balance Left</td>
                       <td class="px-3 py-2 text-right font-bold bg-[#a18e7e] rounded-r-lg text-white">
-                        ₹{{invoiceBillConfig.total -
-                        invoiceBillConfig?.discount_value}}
+                       ₹{{invoiceBillConfig?.balance_left || 0}}
                       </td>
                     </tr>
                   </table>
