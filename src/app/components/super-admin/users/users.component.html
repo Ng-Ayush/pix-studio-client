@@ -134,7 +134,7 @@
                                 <th scope="row"
                                     class="px-6 flex items-center py-4 font-medium text-gray-900 whitespace-nowrap light:text-white">
                                     <img class="w-10 h-10 rounded-full mr-2" [src]="user.studio_icon"
-                                        (error)="onImageError($event)" alt="Jese image">
+                                        (error)="onImageError($event)" alt="Jese image" loading="lazy">
                                     <span>
                                         {{ user.studio_name}}
                                     </span>

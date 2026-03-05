@@ -469,13 +469,19 @@ ${htmlContent}
       this.isLoading = true;
       const base64 = await this.blobToBase64(data);
       const number = `${this.invoiceBillConfig.party_phone_number}@c.us`;
-      await this.http.post(environment.apiUrl + '/api/mystudio/invoices/sendPdfViaWhatsApp', {
+      const response:any = await this.http.post(environment.apiUrl + '/api/mystudio/invoices/sendPdfViaWhatsApp', {
         number: `91${number}`,
         pdfBase64: base64,
         fileName: `${this.invoiceBillConfig.party_name.split(" ").join("_")}-${this.invoiceBillConfig.invoice_type == 'sale' ? 'sale' : 'estimate'}-invoice.pdf`
       }).toPromise();
-      this.isLoading = false;
-      this.alert.success('PDF sent to WhatsApp!');
+      console.log(response)
+      if(response.status == 200){
+        this.isLoading = false;
+        this.alert.success('PDF sent to WhatsApp!');
+      }else{
+        this.isLoading = false;
+        this.alert.error(response?.error || "Whatsapp not connected", 3000);
+      }
     } catch (err) {
       this.isLoading = false;
       this.alert.error('Failed to send PDF to WhatsApp, please check your WhatsApp connection.', 3000);

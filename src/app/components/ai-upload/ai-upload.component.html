@@ -286,7 +286,7 @@
                 </div>
 
                 <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                    <button (click)="capturePhoto()" [disabled]="aiGuestConfig.phone?.length !== 10" *ngIf="!isMobile"
+                    <button (click)="capturePhoto()" [disabled]="userData?.need_customer_number && aiGuestConfig.phone?.length !== 10" *ngIf="!isMobile"
                         class="cursor-pointer px-8 py-2 rounded-full bg-pink-600 text-white font-medium hover:bg-pink-700 transition-colors duration-200">Capture</button>
                     <button (click)="submitPhoto()" [disabled]="!canSubmit()" *ngIf="isMobile"
                         class="cursor-pointer px-8 py-2 rounded-full bg-green-600 text-white font-medium hover:bg-green-700 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed">
