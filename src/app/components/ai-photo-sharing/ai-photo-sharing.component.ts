@@ -510,7 +510,7 @@ export class AiPhotoSharingComponent {
     const input: any = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const reader = new FileReader();
-    const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name || 'event'}_${this.userData.id}/${type}`);
+    const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name || 'event'}_${this.userData.id}_${crypto.randomUUID()}/${type}`);
     const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
     const uploadTask = uploadBytes(fileRef, blob);
 
