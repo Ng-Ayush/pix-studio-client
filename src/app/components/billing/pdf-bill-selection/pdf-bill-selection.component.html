@@ -1402,13 +1402,12 @@
                       </div>
                       <p *ngIf="invoiceBillConfig?.invoice_type == 'sale'" class="flex justify-between"><span>
                           Total:</span>
-                        <span>₹{{invoiceBillConfig?.balance_left}}</span>
+                        <span>₹{{invoiceBillConfig.total -
+                          invoiceBillConfig?.discount_value}}</span>
                       </p>
 
                       <p class="flex justify-between font-bold text-sm bg-red-600 px-2 py-1 mt-3 rounded">
-                        <span>Balance
-                          left :</span> <span>₹{{invoiceBillConfig.total -
-                          invoiceBillConfig?.discount_value}}</span>
+                        <span>Balance: </span> <span>₹{{invoiceBillConfig?.balance_left}}</span>
                       </p>
                     </div>
                   </div>
