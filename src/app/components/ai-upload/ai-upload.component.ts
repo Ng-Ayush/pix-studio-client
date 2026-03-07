@@ -65,7 +65,7 @@ export class AiUploadComponent {
   showThankyouMessage: boolean = false;
 
   currentPage = 1;
-  limit = 5;
+  limit = 20;
   loading = false;
   hasMore = true;
   private scrollTimeout: any;
@@ -626,21 +626,22 @@ export class AiUploadComponent {
           const blobUrl = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = blobUrl;
-          a.target = '_blank';
+          // a.target = '_blank';
           a.download = filename || 'photo';
           a.click();
           window.URL.revokeObjectURL(blobUrl);
           this.isLoading = false;
           this.loader.hide();
         });
-    } else {
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.download = filename || 'photo';
-      a.click();
-      this.isLoading = false;
-      this.loader.hide();
+      } else {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename || 'photo';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        this.isLoading = false;
+        this.loader.hide();
     }
 
   }
