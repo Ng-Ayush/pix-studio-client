@@ -164,7 +164,7 @@
                       <span class="text-[#2a507a] font-semibold">Subtotal:</span>
                       <span class="font-bold">₹{{invoiceBillConfig?.total}}</span>
                     </div>
-                    <div class="flex justify-between w-80 mb-1 text-base">
+                    <div class="flex justify-between w-80 mb-1 text-base" *ngIf="invoiceBillConfig?.discount_value">
                       <span class="text-[#2a507a] font-semibold">Discount:</span>
                       <span class="font-bold">₹{{invoiceBillConfig?.discount_value}}</span>
                     </div>
@@ -482,7 +482,7 @@
                             <td class="first font-bold text-[#444] py-1 px-2 border-b border-[#eee]">Subtotal</td>
                             <td class="py-1 px-2 border-b border-[#eee]">₹{{invoiceBillConfig?.total}}</td>
                           </tr>
-                          <tr>
+                          <tr *ngIf="invoiceBillConfig?.discount_value">
                             <td class="first font-bold text-[#444] py-1 px-2 border-b border-[#eee]">Discount</td>
                             <td class="py-1 px-2 border-b border-[#eee]">₹{{invoiceBillConfig?.discount_value }}</td>
                           </tr>
@@ -657,7 +657,7 @@
                           <div class="text-gray-700 font-medium">
                             <div class="flex justify-between items-center">Subtotal: <span>₹{{ invoiceBillConfig?.total
                                 }}</span> </div>
-                            <div class="flex justify-between items-center">Discount: <span>₹{{
+                            <div class="flex justify-between items-center" *ngIf="invoiceBillConfig?.discount_value">Discount: <span>₹{{
                                 invoiceBillConfig.discount_value }}</span> </div>
                             <div class="flex justify-between items-center"
                               *ngIf="invoiceBillConfig?.invoice_type === 'sale'">Advance: <span>₹{{
@@ -803,7 +803,7 @@
                         <td colspan="6" class="py-2 px-3 text-right text-base font-bold">Subtotal</td>
                         <td class="py-2 px-3 text-right text-base font-bold">₹{{invoiceBillConfig?.total}}</td>
                       </tr>
-                      <tr class="table-header text-[#222] bg-white">
+                      <tr class="table-header text-[#222] bg-white" *ngIf="invoiceBillConfig?.discount_value">
                         <td colspan="6" class="py-2 px-3 text-right text-base font-bold">Discount</td>
                         <td class="py-2 px-3 text-right text-base font-bold">₹{{invoiceBillConfig.discount_value}}</td>
                       </tr>
@@ -935,7 +935,7 @@
                     <div class="text-right">
                       <p class="flex justify-between"><span class="font-bold">Sub Total :</span>
                         ₹{{invoiceBillConfig?.total}}</p>
-                      <p class="flex justify-between"><span class="font-bold">Discount :</span>
+                      <p class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value"><span class="font-bold">Discount :</span>
                         ₹{{invoiceBillConfig.discount_value}}</p>
                       <div class="flex justify-between gap-1" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                         <span>Advance :</span>
@@ -1086,7 +1086,7 @@
                         ₹{{invoiceBillConfig?.total}}
                       </td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="invoiceBillConfig?.discount_value">
                       <td colspan="5"
                         class="black-bar bg-[#23201c] text-[#e4d5b7] font-bold border-t-2 border-[#8c7a57] text-right px-3 py-2 whitespace-nowrap">
                         Discount
@@ -1242,7 +1242,7 @@
                       <div class="gap-2 flex flex-col">
                         <p class="flex justify-between"><span class="font-bold">Sub Total :</span> ₹{{
                           invoiceBillConfig?.total }}</p>
-                        <p class="flex justify-between"><span class="font-bold">Discount :</span> ₹{{
+                        <p class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value"><span class="font-bold">Discount :</span> ₹{{
                           invoiceBillConfig?.discount_value }}</p>
                         <div class="flex justify-between" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
                           <span>Advance:</span>
@@ -1393,7 +1393,7 @@
                       <p class="flex justify-between"><span>Sub Total :</span>
                         <span>₹{{invoiceBillConfig?.total}}</span>
                       </p>
-                      <p class="flex justify-between"><span>Discount :</span>
+                      <p class="flex justify-between" *ngIf="invoiceBillConfig?.discount_value"><span>Discount :</span>
                         <span>₹{{invoiceBillConfig?.discount_value}}</span>
                       </p>
                       <div class="flex justify-between gap-1" *ngIf="invoiceBillConfig?.invoice_type == 'sale'">
@@ -1516,7 +1516,7 @@
                           <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] rounded-tl-lg font-medium">Subtotal :</td>
                           <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">₹{{invoiceBillConfig?.total}}</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="invoiceBillConfig?.discount_value">
                           <td class="text-right px-8 py-1 pr-10 bg-[#ffe08b] font-medium">Discount :</td>
                           <td class="text-right px-7 py-1 bg-[#fff8ea] font-medium">
                             ₹{{invoiceBillConfig?.discount_value}}</td>
@@ -1645,7 +1645,7 @@
                       <td class="px-3 py-1 text-right font-semibold">Subtotal</td>
                       <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.total}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="invoiceBillConfig?.discount_value">
                       <td class="px-3 py-1 text-right font-semibold">Discount</td>
                       <td class="px-3 py-1 text-right font-semibold">₹{{invoiceBillConfig?.discount_value}}</td>
                     </tr>
