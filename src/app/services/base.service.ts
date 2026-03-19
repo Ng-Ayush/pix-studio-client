@@ -46,6 +46,7 @@ export class BaseService {
     'uploadPhotos': '/api/mystudio/photo-selection/uploadPhotos',
     'deletePhotos': '/api/mystudio/photo-selection/deletePhotos',
     'getAllPhotosByEventId': '/api/mystudio/photo-selection/getAllPhotosByEventId',
+    'getNewPhotos': '/api/mystudio/photo-selection/getNewPhotos',
     'checkIsBrowseAllFolderStatus': '/api/mystudio/photo-selection/checkIsBrowseAllFolderStatus',
     'checkHasUserAlreadyReviewed': '/api/mystudio/photo-selection/checkHasUserAlreadyReviewed',
     'getTotalUploadedAiPhotosCount': '/api/mystudio/photo-selection/getTotalUploadedAiPhotosCount',

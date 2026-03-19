@@ -76,6 +76,9 @@ export class AiUploadComponent {
   paginationMap: { [key: string]: { page: number, hasMore: boolean } } = {};
   photosByFolder: { [key: string]: any[] } = {};
   @ViewChild('youtubePlayer') youtubePlayer!: ElementRef | any;
+  latestPhotoMap: any = {};
+  showNewPhotosToast = false;
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -139,6 +142,7 @@ export class AiUploadComponent {
     console.log(`Switching to folder: ${folderId || 'Browse All'}`);
 
     this.selectedFolderId = folderId;
+    this.showNewPhotosToast = true;
 
     // Initialize if not exists
     if (!this.paginationMap[folderId || 'all']) {
@@ -161,7 +165,7 @@ export class AiUploadComponent {
     const folderKey = this.selectedFolderId || 'all';
     const pagination = this.paginationMap[folderKey];
 
-    if (this.loading || !pagination.hasMore) return;
+    if (this.loading || !pagination?.hasMore) return;
 
     this.loading = true;
 
@@ -179,7 +183,15 @@ export class AiUploadComponent {
     this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
       if (res.status == 200) {
         const folderPhotos = this.photosByFolder[folderKey] || [];
-        this.photosByFolder[folderKey] = [...folderPhotos, ...res.data];
+        const existingIds = new Set(folderPhotos.map(p => p.id));
+        const newPhotos = res.data.filter((p: any) => !existingIds.has(p.id));
+        this.photosByFolder[folderKey] = [...folderPhotos, ...newPhotos];
+        if (!this.latestPhotoMap[folderKey] && res.data.length) {
+          this.latestPhotoMap[folderKey] = Math.max(
+            this.latestPhotoMap[folderKey] || 0,
+            ...newPhotos.map((p:any) => p.id)
+          );
+        }
         this.photos = this.photosByFolder[folderKey];
 
         pagination.hasMore = pagination.page < res.pagination.totalPages;
@@ -708,5 +720,43 @@ export class AiUploadComponent {
     setTimeout(() => {
       event.target.playVideo();
     }, 1000);
+  }
+
+  refreshNewPhotos() {
+    const folderKey = this.selectedFolderId || 'all';
+    const lastSeenId = this.latestPhotoMap[folderKey] || 0;
+
+    if (this.loading) return;
+
+    this.loading = true;
+
+    const params: any = {
+      event_id: this.eventId,
+      user: this.userData?.created_by,
+      last_seen_id: lastSeenId,
+    };
+
+    if (this.selectedFolderId) {
+      params.folder_id = this.selectedFolderId;
+    }
+
+    this.eventService.getNewPhotos(params, this.userData?.created_by, (res: any) => {
+      this.loading = false;
+      if (res.status === 200 && res.data.length) {
+
+        const existingIds = new Set(this.photosByFolder[folderKey].map(p => p.id));
+        const newPhotos = res.data.filter((p: any) => !existingIds.has(p.id));
+
+        this.photosByFolder[folderKey] = [
+          ...this.photosByFolder[folderKey],
+          ...newPhotos
+        ];
+
+        this.photos = this.photosByFolder[folderKey];
+        // update latest id
+        this.latestPhotoMap[folderKey] = newPhotos[0].id;
+        this.loading = false;
+      }
+    });
   }
 }

@@ -89,6 +89,13 @@ export class PhotoSelectionService extends BaseService {
     return this.getData({}, url, callback);
   }
 
+  getNewPhotos(params: any, user_id: any, callback: any) {
+    let url = `${this.httpUrls['getNewPhotos']}/${params.event_id}?user=${+user_id}&last_seen_id=${+params.last_seen_id}`;
+    if (params.folder_id) {
+      url += `&folder_id=${+params.folder_id}`;
+    }
+    return this.getData({}, url, callback);
+  }
 
   checkIsBrowseAllFolderStatus(params: any, callback: any) {
     return this.getData({}, this.httpUrls['checkIsBrowseAllFolderStatus'] + "/" + params.event_id + "?user_id=" + params.user_id, callback)
