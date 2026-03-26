@@ -83,10 +83,10 @@ export class AiPhotoSharingComponent {
   getAllEvents() {
     this.loader.show();
     this.eventService.getAllEvents((res: any) => {
+      this.loader.hide();
       if (res.status == 200) {
         this.eventList = res.data.filter((item: any) => item.is_ai_upload);
         this.filteredEvents = [...this.eventList];
-        this.loader.hide();
         this.getTotalUploadedAiPhotosCount();
       } else {
         this.alert.error(res.message);

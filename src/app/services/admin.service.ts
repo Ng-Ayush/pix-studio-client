@@ -14,8 +14,8 @@ export class AdminService extends BaseService {
   adminLogin(params: any, callback: any) {
     return this.postData(params, this.httpUrls['adminLogin'], callback);
   }
-  getAllUsers(callback: any) {
-    return this.getData({}, this.httpUrls['getAllUsers'], callback)
+  getAllUsers(params:any,callback: any) {
+    return this.getData({}, this.httpUrls['getAllUsers']+`?status=${params.status}`, callback)
   }
 
   createUsers(params: any, callback: any) {

@@ -8,6 +8,7 @@ import { LoaderService } from '../shared/loader.service';
 import { PhotoSelectionService } from './photo-selection.service';
 import { AlertService } from './alert.service';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class UploadImgBackgroundAiService {
     private imageCompressService: ImageCompressionService,
     private loader: LoaderService,
     private _pservice: PhotoSelectionService,
-    private alert: AlertService
+    private alert: AlertService,
+    private router:Router
   ) { }
 
   // ---------------- Observables ----------------
@@ -72,6 +74,9 @@ export class UploadImgBackgroundAiService {
     eventName: any,
     currentFolderId: any
   ) {
+
+    await this.checkIfUserHasAccess();
+
     if (localStorage.getItem("isUploadingGlobally") === "true") {
       this.alert.info("Photos added in queue, please do not refresh the page.", 3000);
     }
@@ -488,4 +493,44 @@ export class UploadImgBackgroundAiService {
       }
     });
   }
+
+  async checkIfUserHasAccess(): Promise<void> {
+    try {
+      const userData = localStorage.getItem('userData');
+
+      if (!userData) {
+        localStorage.clear();
+        this.alert.error("Something went wrong.", 2000);
+        await this.router.navigate(['/login']);
+        throw new Error('NO_USER_DATA');
+      }
+
+      const parsedData = JSON.parse(userData);
+
+      if (!parsedData.access_expires_on) {
+        localStorage.clear();
+        this.alert.error("Something went wrong.", 2000);
+        await this.router.navigate(['/login']);
+        throw new Error('NO_EXPIRY');
+      }
+
+      const now = new Date();
+      const expiryDate = new Date(parsedData.access_expires_on);
+
+      // 🔴 If expired → logout + STOP
+      if (now > expiryDate) {
+        localStorage.clear();
+        this.alert.error("Your access has expired. Please contact admin.", 5000);
+        await this.router.navigate(['/login']);
+        throw new Error('ACCESS_EXPIRED');
+      }
+
+    } catch (error) {
+      console.error('Error checking access:', error);
+      localStorage.clear();
+      await this.router.navigate(['/login']);
+      throw error; // 🔴 VERY IMPORTANT
+    }
+  }
+
 }

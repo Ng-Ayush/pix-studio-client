@@ -1,7 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { inject, Injectable, Optional } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
+import { AlertService } from './alert.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -143,30 +145,43 @@ export class BaseService {
   }
 
   token: any = '';
+  router:any = inject(Router);
+  alert:any = inject(AlertService);
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient,) {
     this.token = localStorage.getItem("token");
   }
 
 
   getData(d: any, url: any, callback: any) {
 
-    return this.http.get(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
+    return this.http.get(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: HttpErrorResponse) => this.handleError(error, callback));
   }
 
   postData(d: any, url: any, callback: any) {
 
-    return this.http.post(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
+    return this.http.post(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: HttpErrorResponse) => this.handleError(error, callback));
   }
 
   putData(d: any, url: any, callback: any) {
 
-    return this.http.put(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
+    return this.http.put(environment.apiUrl + url, d ).subscribe((data: any) => { callback(data) }, (error: HttpErrorResponse) => this.handleError(error, callback));
   }
 
   deleteData(d: any, url: any, callback: any) {
 
-    return this.http.delete(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: any) => callback(error));
+    return this.http.delete(environment.apiUrl + url ).subscribe((data: any) => { callback(data) }, (error: HttpErrorResponse) => this.handleError(error, callback));
   }
+
+  private handleError(error: HttpErrorResponse, callback: any) {
+  if (error.status == 403) {
+    // Clear storage and redirect
+    this.alert.error(error.error.error,5000);
+    // localStorage.clear();
+    this.router.navigate(['/login']);
+    return;
+  }
+  // callback(error);
+}
 
 }

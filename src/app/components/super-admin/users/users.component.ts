@@ -23,7 +23,8 @@ export class UsersComponent {
   id: Number = 0;
   searchTerm: any = '';
   filteredItems: any = [];
-
+  private searchTimeout: any;
+  activeTab: boolean = true; // default active users
 
   constructor(
     private router: Router,
@@ -38,7 +39,11 @@ export class UsersComponent {
   }
 
   getAllAdmins() {
-    this.service.getAllUsers((res: any) => {
+    const status = this.activeTab;
+    const params:any = {
+      status: status
+    }
+    this.service.getAllUsers(params,(res: any) => {
       if (res.status == 200) {
         this.users = res.data;
         this.filteredItems = [...this.users];
@@ -57,6 +62,13 @@ export class UsersComponent {
   addAdmins() {
     this.router.navigate(['admin/add-user'])
   }
+
+  onSearchChange() {
+  clearTimeout(this.searchTimeout);
+  this.searchTimeout = setTimeout(() => {
+    this.searchAdmins();
+  }, 500); // 300ms debounce
+}
 
   searchAdmins() {
     if (!this.searchTerm) {
@@ -111,7 +123,7 @@ export class UsersComponent {
     this.service.toggleAdminStatus(param, user.id, (res: any) => {
       if (res.status == 200) {
         this.alert.success(res.message);
-        this.getAllAdmins();
+        // this.getAllAdmins();
       } else {
         this.alert.error(res.message);
       }
@@ -122,6 +134,16 @@ export class UsersComponent {
   trackAdmins(index: any, item: any) {
     return item.id;
   }
+
+  switchTab(status: boolean) {
+  if (this.activeTab === status) return;
+
+  this.activeTab = status;
+  this.searchTerm = ''; // optional reset
+
+  this.getAllAdmins();
+}
+
 }
 
 
