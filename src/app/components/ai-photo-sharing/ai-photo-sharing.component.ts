@@ -161,7 +161,7 @@ export class AiPhotoSharingComponent {
         is_ai_upload: true,
         quality: this.event_config.quality,
         plan_data: this.planConfig,
-        browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false,
+        browse_all_photo_ai: true,
         razorpay_payment_id: this.event_config?.payment_data?.razorpay_payment_id || '',
         razorpay_order_id: this.event_config?.payment_data?.razorpay_order_id || '',
         razorpay_signature: this.event_config?.payment_data?.razorpay_signature || '',
@@ -188,7 +188,7 @@ export class AiPhotoSharingComponent {
       const params = {
         event_name: this.event_config.event_name,
         is_event_submitted: this.event_config.is_event_submitted,
-        browse_all_photo_ai: this.event_config?.browse_all_photo_ai || false,
+        browse_all_photo_ai: true,
         ai_cover_images: JSON.stringify([{ url: this.event_config?.cover1 ?? this.event_config?.ai_cover_images[0]?.url }, { url: this.event_config?.cover2 ?? this.event_config?.ai_cover_images[1]?.url }]),
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
@@ -274,16 +274,27 @@ export class AiPhotoSharingComponent {
   }
 
 
-  copyAiShareLink(event: any) {
-    const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id}&date=${new Date().getTime()} \n\nRegards *${this.userData?.studio_name}*`;
+  copyPublicAiLink(event: any) {
+    const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id+'GLB'}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id+'GLB'}&date=${new Date().getTime()} \n\nRegards *${this.userData?.studio_name}*`;
     console.log(message);
 
     navigator.clipboard.writeText(message).then(() => {
-      this.alert.success('Unique code copied to clipboard');
+      this.alert.success('Public Link copied to clipboard');
     }).catch(err => {
       console.error('Failed to copy message: ', err);
     });
   }
+
+  copyPrivateAiLink(event: any) {
+   const message = `Dear *${event.customer_name}*,\nYour photos for event *${event.event_name}* is ready to download. Your event code is *${event.customer_unique_id+'HID'}*\n\n*Website* : ${window.location.origin}/login?event_code=${event.customer_unique_id+'HID'}&date=${new Date().getTime()} \n\nRegards *${this.userData?.studio_name}*`;
+    console.log(message);
+
+    navigator.clipboard.writeText(message).then(() => {
+      this.alert.success('Private Link copied to clipboard');
+    }).catch(err => {
+      console.error('Failed to copy message: ', err);
+    });
+}
 
   toggleEventStatus(event: any) {
     const params = {
@@ -307,7 +318,7 @@ export class AiPhotoSharingComponent {
     }
   }
 
-  async downloadQR(event: any) {
+  async downloadQR(event: any,accessType: any) {
     //    const qrData = {
     //   couple: 'Mahima & Shekhar',
     //   date: '11.12.2024',
@@ -352,9 +363,17 @@ export class AiPhotoSharingComponent {
     ctx.fillText(event.customer_name, width / 2, 60);
 
     ctx.font = '24px Arial';
-    ctx.fillText(event.event_date || new Date().toLocaleDateString('en-US'), width / 2, 100);
+    ctx.fillText(event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }), width / 2, 100);
 
-    const url = `${window.location.origin}/login?event_code=${event.customer_unique_id}`;
+    const url = `${window.location.origin}/login?event_code=${event.customer_unique_id+(accessType === 'public' ? 'GLB' : 'HID')}&date=${new Date().getTime()}`;
     const qrDataUrl = await QRCode.toDataURL(url);
     const qrImage = new Image();
     qrImage.src = qrDataUrl;
@@ -364,7 +383,7 @@ export class AiPhotoSharingComponent {
 
       ctx.font = '20px Arial';
 
-      ctx.fillText(`USE CODE: ${event.customer_unique_id}`, width / 2, 500);
+      ctx.fillText(`USE CODE: ${event.customer_unique_id+(accessType === 'public' ? 'GLB' : 'HID')}`, width / 2, 500);
 
       ctx.font = '22px Arial';
       ctx.fillText(this.userData?.studio_name, width / 2, 540);

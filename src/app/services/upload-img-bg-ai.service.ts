@@ -75,7 +75,7 @@ export class UploadImgBackgroundAiService {
     currentFolderId: any
   ) {
 
-    await this.checkIfUserHasAccess();
+    // await this.checkIfUserHasAccess();
 
     if (localStorage.getItem("isUploadingGlobally") === "true") {
       this.alert.info("Photos added in queue, please do not refresh the page.", 3000);

@@ -179,3 +179,12 @@ video {
 .animate-slide-in-right {
     animation: slideInRight 0.4s ease-out;
 }
+
+.carousel-item {
+  height: 600px; /* adjust as needed */
+}
+
+.carousel-item img {
+  height: 100%;
+  object-fit: cover;
+}

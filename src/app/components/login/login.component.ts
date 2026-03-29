@@ -25,6 +25,7 @@ export class LoginComponent {
   countdown: number = 30;
   countdownInterval: any;
   sentOtp: any = '';
+  accessType: string = '';
 
 
   constructor(
@@ -38,7 +39,8 @@ export class LoginComponent {
     this.activateRoute.queryParams.subscribe((params: any) => {
       if (params['event_code']) {
         this.loginPin = params['event_code'];
-        this.handlePin();
+        this.accessType = params['event_code'].endsWith('HID') ? 'HID' : 'GLB';
+        this.removeHIDGLBFromPin();
       }
     })
   }
@@ -60,8 +62,11 @@ export class LoginComponent {
       return;
     }
     const params: any = {
-      pin: this.loginPin
+      pin: this.loginPin.endsWith('HID') || this.loginPin.endsWith('GLB') ? this.loginPin.slice(0, -3) : this.loginPin
     };
+    if(!this.accessType){
+      this.accessType = this.loginPin.endsWith('HID') ? 'HID' : 'GLB';
+    }
     this.authService.getOTPForPinUser(params, async (res: any) => {
       if (res.status == 200) {
         if (res.role == 'admin') {
@@ -87,7 +92,8 @@ export class LoginComponent {
         } else if (res.role == 'customer' && res.is_event_submitted) {
           this.alert.info("Event already submitted");
         } else if (res.role == 'ai_customer') {
-          localStorage.setItem("userData", JSON.stringify(res.data));
+          // this.accessType = this.loginPin.endsWith('HID') ? 'HID' : !!res.data.browse_all_photo_ai ? 'GLB' : 'HID';
+          localStorage.setItem("userData", JSON.stringify({...res.data,accessType:this.accessType}));
           this.router.navigate(['/ps']);
         }
         this.loader = false;
@@ -196,5 +202,12 @@ export class LoginComponent {
 
   removeOtpSpaces() {
     this.otp = this.otp.replace(/\s+/g, '');
+  }
+
+  removeHIDGLBFromPin(){
+    if(this.loginPin.endsWith('HID') || this.loginPin.endsWith('GLB')){
+      this.loginPin = this.loginPin.slice(0, -3);
+      this.handlePin();
+    }
   }
 }

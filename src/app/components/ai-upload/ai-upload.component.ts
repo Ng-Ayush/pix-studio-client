@@ -99,6 +99,7 @@ export class AiUploadComponent {
       }
     }, 100);
     this.eventId = this.userData?.event_id;
+    this.isBrowseAllFolder = !this.userData?.accessType ? !!this.userData.browse_all_folder : this.userData?.accessType === 'GLB';
     this.previewCover = JSON.parse(this.userData.ai_cover_images);
     if (this.userData && !this.userData?.isFaceDescriptorReady) {
       this.checkReadiness();
@@ -111,7 +112,7 @@ export class AiUploadComponent {
     // this.getPhotosByEventId();
     // this.loadPhotos();
     this.loadFolders();
-    this.checkIsBrowseAllFolderStatus();
+    // this.checkIsBrowseAllFolderStatus();
 
   }
 
