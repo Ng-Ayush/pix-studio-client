@@ -41,6 +41,7 @@ export class ManageProfileComponent {
   disconnectModal = false;
 
   private modalTimeoutId: any = null;
+  lastQr: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -107,13 +108,16 @@ export class ManageProfileComponent {
     // });
 
     this.socketService.Qr().subscribe(qr => {
+      this.lastQr = qr;
       this.qrCode = qr;
       this.isLoading = false;
+      this.showWhatsappModal = true;
       // this.connected = false;
     });
 
     this.socketService.Authen().subscribe(() => {
       this.qrCode = null;
+      this.lastQr = null;
       this.isLoading = false;
       this.showWhatsappModal = false;
       this.isConnected = true;
@@ -123,14 +127,23 @@ export class ManageProfileComponent {
       this.alert.error(`WhatsApp Error: ${msg}`);
       this.isLoading = false;
       this.showWhatsappModal = false;
+      this.lastQr = null;
     });
   }
 
   // -------------------- CONNECT / DISCONNECT --------------------
   connectWhatsapp() {
     if (this.isConnected) {
-      this.openDisconnectModal();
+      // this.openDisconnectModal();
       return;
+    }
+
+    if (this.lastQr) {
+      console.log("INSIDE last QR",this.lastQr)
+        this.showWhatsappModal = true;
+        this.isLoading = false;
+        this.qrCode = this.lastQr;
+        return;
     }
 
     this.isLoading = true;
