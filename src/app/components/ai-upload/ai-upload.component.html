@@ -18,7 +18,8 @@
             <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="w-100" loading="lazy" [src]="previewCover?.[0]?.url || '../../../assets/car.png'" alt="Image">
+                        <img class="w-100" loading="lazy" [src]="previewCover?.[0]?.url || '../../../assets/car.png'"
+                            alt="Image">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="title mx-5 px-5 animated slideInDown">
                                 <div class="title-center">
@@ -115,34 +116,52 @@
                         </div>
                     </div>
 
-                    <!-- 🔹 Photo Display Grid -->
-                    <ng-container *ngIf="photos && photos.length > 0 && activeTab !== 'matched'; else showFallback">
+                    <div class="bulk-top-bar" *ngIf="photos?.length">
+
+                        <label class="select-all">
+                            <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
+                            <span>Select All</span>
+                        </label>
+
+                    </div>
+
+                    <ng-container *ngIf="photos?.length && activeTab !== 'matched'; else showFallback">
                         <div class="row p-0 m-0">
+
                             <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
-                                <div class="col-sm-6 col-md-4 col-lg-3 wow fadeIn p-0" data-wow-delay="0.1s">
-                                    <div class="portfolio-item overflow-hidden">
-                                        <img class="img-fluid m-2" [src]="photo.photo_url" loading="lazy"
-                                            alt="photo">
-                                        <div class="portfolio-overlay">
-                                            <div class="portfolio-btn">
-                                                <!-- <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    [href]="photo.photo_url" data-lightbox="portfolio"><i
-                                                        class="fa fa-eye"></i></a> -->
-                                                <a class="btn btn-lg-square btn-outline-primary border-2 mx-1"
-                                                    (click)="downloadSinglePhoto(photo)" href="javascript:void(0);">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </div>
-                                            <div class="portfolio-name">
-                                                <h6 class="text-uppercase mb-0 text-center">{{ photo.photo_name ||
-                                                    'Photo' }}</h6>
-                                            </div>
+                                <div class="col-6 p-1">
+
+                                    <div class=" position-relative">
+
+                                        <!-- ✅ Skeleton -->
+                                        <div class="skeleton" *ngIf="!photo.loaded"></div>
+
+                                        <!-- ✅ Image -->
+                                        <img class="img-fluid" [src]="photo.photo_url" (load)="onImageLoad(photo)"
+                                            (click)="toggleSelection(photo)" [class.hidden]="!photo.loaded" />
+
+                                        <!-- ✅ Selection Checkbox -->
+                                        <div class="select-overlay" *ngIf="photo.loaded">
+                                            <input type="checkbox" [checked]="photo.selected" />
                                         </div>
+
+                                        <!-- ✅ Download Icon -->
+                                        <div class="download-btn" *ngIf="photo.loaded">
+                                            <button (click)="downloadSinglePhoto(photo, $event)">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
+
                                 </div>
                             </ng-container>
+
                         </div>
                     </ng-container>
+
+                    <!-- ✅ Bulk Actions -->
+
 
                     <!-- 🔹 Matched Photos View -->
                     <ng-container *ngIf="activeTab === 'matched'">
@@ -212,6 +231,16 @@
                 </div>
 
             </div>
+        </div>
+
+        <div class="bulk-actions" *ngIf="selectedPhotos.length > 0">
+            <button (click)="downloadSelected()" class="d-flex gap-2"><svg xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Selected ({{selectedPhotos.length}})</button>
+            <button (click)="clearSelection()">Clear</button>
         </div>
 
 
@@ -286,7 +315,9 @@
                 </div>
 
                 <div class="bg-gray-50 p-4 flex justify-center gap-5 rounded-b-lg">
-                    <button (click)="capturePhoto()" [disabled]="userData?.need_customer_number && aiGuestConfig.phone?.length !== 10" *ngIf="!isMobile"
+                    <button (click)="capturePhoto()"
+                        [disabled]="userData?.need_customer_number && aiGuestConfig.phone?.length !== 10"
+                        *ngIf="!isMobile"
                         class="cursor-pointer px-8 py-2 rounded-full bg-pink-600 text-white font-medium hover:bg-pink-700 transition-colors duration-200">Capture</button>
                     <button (click)="submitPhoto()" [disabled]="!canSubmit()" *ngIf="isMobile"
                         class="cursor-pointer px-8 py-2 rounded-full bg-green-600 text-white font-medium hover:bg-green-700 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed">

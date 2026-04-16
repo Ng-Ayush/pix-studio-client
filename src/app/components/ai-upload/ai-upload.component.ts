@@ -78,6 +78,13 @@ export class AiUploadComponent {
   @ViewChild('youtubePlayer') youtubePlayer!: ElementRef | any;
   latestPhotoMap: any = {};
   showNewPhotosToast = false;
+  selectedPhotos: any[] = [];
+  private maxAttempts = 5;
+  private attemptCount = 0;
+  matchedSelected: any[] = [];
+  isAllMatchedSelected = false;
+  isFetching = false;
+  imagesLoadingCount = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -106,6 +113,12 @@ export class AiUploadComponent {
       this.intervalId = setInterval(() => {
         if (!this.isReady) {
           this.checkReadiness();
+        } else {
+          clearInterval(this.intervalId);
+
+          if (!this.isReady) {
+            console.warn('Max attempts reached. Stopping polling.');
+          }
         }
       }, 10000);
     }
@@ -163,6 +176,9 @@ export class AiUploadComponent {
   }
 
   loadPhotos() {
+    if (this.isFetching) return;
+
+    this.isFetching = true;
     const folderKey = this.selectedFolderId || 'all';
     const pagination = this.paginationMap[folderKey];
 
@@ -190,10 +206,11 @@ export class AiUploadComponent {
         if (!this.latestPhotoMap[folderKey] && res.data.length) {
           this.latestPhotoMap[folderKey] = Math.max(
             this.latestPhotoMap[folderKey] || 0,
-            ...newPhotos.map((p:any) => p.id)
+            ...newPhotos.map((p: any) => p.id)
           );
         }
         this.photos = this.photosByFolder[folderKey];
+        this.imagesLoadingCount =   res.data.length;
 
         pagination.hasMore = pagination.page < res.pagination.totalPages;
         pagination.page++;
@@ -248,6 +265,7 @@ export class AiUploadComponent {
 
 
   checkReadiness() {
+    this.attemptCount++;
     this.http.get(environment.apiUrl + `/api/mystudio/photo-selection/checkEventReady/${this.userData.event_name.split(" ").join("_")}_${this.userData.event_id}`)
       .subscribe(
         (res: any) => {
@@ -269,6 +287,11 @@ export class AiUploadComponent {
         },
         (err: any) => {
           console.error('Failed to check event readiness', err);
+
+          // optional: stop on repeated failures
+          if (this.attemptCount >= this.maxAttempts) {
+            clearInterval(this.intervalId);
+          }
         }
       );
   }
@@ -543,6 +566,8 @@ export class AiUploadComponent {
           this.alert.success('Face matched successfully!');
           this.isLoading = false;
           this.matchedImages = JSON.parse(JSON.stringify(res.matches)) || [];
+          this.prepareMatchedImages();
+
           if (this.matchedImages.length > 0 && this.userData?.need_customer_number && (this.userData?.google_review_url && this.userData?.google_review_url.startsWith('https://')) && await this.checkHasUserAlreadyReviewed()) {
             setTimeout(() => {
               this.triggerGoogleReview();
@@ -561,6 +586,18 @@ export class AiUploadComponent {
           this.onCancel();
         }
       });
+  }
+
+  prepareMatchedImages() {
+    this.matchedImages = this.matchedImages?.map((p: any, i: number) => ({
+      photo_url: p.photo_url || p,
+      photo_name: p.photo_name || `Matched ${i + 1}`,
+      selected: false,
+      loaded: false
+    }));
+
+    this.matchedSelected = [];
+    this.isAllMatchedSelected = false;
   }
 
 
@@ -600,12 +637,6 @@ export class AiUploadComponent {
 
   trackPhotos(index: number, photo: any) {
     return photo.id;
-  }
-
-  toggleSelectAll(): void {
-    this.isAllSelected = !this.isAllSelected;
-    this.photos.forEach((photo: any) => (photo.selected = this.isAllSelected));
-    this.imageSelected = this.photos.some((photo: any) => photo.selected)
   }
 
   updateSelectAllState(): void {
@@ -759,5 +790,94 @@ export class AiUploadComponent {
         this.loading = false;
       }
     });
+  }
+
+  onImageLoad(photo: any) {
+    photo.loaded = true;
+
+    this.imagesLoadingCount--;
+
+    console.log(this.imagesLoadingCount ,"count");
+    
+
+    // ✅ When enough images loaded → allow next API
+    if (this.imagesLoadingCount <= 0) {
+      this.isFetching = false;
+    }
+  }
+
+  toggleSelection(photo: any) {
+    photo.selected = !photo.selected;
+
+    if (photo.selected) {
+      this.selectedPhotos.push(photo);
+    } else {
+      this.selectedPhotos = this.selectedPhotos.filter(p => p !== photo);
+    }
+  }
+
+  clearSelection() {
+    this.photos.forEach((p: any) => p.selected = false);
+    this.selectedPhotos = [];
+    this.isAllMatchedSelected = false;
+    this.isAllSelected = false;
+  }
+
+
+  async downloadSelected() {
+    for (let photo of this.selectedPhotos) {
+      await this.downloadWithDelay(photo);
+    }
+  }
+
+  downloadWithDelay(photo: any) {
+    return new Promise(resolve => {
+      this.downloadSinglePhoto(photo);
+      setTimeout(resolve, 800); // prevent browser blocking
+    });
+  }
+
+  toggleSelectAll(event: any) {
+    const checked = event.target.checked;
+    this.isAllSelected = checked;
+
+    this.selectedPhotos = [];
+
+    this.photos.forEach((photo: any) => {
+      photo.selected = checked;
+      if (checked) {
+        this.selectedPhotos.push(photo);
+      }
+    });
+  }
+
+  toggleSelectionMatched(photo: any) {
+    photo.selected = !photo.selected;
+
+    if (photo.selected) {
+      this.matchedSelected.push(photo);
+    } else {
+      this.matchedSelected = this.matchedSelected.filter(p => p !== photo);
+    }
+
+    this.isAllMatchedSelected = this.matchedImages.every(p => p.selected);
+  }
+
+  toggleSelectAllMatched(event: any) {
+    const checked = event.target.checked;
+    this.isAllMatchedSelected = checked;
+
+    this.matchedSelected = [];
+
+    this.matchedImages.forEach(photo => {
+      photo.selected = checked;
+      if (checked) this.matchedSelected.push(photo);
+    });
+  }
+
+  clearMatchedSelection() {
+    this.matchedImages.forEach(p => p.selected = false);
+    this.matchedSelected = [];
+    this.isAllMatchedSelected = false;
   }
 }
