@@ -286,3 +286,26 @@ img.hidden {
   width: 18px;
   height: 18px;
 }
+
+.image-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* 🔥 makes all tiles equal */
+  overflow: hidden;
+  border-radius: 10px;
+  background: #1a1a1a;
+}
+
+/* Image fills container */
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🔥 key line */
+}
+
+/* Skeleton same size as image */
+.skeleton {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}

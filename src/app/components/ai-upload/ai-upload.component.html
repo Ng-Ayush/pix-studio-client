@@ -118,9 +118,9 @@
 
                     <div class="bulk-top-bar" *ngIf="photos?.length">
 
-                        <label class="select-all">
-                            <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
-                            <span>Select All</span>
+                        <label class="select-all" for="select-all">
+                            <input type="checkbox" id="select-all" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
+                            <span >Select All</span>
                         </label>
 
                     </div>
@@ -131,13 +131,13 @@
                             <ng-container *ngFor="let photo of photos; trackBy: trackPhotos">
                                 <div class="col-6 p-1">
 
-                                    <div class=" position-relative">
+                                    <div class="image-card position-relative">
 
                                         <!-- ✅ Skeleton -->
                                         <div class="skeleton" *ngIf="!photo.loaded"></div>
 
                                         <!-- ✅ Image -->
-                                        <img class="img-fluid" [src]="photo.photo_url" (load)="onImageLoad(photo)"
+                                        <img class="" [src]="photo.photo_url" (load)="onImageLoad(photo)"
                                             (click)="toggleSelection(photo)" [class.hidden]="!photo.loaded" />
 
                                         <!-- ✅ Selection Checkbox -->
