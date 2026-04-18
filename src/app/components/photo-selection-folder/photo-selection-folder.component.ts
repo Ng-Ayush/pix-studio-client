@@ -204,33 +204,30 @@ export class PhotoSelectionFolderComponent {
     this.router.navigate(['/login']);
   }
 
-  sendBulkMessage() {
-    this.loader.show();
-    const params: any = {
-      numbers: [...new Set(this.aiGuests.map((guest: any) => `91${guest.guest_phone}`))],
-      // numbers: ['7704898884', '8004033357'],
-      message: `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId} `,
-    }
-    this._pservice.sendBulkMessage(params, (res: any) => {
-      this.loader.hide();
-      if (res.status == 200 && res.results.every((item: any) => item.success)) {
-        this.alert.success("Bulk Message Sent Successfully");
+  copyAllGuestNumber() {
+    const formatted = this.aiGuests
+      .map((item: any) => `91${item.guest_phone}`)
+      .join('\n');
 
-      } else if (res.status == 200 && res.results.some((item: any) => !item.success)) {
-        const failedNumbers = res.results
-          .map((item: any, index: number) => item.success == false ? item.number : null)
-          .filter((item: any) => item !== null);
+    navigator.clipboard.writeText(formatted)
+      .then(() => {
+        this.alert.success("All Guest list numbers copied to clipboard!");
+      })
+      .catch(err => {
+        console.error("Failed to copy: ", err);
+      });
 
-        if (failedNumbers.length > 0) {
-          this.alert.error(`Failed to send bulk message. Numbers: ${failedNumbers.join(", ")}`, 10000);
-        } else {
-          this.alert.error("Failed to send bulk message");
-        }
-      } else {
-        this.alert.error("Error sending bulk message");
-      }
-    })
   }
 
+  copyEventMessage(type: any = 'public') {
+    const message = `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId + (type == 'public' ? 'GLB' : 'HID')}&date=${new Date().getTime()}`;
+    navigator.clipboard.writeText(message)
+      .then(() => {
+        this.alert.success("Event message copied to clipboard!");
+      })
+      .catch(err => {
+        console.error("Failed to copy: ", err);
+      });
+  }
 
 }

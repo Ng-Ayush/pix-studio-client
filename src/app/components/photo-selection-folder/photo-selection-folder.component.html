@@ -85,17 +85,77 @@
             <!-- Folder Grid -->
             <div class="grid grid-cols-3 gap-2">
                 <div class="row-span-4 bg-white mb-2 min-h-screen" *ngIf="isAIuploaded && aiGuests.length>0">
-                    <div
-                        class="px-8 py-4 mt-0 flex justify-between items-center dark:bg-transparent border border-gray-200">
-                        Guest Access
-                        <button (click)="sendBulkMessage()"
-                            class="bg-[#494CA2] hover:bg-[#494CA2F5] flex gap-1 cursor-pointer text-white rounded-md py-2 px-5"><svg
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                            </svg>
-                            Notify All</button>
+                    <div class="flex items-center justify-between px-4 py-3 border border-gray-200 rounded-md">
+
+                        <!-- Title -->
+                        <h2 class="text-md font-medium text-gray-700 pl-[13px]">
+                            Guest Access
+                        </h2>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-2">
+
+                            <!-- Copy Numbers -->
+                            <div class="relative group">
+                                <button (click)="copyAllGuestNumber()"
+                                    class="p-2 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2F5] text-white rounded-md">
+
+                                    <!-- Clipboard Icon -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6M9 8h6m2 12H7a2 2 0 0 1-2-2V6a2 2 0 0 1 
+            2-2h2.5A1.5 1.5 0 0 1 11 2.5h2A1.5 1.5 0 0 1 14.5 4H17a2 
+            2 0 0 1 2 2v12a2 2 0 0 1-2 2Z" />
+                                    </svg>
+                                </button>
+
+                                <!-- Popover -->
+                                <div class="absolute bottom-full mb-2 hidden group-hover:block 
+                  bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                                    Copy Numbers
+                                </div>
+                            </div>
+
+                            <!-- Public Message -->
+                            <div class="relative group">
+                                <button (click)="copyEventMessage('public')"
+                                    class="p-2 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2F5] text-white rounded-md">
+
+                                    <!-- Chat Icon -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12c0-4.556 4.03-8.25 9-8.25s9 3.694 
+            9 8.25-4.03 8.25-9 8.25a9.77 9.77 0 0 1-3.516-.64l-3.234 
+            1.078a.75.75 0 0 1-.95-.95l1.078-3.234A9.77 9.77 0 0 1 
+            2.25 12Z" />
+                                    </svg>
+                                </button>
+
+                                <div class="absolute bottom-full mb-2 hidden group-hover:block 
+                  bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                                    Copy Public Message
+                                </div>
+                            </div>
+
+                            <!-- Private Message -->
+                            <div class="relative group">
+                                <button (click)="copyEventMessage('private')"
+                                    class="p-2 cursor-pointer bg-[#494CA2] hover:bg-[#494CA2F5] text-white rounded-md">
+
+                                    <!-- Lock + Chat Icon -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 10.5V7.875a4.5 4.5 0 1 0-9 0V10.5m-1.5 
+            0h12a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 
+            1-1.5 1.5h-12A1.5 1.5 0 0 1 4.5 18v-6A1.5 
+            1.5 0 0 1 6 10.5Z" />
+                                    </svg>
+                                </button>
+
+                                <div class="absolute bottom-full mb-2 hidden group-hover:block 
+                  bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                                   Copy Private Message
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                     <div class="flex flex-col gap-4 px-8 pt-4 dark:bg-transparent">
                         <div class="flex gap-4 items-center" *ngFor="let guest of aiGuests">
