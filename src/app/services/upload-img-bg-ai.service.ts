@@ -23,7 +23,7 @@ export class UploadImgBackgroundAiService {
     private loader: LoaderService,
     private _pservice: PhotoSelectionService,
     private alert: AlertService,
-    private router:Router
+    private router: Router
   ) { }
 
   // ---------------- Observables ----------------
@@ -223,6 +223,7 @@ export class UploadImgBackgroundAiService {
           const formData = new FormData();
 
           const compressedBatch: File[] = [];
+          const thumbnailBatch: File[] = [];
 
           for (let j = 0; j < batchFiles.length; j += COMPRESSION_CONCURRENCY) {
             const chunk = batchFiles.slice(j, j + COMPRESSION_CONCURRENCY);
@@ -232,14 +233,21 @@ export class UploadImgBackgroundAiService {
               if (this.waterMarkConfig?.is_watermark) {
                 watermarkedBlob = await this.addWatermarkFromBlob(compressed, this.waterMarkConfig?.transparency);
               }
-              return watermarkedBlob ?? compressed;
+              const mainFile = watermarkedBlob ?? compressed;
+
+              // --- Thumbnail compression (NEW) ---
+              const thumbBlob: any = await this.imageCompressService.compress50KBToTarget(file);
+              const thumbFile = new File([thumbBlob], file.name, { type: 'image/jpeg' });
+
+              return { mainFile, thumbFile };
             });
 
             this.batchStart$.next(i + j + 1);
             this.batchEnd$.next(Math.min(i + j + COMPRESSION_CONCURRENCY, this.totalPhotos));
 
             const results = await Promise.all(promises);
-            compressedBatch.push(...results);
+            compressedBatch.push(...results.map(r => r.mainFile));
+            thumbnailBatch.push(...results.map(r => r.thumbFile));
             this.uploadedPhotos += results.length;
             const percent = Math.round((this.uploadedPhotos / this.totalPhotos) * 100);
             this.progressPercentage$.next(percent);
@@ -256,6 +264,7 @@ export class UploadImgBackgroundAiService {
           formData.append('photo_quality', this.photo_quality);
           formData.append('is_ai_upload', '1');
           compressedBatch.forEach(file => formData.append('files', file, file.name));
+          thumbnailBatch.forEach(file => formData.append('thumbnail_files', file, file.name));
 
           await firstValueFrom(this.http.post<any>(`${environment.apiUrl}/api/mystudio/photos/uploads`, formData));
         }

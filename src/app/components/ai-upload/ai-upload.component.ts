@@ -96,7 +96,7 @@ export class AiUploadComponent {
     private sanitizer: DomSanitizer
   ) {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    this.scrollTop();
+    // this.scrollTop();
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     setTimeout(() => {
       if (this.userData?.youtube_cover_url) {
@@ -141,7 +141,7 @@ export class AiUploadComponent {
           console.log(`Loaded ${this.folders.length} folders`);
           // this.loadPhotos();
           setTimeout(() => {
-            this.scrollTop();
+            // this.scrollTop();
 
           }, 0);
 

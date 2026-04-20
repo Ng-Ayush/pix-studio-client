@@ -137,7 +137,7 @@
                                         <div class="skeleton" *ngIf="!photo.loaded"></div>
 
                                         <!-- ✅ Image -->
-                                        <img class="" [src]="photo.photo_url" (load)="onImageLoad(photo)"
+                                        <img class="" [src]="photo.thumbnail_url || photo.photo_url" (load)="onImageLoad(photo)"
                                             (click)="toggleSelection(photo)" [class.hidden]="!photo.loaded" />
 
                                         <!-- ✅ Selection Checkbox -->
