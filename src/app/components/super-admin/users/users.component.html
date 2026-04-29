@@ -88,32 +88,32 @@
                     </button>
                 </div>
 
-                <div class="relative mb-6">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
+                <div class="sticky top-0 z-10 bg-gray-50 pb-4 pt-2">
+                    <div class="relative mb-4">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm"
+                            (input)="onSearchChange()"
+                            class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
                     </div>
-                    <input type="text" autocomplete="off" placeholder="Search users" [(ngModel)]="searchTerm"
-                        (input)="onSearchChange()"
-                        class="pl-11 pr-4 py-3 w-full rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all duration-200" />
-                </div>
-
-                <div class="flex gap-4 mb-4">
-                    <button (click)="switchTab(true)"
-                        [ngClass]="activeTab === true ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                        class="cursor-pointer px-4 py-2 rounded-full transition">
-                        Active Users
-                    </button>
-
-                    <button (click)="switchTab(false)"
-                        [ngClass]="activeTab === false ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                        class="cursor-pointer px-4 py-2 rounded-full transition">
-                        Inactive Users
-                    </button>
+                
+                    <div class="flex gap-4">
+                        <button (click)="switchTab(true)"
+                            [ngClass]="activeTab === true ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
+                            class="cursor-pointer px-4 py-2 rounded-full transition">
+                            Active Users
+                        </button>
+                        <button (click)="switchTab(false)"
+                            [ngClass]="activeTab === false ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
+                            class="cursor-pointer px-4 py-2 rounded-full transition">
+                            Inactive Users
+                        </button>
+                    </div>
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -128,6 +128,9 @@
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Phone Number
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Address
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Created At
@@ -156,6 +159,16 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ user.phone_number }}
+                                </td>
+                                <td class="px-6 py-4 max-w-[200px]">
+                                    <div class="relative group">
+                                        <span class="block truncate cursor-pointer">{{user.address}}</span>
+                                        <div
+                                            class="absolute z-50 hidden group-hover:block bottom-full left-0 mb-2 w-72 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg">
+                                            {{user.address}}
+                                            <div class="absolute top-full left-4 border-4 border-transparent border-t-gray-900"></div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">{{user.created_at | date : 'MMM, d y'}}</td>
                                 <td class="px-6 py-4">

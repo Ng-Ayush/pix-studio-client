@@ -8,14 +8,14 @@
 
 .sidebar {
     background-color: #494CA2;
-    /* Dark purple sidebar background */
     color: #ede7f6;
-    /* Light purple text in sidebar */
     padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Center icons in the sidebar */
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .sidebar-logo {
@@ -29,8 +29,9 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    position : sticky;
-    bottom: 275px;
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .sidebar-nav-item {
