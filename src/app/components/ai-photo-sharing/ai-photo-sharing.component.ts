@@ -522,7 +522,7 @@ export class AiPhotoSharingComponent {
     this.router.navigate(['/login']);
   }
 
-  async onImageUpload(event: Event, type: 'cover1' | 'cover2') {
+  async uploadCarouselImage(event: Event, type: 'cover1' | 'cover2') {
     console.log(323);
     this.isLoading = true;
 
@@ -530,7 +530,7 @@ export class AiPhotoSharingComponent {
     if (!input.files?.length) return;
     const reader = new FileReader();
     const fileRef = ref(this.storage, `AI-Event-Cover-Photo/${this.event_config.event_name || 'event'}_${this.userData.id}_${crypto.randomUUID()}/${type}`);
-    const blob = await this.imageCompressService.compress3MBToTarget(input.files[0])
+    const blob = await this.imageCompressService.compress3MBToTarget(input.files[0],'basic')
     const uploadTask = uploadBytes(fileRef, blob);
 
     uploadTask.then(async () => {

@@ -567,9 +567,9 @@
                         <span class="block font-semibold text-gray-700 mb-2">
                             Cover image - 1 (ratio 1920 x 1080 only)
                         </span>
-                        <input type="file" accept="image/*"
+                        <input type="file" accept=".jpg, .jpeg, image/jpeg"
                             class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
-                            (change)="onImageUpload($event, 'cover1')">
+                            (change)="uploadCarouselImage($event, 'cover1')">
                         <div class="rounded-md bg-white flex items-center justify-center h-48">
                             <img *ngIf="preview.cover1" [src]="preview.cover1" class="max-h-48" alt="Cover preview"
                                 style="flex:1 1 0;">
@@ -581,9 +581,9 @@
                         <span class="block font-semibold text-gray-700 mb-2">
                             Cover image - 2 (ratio 1920 x 1080 only)
                         </span>
-                        <input type="file" accept="image/*"
+                        <input type="file" accept=".jpg, .jpeg, image/jpeg"
                             class="block w-full text-sm border border-gray-300 rounded py-2 px-3 mb-2"
-                            (change)="onImageUpload($event, 'cover2')">
+                            (change)="uploadCarouselImage($event, 'cover2')">
                         <div class="rounded-md bg-white flex items-center justify-center h-48">
                             <img *ngIf="preview.cover2" [src]="preview.cover2" class="max-h-48" alt="Mobile preview"
                                 style="flex:1 1 0;">
