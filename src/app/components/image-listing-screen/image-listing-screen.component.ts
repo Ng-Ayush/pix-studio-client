@@ -21,13 +21,10 @@ import {
   templateUrl: './image-listing-screen.component.html',
   styleUrl: './image-listing-screen.component.scss',
   animations: [
-    // Overlay fade in/out
     trigger('fadeAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('200ms ease-in', style({ opacity: 1 }))]),
       transition(':leave', [animate('200ms ease-out', style({ opacity: 0 }))]),
     ]),
-
-    // Modal zoom in/out
     trigger('zoomAnimation', [
       transition(':enter', [
         style({ transform: 'scale(0.9)', opacity: 0 }),
@@ -37,8 +34,6 @@ import {
         animate('150ms ease-in', style({ transform: 'scale(0.9)', opacity: 0 })),
       ]),
     ]),
-
-    // Image fade transition on change
     trigger('imageFade', [
       transition('* => *', [
         style({ opacity: 0 }),
@@ -74,6 +69,41 @@ export class ImageListingScreenComponent {
   lastMouseX: number = 0;
   lastMouseY: number = 0;
 
+  // ── Tab state ──────────────────────────────────────────────────────────────
+  activeTab: 'all' | 'selected' | 'unselected' = 'all';
+
+  tabs = [
+    { key: 'all',        label: 'All Photos'  },
+    { key: 'selected',   label: 'Selected'    },
+    { key: 'unselected', label: 'Unselected'  },
+  ];
+
+  get filteredPhotos(): any[] {
+    switch (this.activeTab) {
+      case 'selected':   return this.photos.filter((p: any) => p.is_selected);
+      case 'unselected': return this.photos.filter((p: any) => !p.is_selected);
+      default:           return this.photos;
+    }
+  }
+
+  getTabCount(key: string): number {
+    switch (key) {
+      case 'selected':   return this.photos.filter((p: any) => p.is_selected).length;
+      case 'unselected': return this.photos.filter((p: any) => !p.is_selected).length;
+      default:           return this.photos.length;
+    }
+  }
+
+  setActiveTab(tab: any) {
+    this.activeTab = tab;
+  }
+
+  /** Returns position in full photos[] so badge number & viewImage stay correct */
+  getOriginalIndex(photo: any): number {
+    return this.photos.indexOf(photo);
+  }
+  // ── End Tab state ──────────────────────────────────────────────────────────
+
   constructor(private pservice: PhotoSelectionService,
     private router: Router,
     private alert: AlertService,
@@ -104,7 +134,6 @@ export class ImageListingScreenComponent {
         this.folderName = res.data.folder_name;
       }
     })
-
   }
 
   toggleSelect(image: any): void {
@@ -122,9 +151,7 @@ export class ImageListingScreenComponent {
 
     this.pservice.updatePhotoStatus(params, (res: any) => {
       if (res.status == 200) {
-        // this.getUploadedPhotosByFolderId();
         this.selectedPhotosCount = this.photos.filter((item: any) => item.is_selected).length;
-
       }
     })
   }
@@ -144,9 +171,7 @@ export class ImageListingScreenComponent {
 
     this.pservice.updatePhotoStatus(params, (res: any) => {
       if (res.status == 200) {
-        // this.getUploadedPhotosByFolderId();
         console.log(res);
-
       }
     })
   }
@@ -206,18 +231,13 @@ export class ImageListingScreenComponent {
   outsideClickHandler = (event: MouseEvent) => {
     const modalContent: HTMLElement | null = document.getElementById('modalContainer');
     if (!modalContent) return;
-
-    // Check if click target is outside the modal container
     if (!modalContent.contains(event.target as Node)) {
       this.showImageModal = false;
       this.removeOutsideClickListener();
     }
   };
 
-
-  ngAfterViewInit() {
-    // this.addOutsideClickListener();
-  }
+  ngAfterViewInit() {}
 
   openModal(index: number) {
     this.currentIndex = index;
@@ -235,9 +255,7 @@ export class ImageListingScreenComponent {
     this.currentIndex = (this.currentIndex + 1) % this.photos.length;
     this.imageLoading = true;
     this.currentImageSrc = this.photos[this.currentIndex].photo_url;
-    setTimeout(() => {
-      this.imageLoading = false;
-    }, 500);
+    setTimeout(() => { this.imageLoading = false; }, 500);
   }
 
   previousImage(event?: MouseEvent) {
@@ -246,24 +264,17 @@ export class ImageListingScreenComponent {
     this.currentIndex = (this.currentIndex - 1 + this.photos.length) % this.photos.length;
     this.imageLoading = true;
     this.currentImageSrc = this.photos[this.currentIndex].photo_url;
-    setTimeout(() => {
-      this.imageLoading = false;
-    }, 500);
+    setTimeout(() => { this.imageLoading = false; }, 500);
   }
 
   zoomIn() {
-    if (this.zoomLevel < this.maxZoom) {
-      this.zoomLevel += 0.25;
-    }
+    if (this.zoomLevel < this.maxZoom) this.zoomLevel += 0.25;
   }
 
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.25;
-      if (this.zoomLevel <= 1) {
-        this.translateX = 0;
-        this.translateY = 0;
-      }
+      if (this.zoomLevel <= 1) { this.translateX = 0; this.translateY = 0; }
     }
   }
 
@@ -293,8 +304,4 @@ export class ImageListingScreenComponent {
     this.translateX = 0;
     this.translateY = 0;
   }
-
-
 }
-
-

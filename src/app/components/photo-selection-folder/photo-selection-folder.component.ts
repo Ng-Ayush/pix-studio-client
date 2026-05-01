@@ -223,7 +223,7 @@ export class PhotoSelectionFolderComponent {
     const message = `Hi, Your photos are ready to view or download. Please visit the link to access your photo gallery. Thank you! - ${this.userData?.studio_name} \nLink: ${window.location.origin}/login?event_code=${this.customerUniqueId + (type == 'public' ? 'GLB' : 'HID')}&date=${new Date().getTime()}`;
     navigator.clipboard.writeText(message)
       .then(() => {
-        this.alert.success("Event message copied to clipboard!");
+        this.alert.success(`${type} event message copied to clipboard!`);
       })
       .catch(err => {
         console.error("Failed to copy: ", err);

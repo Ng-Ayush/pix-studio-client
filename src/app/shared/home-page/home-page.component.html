@@ -264,10 +264,17 @@
             </div> -->
 
             <div class="updates-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-4">
-                <div *ngFor="let item of directVideoLinks"
-                    class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 hover:drop-shadow-lg">
-                    <iframe [src]="item.safeUrl" width="100%" *ngIf="item.safeUrl"
-                        height="200" allow="autoplay"></iframe>
+                <div *ngFor="let item of directVideoLinks" class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer 
+               transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 
+               hover:drop-shadow-lg overflow-hidden"> <!-- ✅ Added overflow-hidden -->
+
+                    <!-- ✅ Aspect-ratio wrapper instead of bare iframe with fixed height -->
+                    <div class="relative w-full" style="aspect-ratio: 16/9;" *ngIf="item.safeUrl">
+                        <iframe [src]="item.safeUrl" class="absolute inset-0 w-full h-full" allow="autoplay"
+                            frameborder="0" allowfullscreen>
+                        </iframe>
+                    </div>
+
                     <div class="p-4">
                         <h3 class="text-white text-xl font-semibold mb-2 select-none">
                             {{item.title}}
