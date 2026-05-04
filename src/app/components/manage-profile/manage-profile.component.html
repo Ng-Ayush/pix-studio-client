@@ -58,14 +58,14 @@
                             </path>
                         </svg> Go back</button>
                 </a>
-                <button type="button" (click)="connectWhatsapp()" [ngClass]="{
+                <!-- <button type="button" (click)="connectWhatsapp()" [ngClass]="{
     'bg-emerald-700 text-white': isConnected,
     'bg-red-800 text-white': !isConnected
   }" class="flex cursor-pointer items-center px-4 py-2 rounded transition-colors duration-300">
                     <i class="bi bi-whatsapp text-white"></i>
                     <span *ngIf="!isConnected" class="ps-1 text-white">Connect to WhatsApp</span>
                     <span *ngIf="isConnected" class="font-semibold text-white ps-1">Connected Successfully</span>
-                </button>
+                </button> -->
             </div>
         </div>
 
@@ -231,7 +231,7 @@
                                             <span class="sr-only">Loading...</span>
                                         </span>
                                     </label>
-                                    <input type="file" id="name" accept="image/*" (change)="onImgUpload($event)"
+                                    <input type="file" id="name" accept=".jpg, .jpeg, image/jpeg" (change)="onImgUpload($event)"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                                         placeholder="Enter your Studio icon"
                                         [class.border-red-500]="userForm.get('studio_icon')?.invalid && userForm.get('studio_icon')?.touched">

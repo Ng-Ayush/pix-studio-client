@@ -107,7 +107,7 @@
             <div *ngFor="let img of images; let i = index; trackBy: trackByIndex" loading="eager" (click)="triggerFileInput(i)"
                 class="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48 cursor-pointer hover:border-blue-400 transition relative overflow-hidden bg-gray-50">
 
-                <input type="file" accept="image/*" id="fileInput{{i}}" (change)="onFileSelected($event, i)"
+                <input type="file" accept=".jpg, .jpeg, image/jpeg" id="fileInput{{i}}" (change)="onFileSelected($event, i)"
                     class="hidden" />
 
                 <ng-container *ngIf="img; else placeholder">
