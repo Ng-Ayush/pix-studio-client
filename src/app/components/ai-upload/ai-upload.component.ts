@@ -175,51 +175,60 @@ export class AiUploadComponent {
     }
   }
 
-  loadPhotos() {
-    if (this.isFetching) return;
+ loadPhotos() {
+  if (this.isFetching) return;
 
-    this.isFetching = true;
-    const folderKey = this.selectedFolderId || 'all';
-    const pagination = this.paginationMap[folderKey];
+  const folderKey = this.selectedFolderId || 'all';
+  const pagination = this.paginationMap[folderKey];
 
-    if (this.loading || !pagination?.hasMore) return;
+  if (this.loading || !pagination?.hasMore) return;
 
-    this.loading = true;
+  this.isFetching = true;
+  this.loading = true;
 
-    const params: any = {
-      event_id: this.eventId,
-      created_by: this.userData?.created_by,
-      page: pagination.page,
-      limit: this.limit,
-    };
+  const params: any = {
+    event_id: this.eventId,
+    created_by: this.userData?.created_by,
+    page: pagination.page,
+    limit: this.limit,
+  };
 
-    if (this.selectedFolderId) {
-      params.folder_id = this.selectedFolderId;
+  if (this.selectedFolderId) {
+    params.folder_id = this.selectedFolderId;
+  }
+
+  this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
+    this.loading = false;
+
+    if (res.status !== 200) {
+      this.isFetching = false;
+      return;
     }
 
-    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
-      if (res.status == 200) {
-        const folderPhotos = this.photosByFolder[folderKey] || [];
-        const existingIds = new Set(folderPhotos.map(p => p.id));
-        const newPhotos = res.data.filter((p: any) => !existingIds.has(p.id));
-        this.photosByFolder[folderKey] = [...folderPhotos, ...newPhotos];
-        if (!this.latestPhotoMap[folderKey] && res.data.length) {
-          this.latestPhotoMap[folderKey] = Math.max(
-            this.latestPhotoMap[folderKey] || 0,
-            ...newPhotos.map((p: any) => p.id)
-          );
-        }
-        this.photos = this.photosByFolder[folderKey];
-        this.imagesLoadingCount =   res.data.length;
+    const folderPhotos = this.photosByFolder[folderKey] || [];
+    const existingIds = new Set(folderPhotos.map((p: any) => p.id));
 
-        pagination.hasMore = pagination.page < res.pagination.totalPages;
-        pagination.page++;
+    const newPhotos = res.data
+      .filter((p: any) => !existingIds.has(p.id))
+      .map((p: any) => ({ ...p, loaded: false, selected: false })); // ← THE actual fix
 
-        // this.groupPhotosByFolder();
-      }
-      this.loading = false;
-    });
-  }
+    if (!newPhotos.length) {
+      this.isFetching = false;
+      return;
+    }
+
+    if (!this.latestPhotoMap[folderKey]) {
+      this.latestPhotoMap[folderKey] = Math.max(...newPhotos.map((p: any) => p.id));
+    }
+
+    this.imagesLoadingCount = newPhotos.length;
+    this.photosByFolder[folderKey] = [...folderPhotos, ...newPhotos];
+    this.photos = this.photosByFolder[folderKey]; // single assignment, Angular does the rest
+
+    pagination.hasMore = pagination.page < res.pagination.totalPages;
+    pagination.page++;
+  });
+}
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
