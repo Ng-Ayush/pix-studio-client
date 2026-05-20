@@ -169,6 +169,7 @@ export class AiPhotoSharingComponent {
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
+        need_customer_insta_follow: this.event_config?.need_customer_insta_follow || false,
         google_review_url: this.event_config?.google_review_url || '',
         selected_template: this.event_config?.selected_template || 'template1',
         photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic',
@@ -193,6 +194,7 @@ export class AiPhotoSharingComponent {
         watermark: JSON.stringify({ is_watermark: this.toggleWaterMark, transparency: this.transparencyValue }),
         youtube_cover_url: this.event_config?.youtube_cover_url || '',
         need_customer_number: this.event_config?.need_customer_number || false,
+        need_customer_insta_follow: this.event_config?.need_customer_insta_follow || false,
         google_review_url: this.event_config?.google_review_url || '',
         selected_template: this.event_config?.selected_template || 'template1',
         photo_quality: this.event_config?.photo_quality ? this.event_config?.photo_quality : 'basic',
@@ -224,6 +226,7 @@ export class AiPhotoSharingComponent {
     this.event_config = {};
     this.event_config.watermark = { is_watermark: false, transparency: null };
     this.event_config.need_customer_number = true;
+    this.event_config.need_customer_insta_follow = false;
     this.event_config.selected_template = this.event_config?.selected_template ?? 'template1';
     this.event_config.photo_quality_enabled = false;
     this.customerConfig = {};
@@ -561,6 +564,10 @@ export class AiPhotoSharingComponent {
 
   toggleNeedCustomerNumber(event: any) {
     this.event_config.need_customer_number = event.target.checked;
+  }
+
+  toggleNeedCustomerInstaFollow(event: any) {
+    this.event_config.need_customer_insta_follow = event.target.checked;
   }
 
   updateProgress(): void {

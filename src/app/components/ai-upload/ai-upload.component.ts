@@ -86,6 +86,11 @@ export class AiUploadComponent {
   isFetching = false;
   imagesLoadingCount = 0;
 
+  needCustomerInstaFollow: boolean = false;
+  instagramUrl: string = '';
+  showFollowModal: boolean = false;
+  private pendingDownloadAction: (() => void) | null = null;
+
   constructor(
     private route: ActivatedRoute,
     public loader: LoaderService,
@@ -98,6 +103,8 @@ export class AiUploadComponent {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     // this.scrollTop();
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
+    this.needCustomerInstaFollow = this.userData?.need_customer_insta_follow == true;
+    this.instagramUrl = this.userData?.instagram_url || '';
     setTimeout(() => {
       if (this.userData?.youtube_cover_url) {
         const videoId = this.extractYoutubeId(this.userData?.youtube_cover_url);
@@ -152,6 +159,7 @@ export class AiUploadComponent {
 
   onFolderChange(folderId: string | null) {
     if (this.selectedFolderId === folderId) return;
+    this.clearSelection();
 
     console.log(`Switching to folder: ${folderId || 'Browse All'}`);
 
@@ -175,60 +183,60 @@ export class AiUploadComponent {
     }
   }
 
- loadPhotos() {
-  if (this.isFetching) return;
+  loadPhotos() {
+    if (this.isFetching) return;
 
-  const folderKey = this.selectedFolderId || 'all';
-  const pagination = this.paginationMap[folderKey];
+    const folderKey = this.selectedFolderId || 'all';
+    const pagination = this.paginationMap[folderKey];
 
-  if (this.loading || !pagination?.hasMore) return;
+    if (this.loading || !pagination?.hasMore) return;
 
-  this.isFetching = true;
-  this.loading = true;
+    this.isFetching = true;
+    this.loading = true;
 
-  const params: any = {
-    event_id: this.eventId,
-    created_by: this.userData?.created_by,
-    page: pagination.page,
-    limit: this.limit,
-  };
+    const params: any = {
+      event_id: this.eventId,
+      created_by: this.userData?.created_by,
+      page: pagination.page,
+      limit: this.limit,
+    };
 
-  if (this.selectedFolderId) {
-    params.folder_id = this.selectedFolderId;
+    if (this.selectedFolderId) {
+      params.folder_id = this.selectedFolderId;
+    }
+
+    this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
+      this.loading = false;
+
+      if (res.status !== 200) {
+        this.isFetching = false;
+        return;
+      }
+
+      const folderPhotos = this.photosByFolder[folderKey] || [];
+      const existingIds = new Set(folderPhotos.map((p: any) => p.id));
+
+      const newPhotos = res.data
+        .filter((p: any) => !existingIds.has(p.id))
+        .map((p: any) => ({ ...p, loaded: false, selected: false })); // ← THE actual fix
+
+      if (!newPhotos.length) {
+        this.isFetching = false;
+        return;
+      }
+
+      if (!this.latestPhotoMap[folderKey]) {
+        this.latestPhotoMap[folderKey] = Math.max(...newPhotos.map((p: any) => p.id));
+      }
+
+      this.imagesLoadingCount = newPhotos.length;
+      this.photosByFolder[folderKey] = [...folderPhotos, ...newPhotos];
+      this.photos = this.photosByFolder[folderKey]; // single assignment, Angular does the rest
+
+      pagination.hasMore = pagination.page < res.pagination.totalPages;
+      pagination.page++;
+    });
   }
-
-  this.eventService.getAllPhotosByEventId(params, this.userData?.created_by, (res: any) => {
-    this.loading = false;
-
-    if (res.status !== 200) {
-      this.isFetching = false;
-      return;
-    }
-
-    const folderPhotos = this.photosByFolder[folderKey] || [];
-    const existingIds = new Set(folderPhotos.map((p: any) => p.id));
-
-    const newPhotos = res.data
-      .filter((p: any) => !existingIds.has(p.id))
-      .map((p: any) => ({ ...p, loaded: false, selected: false })); // ← THE actual fix
-
-    if (!newPhotos.length) {
-      this.isFetching = false;
-      return;
-    }
-
-    if (!this.latestPhotoMap[folderKey]) {
-      this.latestPhotoMap[folderKey] = Math.max(...newPhotos.map((p: any) => p.id));
-    }
-
-    this.imagesLoadingCount = newPhotos.length;
-    this.photosByFolder[folderKey] = [...folderPhotos, ...newPhotos];
-    this.photos = this.photosByFolder[folderKey]; // single assignment, Angular does the rest
-
-    pagination.hasMore = pagination.page < res.pagination.totalPages;
-    pagination.page++;
-  });
-}
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
@@ -652,16 +660,22 @@ export class AiUploadComponent {
     this.imageSelected = this.photos.some((photo: any) => photo.selected)
   }
 
-  downloadPhoto() {
-    const selectedPhotos: any = this.photos.filter((photo: any) => photo.selected);
-    selectedPhotos.forEach((photo: any, index: any) => {
-      this.downloadFile(photo.photo_url, photo.photo_name);
+  downloadPhoto(): void {
+    this.checkFollowGate(() => {
+      const selectedPhotos: any[] = this.photos.filter((photo: any) => photo.selected);
+      selectedPhotos.forEach((photo: any) => {
+        this.downloadFile(photo.photo_url, photo.photo_name);
+      });
     });
-
   }
 
-  downloadSinglePhoto(photo: any, idx?: any) {
-    this.downloadFile(photo.photo_url ? photo.photo_url : photo, photo.photo_name || `image-${idx}.jpg`);
+  downloadSinglePhoto(photo: any, idx?: any): void {
+    this.checkFollowGate(() => {
+      this.downloadFile(
+        photo.photo_url ? photo.photo_url : photo,
+        photo.photo_name || `image-${idx}.jpg`
+      );
+    });
   }
 
   togglePhoto(photo: any) {
@@ -833,16 +847,22 @@ export class AiUploadComponent {
   }
 
 
-  async downloadSelected() {
-    for (let photo of this.selectedPhotos) {
-      await this.downloadWithDelay(photo);
-    }
+  async downloadSelected(): Promise<void> {
+    this.checkFollowGate(async () => {
+      for (const photo of this.selectedPhotos) {
+        await this.downloadWithDelay(photo);
+      }
+    });
   }
 
-  downloadWithDelay(photo: any) {
+  downloadWithDelay(photo: any): Promise<void> {
     return new Promise(resolve => {
-      this.downloadSinglePhoto(photo);
-      setTimeout(resolve, 800); // prevent browser blocking
+      // NOTE: no gate here — gate is already checked by downloadSelected()
+      this.downloadFile(
+        photo.photo_url ? photo.photo_url : photo,
+        photo.photo_name || 'image.jpg'
+      );
+      setTimeout(resolve, 800);
     });
   }
 
@@ -889,4 +909,46 @@ export class AiUploadComponent {
     this.matchedSelected = [];
     this.isAllMatchedSelected = false;
   }
+
+  private isFollowed(): boolean {
+    return localStorage.getItem('isFollowed') == 'true';
+  }
+
+  /**
+   * Wraps any download action behind the follow gate.
+   * If the gate is off, or already followed → run action immediately.
+   * Otherwise → store the action and show the modal.
+   */
+  private checkFollowGate(action: () => void): void {
+    if (!this.needCustomerInstaFollow || this.isFollowed()) {
+      action();
+    } else {
+      this.pendingDownloadAction = action;
+      this.showFollowModal = true;
+    }
+  }
+
+  // ─── Modal actions ────────────────────────────────────────────────────────────
+
+  onInstagramLinkClick(): void {
+    localStorage.setItem('isFollowed', 'true');
+
+    if (this.instagramUrl) {
+      window.open(this.instagramUrl, '_blank');
+    }
+
+    this.showFollowModal = false;
+
+    // Now execute the originally-requested download
+    if (this.pendingDownloadAction) {
+      this.pendingDownloadAction();
+      this.pendingDownloadAction = null;
+    }
+  }
+
+  closeFollowModal(): void {
+    this.showFollowModal = false;
+    this.pendingDownloadAction = null;
+  }
+
 }
