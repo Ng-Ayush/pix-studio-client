@@ -65,7 +65,7 @@ export class AiUploadComponent {
   showThankyouMessage: boolean = false;
 
   currentPage = 1;
-  limit = 10;
+  limit = 20;
   loading = false;
   hasMore = true;
   private scrollTimeout: any;
