@@ -409,35 +409,16 @@
 
     <button class="modal-close" (click)="closeFollowModal()">✕</button>
 
-    <div class="modal-icon">
-      <!-- Instagram SVG icon -->
-      <svg viewBox="0 0 24 24" width="40" height="40" fill="none"
-           xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"
-              stroke="url(#ig-grad)" stroke-width="2"/>
-        <circle cx="12" cy="12" r="4.5" stroke="url(#ig-grad)" stroke-width="2"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="url(#ig-grad)"/>
-        <defs>
-          <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2"
-                          gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#f09433"/>
-            <stop offset="25%" stop-color="#e6683c"/>
-            <stop offset="50%" stop-color="#dc2743"/>
-            <stop offset="75%" stop-color="#cc2366"/>
-            <stop offset="100%" stop-color="#bc1888"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <h3 class="modal-thank-you">
+      Thank you for Choosing <br> <span class="studio-name">{{ userData?.studio_name }}</span>
+    </h3>
 
     <h2 class="modal-title">Follow Us on Instagram</h2>
     <p class="modal-desc">
       Please follow our Instagram page to unlock photo downloads.
     </p>
 
-    <a *ngIf="instagramUrl"
-       class="modal-btn"
-       (click)="onInstagramLinkClick()">
+    <a *ngIf="instagramUrl" class="modal-btn" (click)="onInstagramLinkClick()">
       Follow &amp; Download
     </a>
 

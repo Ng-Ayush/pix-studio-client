@@ -376,5 +376,21 @@ img.hidden {
 
 .modal-no-url { color: #e53e3e; font-size: 0.9rem; }
 
+.modal-thank-you {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.studio-name {
+  background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }

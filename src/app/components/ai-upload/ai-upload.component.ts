@@ -725,7 +725,7 @@ export class AiUploadComponent {
     const el = document.getElementById(elementId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      el.focus(); // optional: gives keyboard focus
+      el.focus();
     }
   }
 
@@ -820,10 +820,6 @@ export class AiUploadComponent {
 
     this.imagesLoadingCount--;
 
-    console.log(this.imagesLoadingCount ,"count");
-    
-
-    // ✅ When enough images loaded → allow next API
     if (this.imagesLoadingCount <= 0) {
       this.isFetching = false;
     }
@@ -857,7 +853,6 @@ export class AiUploadComponent {
 
   downloadWithDelay(photo: any): Promise<void> {
     return new Promise(resolve => {
-      // NOTE: no gate here — gate is already checked by downloadSelected()
       this.downloadFile(
         photo.photo_url ? photo.photo_url : photo,
         photo.photo_name || 'image.jpg'
@@ -914,11 +909,6 @@ export class AiUploadComponent {
     return localStorage.getItem('isFollowed') == 'true';
   }
 
-  /**
-   * Wraps any download action behind the follow gate.
-   * If the gate is off, or already followed → run action immediately.
-   * Otherwise → store the action and show the modal.
-   */
   private checkFollowGate(action: () => void): void {
     if (!this.needCustomerInstaFollow || this.isFollowed()) {
       action();
@@ -939,7 +929,6 @@ export class AiUploadComponent {
 
     this.showFollowModal = false;
 
-    // Now execute the originally-requested download
     if (this.pendingDownloadAction) {
       this.pendingDownloadAction();
       this.pendingDownloadAction = null;
