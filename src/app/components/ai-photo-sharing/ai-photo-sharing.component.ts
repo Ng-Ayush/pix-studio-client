@@ -57,6 +57,7 @@ export class AiPhotoSharingComponent {
   percentage: number = 0;
   progressClass: string = 'progress-green';
   selectedTemplate: any = '';
+  deleteLoader: boolean = false;
 
   constructor(
     private alert: AlertService,
@@ -126,6 +127,7 @@ export class AiPhotoSharingComponent {
     this.isEdit = false;
     this.deleteModal = false;
     this.selectedTemplate = '';
+    this.deleteLoader = false;
   }
 
   openPriceModal() {
@@ -261,7 +263,9 @@ export class AiPhotoSharingComponent {
   }
 
   deleteEvent() {
+    this.deleteLoader = true;
     this.eventService.deleteEvent(this.event_config.event_id, (res: any) => {
+      this.deleteLoader = false;
       if (res.status == 200) {
         this.alert.success(res.message);
         this.onCancel();

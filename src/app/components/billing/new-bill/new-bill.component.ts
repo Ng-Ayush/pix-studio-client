@@ -61,6 +61,9 @@ export class NewBillComponent {
   filteredInvoiceItems: any = [];
   isEditItemModal: boolean = false;
   forceUpdateModal: boolean = false;
+  deletePastPaymentModalOpen: boolean = false;
+  deletePastPaymentLoader: boolean = false;
+  selectedPastPayment: any = {};
 
 
   constructor(private fb: FormBuilder,
@@ -639,6 +642,31 @@ export class NewBillComponent {
     if(!amount || amount <= 0) return '';
     const words = this.commonService.convertToRupeesInWords(+amount);
     return words;
+  }
+
+  deletePastPaymentModal(pay: any) {
+    this.deletePastPaymentModalOpen = true;
+    this.selectedPastPayment = pay; 
+  }
+
+  deletePastPayment() {
+    this.deletePastPaymentLoader = true;
+    this.billingService.deletePastPaymentByInvoiceIdAndPaymentId({invoice_id:this.invoiceConfig.invoice_id, payment_id: this.selectedPastPayment.id}, (res: any) => {
+      this.deletePastPaymentLoader = false;
+      if (res.status == 200) {
+        this.alert.success(res.message);
+        this.deletePastPaymentModalOpen = false;
+        this.getInvoiceDetailByInvoiceNumber();
+      } else {
+        this.alert.error(res.message);
+      }
+    });
+  }
+
+  onCancel(){
+    this.deletePastPaymentModalOpen = false;
+    this.selectedPastPayment = {};
+    this.deletePastPaymentLoader = false;
   }
 
 }

@@ -32,7 +32,9 @@ export class PhotoSelectionComponent {
   userData: any = {};
   showLogOutModal: boolean = false;
   isCustomerModalOpen: boolean = false;
+  deleteLoader: boolean = false;
   customer_config: any = {};
+  PHOTO_SELECTION_EVENT_LIMIT = 50;
 
   constructor(private service: CustomerService,
     private eventService: PhotoSelectionService,
@@ -72,6 +74,7 @@ export class PhotoSelectionComponent {
     this.isEdit = false;
     this.deleteModal = false;
     this.isCustomerModalOpen = false;
+    this.deleteLoader = false;
   }
 
   closeCustomerModal() {
@@ -121,6 +124,10 @@ export class PhotoSelectionComponent {
   }
 
   openModal() {
+    if(this.eventList.length >= this.PHOTO_SELECTION_EVENT_LIMIT){
+      this.alert.warning("You have reached the maximum limit of events. Please delete some events to create new ones.");
+      return;
+    }
     this.isModalOpen = true;
     this.event_config = {};
   }
@@ -146,7 +153,9 @@ export class PhotoSelectionComponent {
   }
 
   deleteEvent() {
+    this.deleteLoader = true;
     this.eventService.deleteEvent(this.event_config.event_id, (res: any) => {
+      this.deleteLoader = false;
       if (res.status == 200) {
         this.alert.success(res.message);
         this.onCancel();

@@ -139,7 +139,7 @@
 
                   <div class="relative flex flex-col cursor-pointer z-10 px-2 pb-2 pt-6 group" (contextmenu)="openMenu($event, photo)">
                     <div class="flex items-center justify-center h-56 sm:h-44 w-auto m-auto">
-                      <img [src]="photo.photo_url" [alt]="photo.photo_name" width="100" height="150" loading="lazy"
+                      <img [src]="photo.thumbnail_url ?? photo.photo_url" [alt]="photo.photo_name" width="100" height="150" loading="lazy"
                         class="object-contain w-full h-full rounded" />
                     </div>
                   
