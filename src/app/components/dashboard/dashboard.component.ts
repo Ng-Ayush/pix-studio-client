@@ -131,7 +131,7 @@ export class DashboardComponent implements OnInit {
     setInterval(() => {
       idx = (idx + 1) % total;
       carousel.style.transform = `translateX(-${idx * 100}%)`;
-    }, 2000);
+    }, 5000);
   }
 
   underConstruction() {
