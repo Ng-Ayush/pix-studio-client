@@ -1,427 +1,1066 @@
-<!-- <div class="bg-gradient-to-r from-[#0b1e52] to-[#1e3a8a] text-white font-sans relative min-h-screen overflow-hidden">
-    <img src="../assets/1.png" alt="background waves"
-        class="absolute bottom-0 left-0 max-w-[40%] w-full opacity-90 pointer-events-none select-none">
-    <img src="../assets/2.png" alt="tech tree"
-        class="absolute bottom-0 right-0 max-w-[70%] w-full pointer-events-none select-none">
-    <img src="../assets/3.png" alt="triangles"
-        class="absolute top-0 right-0 max-w-[30%] w-full pointer-events-none select-none">
+<div class="bg-gray-950 text-gray-100 antialiased selection:bg-blue-600 selection:text-white relative">
 
-    <div class="flex flex-col md:flex-row items-center justify-between px-10 relative z-10 min-h-screen">
+    <!-- Background Movable Orbs -->
+    <div class="floating-orb-1"></div>
+    <div class="floating-orb-2"></div>
 
-        <div class="md:w-1/2 gap-6">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
-                    <div class="w-4 h-4 border-t-2 border-r-2 border-white rounded-full rotate-45"></div>
-                </div>
-                <span class="text-xl font-bold">MY STUDIO</span>
+    <!-- AUTOMATIC POPUP MODAL (TRIGGERS ONCE AFTER 20 SECONDS) -->
+    <div id="popup-modal" [class.hidden]="!isPopupOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        [class.opacity-0]="!isPopupOpen" [class.scale-95]="!isPopupOpen" [class.pointer-events-none]="!isPopupOpen">
+        <div
+            class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full relative border border-blue-500/40 shadow-2xl bg-gray-900/95 text-center">
+            <!-- Close Button -->
+            <button type="button" (click)="closePopup()"
+                class="cursor-pointer absolute top-4 right-4 text-gray-400 hover:text-white w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Popup Icon -->
+            <div
+                class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-600/40">
+                <i class="fa-solid fa-key text-white text-2xl"></i>
             </div>
 
-            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
-                WHERE <br> CREATIVITY <br> MEETS <br> SIMPLICITY.
-            </h1>
+            <span
+                class="text-blue-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-blue-800/50">Exclusive
+                Offer</span>
 
-            <p class="text-gray-200 text-lg max-w-md">
-                Effortless Photo Selection: Our intuitive mobile app allows you to effortlessly
-                select and organize your photos with just a few taps. Say goodbye to the hassle
-                of manual sorting!
+            <h3 class="text-2xl font-extrabold text-white mt-3 mb-2">Book Your Demo PIN!</h3>
+            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                Experience India's #1 AI Face Recognition & Studio Management Suite instantly with Call & WhatsApp
+                Support!
             </p>
 
-            <a href="javascript:void(0);" routerLink="/about-us">
-                <button
-                    class="bg-[#2563eb] cursor-pointer hover:bg-[#1e40af] transition px-8 py-3 rounded-md font-semibold tracking-wide mt-5">
-                    ABOUT US
-                </button>
-            </a>
-        </div>
+            <div class="space-y-3">
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                    target="_blank"
+                    class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span>WhatsApp for Demo PIN</span>
+                </a>
+                <a href="tel:9044145555"
+                    class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-phone-volume text-base"></i>
+                    <span>Call Now: +91 9044145555</span>
+                </a>
+            </div>
 
-        <div class="md:w-1/2 relative flex flex-col items-start mt-12 md:mt-0 gap-4">
-            <a href="javascript:void(0);" (click)="downloadDesktopApp()">
-                <button
-                    class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
-                    <img src="../assets/desktop.png" alt="desktop" class="w-10 h-10 mr-4" style="filter: invert(1);">
-                    <span class="font-bold">DESKTOP APPLICATION</span>
-                </button>
-            </a>
-            <a href="https://play.google.com/store/apps/details?id=app.mystudio&pcampaignid=web_share" target="_blank" >
-                <button
-                    class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
-                    <img src="../assets/playstore.png" alt="mobile" class="w-8 h-8 mr-4">
-                    <span class="font-bold">MOBILE APPLICATION</span>
-                </button>
-            </a>
-            <button (click)="goToLogin();"
-                class="cursor-pointer flex items-center bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-4 rounded-md shadow-lg w-72">
-                <img src="../assets/web.png" alt="web" class="w-8 h-8 mr-4" style="filter: invert(1);">
-                <span class="font-bold">WEB APPLICATION</span>
-            </button>
+            <p class="text-[11px] text-gray-500 mt-4">Call & WhatsApp Support Available</p>
         </div>
     </div>
-</div> -->
 
-<body
-    class="bg-gradient-to-br from-[#0b2a59] via-[#144a91] to-[#0b2a59] text-[#e0e6ff] font-inter min-h-screen flex flex-col">
-    <!-- Header -->
+    <!-- HEADER / NAVIGATION -->
     <header
-        class="sticky top-0 z-50 bg-[#0a1f46e6] backdrop-blur-sm shadow-md flex flex-wrap sm:flex-nowrap justify-between items-center px-4 sm:px-8 py-4">
-        <div class="flex items-center gap-3 flex-shrink-0 cursor-pointer"
-            (click)="homePageConfig = {};homePageConfig.home = true;">
-            <img src="../../../assets/onlylogo.png" alt="My Studio Logo"
-                class="w-8 h-8 sm:w-10 sm:h-10 filter brightness-0 invert" />
-            <span class="text-sm sm:text-lg font-extrabold tracking-widest text-[#aebdfa] select-none">My Studio</span>
+        class="sticky top-0 z-40 glass-card border-b border-gray-800/80 backdrop-blur-md transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg">
+                    <img src="assets/logo.png" alt="My Studio Logo" class="rounded-xl w-10 h-10 object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <span
+                        class="text-xl font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors">My
+                        Studio</span>
+                    <span class="text-[10px] text-blue-400 font-medium tracking-widest uppercase">By My IT
+                        Solutions</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
+                <a href="#features" class="hover:text-blue-400 transition-colors duration-200">Benefits</a>
+                <a href="#support" class="hover:text-blue-400 transition-colors duration-200">Support</a>
+                <a href="#time-calculator" class="hover:text-blue-400 transition-colors duration-200">Time
+                    Calculator</a>
+                <a href="#reviews" class="hover:text-blue-400 transition-colors duration-200">Reviews</a>
+                <a href="#faq" class="hover:text-blue-400 transition-colors duration-200">FAQ</a>
+                <a href="#contact" class="hover:text-blue-400 transition-colors duration-200">Contact</a>
+            </nav>
+
+            <!-- CTA Button -> WhatsApp Demo PIN & Call -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <a href="tel:9044145555"
+                    class="px-4 py-2.5 rounded-xl glass-card hover:bg-gray-800 text-gray-200 font-semibold text-sm flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-phone text-blue-400"></i>
+                    <span>Call Us</span>
+                </a>
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                    target="_blank"
+                    class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Ask Demo PIN</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button type="button" id="menu-btn" (click)="toggleMobileMenu()"
+                class="md:hidden text-gray-300 hover:text-white focus:outline-none transition-transform active:scale-90 p-2">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
         </div>
 
-        <nav aria-label="Primary Navigation"
-            class="w-full sm:w-auto mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:gap-10 text-[#bdc9ff] uppercase tracking-wide font-semibold text-xs sm:text-sm">
-            <a href="javascript:void(0);" class="relative hover:text-[#4c78ff] transition duration-200"
-                (click)="homePageConfig = {};homePageConfig.home = true;">Home</a>
-            <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200"
-                (click)="homePageConfig = {};homePageConfig.about = true;">About</a>
-            <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200"
-                (click)="homePageConfig = {};homePageConfig.contact = true;">Contact</a>
-            <!-- <a href="javascript:void(0);" class="hover:text-[#4c78ff] transition duration-200">Our Updates</a> -->
-        </nav>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" [class.hidden]="!isMobileMenuOpen"
+            class="md:hidden glass-card border-t border-gray-800 px-6 pt-5 pb-8 space-y-4 transition-all duration-300">
+            <a href="#features"
+                class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold border-b border-gray-800">Benefits</a>
+            <a href="#support"
+                class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold border-b border-gray-800">Support</a>
+            <a href="#time-calculator"
+                class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold border-b border-gray-800">Time
+                Calculator</a>
+            <a href="#reviews"
+                class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold border-b border-gray-800">Reviews</a>
+            <a href="#faq"
+                class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold border-b border-gray-800">FAQ</a>
+            <a href="#contact" class="block text-gray-200 hover:text-blue-400 py-3 text-base font-semibold">Contact</a>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <a href="tel:9044145555"
+                    class="py-3 rounded-xl bg-gray-800 text-white font-bold text-sm text-center flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-phone text-blue-400"></i><span>Call</span>
+                </a>
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                    target="_blank"
+                    class="py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm text-center flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i><span>WhatsApp</span>
+                </a>
+            </div>
+        </div>
     </header>
 
-    <!-- Main Content -->
-    <main id="home" class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.home">
-        <!-- Hero Section -->
-        <section id="hero"
-            class="relative bg-center bg-cover min-h-[70vh] sm:min-h-[80vh] shadow-inner shadow-[#03132bbf] flex flex-col sm:flex-row rounded-2xl overflow-hidden">
-            <!-- Text Column -->
+    <!-- FIRST PAGE / HERO SECTION -->
+    <section
+        class="relative pt-16 sm:pt-24 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 z-10 min-h-[90vh] justify-center">
+        <!-- Left Movable Content -->
+        <div class="flex-1 text-center lg:text-left hero-left-anim">
             <div
-                class="bg-[#0a1632eb] items-center backdrop-blur-sm p-8 sm:p-10 w-full sm:w-1/2 flex flex-col gap-6 text-white shadow-xl drop-shadow-lg rounded-b-2xl sm:rounded-l-2xl sm:rounded-br-none justify-center">
-                <h1
-                    class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-snug tracking-[0.10em] drop-shadow-lg select-none text-center">
-                    MY STUDIO IS INDIA'S FIRST ALL-IN-ONE APP DESIGNED FOR EVERY PHOTOGRAPHER.
-                </h1>
-                <p
-                    class="text-base text-center sm:text-lg leading-relaxed bg-[#1426422e] rounded-lg p-4 sm:p-5 shadow-inner outline-0 outline-indigo-700 drop-shadow-sm">
-                    This simple yet powerful tool helps you manage your entire business in
-                    one place.<br />
-                    It makes it easy to get clients to pick photos, handles all your billing,
-                    and keeps your dates and calls organized.<br />
-                    With the My Studio app, you can stop worrying about the busy work and
-                    spend more time on what you love.<br />
-                    <span class="font-semibold text-[#4e7dfc]">It’s the only photographer app you’ll ever need.</span>
-                </p>
-                <div
-                    class="app-buttons-row glass-card flex flex-col sm:flex-row items-center gap-4 min-w-[220px] rounded-xl">
-                    <a href="javascript:void(0);" (click)="downloadDesktopApp()"
-                        class="flex items-center gap-3 bg-gradient-to-r from-[#277cf6] to-[#24e6fc] hover:from-[#156fd0] hover:to-[#24c6fc] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <rect x="3" y="5" width="18" height="12" rx="2" stroke-width="2" />
-                            <rect x="8" y="17" width="8" height="2" rx="1" stroke-width="2" />
-                        </svg>
-                        Desktop App
-                    </a>
-                    <a href="https://play.google.com/store/apps/details?id=app.mystudio&pcampaignid=web_share"
-                        target="_blank"
-                        class="flex items-center gap-3 bg-gradient-to-r from-[#00c497] to-[#00e7a0] hover:from-[#009f74] hover:to-[#00c678] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <rect x="7" y="2" width="10" height="20" rx="2" stroke-width="2" />
-                            <circle cx="12" cy="18" r="1" fill="currentColor" />
-                        </svg>
-                        Mobile App
-                    </a>
-                    <a href="javascript:void(0);" routerLink="/login"
-                        class="flex items-center gap-3 bg-gradient-to-r from-[#4569ff] to-[#b673fd] hover:from-[#3451ff] hover:to-[#a24bfc] text-white rounded-2xl px-6 py-4 font-semibold shadow-lg transform transition-transform duration-300 hover:-translate-y-1 w-full sm:w-auto justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <circle cx="12" cy="12" r="10" stroke-width="2" />
-                            <path stroke-width="2" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
-                        </svg>
-                        Web App
-                    </a>
-                </div>
+                class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-950/80 border border-blue-800/60 text-blue-400 text-xs sm:text-sm font-semibold mb-6 uppercase tracking-wider shadow-inner">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>
+                <span>India's #1 Studio Automation Suite</span>
             </div>
-
-            <!-- Image Column -->
-            <div class="bg-img w-full sm:w-1/2 flex justify-center items-center p-6 sm:p-10">
-                <img src="../../../assets/21.png" alt="Hero Image"
-                    class="w-full max-w-md sm:max-w-lg md:max-w-xl object-contain rounded-r-2xl sm:rounded-r-2xl sm:rounded-tr-none sm:rounded-br-2xl drop-shadow-lg select-none" />
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section id="features" class="my-20 text-center max-w-6xl mx-auto">
-            <h2 class="text-[#a4b5f0] font-extrabold uppercase tracking-wide text-3xl mb-10 select-none">
-                Why Photographers Love My Studio
-            </h2>
-            <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 px-6">
-                <!-- Feature Card Sample -->
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="Effortless Selection Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        Effortless Selection
-                    </h3>
-                    <p>Smart tools to select and manage photos easily.</p>
-                </article>
-                <!-- Repeat for other feature cards -->
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="Simplified Billing Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        Simplified Billing
-                    </h3>
-                    <p>Manage finances simply and securely.</p>
-                </article>
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="Date Reminders Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        Date Reminders
-                    </h3>
-                    <p>Get alerts for your important dates and calls.</p>
-                </article>
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="Secure Calling Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        Secure Calling
-                    </h3>
-                    <p>Call clients privately with secure calling features.</p>
-                </article>
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="QR and AI face recognition Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        QR and AI face recognition
-                    </h3>
-                    <p>Utilize QR codes and AI-driven face recognition for seamless client interactions.</p>
-                </article>
-                <article
-                    class="feature-card bg-[#1b2e57d9] rounded-2xl p-8 shadow-lg hover:shadow-indigo-500 transition transform hover:-translate-y-2 cursor-default text-[#c1cfe0]">
-                    <img src="../../../assets/onlylogo.png" alt="Unlimited Assets Icon"
-                        class="mx-auto mb-6 w-16 h-16 filter drop-shadow-lg transition duration-300 hover:drop-shadow-2xl filter brightness-0 invert" />
-                    <h3 class="text-xl font-bold mb-3 text-white select-none">
-                        Unlimited Assets No Limits
-                    </h3>
-                    <p>Now you can create anything you can imagine, from cinematic teasers to beautiful documentaries
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- Updates Section with 4 video cards -->
-        <section id="updates" class="my-20 max-w-7xl mx-auto px-6">
-            <h2 class="text-[#a4b5f0] font-extrabold uppercase tracking-wide text-3xl mb-8 select-none text-center">
-                Our Features
-            </h2>
-            <p class="text-[#cbd3f3] text-center max-w-3xl mx-auto mb-12 leading-relaxed">
-                Watch how My Studio changes the game for every photographer. We've packed all the tools you need—from
-                effortless photo selection to secure client calls—into one powerful app. It’s time to take back your
-                workflow.
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+                The Ultimate All-in-One <span
+                    class="bg-gradient-to-r from-blue-400 via-indigo-300 to-blue-500 bg-clip-text text-transparent">Management
+                    Software for Professional Photographers</span>
+            </h1>
+            <p class="text-base sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                The ultimate all-in-one ecosystem featuring <strong class="text-gray-200 font-semibold">ai face
+                    recognition photo sharing app</strong>, <strong class="text-gray-200 font-semibold">online
+                    photo selection software for photographers</strong>, automated billing, and instant gallery
+                delivery.
             </p>
 
-            <!-- <div class="slider">
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                    target="_blank"
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-base sm:text-lg shadow-xl shadow-blue-600/35 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span>Book Now / Ask Demo PIN</span>
+                </a>
+            </div>
+        </div>
 
-                <div class="slide-track gap-5">
+        <!-- Right Movable Creative Showcase with Separate Spaced Cards & Tutorial Link Gallery Button -->
+        <div class="flex-1 w-full max-w-lg lg:max-w-none hero-right-anim">
+            <div class="space-y-6">
+                <!-- Top Showcase Card -->
+                <div
+                    class="glass-card rounded-3xl p-6 sm:p-8 relative shadow-2xl border border-blue-500/30 floating-card overflow-hidden">
+                    <div
+                        class="absolute -top-3 -right-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs px-3.5 py-1.5 rounded-full font-bold shadow-lg z-20 animate-bounce">
+                        LIVE SYSTEM v4.2
+                    </div>
 
+                    <!-- Stunning Immersive Pro Photographer Showcase Banner -->
                     <div
-                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
-                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
-                            poster="../../../assets/video1-poster.jpg">
-                            Your browser does not support the video tag.
-                        </video>
+                        class="relative h-44 sm:h-52 rounded-2xl overflow-hidden mb-5 shadow-2xl group border border-gray-700/60">
+                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80"
+                            alt="Professional Camera Gear & Studio"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent">
+                        </div>
+
+                        <!-- Floating Badge Overlay inside Image -->
+                        <div
+                            class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/10 flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-xs font-bold text-white">AI Face Match Online</span>
+                        </div>
+
+                        <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-blue-400 font-mono tracking-wider uppercase font-bold">Pro
+                                    Studio Ecosystem</span>
+                                <h3 class="text-white font-extrabold text-sm sm:text-base mt-0.5">Instant Photo Delivery
+                                    & Sharing</h3>
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
-                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
-                            poster="../../../assets/video1-poster.jpg">
-                            Your browser does not support the video tag.
-                        </video>
+
+                    <!-- LARGE TOUCH-FRIENDLY BUTTONS (OPTIMIZED FOR MOBILE & TAB USERS) -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <a (click)="downloadDesktopApp()"
+                            target="_blank"
+                            class="cursor-pointer p-3.5 sm:p-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-sm sm:text-base font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-1 active:scale-95">
+                            <i class="fa-solid fa-desktop text-lg"></i>
+                            <span>Desktop App</span>
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=app.mystudio&pcampaignid=web_share"
+                            target="_blank"
+                            class="cursor-pointer p-3.5 sm:p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm sm:text-base font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition-all transform hover:-translate-y-1 active:scale-95">
+                            <i class="fa-solid fa-mobile-screen text-lg"></i>
+                            <span>Mobile App</span>
+                        </a>
+                        <a (click)="goToLogin()" target="_blank"
+                            class="cursor-pointer p-3.5 sm:p-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-sm sm:text-base font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-1 active:scale-95">
+                            <i class="fa-solid fa-globe text-lg"></i>
+                            <span>Web App</span>
+                        </a>
+                        <a href="https://apps.apple.com/us/app/my-studio/id6740578872"
+                            target="_blank"
+                            class="cursor-pointer p-3.5 sm:p-4 rounded-2xl bg-gray-800 hover:bg-gray-700 text-white text-sm sm:text-base font-extrabold flex items-center justify-center space-x-2 shadow-lg border border-gray-700 transition-all transform hover:-translate-y-1 active:scale-95">
+                            <i class="fa-brands fa-app-store-ios text-sky-400 text-xl"></i>
+                            <span>App Store</span>
+                        </a>
                     </div>
-                    <div
-                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
-                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
-                            poster="../../../assets/video1-poster.jpg">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div
-                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
-                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
-                            poster="../../../assets/video1-poster.jpg">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div
-                        class="slide min-w-[280px] h-[160px] rounded-xl overflow-hidden shadow-lg flex-shrink-0 snap-start bg-black">
-                        <video src="../../../assets/video1.mp4" controls class="w-full h-full object-cover"
-                            poster="../../../assets/video1-poster.jpg">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+
+                    <!-- YouTube Tutorial Link Gallery Button -->
+                    <a href="https://www.youtube.com/watch?v=a_VOskQkVaI&list=PLYzUPLZLh4ZL0ckrnrUNg7L_sbAHloV29"
+                        target="_blank"
+                        class="cursor-pointer w-full p-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-sm sm:text-base font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-red-600/30 transition-all transform hover:-translate-y-1 active:scale-95">
+                        <i class="fa-brands fa-youtube text-xl"></i>
+                        <span>Watch YouTube Tutorial Link Gallery</span>
+                    </a>
                 </div>
-            </div> -->
 
-            <div class="updates-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 p-4">
-                <div *ngFor="let item of directVideoLinks" class="update-card bg-[#1b2e57d9] rounded-2xl shadow-lg cursor-pointer 
-               transform transition-transform hover:scale-[1.03] hover:shadow-indigo-400 
-               hover:drop-shadow-lg overflow-hidden"> <!-- ✅ Added overflow-hidden -->
-
-                    <!-- ✅ Aspect-ratio wrapper instead of bare iframe with fixed height -->
-                    <div class="relative w-full" style="aspect-ratio: 16/9;" *ngIf="item.safeUrl">
-                        <iframe [src]="item.safeUrl" class="absolute inset-0 w-full h-full" allow="autoplay"
-                            frameborder="0" allowfullscreen>
-                        </iframe>
-                    </div>
-
-                    <div class="p-4">
-                        <h3 class="text-white text-xl font-semibold mb-2 select-none">
-                            {{item.title}}
-                        </h3>
-                        <p class="text-indigo-200 text-sm leading-relaxed">
-                            {{item.desc}}
-                        </p>
+                <!-- Bottom Separate Spaced Card for Dynamic Counters -->
+                <div class="glass-card rounded-3xl p-6 relative shadow-2xl border border-blue-500/30">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-lg sm:text-xl font-extrabold text-white"><span class="counter"
+                                    data-target="1000" data-plus="true">0</span></div>
+                            <div class="text-[10px] sm:text-xs text-blue-400 font-medium mt-0.5">Active Studios</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-lg sm:text-xl font-extrabold text-white"><span class="counter"
+                                    data-target="99.9" data-decimal="1" data-percent="true">0</span></div>
+                            <div class="text-[10px] sm:text-xs text-emerald-400 font-medium mt-0.5">Accuracy</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-lg sm:text-xl font-extrabold text-white"><span class="counter"
+                                    data-target="20" data-plus="true">0</span></div>
+                            <div class="text-[10px] sm:text-xs text-purple-400 font-medium mt-0.5">Features</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-lg sm:text-xl font-extrabold text-white"><span class="counter"
+                                    data-target="200" data-plus="true">0</span></div>
+                            <div class="text-[10px] sm:text-xs text-amber-400 font-medium mt-0.5">Editing Assets</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <main class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.about">
-        <div class="max-w-4xl mx-auto px-6 py-16 text-gray-100">
-            <section class="about-container bg-[#0a1632eb] rounded-3xl p-10 shadow-lg backdrop-blur-md">
-                <h2 class="text-4xl font-extrabold mb-8 text-indigo-300 tracking-wide select-none">
-                    About My Studio
+    <!-- BENEFITS / WHY CHOOSE MY STUDIO SECTION -->
+    <section id="features" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
+            <span
+                class="text-blue-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-blue-800/50">Core
+                Advantages</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-4 mb-4">
+                Benefits / <span class="text-blue-400">Why Choose MY STUDIO!</span>
+            </h2>
+            <p class="text-gray-400 text-base sm:text-lg">
+                Explore our comprehensive suite built to streamline every aspect of event photography management and
+                client delivery.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll">
+                <div
+                    class="w-12 h-12 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center text-xl mb-6 border border-blue-500/30">
+                    <i class="fa-solid fa-camera text-white text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">AI Face Recognition Photo Sharing App</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Allow guests to discover their individual pictures instantly using selfie facial matching, driving
+                    massive social shares for your studio.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 100ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-xl mb-6 border border-indigo-500/30">
+                    <i class="fa-solid fa-images"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Creative Delivery Gallery</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Organize massive terabytes of raw event data into easily searchable smart galleries without manual
+                    tagging or sorting.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 200ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl mb-6 border border-emerald-500/30">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Instant Photo Delivery with AI Face Matching</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Deliver curated moments straight to client smartphones while the event is still ongoing, ensuring
+                    unforgettable customer delight.
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll">
+                <div
+                    class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-xl mb-6 border border-purple-500/30">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Unlimited editing Assets</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Access endless professional editing packs, transitions, presets, overlays, and video projects across
+                    all major editing suites.
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 100ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center text-xl mb-6 border border-amber-500/30">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Online Photo Selection without Screenshot Download</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Streamline client proofing, favorite marking, and final album selection with secure cloud links
+                    preventing unauthorized screenshot downloads.
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 200ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-xl mb-6 border border-rose-500/30">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Callender Dates Management Tool</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Never miss a booking deadline or camera crew schedule with integrated date reminders, lead tracking,
+                    and smart calendar sync.
+                </p>
+            </div>
+
+            <!-- Feature 7 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll">
+                <div
+                    class="w-12 h-12 rounded-xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center text-xl mb-6 border border-cyan-500/30">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Album Design Software</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Create breathtaking wedding and event album layouts quickly with intelligent templates and automated
+                    spread positioning.
+                </p>
+            </div>
+
+            <!-- Feature 8 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 100ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-teal-600/20 text-teal-400 flex items-center justify-center text-xl mb-6 border border-teal-500/30">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Billing Software for Photographers</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Manage advances, balance payments, custom packages, and generate professional tax invoices instantly
+                    sent via WhatsApp.
+                </p>
+            </div>
+
+            <!-- Feature 9 -->
+            <div class="glass-card rounded-2xl p-8 reveal-on-scroll" style="transition-delay: 200ms;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-xl mb-6 border border-indigo-500/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Secure Enterprise Cloud</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Enterprise-grade watermarking, password protection, and download restrictions to keep your high-res
+                    RAW assets fully secure.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIME-SAVING CALCULATOR / METRIC BANNER -->
+    <section id="time-calculator" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+        <div
+            class="glass-card rounded-3xl p-8 sm:p-12 border border-blue-500/30 shadow-2xl relative overflow-hidden reveal-on-scroll">
+            <div class="absolute -left-20 -top-20 w-72 h-72 rounded-full bg-blue-600/20 blur-3xl pointer-events-none">
+            </div>
+            <div
+                class="absolute -right-20 -bottom-20 w-72 h-72 rounded-full bg-indigo-600/20 blur-3xl pointer-events-none">
+            </div>
+
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span
+                    class="text-emerald-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-800/50">Smart
+                    Estimator</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-4 mb-3">
+                    Time-Saving <span class="text-blue-400">Calculator</span>
                 </h2>
-                <p class="mb-6 text-lg leading-relaxed text-indigo-100">
-                    My Studio is a platform tailored specifically for photographers. We help
-                    you manage your photos and workflow effectively, so you can focus on
-                    creativity without being bogged down by administrative tasks.
+                <p class="text-gray-400 text-base">
+                    See how many hours MY STUDIO saves your photography business every month.
                 </p>
-                <p class="mb-6 text-lg leading-relaxed text-indigo-100">
-                    Our mission is to provide photographers with the tools they need to streamline
-                    their business processes, enhance client interactions, and ultimately,
-                    elevate their creative work.
-                </p>
-                <p class="text-lg leading-relaxed text-indigo-100">
-                    With features designed for effortless photo selection, simplified billing,
-                    and secure communication, My Studio is the only app you'll ever need to
-                    manage your photography business.
-                </p>
-            </section>
-        </div>
+            </div>
 
-    </main>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Controls / Sliders -->
+                <div class="space-y-6 bg-gray-900/80 p-6 sm:p-8 rounded-2xl border border-gray-800">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-gray-300">Events Managed Per Month:</label>
+                            <span id="events-val" class="text-blue-400 font-mono font-bold text-lg">{{ eventsPerMonth
+                                }}</span>
+                        </div>
+                        <input type="range" id="events-slider" min="1" max="30" [(ngModel)]="eventsPerMonth"
+                            (ngModelChange)="calculateTime()" class="w-full accent-blue-600 cursor-pointer">
+                    </div>
 
-    <main class="flex-grow container mx-auto px-4 sm:px-8 pt-12" *ngIf="homePageConfig.contact">
-        <div id="contact" class="max-w-xl mx-auto px-6 py-16 text-gray-100">
-            <section class="contact-container bg-[#0a1632eb] rounded-3xl p-10 shadow-lg backdrop-blur-md">
-                <h2 class="text-4xl font-extrabold mb-8 text-indigo-300 tracking-wide select-none">
-                    Contact Us
-                </h2>
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-gray-300">Average Guests / Clients per
+                                Event:</label>
+                            <span id="guests-val" class="text-blue-400 font-mono font-bold text-lg">{{ guestsPerEvent
+                                }}</span>
+                        </div>
+                        <input type="range" id="guests-slider" min="50" max="2000" step="50"
+                            [(ngModel)]="guestsPerEvent" class="w-full accent-blue-600 cursor-pointer">
+                    </div>
 
-                <form id="contactForm" aria-label="Contact form" class="flex flex-col gap-6"
-                    (ngSubmit)="handleSubmit()">
-                    <input type="text" name="name" placeholder="Your Name" [(ngModel)]="contactForm.name"
-                        aria-required="true" aria-label="Name"
-                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" />
-                    <input type="email" name="email" placeholder="Your Email" [(ngModel)]="contactForm.email"
-                        aria-required="true" aria-label="Email"
-                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" />
-                    <textarea name="message" placeholder="Your Message" rows="5" [(ngModel)]="contactForm.message"
-                        aria-required="true" aria-label="Message"
-                        class="w-full rounded-xl p-4 bg-[#142642] border border-indigo-700 text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-y"></textarea>
-
-                    <input type="submit" value="Request Contact"
-                        class="cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800 text-white font-semibold rounded-xl py-4 shadow-lg transition-transform duration-300 hover:-translate-y-1" />
-                </form>
-            </section>
-
-            <script>
-                function handleSubmit(event) {
-                    event.preventDefault();
-                    alert('Request accepted');
-                    // You can add form data processing here if needed
-                    event.target.reset();
-                }
-            </script>
-        </div>
-
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-[#02184b] text-[#adb6d5] text-sm select-none py-10 px-8">
-        <div class="max-w-6xl mx-auto flex flex-wrap justify-between gap-12">
-            <!-- Logo & Description -->
-            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
-                <div class="flex items-center gap-4 mb-2">
-                    <img src="../../../assets/onlylogo.png" alt="My Studio Logo"
-                        class="w-10 h-10 filter brightness-0 invert saturate-200" />
-                    <span class="text-lg font-extrabold tracking-wide text-[#a8b4dc]">My Studio</span>
+                    <div class="p-4 rounded-xl bg-blue-950/40 border border-blue-900/50 flex items-center space-x-3">
+                        <i class="fa-solid fa-circle-info text-blue-400 text-lg"></i>
+                        <span class="text-xs text-gray-300">Calculated based on average studio savings of 2 hours per
+                            event in manual client delivery.</span>
+                    </div>
                 </div>
-                <p class="text-[#bec6e5] max-w-xs leading-relaxed font-light">
-                    Delivering smart photo management solutions worldwide with dedication and innovation.
-                </p>
-            </div>
 
-            <!-- Contact Info -->
-            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
-                <h3 class="uppercase font-semibold tracking-widest text-[#8fa1db] text-base mb-4 select-none">
-                    Contact
-                </h3>
-                <p>
-                    Email:
-                    <a href="mailto:support@mystudio.com"
-                        class="text-[#9aaada] hover:text-white hover:underline transition">support&#64;mystudio.com</a>
-                </p>
-                <p>Phone: <span class="font-light flex flex-col"> <span>Abhay Singh (Installations): 9044145555</span>
-                        <span>Akash Ahuja (Technical Support): 8004033357</span>
-                        <span>Anand Ji (Sales): 9026671367</span>
-                        <span>Rahul Ji (Sales): 9305797027</span>
-                    </span>
-                </p>
-                <p>Address: <span class="font-light">DLF Cyber Greens, DLF Phase 3, Gurugram, Haryana 122002</span></p>
-            </div>
+                <!-- Results Output Card -->
+                <div
+                    class="bg-gradient-to-br from-blue-950/90 via-gray-900 to-indigo-950/90 p-8 sm:p-10 rounded-2xl border border-blue-500/40 shadow-xl flex flex-col justify-center items-center space-y-6 text-center">
+                    <div>
+                        <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider mb-1">Estimated Time Saved
+                        </h4>
+                        <div class="text-gray-400 text-xs">Using AI Face Recognition & Automated Workflows</div>
+                    </div>
 
-            <!-- Social Links -->
-            <div class="flex flex-col gap-5 flex-1 min-w-[220px]">
-                <h3 class="uppercase font-semibold tracking-widest text-[#8fa1db] text-base mb-4 select-none">
-                    Follow Us
-                </h3>
-                <div class="flex gap-5">
-                    <a href="#" aria-label="Facebook"
-                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                            <path
-                                d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.69 9.13 8.5 9.88v-7H8v-3h2.5v-2.3c0-2.42 1.43-3.8 3.62-3.8 1.05 0 2.15.19 2.15.19v2.37H15c-1.19 0-1.56.74-1.56 1.5V12H17l-.5 3h-2v7C18.31 21.13 22 17 22 12z" />
-                        </svg></a>
-                    <a href="#" aria-label="Twitter"
-                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                            <path
-                                d="M23 3a10.9 10.9 0 01-3.14.86 4.48 4.48 0 001.98-2.48 9.14 9.14 0 01-2.88 1.1A4.52 4.52 0 0016.92 2a4.48 4.48 0 00-4.47 5.5A12.77 12.77 0 013 4.87a4.52 4.52 0 001.4 6 4.42 4.42 0 01-2-.56v.06a4.47 4.47 0 003.6 4.38 4.52 4.52 0 01-2 .07 4.5 4.5 0 004.19 3.14A9 9 0 013 19.54 12.71 12.71 0 009 21c7.32 0 11.33-6.1 11.33-11.37 0-.17 0-.33-.02-.5A7.89 7.89 0 0023 3z" />
-                        </svg></a>
-                    <a href="#" aria-label="Instagram"
-                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                            <path
-                                d="M7.5 2h9A5.52 5.52 0 0122 7.5v9a5.52 5.52 0 01-5.5 5.5h-9A5.52 5.52 0 012 16.5v-9A5.52 5.52 0 017.5 2zm0-2A7.52 7.52 0 000 7.5v9A7.52 7.52 0 007.5 24h9a7.52 7.52 0 007.5-7.5v-9A7.52 7.52 0 0016.5 0zM12 6.15a5.85 5.85 0 11-5.85 5.85A5.85 5.85 0 0112 6.15zm0 9.65a3.8 3.8 0 103.8-3.8A3.8 3.8 0 0012 15.8zm4.95-9.9a1.35 1.35 0 11-1.35-1.35 1.35 1.35 0 011.35 1.35z" />
-                        </svg></a>
-                    <a href="#" aria-label="LinkedIn"
-                        class="w-10 h-10 flex items-center justify-center rounded-md bg-[#1e3284] text-white text-lg font-bold shadow-md hover:bg-[#3b52b3] transition"><svg
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-                            <path
-                                d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2h-14a2 2 0 01-2-2V5a2 2 0 012-2zm-9.87 7.69h-2.25v5.81h2.25zm-1.14-2.16a1.35 1.35 0 110-2.7 1.35 1.35 0 010 2.7zm9.7 2.16h-2.25v-3c0-.71-.25-1.19-.87-1.19-.47 0-.75.32-.88.63-.05.13-.06.31-.06.49v3.07h-2.25v-5.81h2.25v.79c.21-.32.6-.81 1.46-.81 1.07 0 1.86.7 1.86 2.2z" />
-                        </svg></a>
+                    <div class="py-4 border-y border-gray-800/80 w-full">
+                        <div id="hours-saved" class="text-6xl font-extrabold text-white mb-2">{{ hoursSaved }} {{
+                            hoursSaved === 1 ? 'hr' : 'hrs' }}</div>
+                        <div class="text-xs text-emerald-400 font-bold uppercase tracking-wider">Total Time Saved /
+                            Month</div>
+                    </div>
+
+                    <p class="text-xs text-gray-400">Streamline your photography workflow today with My Studio.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="text-center text-[#7c8bb7] mt-10 text-xs select-none border-t border-[#2e3c6c] pt-6">
-            &copy; 2025 My Studio. All rights reserved.
+    <!-- CALL & WHATSAPP SUPPORT BANNER SECTION -->
+    <section id="support" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+        <div
+            class="glass-card rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-blue-950/90 via-indigo-950/90 to-blue-900/95 border border-blue-500/40 text-center relative overflow-hidden shadow-2xl reveal-on-scroll">
+            <div class="absolute -left-20 -top-20 w-64 h-64 rounded-full bg-blue-600/30 blur-3xl pointer-events-none">
+            </div>
+            <div
+                class="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-emerald-600/20 blur-3xl pointer-events-none">
+            </div>
+
+            <div
+                class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-600/30">
+                <i class="fa-solid fa-headset text-white text-3xl"></i>
+            </div>
+
+            <span
+                class="text-emerald-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-800/50">Always
+                Here For You</span>
+
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-4 mb-4">Call & WhatsApp Support</h2>
+
+            <p class="text-gray-300 max-w-2xl mx-auto text-base sm:text-lg mb-8 leading-relaxed">
+                Need help with software installation, setup, or asking for your Demo PIN? Our expert technical team is
+                available via phone call and WhatsApp.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20need%20Support%20and%20Demo%20PIN!"
+                    target="_blank"
+                    class="px-6 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-base shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span>WhatsApp Support</span>
+                </a>
+                <a href="tel:9044145555"
+                    class="px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-base shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-phone-volume text-xl"></i>
+                    <span>Call Support</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEWS SECTION -->
+    <section id="reviews" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
+            <span
+                class="text-blue-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-blue-800/50">Testimonials</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-4 mb-4">
+                Trusted by <span class="text-blue-400">Professional Photographers</span>
+            </h2>
+            <p class="text-gray-400 text-base sm:text-lg">
+                See what leading studio owners across India are saying about our Photo Selection without Download,
+                Billing, and Editing Assets.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Review 1 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "The online photo selection without download feature is a complete lifesaver! Clients select
+                        their album favorites securely on cloud without taking screenshots or downloading files before
+                        final settlement."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white text-sm">
+                        RD
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Rahul Dixit</h4>
+                        <p class="text-xs text-blue-400">Dixit Studio</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll"
+                style="transition-delay: 100ms;">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "Creating professional invoices and managing custom wedding packages takes barely 10 seconds now
+                        with the built-in billing software. Tracking part-payments has never been easier!"
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center font-bold text-white text-sm">
+                        SS
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Shree Shyam</h4>
+                        <p class="text-xs text-indigo-400">Shree Shyam Photography</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll"
+                style="transition-delay: 200ms;">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "The unlimited editing assets including Premiere Pro transitions, After Effects presets, and
+                        color grading overlays have supercharged our post-production speed and video quality!"
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center font-bold text-white text-sm">
+                        BP
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Brijesh Kumar</h4>
+                        <p class="text-xs text-emerald-400">Brij Photography</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 4 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "With online photo selection without download, our clients review proofs directly from their
+                        phones with complete peace of mind for our copyright protection."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center font-bold text-white text-sm">
+                        AM
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Amit Maurya</h4>
+                        <p class="text-xs text-purple-400">Photography Hub Ambala</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 5 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll"
+                style="transition-delay: 100ms;">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "The billing software lets us send professional WhatsApp invoices instantly. Managing advance
+                        deposits and final installments is completely seamless now."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center font-bold text-white text-sm">
+                        MS
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Manish Singh</h4>
+                        <p class="text-xs text-cyan-400">MS Photography</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 6 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll"
+                style="transition-delay: 200ms;">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "Accessing endless editing assets for DaVinci Resolve and Premiere Pro has saved our team
+                        countless hours on wedding trailer edits."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-rose-600 to-orange-500 flex items-center justify-center font-bold text-white text-sm">
+                        FT
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Tejas Sharma</h4>
+                        <p class="text-xs text-rose-400">Frambytejas Studio</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 7 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "Online photo selection without download eliminated endless client arguments over unselected
+                        proofs. It's clean, secure, and professional."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-teal-600 to-emerald-500 flex items-center justify-center font-bold text-white text-sm">
+                        PP
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Pankaj Park</h4>
+                        <p class="text-xs text-teal-400">Photo Park</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 8 -->
+            <div class="glass-card rounded-2xl p-8 flex flex-col justify-between reveal-on-scroll"
+                style="transition-delay: 100ms;">
+                <div>
+                    <div class="flex items-center space-x-1 text-amber-400 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+                        "The combination of lightning-fast billing software and rich editing assets makes My Studio an
+                        absolute must-have for every serious photography studio."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4 pt-4 border-t border-gray-800">
+                    <div
+                        class="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-600 to-teal-600 flex items-center justify-center font-bold text-white text-sm">
+                        AS
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Ansal Singh</h4>
+                        <p class="text-xs text-blue-400">My IT Solutions Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ (FREQUENTLY ASKED QUESTIONS) SECTION - ALL FAQS INCLUDED -->
+    <section id="faq" class="py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto relative z-10">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
+            <span
+                class="text-blue-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-blue-800/50">Got
+                Questions?</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-4 mb-4">
+                Frequently Asked <span class="text-blue-400">Questions (FAQ)</span>
+            </h2>
+            <p class="text-gray-400 text-base sm:text-lg">
+                Everything you need to know about My Studio software, features, setup, and getting started with your
+                Demo PIN.
+            </p>
+        </div>
+
+        <div class="space-y-4 reveal-on-scroll">
+            <!-- FAQ Item 1 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(1)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q1. Does My Studio provide Instagram followers?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 1"></i>
+                </button>
+                <div id="faq-content-1" [class.hidden]="expandedFaq !== 1"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">Yes, absolutely!</strong></p>
+                    <p><strong class="text-blue-400">How it works:</strong> When you upload pictures into an AI or
+                        normal gallery and share it with your clients, they pass the link on to their families and
+                        guests to download their favorite shots.</p>
+                    <p><strong class="text-emerald-400">The Growth Loop:</strong> To successfully download the pictures,
+                        users are prompted by the software to follow your Instagram account (the prompt appears twice to
+                        ensure engagement).</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(2)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q2. How do positive Google reviews work in My Studio?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 2"></i>
+                </button>
+                <div id="faq-content-2" [class.hidden]="expandedFaq !== 2"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">Automate your reputation building effortlessly!</strong></p>
+                    <p><strong class="text-blue-400">Setup:</strong> From the admin end, simply input your Google review
+                        link along with your uploaded gallery.</p>
+                    <p><strong class="text-indigo-400">Smart Filtering:</strong> When clients click the link to download
+                        images, they are prompted to leave a 5-star review.</p>
+                    <p><strong class="text-emerald-400">Review Protection:</strong> If a client happens to leave a
+                        3-star or 2-star review, the system automatically routes that review into a "parking area" so it
+                        does not affect your public Google business profile rating.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(3)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q3. Does the My Studio billing app include a part-payment option?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 3"></i>
+                </button>
+                <div id="faq-content-3" [class.hidden]="expandedFaq !== 3"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">Yes!</strong></p>
+                    <p>Understanding that wedding and event photographers traditionally receive payments across multiple
+                        installments, we built a dedicated part-payment option directly into the billing system to track
+                        balances smoothly.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(4)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q4. How much time does it take to create a bill?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 4"></i>
+                </button>
+                <div id="faq-content-4" [class.hidden]="expandedFaq !== 4"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">Lightning Fast (Only 10 to 15 seconds)!</strong></p>
+                    <p><strong class="text-blue-400">Pre-Set Convenience:</strong> We provide pre-made package templates
+                        based on general market standards.</p>
+                    <p><strong class="text-indigo-400">Customization:</strong> Because every photographer has unique
+                        pricing and services, you can easily update your packages once. After that, generating any
+                        estimate or bill takes a maximum of 10 to 15 seconds!</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(5)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q5. How does the AI Face Recognition Photo Sharing App work?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 5"></i>
+                </button>
+                <div id="faq-content-5" [class.hidden]="expandedFaq !== 5"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">A:</strong> It is a high-accuracy (99.9%) automated facial recognition
+                        system built for event and studio photographers.</p>
+                    <p><strong class="text-blue-400">For You:</strong> Simply upload your event pictures to the app and
+                        run the face recognition system, then share the gallery link with your clients or guests.</p>
+                    <p><strong class="text-emerald-400">For Your Clients & Guests:</strong> They can simply take a quick
+                        selfie on their phone or browser, and the AI will instantly match and filter all their personal
+                        photos for easy downloading. No manual sorting required!</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(6)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q6. What is Online Photo Selection without Screenshot/Download protection, and how does it
+                        protect my payment?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 6"></i>
+                </button>
+                <div id="faq-content-6" [class.hidden]="expandedFaq !== 6"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">A:</strong> This is a secure digital proofing feature designed to
+                        prevent clients from taking unauthorized files before payment is complete.</p>
+                    <p><strong class="text-blue-400">How it Works:</strong> Create a project by entering the client's
+                        name, number, and event details. Upload your raw or unedited folders directly (even large
+                        batches of 5,000 to 10,000 photos).</p>
+                    <p><strong class="text-emerald-400">The Protection:</strong> Send the secure link to your client.
+                        They can view, collaborate, and select their favorite photos in real-time. Crucially, they
+                        cannot download the images or take screenshots, ensuring your hard work remains fully protected
+                        until final payment is settled.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 7 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(7)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q7. What are Unlimited Editing Assets, and what software suites are supported?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 7"></i>
+                </button>
+                <div id="faq-content-7" [class.hidden]="expandedFaq !== 7"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">A:</strong> This is an all-in-one resource library packed with
+                        professional project assets to speed up your post-production workflow.</p>
+                    <p><strong class="text-blue-400">Supported Software Suites:</strong> Includes project links,
+                        templates, and assets compatible with industry-standard tools like Adobe Premiere Pro, DaVinci
+                        Resolve, Adobe After Effects, Photoshop, and more.</p>
+                    <p><strong class="text-indigo-400">What's Included:</strong> Free access to pre-made teaser
+                        templates, trailer projects, Instagram reels templates, promotional editing posters,
+                        transitions, presets, overlays, and much more.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 8 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(8)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q8. How can I manage bookings using the Calendar Dates Management Tool?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 8"></i>
+                </button>
+                <div id="faq-content-8" [class.hidden]="expandedFaq !== 8"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4 space-y-3">
+                    <p><strong class="text-white">A:</strong> This built-in scheduling tool helps you keep track of your
+                        busy studio schedule seamlessly across both Android and iOS devices.</p>
+                    <p><strong class="text-blue-400">How it Works:</strong> Simply input your project estimations and
+                        event details. The app automatically organizes everything into a clean, unified calendar.</p>
+                    <p><strong class="text-emerald-400">Key Details Tracked:</strong> Aligns exact event dates, timings,
+                        client names, contact numbers, and location details so you never miss a shoot or double-book
+                        your studio team.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 9 -->
+            <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 transition-all">
+                <button type="button" (click)="toggleFaq(9)"
+                    class="w-full p-6 text-left flex items-center justify-between font-bold text-white text-base sm:text-lg hover:text-blue-400 focus:outline-none">
+                    <span>Q9. How do I get my studio pin?</span>
+                    <i class="fa-solid fa-chevron-down text-blue-400 transition-transform duration-300 cursor-pointer"
+                        [class.rotate-180]="expandedFaq === 9"></i>
+                </button>
+                <div id="faq-content-9" [class.hidden]="expandedFaq !== 9"
+                    class="px-6 pb-6 text-gray-400 text-sm sm:text-base leading-relaxed border-t border-gray-800/60 pt-4">
+                    Basically, it is a feature application, so you can’t access without getting user Print. You have to
+                    take your user pin from our team end. Then you can take benefit of this.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+        <div
+            class="glass-card rounded-3xl p-8 sm:p-12 bg-gradient-to-r from-blue-950/90 via-indigo-950/90 to-gray-900/90 border border-blue-500/40 text-center relative overflow-hidden shadow-2xl reveal-on-scroll">
+            <div
+                class="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-blue-600/30 blur-3xl pointer-events-none">
+            </div>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-6">Ready to Transform Your Studio?</h2>
+            <p class="text-gray-300 max-w-2xl mx-auto text-base sm:text-lg mb-8 leading-relaxed">
+                Join thousands of professional photographers across India. Book your Demo PIN or connect with our Call &
+                WhatsApp support team instantly!
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                    target="_blank"
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-base shadow-xl shadow-emerald-600/35 transition-all flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span>WhatsApp Demo PIN</span>
+                </a>
+                <a href="tel:9044145555"
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base shadow-xl shadow-blue-600/35 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <span>Call: +91 9044145555</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER WITH COMPLETE CONTACT TEAM MEMBERS & SPECIFIC SOCIAL LINKS -->
+    <footer id="contact" class="border-t border-gray-800/80 pt-16 pb-12 mt-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-600/40">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <span class="text-lg font-bold text-white">My Studio</span>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Delivering smart photo management, AI face recognition, and billing solutions worldwide with
+                        dedication and innovation.
+                    </p>
+                    <div
+                        class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-xs font-bold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Call & WhatsApp Support</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Contact Team</h4>
+                    <a href="mailto:support@mystudio.com" class="text-xs text-gray-400 mb-2"><strong class="text-gray-300">Email:</strong>
+                        support&#64;mystudio.com</a>
+                    <p class="text-xs text-gray-400 mb-1"><strong class="text-gray-300">Abhay Singh:</strong> <a
+                            href="tel:9044145555" class="text-blue-400 hover:underline">9044145555</a></p>
+                    <p class="text-xs text-gray-400 mb-1"><strong class="text-gray-300">Akash Ahuja:</strong> <a
+                            href="tel:8004033357" class="text-blue-400 hover:underline">8004033357</a></p>
+                    <p class="text-xs text-gray-400 mb-1"><strong class="text-gray-300">Anand Ji:</strong> <a
+                            href="tel:9026671367" class="text-blue-400 hover:underline">9026671367</a></p>
+                    <p class="text-xs text-gray-400 mb-1"><strong class="text-gray-300">Rahul Ji:</strong> <a
+                            href="tel:9305797027" class="text-blue-400 hover:underline">9305797027</a></p>
+                    <p class="text-xs text-gray-400"><strong class="text-gray-300">Roshan:</strong> <a
+                            href="tel:9305025071" class="text-blue-400 hover:underline">93050 25071</a></p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Headquarters</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        DLF Cyber Greens, DLF Phase 3, Gurugram, Haryana 122002<br>
+                        Operations Hub: Uttar Pradesh, India
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Follow Us & Tutorials</h4>
+                    <div class="flex space-x-3 mb-4">
+                        <a href="https://www.facebook.com/people/My-Studio/61579959792922/" target="_blank"
+                            class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:bg-blue-600 transition-all transform hover:-translate-y-1"><i
+                                class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/mystudiosolutions/" target="_blank"
+                            class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:bg-pink-600 transition-all transform hover:-translate-y-1"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@MYSTUDIO-c2o" target="_blank"
+                            class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:bg-red-600 transition-all transform hover:-translate-y-1"><i
+                                class="fa-brands fa-youtube"></i></a>
+                        <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                            target="_blank"
+                            class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:bg-green-600 transition-all transform hover:-translate-y-1"><i
+                                class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=a_VOskQkVaI&list=PLYzUPLZLh4ZL0ckrnrUNg7L_sbAHloV29"
+                        target="_blank"
+                        class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all shadow-lg shadow-red-600/30">
+                        <i class="fa-brands fa-youtube text-base"></i>
+                        <span>Tutorial Playlist</span>
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500">
+                <p>&copy; 2026 My Studio (My IT Solutions). All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0">
+                    <a routerLink="/privacy-policy" class="hover:text-gray-400 transition-colors">Privacy Policy</a>
+                    <a routerLink="/privacy-policy" class="hover:text-gray-400 transition-colors">Terms of Service</a>
+                    <a href="https://wa.me/919044145555?text=Hello%20My%20Studio,%20I%20want%20to%20Ask%20for%20my%20Demo%20PIN!"
+                        target="_blank" class="text-blue-400 hover:underline">Ask Demo PIN</a>
+                </div>
+            </div>
         </div>
     </footer>
-
-</body>
+</div>

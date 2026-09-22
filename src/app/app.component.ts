@@ -26,7 +26,7 @@ export class AppComponent {
     this.isLoggedIn = this.auth.isAuthenticated();
     setTimeout(() => {
       this.showLoader = false;
-    }, 1500);
+    }, 1000);
     localStorage.setItem('isUploadingGlobally', 'false');
   }
 

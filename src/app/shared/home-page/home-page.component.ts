@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
 import { FormsModule } from '@angular/forms';
@@ -12,42 +12,110 @@ import { DomSanitizer } from '@angular/platform-browser';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })
-export class HomePageComponent {
+export class HomePageComponent implements AfterViewInit, OnDestroy {
 
   router: any = inject(Router);
   homePageConfig: any = { home: true };
   contactForm: any = {};
-  googleDriveLinks: any = [
-    { url: "https://drive.google.com/file/d/15CyosG4HPeEnAWCOSNbSUqKsqECJlzYF/view?usp=sharing", title: "Behind the Scenes - Studio Workflow", desc: " Go behind the scenes as we showcase how My Studio keeps you organized and inspired. Practical tips for boosting productivity." },
-    {
-      url: "https://drive.google.com/file/d/1r4FRu1j_KzbCmW7tI5rTSov4_GIsCd5m/view?usp=sharing", title: "New Features Launch - August 2025", desc: "See new workflow, improved reminders, and privacy tools in action. See live demonstrations and user feedback."
-    },
-    {
-      url: "https://drive.google.com/file/d/1gWm9WfDt7WyaRTNRDn5TKs4wPqB1_1B7/view?usp=sharing", title: "Community Spotlight - Photographers' Stories", desc: " Meet talented photographers as they share their creative journeys and how My Studio helps them create."
-    },
-    { url: "https://drive.google.com/file/d/1DHUSCYKPwzDwbDFXUoqwXckzkNsFg4_A/view?usp=sharing", title: "Upcoming Features Preview", desc: "Get a sneak peek at upcoming features and improvements coming soon to My Studio." }
-  ];
-  directVideoLinks: any = [];
+  isMobileMenuOpen = false;
+  isPopupOpen = false;
+  eventsPerMonth = 1;
+  guestsPerEvent = 50;
+  expandedFaq: number | null = null;
+  hoursSaved = 2;
+
+  private popupTimer?: ReturnType<typeof setTimeout>;
+  private intersectionObserver?: IntersectionObserver;
+  private counterObserver?: IntersectionObserver;
 
   constructor(private alert: AlertService, private sanitizer: DomSanitizer) {
 
   }
 
   ngOnInit() {
-    this.directVideoLinks = this.googleDriveLinks.map((link: any) => {
-      const match = link.url.match(/\/d\/([^/]+)\//);
-      let directUrl = '';
-      if (match && match[1]) {
-        directUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
-      }
-      // Sanitize the URL
-      return {
-        ...link,
-        safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(directUrl)
-      };
-    });
-    console.log(this.directVideoLinks);
+    this.popupTimer = setTimeout(() => this.openPopup(), 20000);
+  }
 
+  ngAfterViewInit() {
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    this.intersectionObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal-on-scroll').forEach(element => {
+      this.intersectionObserver?.observe(element);
+    });
+
+    const counterSection = document.querySelector('.counter')?.closest('.glass-card');
+    if (counterSection) {
+      this.counterObserver = new IntersectionObserver((entries, observer) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          this.startCounters();
+          observer.disconnect();
+        }
+      }, { threshold: 0.3 });
+      this.counterObserver.observe(counterSection);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.popupTimer) {
+      clearTimeout(this.popupTimer);
+    }
+    this.intersectionObserver?.disconnect();
+    this.counterObserver?.disconnect();
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
+  openPopup() {
+    this.isPopupOpen = true;
+  }
+
+  closePopup() {
+    this.isPopupOpen = false;
+  }
+
+  calculateTime() {
+    this.hoursSaved = this.eventsPerMonth * 2;
+  }
+
+  toggleFaq(id: number) {
+    this.expandedFaq = this.expandedFaq === id ? null : id;
+  }
+
+  startCounters() {
+    document.querySelectorAll<HTMLElement>('.counter').forEach(counter => {
+      const target = Number(counter.dataset['target']);
+      const decimalPlaces = Number(counter.dataset['decimal'] || 0);
+      const suffix = `${counter.dataset['plus'] === 'true' ? '+' : ''}${counter.dataset['percent'] === 'true' ? '%' : ''}`;
+      const increment = target / 200;
+      let count = 0;
+
+      const updateCount = () => {
+        count = Math.min(count + increment, target);
+        counter.textContent = `${count.toFixed(decimalPlaces)}${suffix}`;
+        if (count < target) {
+          setTimeout(updateCount, 15);
+        }
+      };
+
+      updateCount();
+    });
   }
 
   goToLogin() {
@@ -73,13 +141,5 @@ export class HomePageComponent {
     const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)\//);
     return match ? match[1] : null;
   }
-
-  handleSubmit() {
-    if (!this.contactForm.name || !this.contactForm.email || !this.contactForm.message) {
-      this.alert.error("Please fill all the fields.");
-      return;
-    }
-    this.contactForm = {};
-    this.alert.success("Submitted successfully!, We will contact you soon.");
-  }
+ 
 }
