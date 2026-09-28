@@ -1,17 +1,12 @@
 import { Component, ViewChild, ElementRef, inject, HostListener, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { LoaderService } from '../../shared/loader.service';
 import { PhotoSelectionService } from '../../services/photo-selection.service';
 import { AlertService } from '../../services/alert.service';
-import { AuthService } from '../../services/auth.service';
-import * as faceapi from 'face-api.js';
 import { environment } from '../../../environments/environment';
-import { UniqueFolderIdPipe } from '../../shared/unique-folder-id.pipe';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {  SafeResourceUrl } from '@angular/platform-browser';
 import { TemplateThreeComponent } from '../../shared/ai-cover/template-three/template-three.component';
 import { TemplateTwoComponent } from '../../shared/ai-cover/template-two/template-two.component';
 import { YouTubePlayerModule } from '@angular/youtube-player';
@@ -92,16 +87,13 @@ export class AiUploadComponent {
   private pendingDownloadAction: (() => void) | null = null;
 
   constructor(
-    private route: ActivatedRoute,
     public loader: LoaderService,
     private eventService: PhotoSelectionService,
     private alert: AlertService,
-    private service: AuthService,
     private http: HttpClient,
-    private sanitizer: DomSanitizer
   ) {
-    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    // this.scrollTop();
+    const ua = navigator.userAgent;
+    this.isMobile = /Android|iPhone|iPad|iPod|Macintosh/i.test(ua) && 'ontouchend' in document;
     this.userData = JSON.parse(<any>localStorage.getItem("userData"));
     this.needCustomerInstaFollow = this.userData?.need_customer_insta_follow == true;
     this.instagramUrl = this.userData?.instagram_url || '';
@@ -322,22 +314,134 @@ export class AiUploadComponent {
     }
   }
 
+  private readExifOrientation(blob: Blob): Promise<number> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const view = new DataView(e.target?.result as ArrayBuffer);
+        if (view.byteLength < 2 || view.getUint16(0, false) !== 0xFFD8) {
+          resolve(1);
+          return;
+        }
+        let offset = 2;
+        while (offset < view.byteLength) {
+          if (offset + 2 > view.byteLength) break;
+          const marker = view.getUint16(offset, false);
+          offset += 2;
+          if (marker === 0xFFE1) {
+            if (offset + 8 > view.byteLength) break;
+            if (view.getUint32(offset + 2, false) !== 0x45786966) {
+              resolve(1);
+              return;
+            }
+            const little = view.getUint16(offset + 8, false) === 0x4949;
+            const get16 = (o: number) => view.getUint16(o, little);
+            const get32 = (o: number) => view.getUint32(o, little);
+            const tagsOffset = offset + 8;
+            const firstIFD = get32(tagsOffset + 4);
+            let dirStart = tagsOffset + firstIFD;
+            if (dirStart + 2 > view.byteLength) break;
+            const tagCount = get16(dirStart);
+            dirStart += 2;
+            for (let i = 0; i < tagCount; i++) {
+              const tagStart = dirStart + i * 12;
+              if (tagStart + 2 > view.byteLength) break;
+              if (get16(tagStart) === 0x0112) {
+                resolve(get16(tagStart + 8));
+                return;
+              }
+            }
+            resolve(1);
+            return;
+          } else if ((marker & 0xFF00) !== 0xFF00) {
+            break;
+          } else {
+            if (offset + 2 > view.byteLength) break;
+            offset += view.getUint16(offset, false);
+          }
+        }
+        resolve(1);
+      };
+      reader.onerror = () => resolve(1);
+      reader.readAsArrayBuffer(blob.slice(0, 262144));
+    });
+  }
+
+  private async normalizeImageToJpeg(file: File | Blob): Promise<Blob> {
+    const orientation = await this.readExifOrientation(file);
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d')!;
+          let width = img.naturalWidth;
+          let height = img.naturalHeight;
+          const maxDim = 1920;
+          const scale = Math.min(1, maxDim / Math.max(width, height));
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+
+          const needsSwap = orientation >= 5 && orientation <= 8;
+          canvas.width = needsSwap ? height : width;
+          canvas.height = needsSwap ? width : height;
+
+          switch (orientation) {
+            case 2: ctx.transform(-1, 0, 0, 1, canvas.width, 0); break;
+            case 3: ctx.transform(-1, 0, 0, -1, canvas.width, canvas.height); break;
+            case 4: ctx.transform(1, 0, 0, -1, 0, canvas.height); break;
+            case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
+            case 6: ctx.transform(0, 1, -1, 0, canvas.width, 0); break;
+            case 7: ctx.transform(0, -1, -1, 0, canvas.width, canvas.height); break;
+            case 8: ctx.transform(0, -1, 1, 0, 0, canvas.height); break;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              URL.revokeObjectURL(url);
+              if (blob) resolve(blob);
+              else reject(new Error('Failed to convert image to JPEG'));
+            },
+            'image/jpeg',
+            0.9
+          );
+        } catch (err) {
+          URL.revokeObjectURL(url);
+          reject(err);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load image'));
+      };
+      img.src = url;
+    });
+  }
+
   async onMobilePhotoCapture(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    // const phone = this.aiGuestConfig.phone;
-    // const isPhoneValid = phone && phone.length == 10;
 
     if (!file) {
       this.alert.error("No photo captured.");
       return;
     }
 
+    let processedBlob: Blob;
+    try {
+      processedBlob = await this.normalizeImageToJpeg(file);
+    } catch (e) {
+      console.log('Image normalization failed, using original:', e);
+      processedBlob = file;
+    }
+
     this.photoCaptured = true;
-    this.capturedBlob = file;
+    this.capturedBlob = processedBlob;
 
     if (!this.userData?.need_customer_number) {
-      await this.sendToServer(file);
+      await this.sendToServer(processedBlob);
     }
   }
 
