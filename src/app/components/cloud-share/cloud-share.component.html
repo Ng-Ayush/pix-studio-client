@@ -37,14 +37,16 @@
           </span>
           Introducing
         </div>
-        <h1><span class="font-big text-[#000]">Cloud Share </span><span class="text-zinc-500 dark:text-zinc-400"> by
-          </span> <span class="font-big _color">My Studio</span></h1>
+        <h1 class="hero-title">
+          <span class="hero-title-main">Cloud Share</span>
+          <span class="hero-title-by">by</span>
+          <span class="hero-title-brand">{{ 'My Studio' }}</span>
+        </h1>
         <p class="hero-copy">
-          On-grid 50TB free limit transfer your raw footage, heavy project files, and massive libraries <span>straight
+          On-grid 50TB free limit transfer your raw footage, heavy project files, <br> and massive libraries <span>straight
             from your device to another.</span>
         </p>
-        <p class="hero-subcopy">Transfer files up to 50TB directly between trusted devices using Cloud Share.</p>
-        <p class="hero-limit">Up to {{ maxShareSize }} per share</p>
+        <p class="hero-subcopy">Transfer files of any size instantly between trusted devices <br> using direct using Drive Share.</p>
       </section>
 
       <section class="sender-card">
@@ -95,7 +97,13 @@
 
       <section class="history-section">
         <div class="section-heading">
-          <div>
+          <div class="history-heading-title">
+            <span class="history-heading-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3.5 12a8.5 8.5 0 1 0 2.7-6.2L4 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.5 4.5V8H7M12 7v5l3.2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
             <h2>Recent Shares (For Fast Experience Delete Old Files)</h2>
           </div>
           <span class="history-count" *ngIf="history.length">{{ history.length }}</span>
