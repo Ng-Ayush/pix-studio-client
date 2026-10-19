@@ -61,6 +61,8 @@ export class PhotoSelectionPhotosComponent {
   waterMarkConfig: any = {};
   activePhoto: any = null;
   customerId: any = null;
+  sortingProgress = 0;
+
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
     private location: LocationStrategy,
@@ -281,18 +283,44 @@ export class PhotoSelectionPhotosComponent {
     }
 
     try {
-      this.loader.show();
       this.isSorting = true;
-      const selectedFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Selected", { create: true });
-      const favouriteFolderHandle = await this.selectedFolderHandle.getDirectoryHandle("Important", { create: true });
+      this.sortingProgress = 0;
+      const selectedFolderHandle =
+        await this.selectedFolderHandle.getDirectoryHandle(
+          "Selected",
+          { create: true }
+        );
+      const favouriteFolderHandle =
+        await this.selectedFolderHandle.getDirectoryHandle(
+          "Important",
+          { create: true }
+        );
+      const imagesToSort = this.filteredPhotos.filter(
+        image => image.is_selected || image.is_favourite
+      );
 
-      for (const image of this.filteredPhotos) {
-        if (!image.is_selected && !image.is_favourite) {
-          continue;
-        };
+      const totalImages = imagesToSort.length;
+
+      if (totalImages === 0) {
+        this.sortingProgress = 100;
+      }
+
+      let processedImages = 0;
+
+      for (const image of imagesToSort) {
 
         if (!image.fileHandle) {
-          this.alert.error(`File missing or renamed: ${image.photo_name}`, 5000);
+          this.alert.error(
+            `File missing or renamed: ${image.photo_name}`,
+            5000
+          );
+
+          processedImages++;
+
+          this.sortingProgress = Math.round(
+            (processedImages / totalImages) * 100
+          );
+
           continue;
         }
 
@@ -300,25 +328,46 @@ export class PhotoSelectionPhotosComponent {
         const fileBuffer = await sourceFile.arrayBuffer();
 
         if (image.is_selected) {
-          await this.copyFile(selectedFolderHandle, image.photo_name, fileBuffer);
+          await this.copyFile(
+            selectedFolderHandle,
+            image.photo_name,
+            fileBuffer
+          );
         }
 
         if (image.is_favourite) {
-          await this.copyFile(favouriteFolderHandle, image.photo_name, fileBuffer);
+          await this.copyFile(
+            favouriteFolderHandle,
+            image.photo_name,
+            fileBuffer
+          );
         }
+
+        processedImages++;
+
+        this.sortingProgress = Math.round(
+          (processedImages / totalImages) * 100
+        );
       }
 
+      this.sortingProgress = 100;
+
       this.alert.success("Images sorted successfully!");
-      this.closeModal();
-      this.loader.hide();
       this.isSorting = false;
+      setTimeout(() => {
+        this.closeModal();
+        this.sortingProgress = 0;
+      }, 500);
+
     } catch (error) {
       console.error("Sorting failed:", error);
       this.alert.error("Wrong folder selected");
       this.loader.hide();
       this.isSorting = false;
+      this.sortingProgress = 0;
     }
   }
+
 
   async copyFile(folderHandle: any, fileName: string, fileBuffer: ArrayBuffer) {
     const newFileHandle = await folderHandle.getFileHandle(fileName, { create: true });
