@@ -22,6 +22,15 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'cloud-share/:shareId',
+    loadComponent: () => import("./components/cloud-share/cloud-share.component").then(m => m.CloudShareComponent)
+  },
+  {
+    path: 'cloud-share',
+    loadComponent: () => import("./components/cloud-share/cloud-share.component").then(m => m.CloudShareComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'photo-selection',
     loadComponent: () => import("./components/photo-selection/photo-selection.component").then(m => m.PhotoSelectionComponent),
     canActivate: [authGuard]

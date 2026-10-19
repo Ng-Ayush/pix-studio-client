@@ -1,0 +1,173 @@
+<div class="site-shell">
+  <header class="topbar">
+    <a class="wordmark" routerLink="/dashboard" aria-label="MyStudio dashboard">
+      <span class="wordmark-mark" aria-hidden="true"> <img src="../../../assets/logo.png" alt="MyStudio" /> </span>
+      <span>MyStudio<span class="wordmark-light"> CloudShare</span></span>
+    </a>
+    <!-- <span class="privacy-label"><span class="status-dot"></span> Direct by design</span> -->
+  </header>
+
+  <main class="layout" [class.receiver-layout]="shareId">
+    <section class="intro">
+      <a class="back-link" routerLink="/dashboard">&larr; Dashboard</a>
+      <p class="eyebrow">{{ shareId ? 'PRIVATE FILE TRANSFER' : 'PEER-TO-PEER FILE SHARING' }}</p>
+      <h1>Big files.<br /><span>No middleman.</span></h1>
+      <p class="intro-copy">
+        Share files directly between devices. Your files travel from the sender to the receiver, not through MyStudio.
+      </p>
+      <div class="feature-list" aria-label="CloudShare features">
+        <div><span class="feature-icon">01</span><span>Peer-to-peer transfer</span></div>
+        <div><span class="feature-icon">02</span><span>Encrypted transfer between peers</span></div>
+        <div><span class="feature-icon">03</span><span>No receiver sign-in or cloud upload</span></div>
+      </div>
+      <p class="fine-print">Keep MyStudio open while recipients are downloading.</p>
+    </section>
+
+    <section class="transfer-panel" aria-live="polite">
+      <ng-container *ngIf="!shareId; else receivePanel">
+        <div class="panel-topline"><span>01 / SEND</span><span class="panel-icon" aria-hidden="true">↗</span></div>
+        <h2>Choose files to share</h2>
+        <p class="panel-copy">
+          Select files or a folder up to {{ maxShareSize }}. Create a private link and share it with your recipient.
+        </p>
+
+        <div class="picker-actions">
+          <label class="file-picker" [class.is-disabled]="isShareLocked">
+            <span class="picker-symbol" aria-hidden="true">＋</span>
+            <span class="picker-text">Select files</span>
+            <span class="picker-hint">Choose one or more files</span>
+            <input class="visually-hidden" type="file" multiple [disabled]="isShareLocked" (change)="onFilesSelected($event)" />
+          </label>
+          <label class="file-picker" [class.is-disabled]="isShareLocked">
+            <span class="picker-symbol" aria-hidden="true">＋</span>
+            <span class="picker-text">Select folder</span>
+            <span class="picker-hint">Share a folder and its contents</span>
+            <input class="visually-hidden" type="file" webkitdirectory directory multiple [disabled]="isShareLocked" (change)="onFilesSelected($event)" />
+          </label>
+        </div>
+
+        <p *ngIf="isShareLocked && !isPreparing" class="share-lock-message" role="status">
+          Finish this share before choosing another file. The next share is enabled after the receiver saves the current file.
+        </p>
+        <p *ngIf="isPreparing" class="status-line" role="status">
+          <span class="status-dot"></span> Creating your private link...
+        </p>
+        <div *ngIf="hashProgress > 0 && hashProgress < 100" class="preparation-progress" role="status">
+          <div class="progress-track"><div class="progress-value" [style.width.%]="hashProgress"></div></div>
+          <p class="progress-caption">Preparing transfer: {{ hashProgress }}%</p>
+        </div>
+
+        <div *ngIf="latestShareUrl" class="link-block">
+          <label for="latest-share-link">Your private link</label>
+          <div class="link-row">
+            <input id="latest-share-link" readonly [value]="latestShareUrl" />
+            <button type="button" class="copy-button" (click)="copyShareLink(latestShareId)">Copy</button>
+          </div>
+          <p class="status-line"><span class="status-dot"></span> {{ isPreparing ? 'Preparing your share...' : isSeedingLatest ? (senderPeerCount > 0 ? 'Sharing with ' + senderPeerCount + ' peer(s)' : 'Waiting for the receiver') : 'Share link created' }}</p>
+          <div *ngIf="!isPreparing && isSeedingLatest" class="progress-summary">
+            <div class="progress-ring" role="progressbar" [style.--progress]="senderProgress + '%'" [attr.aria-valuenow]="senderProgress" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="'Uploaded ' + senderProgress + ' percent of one share-size equivalent'">
+              <span class="progress-ring-value">{{ senderProgress }}<small>%</small></span>
+              <span class="progress-ring-label">UPLOADED</span>
+            </div>
+            <p class="progress-note">
+              Bytes sent to peers, measured against one share size. This is not a per-recipient completion percentage.
+            </p>
+          </div>
+          <p class="fine-print link-note">Recipients can open this link without signing in. Keep MyStudio running while they download.</p>
+        </div>
+
+        <p *ngIf="!latestShareUrl" class="panel-hint">Select files to create a link. The receiver chooses when to download.</p>
+      </ng-container>
+
+      <ng-template #receivePanel>
+        <div class="panel-topline"><span>02 / RECEIVE</span><span class="panel-icon" aria-hidden="true">↓</span></div>
+        <ng-container *ngIf="isLoading; else loadedShare">
+          <h2>Joining the share...</h2>
+          <p class="panel-copy">{{ transferStatus || 'Checking the private link...' }}</p>
+          <div *ngIf="isConnecting" class="progress-track connecting-track"><div></div></div>
+        </ng-container>
+
+        <ng-template #loadedShare>
+          <ng-container *ngIf="publicShare; else unavailableShare">
+            <h2 class="share-name">{{ publicShare.name }}</h2>
+            <p class="panel-copy">{{ formatSize(publicShare.sizeBytes) }} · Shared privately with CloudShare</p>
+            <div class="incoming-file">
+              <span class="file-symbol" aria-hidden="true">FILE</span>
+              <span class="file-info"><strong>{{ publicShare.name }}</strong><small>{{ formatSize(publicShare.sizeBytes) }}</small></span>
+            </div>
+            <p class="status-line transfer-status" role="status"><span class="status-dot"></span> {{ transferStatus }}</p>
+
+            <div *ngIf="isConnecting" class="progress-track connecting-track"><div></div></div>
+            <div *ngIf="torrent && !isConnecting" class="progress-summary receiver-progress">
+              <div class="progress-ring receiver-ring" role="progressbar" [style.--progress]="transferProgress + '%'" [attr.aria-valuenow]="transferProgress" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="'Received ' + transferProgress + ' percent'">
+                <span class="progress-ring-value">{{ transferProgress }}<small>%</small></span>
+                <span class="progress-ring-label">RECEIVED</span>
+              </div>
+              <p class="progress-note">
+                Downloaded from peers. Save the completed file to your device when it reaches 100%.
+              </p>
+            </div>
+
+            <div *ngIf="torrentFiles.length" class="file-list">
+              <p class="save-explanation">Save copies the received file to a location you choose on your device. It is not saved to MyStudio.</p>
+              <button *ngIf="torrentFiles.length > 1" type="button" (click)="saveFolder()" [disabled]="isSaving" class="primary-button">
+                Save folder to device <span aria-hidden="true">↓</span>
+              </button>
+              <ul>
+                <li *ngFor="let file of torrentFiles">
+                  <span class="file-path">{{ file.path }} <small>({{ formatSize(file.length) }})</small></span>
+                  <button type="button" (click)="saveFile(file)" [disabled]="isSaving" class="save-button">Save to device</button>
+                </li>
+              </ul>
+            </div>
+            <p class="fine-print receive-note">
+              No sign-in is needed to receive. This is a live peer-to-peer transfer; the sender must keep MyStudio running until it finishes.
+            </p>
+          </ng-container>
+          <ng-template #unavailableShare>
+            <h2>Share unavailable</h2>
+            <p class="error-message" role="alert">{{ transferStatus }}</p>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+    </section>
+
+    <section *ngIf="!shareId" class="history-panel">
+      <div class="history-heading">
+        <div>
+          <p class="eyebrow">YOUR PRIVATE LINKS</p>
+          <h2>Your share history</h2>
+        </div>
+        <p>Only you can see and manage these entries.</p>
+      </div>
+      <p *ngIf="isLoading" class="history-empty">Loading CloudShare history...</p>
+      <p *ngIf="!isLoading && history.length === 0" class="history-empty">No shares yet.</p>
+      <ul *ngIf="!isLoading && history.length" class="history-list">
+        <li *ngFor="let share of history">
+          <div class="history-info">
+            <h3>{{ share.name }}</h3>
+            <p>
+              {{ formatSize(share.sizeBytes) }} · {{ share.downloadCount || 0 }} completed download(s) ·
+              <ng-container [ngSwitch]="share.status">
+                <span *ngSwitchCase="'pending'">{{ isCurrentPreparedShare(share) ? 'Preparing link — replaceable' : 'Preparation pending' }}</span>
+                <span *ngSwitchCase="'ready'">{{ isSeeding(share) ? 'Ready — link reusable while sharing' : 'Sender offline — link unavailable' }}</span>
+                <span *ngSwitchCase="'in_progress'">{{ isSeeding(share) ? 'Transfer started — sender is online' : 'Transfer started — sender offline' }}</span>
+                <span *ngSwitchCase="'failed'">Share preparation failed</span>
+                <span *ngSwitchDefault>{{ isSeeding(share) ? 'Seeding on this device' : 'Sender offline here — refresh stops sharing' }}</span>
+              </ng-container>
+            </p>
+          </div>
+          <div class="history-actions">
+            <button type="button" class="secondary-button" [disabled]="!canCopyShare(share)" [title]="canCopyShare(share) ? 'Copy a link that is currently being seeded' : 'The sender is not sharing this file from this device'" (click)="copyShareLink(share.shareId)">Copy link</button>
+            <button type="button" class="delete-button" (click)="deleteShare(share)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <span>Private, peer-to-peer file sharing</span>
+    <span>MyStudio CloudShare</span>
+  </footer>
+</div>
