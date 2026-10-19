@@ -10,6 +10,8 @@ import {
 } from '../../services/cloud-share.service';
 import { AlertService } from '../../services/alert.service';
 
+const LARGE_SHARE_THRESHOLD_BYTES = 5 * 1024 ** 3;
+
 interface WritableFile {
   write(data: Uint8Array): Promise<void>;
   close(): Promise<void>;
@@ -49,20 +51,41 @@ export class CloudShareComponent implements OnInit, OnDestroy {
   latestShareId = '';
   isLoading = true;
   isPreparing = false;
+  isDropZoneActive = false;
   hashProgress = 0;
+  hashedBytes = 0;
+  latestShareName = '';
   senderProgress = 0;
   senderPeerCount = 0;
   isSeedingLatest = false;
   isShareLocked = false;
   isConnecting = false;
   isSaving = false;
+  largeFileChoiceRequired = false;
+  isShareSuccessModalOpen = false;
+  isErrorModalOpen = false;
+  isConnectionModalOpen = false;
+  isDeleteModalOpen = false;
+  modalClosing = false;
+  errorModalMessage = '';
+  connectionModalDescription = 'Waiting for MyStudio to connect. Please keep this page open.';
+  preparingTotalBytes = 0;
   transferStatus = 'Waiting for the sender to connect...';
   transferProgress = 0;
+  transferSpeed = 0;
+  senderUploadSpeed = 0;
+  studioName = 'MY STUDIO';
+  studioIcon = '';
+  studioPhone = '';
+  studioAddress = '';
+  studioInstagramUrl = '';
+  studioFacebookUrl = '';
+  studioYoutubeUrl = '';
   shareId?: string;
   private downloadReported = false;
   private receivedShareSaved = false;
   private readonly savedFilePaths = new Set<string>();
-  private activeOutgoingShareId?: string;
+  activeOutgoingShareId?: string;
   private activeOutgoingTorrent?: CloudShareTorrent;
   private activeShareStarted = false;
   private outgoingGeneration = 0;
@@ -72,6 +95,11 @@ export class CloudShareComponent implements OnInit, OnDestroy {
   private completionPoll?: ReturnType<typeof setInterval>;
   private completionCheckInProgress = false;
   private completionWarningShown = false;
+  private receiverInactivityTimer?: ReturnType<typeof setTimeout>;
+  pendingDeleteShare?: CloudShareRecord;
+  private copiedLinkResetTimer?: ReturnType<typeof setTimeout>;
+  private modalCloseTimer?: ReturnType<typeof setTimeout>;
+  modalCopied = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -85,11 +113,77 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       void this.loadPublicShare();
       return;
     }
+    this.loadStudioBrandingFromStorage();
     void this.loadHistory();
   }
 
   ngOnDestroy(): void {
     this.stopCompletionPolling();
+    this.clearReceiverInactivityTimer();
+    if (this.copiedLinkResetTimer) {
+      clearTimeout(this.copiedLinkResetTimer);
+    }
+    if (this.modalCloseTimer) {
+      clearTimeout(this.modalCloseTimer);
+    }
+  }
+
+  private async writeFolderToDirectory(root: DirectoryHandle, streamWhileReceiving = false): Promise<void> {
+    for (let index = 0; index < this.torrentFiles.length; index++) {
+      const file = this.torrentFiles[index];
+      this.transferStatus = streamWhileReceiving
+        ? `Downloading and saving ${index + 1} of ${this.torrentFiles.length}: ${file.path}`
+        : `Saving ${index + 1} of ${this.torrentFiles.length}: ${file.path}`;
+      const pathParts = file.path.split(/[\\/]/).filter((part) => part && part !== '.' && part !== '..');
+      const fileName = this.safeName(pathParts.pop() || file.name);
+      let directory = root;
+      for (const part of pathParts) {
+        directory = await directory.getDirectoryHandle(this.safeName(part), { create: true });
+      }
+      const handle = await directory.getFileHandle(fileName, { create: true });
+      if (streamWhileReceiving) {
+        file.select();
+        this.torrent?.resume();
+      }
+      try {
+        await this.streamFileToHandle(file, handle);
+      } finally {
+        if (streamWhileReceiving) {
+          file.deselect();
+        }
+      }
+      this.savedFilePaths.add(file.path);
+    }
+  }
+
+  @HostListener('window:offline')
+  onNetworkOffline(): void {
+    if (this.shareId && !this.receivedShareSaved) {
+      this.showConnectionDelayedModal('Your internet connection was lost. Waiting for network to resume...');
+    }
+  }
+
+  @HostListener('window:online')
+  onNetworkOnline(): void {
+    if (this.shareId && !this.receivedShareSaved) {
+      this.closeConnectionModal();
+      if (this.largeFileChoiceRequired) {
+        this.transferStatus = 'Choose how you would like to receive this large file.';
+      } else if (this.transferProgress > 0) {
+        this.transferStatus = `Resuming download ${this.publicShare?.name ?? ''}...`;
+      }
+      this.resetReceiverInactivityTimer();
+    }
+  }
+
+  @HostListener('window:dragover', ['$event'])
+  preventWindowDragOver(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  @HostListener('window:drop', ['$event'])
+  preventWindowDrop(event: DragEvent): void {
+    event.preventDefault();
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -111,6 +205,34 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files ?? []);
     input.value = '';
+    await this.startShare(files);
+  }
+
+  async onFilesDropped(event: DragEvent): Promise<void> {
+    event.preventDefault();
+    this.isDropZoneActive = false;
+    try {
+      const files = await this.readDroppedFiles(event.dataTransfer);
+      await this.startShare(files);
+    } catch (error) {
+      console.error('[CloudShare] Could not read dropped files or folders', error);
+      this.showErrorModal(this.getErrorMessage(error, 'Could not read the dropped files or folders.'));
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (!this.isPreparing && !this.isShareLocked) {
+      this.isDropZoneActive = true;
+    }
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDropZoneActive = false;
+  }
+
+  private async startShare(files: File[]): Promise<void> {
     if (files.length === 0) {
       return;
     }
@@ -135,7 +257,11 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     }
 
     this.isPreparing = true;
+    this.preparingTotalBytes = sizeBytes;
+    this.hashProgress = 0;
+    this.hashedBytes = 0;
     this.senderProgress = 0;
+    this.senderUploadSpeed = 0;
     this.senderPeerCount = 0;
     this.isSeedingLatest = false;
     this.isShareLocked = false;
@@ -149,15 +275,16 @@ export class CloudShareComponent implements OnInit, OnDestroy {
 
       this.latestShareId = pendingShare.shareId;
       this.latestShareUrl = this.getShareUrl(pendingShare.shareId);
+      this.latestShareName = name;
       this.activeOutgoingShareId = pendingShare.shareId;
       this.activeShareStarted = false;
       this.activeShareDownloadCount = Number(pendingShare.downloadCount) || 0;
       this.history = [pendingShare, ...this.history];
-      void this.copyShareLink(pendingShare.shareId);
 
       this.prepareTorrentPaths(files);
       const seed = await this.cloudShare.seedFiles(files, name, (hashedBytes, totalBytes) => {
         if (generation === this.outgoingGeneration) {
+          this.hashedBytes = hashedBytes;
           this.hashProgress = totalBytes > 0 ? Math.floor((hashedBytes / totalBytes) * 100) : 0;
         }
       });
@@ -174,6 +301,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
         this.isShareLocked = true;
         this.senderProgress = Math.min(100, Math.floor((seed.torrent.uploaded / sizeBytes) * 100));
         this.senderPeerCount = seed.torrent.numPeers;
+        this.senderUploadSpeed = seed.torrent.uploadSpeed;
       });
       seed.torrent.on('wire', () => {
         if (generation !== this.outgoingGeneration) return;
@@ -182,52 +310,35 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       seed.torrent.on('noPeers', () => {
         if (generation !== this.outgoingGeneration) return;
         this.senderPeerCount = 0;
+        this.senderUploadSpeed = 0;
       });
-      this.isPreparing = false;
-      void seed.seeded
-        .then(async (torrent) => {
-          if (generation !== this.outgoingGeneration) {
-            await this.cloudShare.stopTorrent(torrent);
-            await this.cloudShare.deleteShare(pendingShare!.shareId);
-            return;
-          }
-          if (!torrent.infoHash) {
-            throw new Error('WebTorrent finished seeding without an info hash.');
-          }
-          this.isSeedingLatest = true;
-          const readyShare = await this.cloudShare.completeShare(pendingShare!.shareId, torrent.infoHash);
-          this.updateHistory(readyShare);
-          this.startCompletionPolling();
-          this.alert.success('CloudShare is ready. Keep MyStudio running while recipients download.');
-        })
-        .catch(async (error: unknown) => {
-          if (generation !== this.outgoingGeneration) {
-            return;
-          }
-          if (this.activeOutgoingTorrent) {
-            try {
-              await this.cloudShare.stopTorrent(this.activeOutgoingTorrent);
-            } catch (stopError) {
-              console.error('[CloudShare] Could not stop the failed seed', stopError);
-            }
-          }
-          this.isSeedingLatest = false;
-          this.releaseShareLock();
-          console.error('[CloudShare] Seeding failed', error);
-          try {
-            await this.cloudShare.failShare(pendingShare!.shareId);
-          } catch (failError) {
-            console.error('[CloudShare] Could not mark failed share', failError);
-          }
-          this.updateHistory({ ...pendingShare!, status: 'failed' });
-          this.alert.error(this.getErrorMessage(error, 'Could not prepare the CloudShare transfer.'));
-        });
+      const torrent = await seed.seeded;
+      if (generation !== this.outgoingGeneration) {
+        await this.cloudShare.stopTorrent(torrent);
+        await this.cloudShare.deleteShare(pendingShare.shareId);
+        return;
+      }
+      if (!torrent.infoHash) {
+        throw new Error('WebTorrent finished seeding without an info hash.');
+      }
+      this.isSeedingLatest = true;
+      const readyShare = await this.cloudShare.completeShare(pendingShare.shareId, torrent.infoHash);
+      this.updateHistory(readyShare);
+      this.startCompletionPolling();
+      this.isShareSuccessModalOpen = true;
     } catch (error) {
-        if (generation !== this.outgoingGeneration) {
-          return;
+      if (generation !== this.outgoingGeneration) {
+        return;
+      }
+      if (this.activeOutgoingTorrent) {
+        try {
+          await this.cloudShare.stopTorrent(this.activeOutgoingTorrent);
+        } catch (stopError) {
+          console.error('[CloudShare] Could not stop the failed seed', stopError);
         }
-        this.isSeedingLatest = false;
-        this.releaseShareLock();
+      }
+      this.isSeedingLatest = false;
+      this.releaseShareLock();
       console.error('[CloudShare] Could not prepare the share', error);
       if (pendingShare) {
         try {
@@ -237,7 +348,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
         }
         this.updateHistory({ ...pendingShare, status: 'failed' });
       }
-      this.alert.error(this.getErrorMessage(error, 'Could not create the CloudShare link.'));
+      this.showErrorModal(this.getErrorMessage(error, 'Could not create the CloudShare link.'));
     } finally {
       if (generation === this.outgoingGeneration) {
         this.isPreparing = false;
@@ -245,10 +356,27 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     }
   }
 
-  async deleteShare(share: CloudShareRecord): Promise<void> {
-    if (!window.confirm(`Delete the share link for "${share.name}"?`)) {
+  requestDeleteShare(share: CloudShareRecord): void {
+    this.pendingDeleteShare = share;
+    this.isDeleteModalOpen = true;
+  }
+
+  cancelDeleteShare(): void {
+    this.dismissModal(() => {
+      this.isDeleteModalOpen = false;
+      this.pendingDeleteShare = undefined;
+    });
+  }
+
+  async confirmDeleteShare(): Promise<void> {
+    const share = this.pendingDeleteShare;
+    if (!share) {
       return;
     }
+    this.dismissModal(() => {
+      this.isDeleteModalOpen = false;
+      this.pendingDeleteShare = undefined;
+    });
     try {
       await this.cloudShare.deleteShare(share.shareId);
       if (share.infoHash) {
@@ -262,6 +390,37 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('[CloudShare] Could not delete the share', error);
       this.alert.error(this.getErrorMessage(error, 'Could not delete the CloudShare link.'));
+    }
+  }
+
+  closeShareSuccessModal(): void {
+    this.dismissModal(() => this.isShareSuccessModalOpen = false);
+  }
+
+  closeErrorModal(): void {
+    this.dismissModal(() => this.isErrorModalOpen = false);
+  }
+
+  closeConnectionModal(): void {
+    this.dismissModal(() => this.isConnectionModalOpen = false);
+  }
+
+  async copyLatestShareLink(): Promise<void> {
+    if (!this.latestShareUrl) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(this.latestShareUrl);
+      this.modalCopied = true;
+      if (this.copiedLinkResetTimer) {
+        clearTimeout(this.copiedLinkResetTimer);
+      }
+      this.copiedLinkResetTimer = setTimeout(() => {
+        this.modalCopied = false;
+      }, 2000);
+    } catch (error) {
+      console.error('[CloudShare] Clipboard access failed', error);
+      this.alert.warning('Clipboard access was blocked. Copy the link from the field.');
     }
   }
 
@@ -313,18 +472,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     try {
       const root = await picker.call(window);
       this.isSaving = true;
-      for (let index = 0; index < this.torrentFiles.length; index++) {
-        const file = this.torrentFiles[index];
-        this.transferStatus = `Saving ${index + 1} of ${this.torrentFiles.length}: ${file.path}`;
-        const pathParts = file.path.split(/[\\/]/).filter((part) => part && part !== '.' && part !== '..');
-        const fileName = this.safeName(pathParts.pop() || file.name);
-        let directory = root;
-        for (const part of pathParts) {
-          directory = await directory.getDirectoryHandle(this.safeName(part), { create: true });
-        }
-        const handle = await directory.getFileHandle(fileName, { create: true });
-        await this.streamFileToHandle(file, handle);
-      }
+      await this.writeFolderToDirectory(root);
       this.transferStatus = 'Folder download complete.';
       this.alert.success('Folder saved.');
       this.receivedShareSaved = true;
@@ -347,6 +495,93 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     const unit = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
     return `${(bytes / 1024 ** unit).toFixed(unit ? 2 : 0)} ${units[unit]}`;
+  }
+
+  formatTransferSpeed(bytesPerSecond: number): string {
+    if (!Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) {
+      return '0 KB/s';
+    }
+    const kbPerSecond = bytesPerSecond / 1024;
+    return kbPerSecond >= 1024
+      ? `${(kbPerSecond / 1024).toFixed(1)} MB/s`
+      : `${Math.round(kbPerSecond)} KB/s`;
+  }
+
+  get isLargeShare(): boolean {
+    return Number(this.publicShare?.sizeBytes) > LARGE_SHARE_THRESHOLD_BYTES;
+  }
+
+  continueLargeDownloadInBrowser(): void {
+    if (!this.torrent || !this.largeFileChoiceRequired) {
+      return;
+    }
+    for (const file of this.torrentFiles) {
+      file.select();
+    }
+    this.torrent.resume();
+    this.largeFileChoiceRequired = false;
+    this.transferStatus = 'Downloading in this browser...';
+  }
+
+  async saveLargeShareDirectly(): Promise<void> {
+    if (!this.torrent || !this.torrentFiles.length || !this.largeFileChoiceRequired) {
+      return;
+    }
+    const pickerWindow = window as FileSystemPickerWindow;
+    const firstFile = this.torrentFiles[0];
+    const isSingleFile = this.torrentFiles.length === 1
+      && this.publicShare?.name === firstFile.name
+      && !/[\\/]/.test(firstFile.path);
+    if (isSingleFile && !pickerWindow.showSaveFilePicker) {
+      this.alert.error('Direct-to-device streaming requires a Chromium-based browser with file saving support.');
+      return;
+    }
+    if (!isSingleFile && !pickerWindow.showDirectoryPicker) {
+      this.alert.error('Direct folder streaming requires a Chromium-based browser with folder saving support.');
+      return;
+    }
+
+    try {
+      const fileHandle = isSingleFile
+        ? await pickerWindow.showSaveFilePicker!.call(window, {
+            suggestedName: this.safeName(firstFile.name)
+          })
+        : undefined;
+      const directoryHandle = isSingleFile
+        ? undefined
+        : await pickerWindow.showDirectoryPicker!.call(window);
+
+      this.isSaving = true;
+      this.largeFileChoiceRequired = false;
+      if (fileHandle) {
+        const file = this.torrentFiles[0];
+        file.select();
+        this.torrent.resume();
+        this.transferStatus = `Downloading ${file.name} directly to your device...`;
+        await this.streamFileToHandle(file, fileHandle);
+        file.deselect();
+        this.savedFilePaths.add(file.path);
+      } else if (directoryHandle) {
+        this.torrent.resume();
+        await this.writeFolderToDirectory(directoryHandle, true);
+      }
+
+      this.receivedShareSaved = true;
+      this.transferStatus = 'Download complete.';
+      this.alert.success(isSingleFile ? 'File saved.' : 'Folder saved.');
+      await this.reportDownload();
+    } catch (error) {
+      if ((error as DOMException)?.name !== 'AbortError') {
+        console.error('[CloudShare] Could not stream the large share to disk', error);
+        this.alert.error(this.getErrorMessage(error, 'Could not save the large share.'));
+      }
+      for (const file of this.torrentFiles) {
+        file.deselect();
+      }
+      this.largeFileChoiceRequired = true;
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   isSeeding(share: CloudShareRecord): boolean {
@@ -418,10 +653,12 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     try {
       this.publicShare = await this.cloudShare.getPublicShare(this.shareId!);
+      this.applyStudioBranding(this.publicShare);
       while (this.publicShare.status === 'pending') {
         this.transferStatus = 'The sender is preparing the share. This page will connect automatically when it is ready.';
         await new Promise((resolve) => setTimeout(resolve, 2000));
         this.publicShare = await this.cloudShare.getPublicShare(this.shareId!);
+        this.applyStudioBranding(this.publicShare);
       }
       if (!['ready', 'in_progress'].includes(this.publicShare.status) || !this.publicShare.infoHash) {
         throw new Error('The sender has not made this share available.');
@@ -430,13 +667,26 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       this.transferStatus = 'Connecting to the sender... Keep this page open during the transfer.';
       this.torrent = await this.cloudShare.joinShare(this.publicShare.infoHash);
       const torrent = this.torrent;
+      this.resetReceiverInactivityTimer();
       const onTorrentReady = () => {
         this.torrentFiles = [...torrent.files];
         this.isConnecting = false;
         this.transferProgress = Math.round(torrent.progress * 100);
+        this.transferSpeed = torrent.downloadSpeed;
+        if (this.isLargeShare && !this.largeFileChoiceRequired) {
+          torrent.pause();
+          for (const file of this.torrentFiles) {
+            file.deselect();
+          }
+          this.transferProgress = Math.round(torrent.progress * 100);
+          this.transferSpeed = 0;
+          this.largeFileChoiceRequired = true;
+          this.transferStatus = 'Large file detected. Choose how you would like to receive it.';
+          return;
+        }
         this.transferStatus = torrent.numPeers
           ? `Connected to ${torrent.numPeers} peer(s).`
-          : 'Waiting for the sender to connect... Keep this page open.';
+          : 'Waiting for sender to connect...';
       };
       if (torrent.ready) {
         onTorrentReady();
@@ -445,20 +695,35 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       }
       torrent.on('wire', () => {
         this.isConnecting = false;
-        this.transferStatus = `Connected to ${torrent.numPeers} peer(s).`;
+        this.resetReceiverInactivityTimer();
+        this.transferStatus = this.largeFileChoiceRequired
+          ? 'Connected. Choose how you would like to receive this large file.'
+          : `Connected to ${torrent.numPeers} peer(s).`;
       });
       torrent.on('download', () => {
         this.transferProgress = Math.round(torrent.progress * 100);
+        this.transferSpeed = torrent.downloadSpeed;
+        this.resetReceiverInactivityTimer();
         void this.reportShareStarted();
       });
       torrent.on('noPeers', () => {
-        this.transferStatus = 'No sender is online. If they refreshed or closed MyStudio, ask them to reopen the link and reselect the files.';
+        this.transferStatus = this.largeFileChoiceRequired
+          ? 'Waiting for sender. The large-file download will begin after you choose a method.'
+          : 'No sender is online. If they refreshed or closed MyStudio, ask them to reopen the link and reselect the files.';
+      });
+      torrent.on('done', () => {
+        this.transferProgress = 100;
+        this.transferSpeed = 0;
+        this.transferStatus = this.isSaving
+          ? 'Transfer complete. Finishing the save to your device...'
+          : 'Transfer Complete! Your files are ready to be saved to your device.';
+        this.clearReceiverInactivityTimer();
       });
       torrent.on('error', (error: Error) => {
         console.error('[CloudShare] Transfer failed', error);
         this.isConnecting = false;
-        this.transferStatus = 'The peer-to-peer connection failed.';
-        this.alert.error(error.message || 'The peer-to-peer connection failed.');
+        this.transferStatus = 'The connection failed.';
+        this.showErrorModal(error.message || 'The connection failed.');
       });
     } catch (error) {
       console.error('[CloudShare] Could not open public share', error);
@@ -468,24 +733,116 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     }
   }
 
+  private loadStudioBrandingFromStorage(): void {
+    const storedUserData = localStorage.getItem('userData');
+    if (!storedUserData) {
+      return;
+    }
+    try {
+      const userData = JSON.parse(storedUserData) as Record<string, unknown>;
+      this.studioName = this.readBrandingValue(userData['studio_name']) || this.studioName;
+      this.studioIcon = this.readBrandingValue(userData['studio_icon']);
+      this.studioPhone = this.readBrandingValue(userData['phone_number']);
+      this.studioAddress = this.readBrandingValue(userData['address']);
+      this.studioInstagramUrl = this.readBrandingValue(userData['instagram_url']);
+      this.studioFacebookUrl = this.readBrandingValue(userData['facebook_url']);
+      this.studioYoutubeUrl = this.readBrandingValue(userData['youtube_url']);
+    } catch (error) {
+      console.error('[CloudShare] Could not read MyStudio branding from local storage', error);
+    }
+  }
+
+  private applyStudioBranding(share: CloudShareRecord): void {
+    this.studioName = this.readBrandingValue(share.studioName) || this.studioName;
+    this.studioIcon = this.readBrandingValue(share.studioIcon);
+    this.studioPhone = this.readBrandingValue(share.phoneNumber);
+    this.studioAddress = this.readBrandingValue(share.address);
+    this.studioInstagramUrl = this.readBrandingValue(share.instagramUrl);
+    this.studioFacebookUrl = this.readBrandingValue(share.facebookUrl);
+    this.studioYoutubeUrl = this.readBrandingValue(share.youtubeUrl);
+  }
+
+  private readBrandingValue(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
   private prepareTorrentPaths(files: File[]): void {
     for (const file of files) {
-      if (!file.webkitRelativePath) {
+      const relativePath = this.getFilePath(file);
+      if (relativePath === file.name) {
         continue;
       }
       Object.defineProperty(file, 'fullPath', {
         configurable: true,
-        value: file.webkitRelativePath
+        value: relativePath
       });
     }
   }
 
   private getDisplayName(files: File[]): string {
-    const firstRelativePath = files[0].webkitRelativePath;
+    const firstRelativePath = this.getFilePath(files[0]);
     if (firstRelativePath) {
-      return firstRelativePath.split('/')[0] || files[0].name;
+      const rootName = firstRelativePath.split('/')[0];
+      if (rootName !== files[0].name || firstRelativePath.includes('/')) {
+        return rootName || files[0].name;
+      }
     }
     return files.length === 1 ? files[0].name : `${files.length} files`;
+  }
+
+  private async readDroppedFiles(dataTransfer: DataTransfer | null): Promise<File[]> {
+    if (!dataTransfer) {
+      return [];
+    }
+    const entries = Array.from(dataTransfer.items)
+      .map((item) => item.webkitGetAsEntry?.() ?? null)
+      .filter((entry): entry is FileSystemEntry => entry !== null);
+    if (entries.length === 0) {
+      return Array.from(dataTransfer.files);
+    }
+
+    const files: File[] = [];
+    for (const entry of entries) {
+      files.push(...await this.readDroppedEntry(entry));
+    }
+    return files;
+  }
+
+  private async readDroppedEntry(entry: FileSystemEntry, parentPath = ''): Promise<File[]> {
+    const path = parentPath ? `${parentPath}/${entry.name}` : entry.name;
+    if (entry.isFile) {
+      const fileEntry = entry as FileSystemFileEntry;
+      const file = await new Promise<File>((resolve, reject) => {
+        fileEntry.file(resolve, reject);
+      });
+      Object.defineProperty(file, 'fullPath', { configurable: true, value: path });
+      return [file];
+    }
+    if (!entry.isDirectory) {
+      return [];
+    }
+
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    const children: FileSystemEntry[] = [];
+    while (true) {
+      const batch = await new Promise<FileSystemEntry[]>((resolve, reject) => {
+        reader.readEntries(resolve, reject);
+      });
+      if (batch.length === 0) {
+        break;
+      }
+      children.push(...batch);
+    }
+
+    const files: File[] = [];
+    for (const child of children) {
+      files.push(...await this.readDroppedEntry(child, path));
+    }
+    return files;
+  }
+
+  private getFilePath(file: File): string {
+    return (file as File & { fullPath?: string }).fullPath || file.webkitRelativePath || file.name;
   }
 
   private getShareUrl(shareId: string): string {
@@ -617,7 +974,6 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     if (!this.shareId || this.receiverStartReported || this.receiverStartReportInProgress) {
       return;
     }
-
     this.receiverStartReportInProgress = true;
     try {
       await this.cloudShare.markShareStarted(this.shareId);
@@ -628,6 +984,51 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     } finally {
       this.receiverStartReportInProgress = false;
     }
+  }
+
+  private resetReceiverInactivityTimer(): void {
+    this.clearReceiverInactivityTimer();
+    if (!this.shareId || this.transferProgress >= 100 || this.receivedShareSaved) {
+      return;
+    }
+    this.receiverInactivityTimer = setTimeout(() => {
+      this.showConnectionDelayedModal();
+    }, 120_000);
+  }
+
+  private clearReceiverInactivityTimer(): void {
+    if (this.receiverInactivityTimer) {
+      clearTimeout(this.receiverInactivityTimer);
+      this.receiverInactivityTimer = undefined;
+    }
+  }
+
+  private showConnectionDelayedModal(message?: string): void {
+    if (this.receivedShareSaved || this.transferProgress >= 100) {
+      return;
+    }
+    this.connectionModalDescription = message
+      ?? (this.transferProgress > 0
+        ? `Paused at ${this.transferProgress}% - Waiting for connection... Please keep this page open.`
+        : 'Waiting for MyStudio to connect. Please keep this page open.');
+    this.isConnectionModalOpen = true;
+  }
+
+  private showErrorModal(message: string): void {
+    this.errorModalMessage = message;
+    this.isErrorModalOpen = true;
+  }
+
+  private dismissModal(close: () => void): void {
+    if (this.modalCloseTimer) {
+      clearTimeout(this.modalCloseTimer);
+    }
+    this.modalClosing = true;
+    this.modalCloseTimer = setTimeout(() => {
+      close();
+      this.modalClosing = false;
+      this.modalCloseTimer = undefined;
+    }, 180);
   }
 
   private safeName(name: string): string {

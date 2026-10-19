@@ -13,6 +13,13 @@ export interface CloudShareRecord {
   downloadCount: number;
   createdAt: string;
   status: 'pending' | 'ready' | 'in_progress' | 'failed';
+  studioName?: string | null;
+  studioIcon?: string | null;
+  phoneNumber?: string | null;
+  address?: string | null;
+  instagramUrl?: string | null;
+  facebookUrl?: string | null;
+  youtubeUrl?: string | null;
 }
 
 export type CloudShareTorrentFile = import('webtorrent').WebTorrentFile;
