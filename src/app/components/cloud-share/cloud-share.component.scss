@@ -72,19 +72,19 @@
 }
 
 .layout {
-  width: min(1060px, 100%);
+  width: min(1180px, 100%);
   flex: 1;
   margin: 0 auto;
   padding: 64px 0 54px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+  grid-template-columns: minmax(0, 1fr) minmax(400px, 540px);
   align-content: center;
   align-items: center;
   gap: clamp(42px, 8vw, 110px);
 }
 
 .receiver-layout {
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 520px);
+  grid-template-columns: minmax(0, 1fr) minmax(440px, 620px);
 }
 
 .intro {
@@ -166,7 +166,7 @@
 
 .transfer-panel {
   min-width: 0;
-  padding: 30px;
+  padding: 40px;
   border: 1px solid #d9dfd5;
   border-radius: 6px;
   background: #fffefa;
@@ -177,7 +177,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 23px;
+  margin-bottom: 30px;
 }
 
 .panel-icon {
@@ -198,7 +198,7 @@
 }
 
 .panel-copy {
-  margin: 0 0 23px;
+  margin: 0 0 30px;
   color: #78847c;
   font-size: 13px;
   line-height: 1.55;
@@ -207,13 +207,13 @@
 .picker-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 16px;
 }
 
 .file-picker {
   min-width: 0;
-  min-height: 116px;
-  padding: 18px 12px;
+  min-height: 148px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -334,6 +334,17 @@
   line-height: 1.5;
 }
 
+.transfer-state {
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 13px;
+  border-radius: 5px;
+  background: #f3f2fa;
+  color: #494ca2;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .panel-hint {
   margin: 18px 0 0;
 }
@@ -378,12 +389,12 @@
 }
 
 .progress-summary {
-  margin-top: 22px;
-  padding: 20px 12px;
+  margin-top: 28px;
+  padding: 28px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 28px;
   border: 1px solid #e8ebe4;
   border-radius: 4px;
   background: #fafbf7;
@@ -391,8 +402,8 @@
 
 .progress-ring {
   --progress: 0%;
-  width: 138px;
-  height: 138px;
+  width: 164px;
+  height: 164px;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -420,7 +431,7 @@
 .progress-ring-value {
   color: #1c332b;
   font-family: Georgia, serif;
-  font-size: 36px;
+  font-size: 42px;
   line-height: 1;
 }
 
@@ -438,7 +449,7 @@
 }
 
 .progress-note {
-  max-width: 190px;
+  max-width: 220px;
   margin: 0;
   color: #78847c;
   font-size: 11px;
@@ -452,7 +463,7 @@
 
 .incoming-file {
   min-width: 0;
-  padding: 14px 12px;
+  padding: 20px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -516,7 +527,7 @@
 }
 
 .file-list {
-  margin-top: 22px;
+  margin-top: 30px;
 }
 
 .file-list .save-explanation {
@@ -590,7 +601,7 @@
 
 .history-panel {
   grid-column: 1 / -1;
-  padding: 24px 28px;
+  padding: 30px 36px;
   border: 1px solid #d9dfd5;
   border-radius: 6px;
   background: #fffefa;
@@ -691,7 +702,7 @@
   font-size: 10px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .site-shell {
     padding: 0 22px;
   }
@@ -748,7 +759,7 @@
   }
 
   .transfer-panel {
-    padding: 22px 18px;
+    padding: 28px 22px;
   }
 
   .picker-actions {
@@ -756,11 +767,11 @@
   }
 
   .file-picker {
-    min-height: 92px;
+    min-height: 112px;
   }
 
   .progress-summary {
-    flex-direction: column;
+    gap: 20px;
     text-align: center;
   }
 

@@ -353,6 +353,41 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     return !!share.infoHash && this.cloudShare.isLocallySeeding(share.infoHash);
   }
 
+  getSenderTransferState(): string {
+    if (this.isPreparing) {
+      return 'Preparing the file for sharing';
+    }
+    if (!this.isSeedingLatest) {
+      return 'Share link is not active';
+    }
+    if (this.senderPeerCount > 0 && this.senderProgress > 0) {
+      return `Sending to ${this.senderPeerCount} peer(s) · ${this.senderProgress}% uploaded`;
+    }
+    if (this.senderPeerCount > 0) {
+      return `Connected to ${this.senderPeerCount} peer(s) · waiting for transfer`;
+    }
+    if (this.senderProgress > 0) {
+      return `Transfer paused · ${this.senderProgress}% uploaded so far`;
+    }
+    return 'Link ready · waiting for a receiver';
+  }
+
+  getReceiverTransferState(): string {
+    if (this.transferProgress >= 100) {
+      return 'File received · save it to your device';
+    }
+    if (this.transferProgress > 0 && this.torrent?.numPeers) {
+      return `Receiving from ${this.torrent.numPeers} peer(s) · ${this.transferProgress}%`;
+    }
+    if (this.transferProgress > 0) {
+      return `Transfer paused · ${this.transferProgress}% received so far`;
+    }
+    if (this.torrent?.numPeers) {
+      return `Connected to ${this.torrent.numPeers} peer(s) · receiving will start shortly`;
+    }
+    return this.transferStatus;
+  }
+
   canCopyShare(share: CloudShareRecord): boolean {
     if (share.status === 'failed') {
       return false;

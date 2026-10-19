@@ -28,7 +28,9 @@
         <div class="panel-topline"><span>01 / SEND</span><span class="panel-icon" aria-hidden="true">↗</span></div>
         <h2>Choose files to share</h2>
         <p class="panel-copy">
-          Select files or a folder up to {{ maxShareSize }}. Create a private link and share it with your recipient.
+          Select files or a folder. Create a private link and share it with your recipient.
+          <br>
+          <small>Please do not close the window while the receiver downloads.</small>
         </p>
 
         <div class="picker-actions">
@@ -63,7 +65,7 @@
             <input id="latest-share-link" readonly [value]="latestShareUrl" />
             <button type="button" class="copy-button" (click)="copyShareLink(latestShareId)">Copy</button>
           </div>
-          <p class="status-line"><span class="status-dot"></span> {{ isPreparing ? 'Preparing your share...' : isSeedingLatest ? (senderPeerCount > 0 ? 'Sharing with ' + senderPeerCount + ' peer(s)' : 'Waiting for the receiver') : 'Share link created' }}</p>
+          <p class="status-line transfer-state"><span class="status-dot"></span> {{ getSenderTransferState() }}</p>
           <div *ngIf="!isPreparing && isSeedingLatest" class="progress-summary">
             <div class="progress-ring" role="progressbar" [style.--progress]="senderProgress + '%'" [attr.aria-valuenow]="senderProgress" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="'Uploaded ' + senderProgress + ' percent of one share-size equivalent'">
               <span class="progress-ring-value">{{ senderProgress }}<small>%</small></span>
@@ -95,7 +97,7 @@
               <span class="file-symbol" aria-hidden="true">FILE</span>
               <span class="file-info"><strong>{{ publicShare.name }}</strong><small>{{ formatSize(publicShare.sizeBytes) }}</small></span>
             </div>
-            <p class="status-line transfer-status" role="status"><span class="status-dot"></span> {{ transferStatus }}</p>
+            <p class="status-line transfer-status transfer-state" role="status"><span class="status-dot"></span> {{ getReceiverTransferState() }}</p>
 
             <div *ngIf="isConnecting" class="progress-track connecting-track"><div></div></div>
             <div *ngIf="torrent && !isConnecting" class="progress-summary receiver-progress">
