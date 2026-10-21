@@ -473,7 +473,7 @@
 }
 
 .history-section {
-  max-width: 850px;
+  max-width: 864px;
   margin: 54px auto 0;
 }
 
@@ -487,8 +487,8 @@
 
 .section-heading h2 {
   margin: 0;
-  color: #26324a;
-  font-size: 22px;
+  color: #17234b;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.025em;
 }
@@ -546,39 +546,75 @@
 }
 
 .history-list {
-  overflow: hidden;
+  display: grid;
+  gap: 12px;
+  padding: 20px;
   border: 1px solid #e8ebf2;
-  border-radius: 17px;
+  border-radius: 18px;
   background: #fff;
   box-shadow: 0 4px 18px rgba(36, 46, 93, 0.035);
 }
 
 .history-item {
   min-width: 0;
-  padding: 16px 18px;
+  min-height: 98px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.history-item + .history-item {
-  border-top: 1px solid #edf0f5;
+  gap: 16px;
+  border: 1px solid #dce2fb;
+  border-radius: 17px;
+  background: #eef0fa;
 }
 
 .file-badge {
-  width: 42px;
-  height: 42px;
+  position: relative;
+  width: 56px;
+  height: 56px;
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 12px;
-  background: #f0f2fb;
+  border-radius: 13px;
+  background: #fff;
   color: #5f68b7;
 }
 
 .file-badge svg {
-  width: 21px;
-  height: 21px;
+  width: 26px;
+  height: 26px;
+}
+
+.share-active-indicator {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55);
+  animation: share-active-pulse 1.8s ease-out infinite;
+}
+
+@keyframes share-active-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-active-indicator {
+    animation: none;
+  }
 }
 
 .history-details {
@@ -589,42 +625,84 @@
 .history-details h3 {
   overflow: hidden;
   margin: 0;
-  color: #29344b;
-  font-size: 13px;
-  font-weight: 700;
+  color: #101d43;
+  font-size: 16px;
+  font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.history-details > p {
-  margin: 5px 0 0;
-  color: #8a93a3;
-  font-size: 11px;
+.history-meta {
+  margin: 6px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #52617f;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
-.share-status {
-  padding: 5px 9px;
-  flex: 0 0 auto;
-  border-radius: 99px;
-  background: #fff5df;
-  color: #9a6b15;
-  font-size: 10px;
+.history-download-count,
+.history-meta-status {
+  color: #07853e;
   font-weight: 700;
 }
 
-.status-ready {
-  background: #e8f7ef;
-  color: #268252;
+.status-failed {
+  color: #bd3b42;
 }
 
-.status-failed {
-  background: #fff0f0;
-  color: #bd3b42;
+.history-meta-status.status-preparing {
+  color: #9a6b15;
 }
 
 .history-actions {
   display: flex;
-  gap: 5px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-link-button {
+  min-width: 100px;
+  height: 40px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #303887;
+  border-radius: 12px;
+  background: #484b96;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(40, 45, 115, 0.12);
+  transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.copy-link-button:hover:not(:disabled) {
+  background: #3f4389;
+  box-shadow: 0 4px 9px rgba(40, 45, 115, 0.2);
+  transform: translateY(-1px);
+}
+
+.copy-link-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.copy-link-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.copy-link-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .icon-button {
@@ -659,6 +737,19 @@
 .icon-button-danger:hover {
   background: #fff0f0;
   color: #d33d43;
+}
+
+.history-actions .icon-button-danger {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #f04438;
+}
+
+.history-actions .icon-button-danger:hover {
+  background: #ffe8e8;
+  color: #d92d20;
 }
 
 .icon-button svg {
@@ -1291,26 +1382,33 @@
   }
 
   .history-item {
-    padding: 13px 11px;
-    gap: 9px;
+    min-height: 80px;
+    padding: 12px;
+    gap: 10px;
   }
 
   .file-badge {
-    width: 35px;
-    height: 35px;
-  }
-
-  .share-status {
-    display: none;
+    width: 44px;
+    height: 44px;
   }
 
   .history-actions {
-    gap: 0;
+    gap: 6px;
   }
 
-  .icon-button {
-    width: 30px;
-    height: 32px;
+  .copy-link-button {
+    min-width: 40px;
+    width: 40px;
+    padding: 0;
+  }
+
+  .copy-link-button span {
+    display: none;
+  }
+
+  .history-actions .icon-button-danger {
+    width: 36px;
+    height: 36px;
   }
 
   .receiver-shell {

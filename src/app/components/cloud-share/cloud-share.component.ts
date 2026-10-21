@@ -3,6 +3,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   CloudShareRecord,
+  CloudShareBranding,
   CloudShareService,
   CloudShareTorrent,
   CloudShareTorrentFile,
@@ -267,7 +268,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     this.isShareLocked = false;
     let pendingShare: CloudShareRecord | undefined;
     try {
-      pendingShare = await this.cloudShare.createShare(name, sizeBytes);
+      pendingShare = await this.cloudShare.createShare(name, sizeBytes, this.getStudioBranding());
       if (generation !== this.outgoingGeneration) {
         await this.cloudShare.deleteShare(pendingShare.shareId);
         return;
@@ -633,6 +634,24 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     return this.isSeeding(share);
   }
 
+  isShareConnected(share: CloudShareRecord): boolean {
+    return share.shareId === this.activeOutgoingShareId && this.senderPeerCount > 0;
+  }
+
+  getHistoryStatus(share: CloudShareRecord): string {
+    if (share.status === 'failed') {
+      return 'Failed';
+    }
+    if (share.status === 'pending') {
+      return 'Preparing';
+    }
+    if (this.isShareConnected(share)) {
+      const peerLabel = this.senderPeerCount === 1 ? 'Peer' : 'Peers';
+      return `${this.senderPeerCount} ${peerLabel} connected`;
+    }
+    return 'Ready to Share';
+  }
+
   isCurrentPreparedShare(share: CloudShareRecord): boolean {
     return share.shareId === this.activeOutgoingShareId && !this.activeShareStarted;
   }
@@ -754,12 +773,24 @@ export class CloudShareComponent implements OnInit, OnDestroy {
 
   private applyStudioBranding(share: CloudShareRecord): void {
     this.studioName = this.readBrandingValue(share.studioName) || this.studioName;
-    this.studioIcon = this.readBrandingValue(share.studioIcon);
-    this.studioPhone = this.readBrandingValue(share.phoneNumber);
-    this.studioAddress = this.readBrandingValue(share.address);
-    this.studioInstagramUrl = this.readBrandingValue(share.instagramUrl);
-    this.studioFacebookUrl = this.readBrandingValue(share.facebookUrl);
-    this.studioYoutubeUrl = this.readBrandingValue(share.youtubeUrl);
+    this.studioIcon = this.readBrandingValue(share.studioIcon) || this.studioIcon;
+    this.studioPhone = this.readBrandingValue(share.phoneNumber) || this.studioPhone;
+    this.studioAddress = this.readBrandingValue(share.address) || this.studioAddress;
+    this.studioInstagramUrl = this.readBrandingValue(share.instagramUrl) || this.studioInstagramUrl;
+    this.studioFacebookUrl = this.readBrandingValue(share.facebookUrl) || this.studioFacebookUrl;
+    this.studioYoutubeUrl = this.readBrandingValue(share.youtubeUrl) || this.studioYoutubeUrl;
+  }
+
+  private getStudioBranding(): CloudShareBranding {
+    return {
+      studioName: this.studioName,
+      studioIcon: this.studioIcon,
+      phoneNumber: this.studioPhone,
+      address: this.studioAddress,
+      instagramUrl: this.studioInstagramUrl,
+      facebookUrl: this.studioFacebookUrl,
+      youtubeUrl: this.studioYoutubeUrl
+    };
   }
 
   private readBrandingValue(value: unknown): string {
@@ -1032,7 +1063,16 @@ export class CloudShareComponent implements OnInit, OnDestroy {
   }
 
   private safeName(name: string): string {
-    return name.replace(/[<>:"|?*\u0000-\u001f]/g, '_').trim() || 'download';
+    const sanitizedName = name
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_')
+      .trim()
+      .replace(/[. ]+$/g, '');
+    const nameWithSafeDevicePrefix = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/i.test(sanitizedName)
+      ? `_${sanitizedName}`
+      : sanitizedName;
+    const safeName = Array.from(nameWithSafeDevicePrefix)
+      .reduce((result, character) => result.length + character.length <= 255 ? result + character : result, '');
+    return safeName || 'download';
   }
 
   private getErrorMessage(error: unknown, fallback: string): string {

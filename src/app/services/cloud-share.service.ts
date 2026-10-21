@@ -22,6 +22,16 @@ export interface CloudShareRecord {
   youtubeUrl?: string | null;
 }
 
+export interface CloudShareBranding {
+  studioName: string;
+  studioIcon: string;
+  phoneNumber: string;
+  address: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  youtubeUrl: string;
+}
+
 export type CloudShareTorrentFile = import('webtorrent').WebTorrentFile;
 export type CloudShareTorrent = WebTorrentTorrent;
 
@@ -52,9 +62,9 @@ export class CloudShareService {
     return response.data;
   }
 
-  async createShare(name: string, sizeBytes: number): Promise<CloudShareRecord> {
+  async createShare(name: string, sizeBytes: number, branding: CloudShareBranding): Promise<CloudShareRecord> {
     const response = await firstValueFrom(
-      this.http.post<{ data: CloudShareRecord }>(API_URL, { name, sizeBytes })
+      this.http.post<{ data: CloudShareRecord }>(API_URL, { name, sizeBytes, ...branding })
     );
     return response.data;
   }
