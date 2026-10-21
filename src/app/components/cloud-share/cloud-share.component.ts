@@ -597,10 +597,10 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       return 'Share link is not active';
     }
     if (this.senderPeerCount > 0 && this.senderProgress > 0) {
-      return `Sending to ${this.senderPeerCount} peer(s) · ${this.senderProgress}% uploaded`;
+      return `Sending to ${this.senderPeerCount} user(s) · ${this.senderProgress}% uploaded`;
     }
     if (this.senderPeerCount > 0) {
-      return `Connected to ${this.senderPeerCount} peer(s) · waiting for transfer`;
+      return `Connected to ${this.senderPeerCount} user(s) · waiting for transfer`;
     }
     if (this.senderProgress > 0) {
       return `Transfer paused · ${this.senderProgress}% uploaded so far`;
@@ -613,13 +613,13 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       return 'File received · save it to your device';
     }
     if (this.transferProgress > 0 && this.torrent?.numPeers) {
-      return `Receiving from ${this.torrent.numPeers} peer(s) · ${this.transferProgress}%`;
+      return `Receiving from ${this.torrent.numPeers} user(s) · ${this.transferProgress}%`;
     }
     if (this.transferProgress > 0) {
       return `Transfer paused · ${this.transferProgress}% received so far`;
     }
     if (this.torrent?.numPeers) {
-      return `Connected to ${this.torrent.numPeers} peer(s) · receiving will start shortly`;
+      return `Connected to ${this.torrent.numPeers} user(s) · receiving will start shortly`;
     }
     return this.transferStatus;
   }
@@ -646,7 +646,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       return 'Preparing';
     }
     if (this.isShareConnected(share)) {
-      const peerLabel = this.senderPeerCount === 1 ? 'Peer' : 'Peers';
+      const peerLabel = this.senderPeerCount === 1 ? 'User' : 'Users';
       return `${this.senderPeerCount} ${peerLabel} connected`;
     }
     return 'Ready to Share';
@@ -704,7 +704,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
           return;
         }
         this.transferStatus = torrent.numPeers
-          ? `Connected to ${torrent.numPeers} peer(s).`
+          ? `Connected to ${torrent.numPeers} user(s).`
           : 'Waiting for sender to connect...';
       };
       if (torrent.ready) {
@@ -717,7 +717,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
         this.resetReceiverInactivityTimer();
         this.transferStatus = this.largeFileChoiceRequired
           ? 'Connected. Choose how you would like to receive this large file.'
-          : `Connected to ${torrent.numPeers} peer(s).`;
+          : `Connected to ${torrent.numPeers} user(s).`;
       });
       torrent.on('download', () => {
         this.transferProgress = Math.round(torrent.progress * 100);
