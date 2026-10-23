@@ -83,6 +83,7 @@
               <p>{{ isSeedingLatest ? 'Keep this tab open so recipients can connect.' : (isPreparing ? 'Your unique link
                 is ready. Recipients will connect when preparation finishes.' : 'The sender is not seeding. Re-select
                 the files to make this link active again.') }}</p>
+              <p class="sender-transfer-status" aria-live="polite">{{ getSenderTransferState() }}</p>
             </div>
           </div>
           <div class="share-link-row">
@@ -177,28 +178,28 @@
               <span class="large-file-warning" aria-hidden="true">!</span>
               <div>
                 <h2>Large File Detected (&gt; 5GB)</h2>
-                <p>Save directly to your device as the data arrives, or continue with the normal browser download.</p>
+                <p>Choose where the file should go before receiving starts. Nothing downloads until you choose an option.</p>
               </div>
             </div>
             <div class="large-file-actions">
               <button type="button" class="button button-large-direct" [disabled]="isSaving"
                 (click)="saveLargeShareDirectly()">
-                Direct Fast Download
+                Choose Save Location
               </button>
               <button type="button" class="button button-browser-download" [disabled]="isSaving"
                 (click)="continueLargeDownloadInBrowser()">
-                Browser &amp; Download Anyway
+                Download in Browser Anyway
               </button>
             </div>
           </section>
 
-          <div class="receiver-progress" *ngIf="torrent || transferProgress > 0">
+          <div class="receiver-progress" *ngIf="receiverDownloadStarted || transferProgress > 0">
             <div class="receiver-progress-label">
               <span>{{ transferProgress >= 100 ? 'Transfer complete' : 'Downloading...' }}</span>
               <strong>{{ transferProgress }}%</strong>
             </div>
             <div class="progress-track progress-track-large"><span [style.width.%]="transferProgress"></span></div>
-            <p class="receiver-speed" *ngIf="transferProgress < 100">{{ formatTransferSpeed(transferSpeed) }}</p>
+            <p class="receiver-speed" *ngIf="receiverDownloadStarted && transferProgress < 100">{{ formatTransferSpeed(transferSpeed) }}</p>
           </div>
 
           <div class="receiver-files" *ngIf="torrentFiles.length">
@@ -210,13 +211,21 @@
             </div>
           </div>
 
+          <div class="receiver-actions" *ngIf="torrentFiles.length && !isLargeShare && !receiverDownloadStarted">
+            <button type="button" class="button button-primary" [disabled]="isSaving || !torrent"
+              (click)="startBrowserDownload()">
+              Download
+            </button>
+          </div>
+
           <div class="receiver-actions" *ngIf="transferProgress >= 100 && torrentFiles.length > 1">
             <button type="button" class="button button-primary" [disabled]="isSaving" (click)="saveFolder()">
               {{ isSaving ? 'Saving...' : 'Save Folder' }}
             </button>
           </div>
-          <p class="receiver-footnote" *ngIf="transferProgress < 100">Keep this page open while the transfer is in
-            progress.</p>
+          <p class="receiver-footnote" *ngIf="receiverDownloadStarted && transferProgress < 100">
+            Keep this page open while the transfer is in progress.
+          </p>
         </div>
         <a class="back-link" routerLink="/dashboard">Return to MyStudio</a>
       </section>
@@ -325,9 +334,13 @@
   <div class="modal-backdrop" *ngIf="isErrorModalOpen" [class.modal-closing]="modalClosing" role="presentation">
     <section class="modal-card error-modal" role="alertdialog" aria-modal="true" aria-labelledby="error-title">
       <div class="error-icon" aria-hidden="true">!</div>
-      <h2 id="error-title">Error Processing File</h2>
+      <h2 id="error-title">{{ errorModalTitle }}</h2>
       <p class="modal-description">{{ errorModalMessage }}</p>
-      <button type="button" class="button button-primary modal-done" (click)="closeErrorModal()">Close</button>
+      <div class="modal-button-row">
+        <button type="button" class="button button-secondary" (click)="closeErrorModal()">Close</button>
+        <button *ngIf="shareId" type="button" class="button button-primary" [disabled]="isConnecting || isSaving"
+          (click)="retryReceiving()">Retry from 0%</button>
+      </div>
     </section>
   </div>
 

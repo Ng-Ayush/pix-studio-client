@@ -118,7 +118,12 @@ export class CloudShareService {
     onProgress: (hashedBytes: number, totalBytes: number) => void
   ): Promise<CloudShareSeed> {
     const client = await this.getClient();
-    const options = { announce: this.getAnnounceUrls(), name, onProgress };
+    const options = {
+      announce: this.getAnnounceUrls(),
+      name,
+      onProgress,
+      noPeersIntervalTime: 1
+    };
     let resolveSeeded!: (torrent: CloudShareTorrent) => void;
     let rejectSeeded!: (error: Error) => void;
     const seeded = new Promise<CloudShareTorrent>((resolve, reject) => {
@@ -134,18 +139,25 @@ export class CloudShareService {
     return { torrent, seeded };
   }
 
-  async joinShare(infoHash: string): Promise<CloudShareTorrent> {
+  async joinShare(infoHash: string, resetExisting = false): Promise<CloudShareTorrent> {
     const client = await this.getClient();
     const existingTorrent = await client.get(infoHash);
     if (existingTorrent) {
-      return existingTorrent;
+      if (!resetExisting || this.locallySeededHashes.has(infoHash)) {
+        return existingTorrent;
+      }
+      await client.remove(existingTorrent.infoHash || existingTorrent, { destroyStore: true });
     }
 
     const trackers = this.getAnnounceUrls()
       .map((tracker) => `&tr=${encodeURIComponent(tracker)}`)
       .join('');
     const magnetUri = `magnet:?xt=urn:btih:${infoHash}${trackers}`;
-    return client.add(magnetUri, { announce: this.getAnnounceUrls() });
+    return client.add(magnetUri, {
+      announce: this.getAnnounceUrls(),
+      deselect: resetExisting,
+      noPeersIntervalTime: 1
+    });
   }
 
   isLocallySeeding(infoHash: string): boolean {

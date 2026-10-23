@@ -45,7 +45,7 @@ declare module 'webtorrent' {
     ): WebTorrentTorrent;
     add(
       magnetUri: string,
-      options: { announce: string[] }
+      options: { announce: string[]; deselect?: boolean; noPeersIntervalTime?: number }
     ): WebTorrentTorrent;
     get(infoHash: string | WebTorrentTorrent): Promise<WebTorrentTorrent | null>;
     remove(
