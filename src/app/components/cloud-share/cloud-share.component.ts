@@ -113,22 +113,60 @@ export class CloudShareComponent implements OnInit, OnDestroy {
   private copiedLinkResetTimer?: ReturnType<typeof setTimeout>;
   private modalCloseTimer?: ReturnType<typeof setTimeout>;
   modalCopied = false;
+  private electronActiveShares: Record<string, any> = {};
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly cloudShare: CloudShareService,
     private readonly alert: AlertService
-  ) {}
+  ) { }
 
-  ngOnInit(): void {
+  // ngOnInit(): void {
+  //   this.shareId = this.route.snapshot.paramMap.get('shareId') ?? undefined;
+  //   this.startConnectionMonitoring();
+  //   if (this.shareId) {
+  //     void this.loadPublicShare();
+  //     return;
+  //   }
+  //   this.loadStudioBrandingFromStorage();
+  //   void this.loadHistory();
+  // }
+
+  async ngOnInit(): Promise<void> {
     this.shareId = this.route.snapshot.paramMap.get('shareId') ?? undefined;
     this.startConnectionMonitoring();
+    // If in Electron, fetch active local seeds
+    const electron = (window as any).electronAPI;
+    if (electron?.isElectron) {
+      this.electronActiveShares = await electron.getActiveLocalShares().catch(() => ({}));
+    }
     if (this.shareId) {
       void this.loadPublicShare();
       return;
     }
     this.loadStudioBrandingFromStorage();
     void this.loadHistory();
+  }
+
+  isSeeding(share: CloudShareRecord): boolean {
+    if (!share.infoHash) return false;
+    // Active if seeded in browser OR actively seeded in Electron background
+    const isBrowserSeeding = this.cloudShare.isLocallySeeding(share.infoHash);
+    const isDesktopSeeding = !!this.electronActiveShares[share.shareId];
+    return isBrowserSeeding || isDesktopSeeding;
+  }
+  canCopyShare(share: CloudShareRecord): boolean {
+    if (share.status === 'failed') {
+      return false;
+    }
+    if (share.shareId === this.activeOutgoingShareId) {
+      return this.isPreparing || !!this.activeOutgoingTorrent;
+    }
+    // If status is pending but not currently preparing, it's expired -> disable copy
+    if (share.status === 'pending') {
+      return false;
+    }
+    return this.isSeeding(share);
   }
 
   ngOnDestroy(): void {
@@ -236,7 +274,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     await this.startShare(files);
   }
 
-  async onFilesDropped(event: DragEvent): Promise<void> {
+    async onFilesDropped(event: DragEvent): Promise<void> {
     event.preventDefault();
     this.isDropZoneActive = false;
     try {
@@ -366,7 +404,23 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       }
       this.isSeedingLatest = true;
       const readyShare = await this.cloudShare.completeShare(pendingShare.shareId, torrent.infoHash);
-      this.updateHistory(readyShare);
+      this.updateHistory(readyShare);;
+
+      const electron = (window as any).electronAPI;
+      if (electron?.isElectron) {
+        const localDiskPath = this.getLocalDiskPath(files);
+        if (localDiskPath) {
+          await electron.startBackgroundSeed({
+            shareId: readyShare.shareId,
+            localPath: localDiskPath,
+            name: name,
+            sizeBytes: sizeBytes,
+            infoHash: torrent.infoHash
+          });
+          this.electronActiveShares[readyShare.shareId] = true;
+        }
+      }
+
       this.startCompletionPolling();
       this.isShareSuccessModalOpen = true;
     } catch (error) {
@@ -424,6 +478,11 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       await this.cloudShare.deleteShare(share.shareId);
       if (share.infoHash) {
         await this.cloudShare.stopSeeding(share.infoHash);
+      }
+      const electron = (window as any).electronAPI;
+      if (electron?.isElectron) {
+        await electron.removeBackgroundSeed(share.shareId).catch(() => {});
+        delete this.electronActiveShares[share.shareId];
       }
       this.history = this.history.filter((item) => item.shareId !== share.shareId);
       if (share.shareId === this.activeOutgoingShareId) {
@@ -632,8 +691,8 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     try {
       const fileHandle = isSingleFile
         ? await pickerWindow.showSaveFilePicker!.call(window, {
-            suggestedName: this.safeName(firstFile.name)
-          })
+          suggestedName: this.safeName(firstFile.name)
+        })
         : undefined;
       const directoryHandle = isSingleFile
         ? undefined
@@ -678,9 +737,9 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     }
   }
 
-  isSeeding(share: CloudShareRecord): boolean {
-    return !!share.infoHash && this.cloudShare.isLocallySeeding(share.infoHash);
-  }
+  // isSeeding(share: CloudShareRecord): boolean {
+  //   return !!share.infoHash && this.cloudShare.isLocallySeeding(share.infoHash);
+  // }
 
   getSenderTransferState(): string {
     if (this.isPreparing) {
@@ -717,26 +776,31 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     return this.transferStatus;
   }
 
-  canCopyShare(share: CloudShareRecord): boolean {
-    if (share.status === 'failed') {
-      return false;
-    }
-    if (share.shareId === this.activeOutgoingShareId) {
-      return this.isPreparing || !!this.activeOutgoingTorrent;
-    }
-    return this.isSeeding(share);
-  }
+  // canCopyShare(share: CloudShareRecord): boolean {
+  //   if (share.status === 'failed') {
+  //     return false;
+  //   }
+  //   if (share.shareId === this.activeOutgoingShareId) {
+  //     return this.isPreparing || !!this.activeOutgoingTorrent;
+  //   }
+  //   return this.isSeeding(share);
+  // }
 
   isShareConnected(share: CloudShareRecord): boolean {
     return share.shareId === this.activeOutgoingShareId && this.senderPeerCount > 0;
   }
+
 
   getHistoryStatus(share: CloudShareRecord): string {
     if (share.status === 'failed') {
       return 'Failed';
     }
     if (share.status === 'pending') {
-      return 'Preparing';
+      // Only return 'Preparing' if this share is ACTIVELY being hashed right now
+      if (share.shareId === this.activeOutgoingShareId && this.isPreparing) {
+        return 'Preparing';
+      }
+      return 'Expired';
     }
     if (this.isShareConnected(share)) {
       const peerLabel = this.senderPeerCount === 1 ? 'User' : 'Users';
@@ -744,6 +808,20 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     }
     return 'Ready to Share';
   }
+
+  // getHistoryStatus(share: CloudShareRecord): string {
+  //   if (share.status === 'failed') {
+  //     return 'Failed';
+  //   }
+  //   if (share.status === 'pending') {
+  //     return 'Preparing';
+  //   }
+  //   if (this.isShareConnected(share)) {
+  //     const peerLabel = this.senderPeerCount === 1 ? 'User' : 'Users';
+  //     return `${this.senderPeerCount} ${peerLabel} connected`;
+  //   }
+  //   return 'Ready to Share';
+  // }
 
   isCurrentPreparedShare(share: CloudShareRecord): boolean {
     return share.shareId === this.activeOutgoingShareId && !this.activeShareStarted;
@@ -753,6 +831,12 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     try {
       this.history = await this.cloudShare.listShares();
+      for (const share of this.history) {
+        if (share.status === 'pending' && share.shareId !== this.activeOutgoingShareId) {
+          share.status = 'failed';
+          void this.cloudShare.failShare(share.shareId).catch(() => {});
+        }
+      }
     } catch (error) {
       console.error('[CloudShare] Could not load history', error);
       this.alert.error(this.getErrorMessage(error, 'Could not load CloudShare history.'));
@@ -1062,6 +1146,26 @@ export class CloudShareComponent implements OnInit, OnDestroy {
         value: relativePath
       });
     }
+  }
+
+  private getLocalDiskPath(files: File[]): string {
+    const electron = (window as any).electronAPI;
+    if (!electron?.isElectron || !files.length) return '';
+    const firstFile = files[0];
+    const fullFilePath = electron.getPathForFile(firstFile);
+    if (!fullFilePath) return '';
+
+    const relativePath = (firstFile as File & { fullPath?: string }).fullPath || firstFile.webkitRelativePath || '';
+    if (relativePath && relativePath.includes('/')) {
+      const normalizedPath = fullFilePath.replace(/\\/g, '/');
+      const normalizedRelative = relativePath.replace(/\\/g, '/');
+      const idx = normalizedPath.lastIndexOf('/' + normalizedRelative);
+      if (idx !== -1) {
+        const rootFolder = normalizedRelative.split('/')[0];
+        return (normalizedPath.substring(0, idx) + '/' + rootFolder).replace(/\//g, '\\');
+      }
+    }
+    return fullFilePath;
   }
 
   private getDisplayName(files: File[]): string {

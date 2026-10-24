@@ -80,9 +80,7 @@
             <span class="status-dot" [class.status-dot-active]="isSeedingLatest"></span>
             <div>
               <h3>Your share link is ready</h3>
-              <p>{{ isSeedingLatest ? 'Keep this tab open so recipients can connect.' : (isPreparing ? 'Your unique link
-                is ready. Recipients will connect when preparation finishes.' : 'The sender is not seeding. Re-select
-                the files to make this link active again.') }}</p>
+              <p>{{ isSeedingLatest ? 'Keep this tab open so recipients can connect.' : (isPreparing ? 'Your unique link is ready. Recipients will connect when preparation finishes.' : 'The sender is not seeding. Re-select the files to make this link active again.') }}</p>
               <p class="sender-transfer-status" aria-live="polite">{{ getSenderTransferState() }}</p>
             </div>
           </div>
@@ -129,15 +127,19 @@
                 <span class="history-download-count">Downloaded ({{ share.downloadCount || 0 }})</span>
                 <span aria-hidden="true">·</span>
                 <span class="history-meta-status" [class.status-failed]="share.status === 'failed'"
-                  [class.status-preparing]="share.status === 'pending'"
+                  [class.status-preparing]="getHistoryStatus(share) === 'Preparing'"
+                  [class.status-failed]="getHistoryStatus(share) === 'Expired' || share.status === 'failed'"
                   [class.status-connected]="isShareConnected(share)">
                   {{ getHistoryStatus(share) }}
                 </span>
               </p>
             </div>
+
+            <!-- [disabled]="!canCopyShare(share)" -->
+
             <div class="history-actions">
               <button type="button" class="copy-link-button" title="Copy share link" aria-label="Copy share link"
-                [disabled]="!canCopyShare(share)" (click)="copyShareLink(share.shareId)">
+                 (click)="copyShareLink(share.shareId)">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7" />
                   <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor"
