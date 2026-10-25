@@ -206,7 +206,7 @@ export class CloudShareService {
     return this.clientPromise;
   }
 
-  private getAnnounceUrls(): string[] {
+  getAnnounceUrls(): string[] {
     const apiUrl = new URL(environment.apiUrl);
     apiUrl.protocol = apiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
     apiUrl.pathname = '/';

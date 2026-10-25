@@ -415,7 +415,8 @@ export class CloudShareComponent implements OnInit, OnDestroy {
             localPath: localDiskPath,
             name: name,
             sizeBytes: sizeBytes,
-            infoHash: torrent.infoHash
+            infoHash: torrent.infoHash,
+            announceUrls: this.cloudShare.getAnnounceUrls()
           });
           this.electronActiveShares[readyShare.shareId] = true;
         }
