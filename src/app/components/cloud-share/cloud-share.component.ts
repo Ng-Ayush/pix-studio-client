@@ -114,6 +114,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
   private modalCloseTimer?: ReturnType<typeof setTimeout>;
   modalCopied = false;
   private electronActiveShares: Record<string, any> = {};
+  private receiverTransferComplete = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -375,6 +376,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       });
       seed.torrent.on('wire', () => {
         if (generation !== this.outgoingGeneration) return;
+         if (this.receiverTransferComplete) return;
         this.senderWasConnected = seed.torrent.numPeers > 0;
         this.senderPeerCount = seed.torrent.numPeers;
         this.lastSenderPeerCount = seed.torrent.numPeers;
@@ -662,6 +664,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     this.torrent = undefined;
     this.torrentFiles = [];
     this.transferProgress = 0;
+    this.receiverTransferComplete = false;
     this.transferSpeed = 0;
     this.receiverDownloadStarted = false;
     this.receiverWasConnected = false;
@@ -908,7 +911,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
             : 'Sender connected. Choose Download to start receiving the file.';
       });
       torrent.on('download', () => {
-        if (generation !== this.receiverGeneration || !this.receiverDownloadStarted) return;
+        if (generation !== this.receiverGeneration || !this.receiverDownloadStarted || this.receiverTransferComplete) return;
         this.transferProgress = Math.min(99, Math.floor(torrent.progress * 100));
         this.transferSpeed = torrent.downloadSpeed;
         this.resetReceiverInactivityTimer();
@@ -925,6 +928,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       });
       torrent.on('done', () => {
         if (generation !== this.receiverGeneration) return;
+         this.receiverTransferComplete = true;
         this.transferProgress = 100;
         this.transferSpeed = 0;
         this.transferStatus = this.isSaving
@@ -974,8 +978,9 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       if (!receiverTorrent) {
         return;
       }
-      if (this.receiverDownloadStarted) {
+       if (this.receiverDownloadStarted && !this.receiverTransferComplete) {
         const complete = receiverTorrent.done || receiverTorrent.progress >= 1;
+        this.receiverTransferComplete = complete;
         this.transferProgress = complete ? 100 : Math.min(99, Math.floor(receiverTorrent.progress * 100));
         this.transferSpeed = complete ? 0 : receiverTorrent.downloadSpeed;
         if (complete && !this.isSaving) {
@@ -1071,6 +1076,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     this.receiverWasConnected = false;
     this.lastReceiverPeerCount = 0;
     this.transferProgress = 0;
+      this.receiverTransferComplete = false;
     this.transferSpeed = 0;
     this.largeFileChoiceRequired = false;
     this.receivedShareSaved = false;
