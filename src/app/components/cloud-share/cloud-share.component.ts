@@ -274,7 +274,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
     await this.startShare(files);
   }
 
-    async onFilesDropped(event: DragEvent): Promise<void> {
+  async onFilesDropped(event: DragEvent): Promise<void> {
     event.preventDefault();
     this.isDropZoneActive = false;
     try {
@@ -482,7 +482,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       }
       const electron = (window as any).electronAPI;
       if (electron?.isElectron) {
-        await electron.removeBackgroundSeed(share.shareId).catch(() => {});
+        await electron.removeBackgroundSeed(share.shareId).catch(() => { });
         delete this.electronActiveShares[share.shareId];
       }
       this.history = this.history.filter((item) => item.shareId !== share.shareId);
@@ -835,7 +835,7 @@ export class CloudShareComponent implements OnInit, OnDestroy {
       for (const share of this.history) {
         if (share.status === 'pending' && share.shareId !== this.activeOutgoingShareId) {
           share.status = 'failed';
-          void this.cloudShare.failShare(share.shareId).catch(() => {});
+          void this.cloudShare.failShare(share.shareId).catch(() => { });
         }
       }
     } catch (error) {
@@ -975,8 +975,12 @@ export class CloudShareComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.receiverDownloadStarted) {
-        this.transferProgress = Math.min(99, Math.floor(receiverTorrent.progress * 100));
-        this.transferSpeed = receiverTorrent.downloadSpeed;
+        const complete = receiverTorrent.done || receiverTorrent.progress >= 1;
+        this.transferProgress = complete ? 100 : Math.min(99, Math.floor(receiverTorrent.progress * 100));
+        this.transferSpeed = complete ? 0 : receiverTorrent.downloadSpeed;
+        if (complete && !this.isSaving) {
+          this.transferStatus = 'Transfer Complete! Your files are ready to be saved to your device.';
+        }
       }
       const receiverPeerCount = receiverTorrent.numPeers;
       if (receiverPeerCount > 0) {
