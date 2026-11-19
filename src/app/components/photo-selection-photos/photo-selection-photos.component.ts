@@ -13,8 +13,6 @@ import { UploadImgBackgroundService } from '../../services/upload-img-background
 import { DeleteImgBackgroundService } from '../../services/delete-img-background.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.service';
-import { environment } from '../../../environments/environment';
-import { start } from 'repl';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -63,7 +61,6 @@ export class PhotoSelectionPhotosComponent {
   activePhoto: any = null;
   customerId: any = null;
   sortingProgress = 0;
-  showMaintenanceError: boolean = false;
 
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,

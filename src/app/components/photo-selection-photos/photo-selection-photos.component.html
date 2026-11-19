@@ -66,74 +66,17 @@
             <h1 class="text-2xl font-bold px-4 dark:bg-transparent">{{customerName|titlecase}} / {{eventName|titlecase}}
               / {{folderName|titlecase}}</h1>
             <p class="text-sm text-gray-500 px-4">{{ photos.length }} photos</p>
-            <div class="flex items-center gap-3 mt-2 px-4">
-
-            <button
-  [disabled]="isFaceProcessing"
-  (click)="showMaintenanceError = true"
-  *ngIf="!isEventSubmitted"
-  class="bg-gray-500 text-white text-sm px-4 py-2 rounded-full flex items-center gap-3 cursor-pointer">
-
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-       fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round"
-          stroke-width="2" d="M12 4v16m8-8H4" />
-  </svg>
-
-  <span>Upload Photos</span>
-</button>
-            </div>
           </div>
 
-
-          <div style="position: relative; display: inline-block;">
-
-
-
-            <!-- Maintenance Alert -->
-            <div *ngIf="showMaintenanceError" style="position: fixed;
-              top: 21%;
-              right: 37%;
-              transform: translateY(-50%);
-              width: 380px;
-              max-width: calc(100vw - 32px);
-              padding: 10px 12px;
-              background-color: #FFF7ED;
-              border: 1px solid #FED7AA;
-              border-radius: 8px;
-              display: flex;
-              align-items: flex-start;
-              gap: 9px;
-              z-index: 9999;
-              box-sizing: border-box;">
-
-              <span style="font-size: 16px; color: #C2410C;">
-                &#9888;
-              </span>
-
-              <div style="flex: 1;">
-                <div style="font-size: 13px; font-weight: 600;
-                  color: #9A3412; margin-bottom: 3px;">
-                  Feature Temporarily Unavailable
-                </div>
-
-                <div style="font-size: 12px; color: #7C2D12;
-                  line-height: 1.4;">
-                  Photo uploads are currently undergoing maintenance.
-                  We apologize for the inconvenience. Please try again later.
-                </div>
-              </div>
-
-              <!-- <button type="button"
-            (click)="showMaintenanceError = false"
-            style="background: none; border: none;
-                   color: #9A3412; font-size: 17px;
-                   cursor: pointer; padding: 0;">
-      &times;
-    </button> -->
-
-            </div>
-          </div>
+               <button [disabled]="isFaceProcessing" (click)="file.click()" *ngIf="!isEventSubmitted"
+            class="bg-[#494CA2] disabled:bg-gray-400 text-white text-sm px-4 py-2 rounded-full flex items-center gap-3 hover:bg-[#494CA2] transition-colors cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Upload Photos</span>
+            <input type="file" #file hidden accept=".jpg, .jpeg, image/jpeg" multiple (change)="handleFileInput($event)">
+          </button>
 
           <button (click)="getSubmittedSelectedPhotos()" *ngIf="isEventSubmitted"
             class="bg-gray-200 text-indigo-600 px-4 text-sm py-2 rounded-full flex items-center gap-3 hover:bg-gray-300 transition-colors cursor-pointer">
