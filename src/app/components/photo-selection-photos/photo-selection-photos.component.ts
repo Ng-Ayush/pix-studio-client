@@ -14,6 +14,7 @@ import { DeleteImgBackgroundService } from '../../services/delete-img-background
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { UploadImgBackgroundAiService } from '../../services/upload-img-bg-ai.service';
 import { environment } from '../../../environments/environment';
+import { start } from 'repl';
 
 @Component({
   selector: 'app-photo-selection-photos',
@@ -62,6 +63,7 @@ export class PhotoSelectionPhotosComponent {
   activePhoto: any = null;
   customerId: any = null;
   sortingProgress = 0;
+  showMaintenanceError: boolean = false;
 
   constructor(private loader: LoaderService,
     private imageCompressService: ImageCompressionService,
@@ -233,9 +235,10 @@ export class PhotoSelectionPhotosComponent {
   }
 
 
-  async selectFolder() {
+  async selectFolder(event:any) {
     try {
-      this.selectedFolderHandle = await (window as any).showDirectoryPicker();
+      // console.log("Select folder event:", event.target.value);
+      this.selectedFolderHandle = await (window as any).showDirectoryPicker({mode:'readwrite',startIn: 'documents'});
       this.originalDirectoryName = this.selectedFolderHandle.name;
 
       const fileMap = new Map<string, FileSystemFileHandle>();
